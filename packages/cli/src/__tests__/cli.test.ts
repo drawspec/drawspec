@@ -39,6 +39,47 @@ async function tempDir(): Promise<string> {
   return path;
 }
 
+async function readUntil(stream: ReadableStream<Uint8Array>, needle: string): Promise<string> {
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let output = "";
+  const timeout = Date.now() + 5000;
+  while (!output.includes(needle)) {
+    if (Date.now() > timeout)
+      throw new Error(`Timed out waiting for '${needle}'. Output: ${output}`);
+    const result = await reader.read();
+    if (result.done) break;
+    output += decoder.decode(result.value, { stream: true });
+  }
+  reader.releaseLock();
+  return output;
+}
+
+function parsePreviewUrl(output: string): string {
+  const sanitized = output.replaceAll("\u001b[32m", "").replaceAll("\u001b[0m", "");
+  const match = /http:\/\/\S+/.exec(sanitized);
+  if (match === null) throw new Error(`No preview URL in output: ${output}`);
+  return match[0];
+}
+
+async function withServe<T>(callback: (url: string) => Promise<T>): Promise<T> {
+  const proc = Bun.spawn(
+    ["bun", cli, "serve", join(fixtures, "payment.sequence.ts"), "--port", "0"],
+    {
+      cwd: repoRoot,
+      stdout: "pipe",
+      stderr: "pipe",
+    }
+  );
+  try {
+    const output = await readUntil(proc.stdout, "serving DrawSpec preview");
+    return await callback(parsePreviewUrl(output));
+  } finally {
+    proc.kill("SIGTERM");
+    await proc.exited;
+  }
+}
+
 describe("drawspec CLI", () => {
   test("prints help", async () => {
     const result = await runDrawspec(["--help"]);
@@ -94,5 +135,37 @@ describe("drawspec CLI", () => {
     const payload = JSON.parse(result.stdout) as { document: { kind: string; nodes: unknown[] } };
     expect(payload.document.kind).toBe("sequence");
     expect(payload.document.nodes).toHaveLength(2);
+  });
+
+  test("serve starts an HTTP preview", async () => {
+    await withServe(async (url) => {
+      const response = await fetch(url);
+      const html = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(html).toContain("<drawspec-diagram");
+      expect(html).toContain("Payment CLI");
+    });
+  });
+
+  test("serve accepts WebSocket preview clients", async () => {
+    await withServe(async (url) => {
+      const wsUrl = `${url.replace("http://", "ws://")}ws`;
+      const socket = new WebSocket(wsUrl);
+      const message = await new Promise<string>((resolve, reject) => {
+        const timeout = setTimeout(
+          () => reject(new Error("Timed out waiting for WebSocket message")),
+          5000
+        );
+        socket.addEventListener("message", (event) => {
+          clearTimeout(timeout);
+          resolve(String(event.data));
+        });
+        socket.addEventListener("error", () => reject(new Error("WebSocket failed")));
+      });
+      socket.close();
+
+      expect(JSON.parse(message)).toMatchObject({ type: "diagnostics" });
+    });
   });
 });
