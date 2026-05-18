@@ -17,10 +17,9 @@ jobs:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
       - run: curl https://mise.run | sh
-      - run: echo "eval \"\$($HOME/.local/bin/mise activate bash)\"" >> $GITHUB_ENV
       - run: bun install
       - run: mise install
-      - run: bun run check
+      - run: bash -c 'eval "$(mise activate bash)" && bun run check'
 
   typecheck:
     name: typecheck
