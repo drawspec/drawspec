@@ -29,7 +29,7 @@ export class ArchitectureRelationshipImpl implements ArchitectureRelationship {
     label: string,
     options: ArchitectureRelationshipOptions = {}
   ) {
-    this.id = options.id ?? id;
+    this.id = id;
     this.source = source;
     this.target = target;
     this.label = label;

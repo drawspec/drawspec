@@ -13,6 +13,7 @@ import type {
   ArchitectureView,
   ArchitectureViewKind,
   AutoLayoutDirection,
+  Stylesheet,
   Workspace,
 } from "./types";
 
@@ -65,10 +66,20 @@ function layoutDirection(direction: AutoLayoutDirection | undefined): LayoutSpec
 
 function styleRef(
   prefix: "element" | "relationship",
-  tags: readonly string[]
+  tags: readonly string[],
+  stylesheet: Stylesheet | undefined
 ): StyleRef | undefined {
-  const tag = [...tags].sort()[0];
-  return tag === undefined ? undefined : { id: `${prefix}:${tag}` };
+  const sortedTags = [...tags].sort();
+  const tag = sortedTags[0];
+  if (tag === undefined) {
+    return undefined;
+  }
+  const styleId = `${prefix}:${tag}`;
+  // Only emit style ref when stylesheet has a matching rule
+  if (stylesheet?.rules?.[styleId] === undefined) {
+    return undefined;
+  }
+  return { id: styleId };
 }
 function visibleElementIds(
   view: ArchitectureView,
@@ -94,8 +105,8 @@ function visibleElementIds(
   }
   return ids;
 }
-function toNode(element: ArchitectureElement): DiagramNode {
-  const style = styleRef("element", element.tags);
+function toNode(element: ArchitectureElement, stylesheet: Stylesheet | undefined): DiagramNode {
+  const style = styleRef("element", element.tags, stylesheet);
   return {
     id: element.id,
     kind: element.kind,
@@ -112,8 +123,11 @@ function toNode(element: ArchitectureElement): DiagramNode {
     ...(style === undefined ? {} : { style }),
   };
 }
-function toEdge(relationship: ArchitectureRelationship): DiagramEdge {
-  const style = styleRef("relationship", relationship.tags);
+function toEdge(
+  relationship: ArchitectureRelationship,
+  stylesheet: Stylesheet | undefined
+): DiagramEdge {
+  const style = styleRef("relationship", relationship.tags, stylesheet);
   return {
     id: relationship.id,
     kind: relationship.kind,
@@ -176,8 +190,12 @@ function compileView(
     id: view.id,
     title: view.title,
     kind: "architecture",
-    nodes: visibleElements.map(toNode).sort((left, right) => left.id.localeCompare(right.id)),
-    edges: visibleRelationships.map(toEdge).sort((left, right) => left.id.localeCompare(right.id)),
+    nodes: visibleElements
+      .map((element) => toNode(element, workspace.styles.stylesheet))
+      .sort((left, right) => left.id.localeCompare(right.id)),
+    edges: visibleRelationships
+      .map((relationship) => toEdge(relationship, workspace.styles.stylesheet))
+      .sort((left, right) => left.id.localeCompare(right.id)),
     groups: toGroups(visibleElements, visibleIds),
     annotations: [],
     ...(layout === undefined ? {} : { layout }),

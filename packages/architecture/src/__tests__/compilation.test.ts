@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { container, database, person, softwareSystem, workspace } from "../index";
-import { createPaymentsWorkspace } from "./workspace.test";
+import { createPaymentsWorkspace } from "./fixtures";
 
 describe("architecture compilation", () => {
   test("Payments workspace example compiles to valid architecture IR", () => {

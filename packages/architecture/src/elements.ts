@@ -57,15 +57,12 @@ export class ArchitectureElementImpl implements ArchitectureElement {
   }
 
   get id(): string {
-    const existing = this.#id;
-    if (existing !== undefined) {
-      return existing;
+    if (this.#id === undefined) {
+      throw new Error(
+        `Element "${this.name}" must be added to a workspace model before accessing .id.`
+      );
     }
-    const generated =
-      this.requestedId ??
-      createDeterministicId({ kind: this.kind, name: this.name }, { prefix: this.kind });
-    this.#id = generated;
-    return generated;
+    return this.#id;
   }
 
   get parent(): ArchitectureElement | undefined {
