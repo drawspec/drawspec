@@ -17,6 +17,7 @@ jobs:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
       - run: bun install
+      - run: mise install
       - run: bun run check
 
   typecheck:
