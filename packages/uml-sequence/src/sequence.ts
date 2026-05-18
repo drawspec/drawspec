@@ -24,17 +24,8 @@ function deterministicId(prefix: string, parts: readonly string[]): string {
   const input = parts.join("\u001f");
 
   for (let index = 0; index < input.length; index += 1) {
-    const codePoint = input.codePointAt(index);
-    if (codePoint === undefined) {
-      continue;
-    }
-
-    hash ^= BigInt(codePoint);
+    hash ^= BigInt(input.charCodeAt(index));
     hash = (hash * FNV_PRIME) & UINT64_MASK;
-
-    if (codePoint > 0xffff) {
-      index += 1;
-    }
   }
 
   return `${prefix}_${hash.toString(16).padStart(16, "0")}`;

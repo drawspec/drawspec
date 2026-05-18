@@ -161,12 +161,10 @@ describe("sequence", () => {
     const outer = doc.groups[1];
 
     expect(nested?.childIds).toEqual(doc.edges.slice(1, 3).map((edge) => edge.id));
-    expect(outer?.childIds).toEqual([
+    expect(outer?.childIds).toEqual([doc.edges[0]?.id, nested?.id, doc.edges[3]?.id]);
+    expect(operandsOf(outer ?? { metadata: {} })[0]?.childIds).toEqual([
       doc.edges[0]?.id,
-      doc.edges[1]?.id,
-      doc.edges[2]?.id,
       nested?.id,
-      doc.edges[3]?.id,
     ]);
     expect(operandsOf(outer ?? { metadata: {} })[0]?.condition).toBe("Has card");
     expect(operandsOf(outer ?? { metadata: {} })[1]?.condition).toBe("Missing card");

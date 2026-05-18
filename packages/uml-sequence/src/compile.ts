@@ -9,6 +9,7 @@ import type {
 } from "./types";
 
 interface CompileChildResult {
+  childIds: string[];
   edgeIds: string[];
   groupIds: string[];
 }
@@ -41,7 +42,7 @@ function compileMessage(
   });
 
   annotations.push(...message.notes.map(compileNote));
-  return { edgeIds: [message.id], groupIds: [] };
+  return { childIds: [message.id], edgeIds: [message.id], groupIds: [] };
 }
 
 function compileChildren(
@@ -50,6 +51,7 @@ function compileChildren(
   groups: DiagramGroup[],
   annotations: DiagramAnnotation[]
 ): CompileChildResult {
+  const childIds: string[] = [];
   const edgeIds: string[] = [];
   const groupIds: string[] = [];
 
@@ -57,11 +59,12 @@ function compileChildren(
     const result = isMessage(child)
       ? compileMessage(child, edges, annotations)
       : compileFragment(child, edges, groups, annotations);
+    childIds.push(...result.childIds);
     edgeIds.push(...result.edgeIds);
     groupIds.push(...result.groupIds);
   }
 
-  return { edgeIds, groupIds };
+  return { childIds, edgeIds, groupIds };
 }
 
 function compileFragment(
@@ -75,20 +78,19 @@ function compileFragment(
 
   for (const operand of fragment.operands) {
     const result = compileChildren(operand.children, edges, groups, annotations);
-    const operandChildIds = [...result.edgeIds, ...result.groupIds];
-    operandMetadata.push({ condition: operand.condition, childIds: operandChildIds });
-    childIds.push(...operandChildIds);
+    operandMetadata.push({ condition: operand.condition, childIds: result.childIds });
+    childIds.push(...result.childIds);
   }
 
   groups.push({
     id: fragment.id,
     kind: fragment.kind,
-    label: "alt",
+    label: fragment.kind,
     childIds,
     metadata: { operands: operandMetadata },
   });
 
-  return { edgeIds: childIds.filter((id) => id.startsWith("msg_")), groupIds: [fragment.id] };
+  return { childIds: [fragment.id], edgeIds: [], groupIds: [fragment.id] };
 }
 
 export function compileSequenceDocument(model: SequenceDomainModel): SequenceDocument {
