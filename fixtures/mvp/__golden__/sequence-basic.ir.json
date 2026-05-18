@@ -1,0 +1,66 @@
+{
+  "annotations": [
+    {
+      "id": "note_febb3300",
+      "kind": "note",
+      "label": "Idempotency key included",
+      "targetId": "msg_ce4428e1"
+    }
+  ],
+  "edges": [
+    {
+      "direction": "forward",
+      "id": "msg_e787e49c",
+      "kind": "message",
+      "label": "Place order",
+      "sourceId": "seq_f0d7723a",
+      "targetId": "seq_6d48fc82"
+    },
+    {
+      "direction": "forward",
+      "id": "msg_ce4428e1",
+      "kind": "message",
+      "label": "Authorize payment",
+      "sourceId": "seq_6d48fc82",
+      "targetId": "seq_75aa37ac"
+    },
+    {
+      "direction": "forward",
+      "id": "msg_9e381ab3",
+      "kind": "message",
+      "label": "Authorization approved",
+      "sourceId": "seq_75aa37ac",
+      "targetId": "seq_6d48fc82"
+    },
+    {
+      "direction": "forward",
+      "id": "msg_488bd19a",
+      "kind": "message",
+      "label": "Show confirmation",
+      "sourceId": "seq_6d48fc82",
+      "targetId": "seq_f0d7723a"
+    }
+  ],
+  "groups": [],
+  "id": "seqdoc_6e4a2ce8",
+  "kind": "sequence",
+  "nodes": [
+    {
+      "id": "seq_f0d7723a",
+      "kind": "actor",
+      "label": "User"
+    },
+    {
+      "id": "seq_6d48fc82",
+      "kind": "participant",
+      "label": "Shop"
+    },
+    {
+      "id": "seq_75aa37ac",
+      "kind": "participant",
+      "label": "Payments"
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "title": "Payment authorization"
+}
