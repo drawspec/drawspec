@@ -866,7 +866,7 @@ testkit ← core, validation
   - Message: `feat(layout): implement interfaces, sequence layout, and simple graph layout`
   - Files: `packages/layout/src/**`
 
-- [ ] 10. Implement @drawspec/renderer-svg — Deterministic SVG renderer
+- [x] 10. Implement @drawspec/renderer-svg — Deterministic SVG renderer
 
   **What to do**:
   - Define `Renderer<T>` interface: `name`, `render(doc, opts) → Promise<T>`
@@ -945,7 +945,7 @@ testkit ← core, validation
 
 ---
 
-- [ ] 11. Implement @drawspec/cli — File discovery, module loading, check, render, and inspect
+- [x] 11. Implement @drawspec/cli — File discovery, module loading, check, render, and inspect
 
   **What to do**:
   - Implement CLI binary as `drawspec` with subcommands, using argparse or similar
@@ -1032,7 +1032,7 @@ testkit ← core, validation
 
 ---
 
-- [ ] 12. Implement CLI watch and serve commands + SvelteKit preview app with framework-neutral viewer
+- [x] 12. Implement CLI watch and serve commands + SvelteKit preview app with framework-neutral viewer
 
   **What to do**:
   - Implement `drawspec watch [files...]`:
@@ -1112,7 +1112,7 @@ testkit ← core, validation
   - Message: `feat(cli,viewer): implement watch, serve, and framework-neutral viewer`
   - Files: `packages/cli/src/**, packages/viewer/src/**, apps/preview/**`
 
-- [ ] 13. Implement @drawspec/testkit and create MVP fixture suite
+- [x] 13. Implement @drawspec/testkit and create MVP fixture suite
 
   **What to do**:
   - Implement testkit utilities:
@@ -1917,19 +1917,19 @@ testkit ← core, validation
 > **STAGE 6 GATE**: Dynamic views generate correctly. ADR integration works. Drift detection hooks are documented. Ownership metadata is queryable. Run Final Verification Wave.
 > ALL must APPROVE before proceeding to the next stage.
 
-- [ ] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** — `oracle`
   Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .sisyphus/evidence/. Compare deliverables against plan.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 
-- [ ] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** — `unspecified-high`
   Run `bun run check` (biome + typecheck + test). Review all changed files for: `as any`/`@ts-ignore`, empty catches, console.log in prod, commented-out code, unused imports. Check AI slop: excessive comments, over-abstraction, generic names.
   Output: `Build [PASS/FAIL] | Lint [PASS/FAIL] | Tests [N pass/N fail] | Files [N clean/N issues] | VERDICT`
 
-- [ ] F3. **Real Manual QA** — `unspecified-high` (+ `playwright` skill for viewer tasks)
+- [x] F3. **Real Manual QA** — `unspecified-high` (+ `playwright` skill for viewer tasks)
   Start from clean state. Execute EVERY QA scenario from EVERY task — follow exact steps, capture evidence. Test cross-task integration (features working together). Test edge cases: empty state, invalid input, rapid actions. Save to `.sisyphus/evidence/final-qa/`.
   Output: `Scenarios [N/N pass] | Integration [N/N] | Edge Cases [N tested] | VERDICT`
 
-- [ ] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** — `deep`
   For each task: read "What to do", read actual diff. Verify 1:1 — everything in spec was built, nothing beyond spec. Check "Must NOT do" compliance. Detect cross-task contamination. Flag unaccounted changes.
   Output: `Tasks [N/N compliant] | Contamination [CLEAN/N issues] | Unaccounted [CLEAN/N files] | VERDICT`
 

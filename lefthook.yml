@@ -1,5 +1,5 @@
 pre-commit:
   commands:
     biome:
-      run: biome check --staged --write --no-errors-on-unmatched {staged_files}
+      run: biome check --staged --write --no-errors-on-unmatched
       stage_fixed: true

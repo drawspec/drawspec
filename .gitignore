@@ -7,6 +7,11 @@
 .claude
 .codex
 
+# Agent runtime state (plans and notepads are tracked)
+.omo/boulder.json
+.omo/drafts/
+.omo/run-continuation/
+
 # Dependencies
 node_modules/
 
@@ -16,7 +21,7 @@ dist/
 .generated/
 
 # Evidence
-.sisyphus/evidence
+.omo/evidence
 
 # OS
 .DS_Store

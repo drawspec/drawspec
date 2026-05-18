@@ -2,6 +2,13 @@
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "github": {
+      "type": "local",
+      "command": ["bunx", "-y", "@modelcontextprotocol/server-github"],
+      "environment": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    },
+    "copilot-github": {
       "type": "remote",
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
@@ -10,7 +17,11 @@
     },
     "sequential-thinking": {
       "type": "local",
-      "command": ["bunx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "command": [
+        "bunx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "serena": {
       "type": "local",
