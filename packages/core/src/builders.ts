@@ -148,7 +148,7 @@ export class RelationshipBuilder<TEdge extends DiagramEdge = DiagramEdge> {
     }
   }
 
-  id(value: string): this {
+  id(value?: string): this {
     this.explicitId = value;
     this.builtId = undefined;
     return this;
