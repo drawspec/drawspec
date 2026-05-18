@@ -45,7 +45,6 @@ interface LoadedDocument {
   diagnostics: Diagnostic[];
 }
 
-const DISCOVERY_PATTERNS = ["**/*.diagram.ts", "**/*.arch.ts", "**/*.sequence.ts"] as const;
 const COMMANDS = new Set<string>(["check", "render", "inspect"]);
 const red = (value: string) => `\u001b[31m${value}\u001b[0m`;
 const yellow = (value: string) => `\u001b[33m${value}\u001b[0m`;
@@ -53,7 +52,21 @@ const green = (value: string) => `\u001b[32m${value}\u001b[0m`;
 
 export async function main(argv: readonly string[] = Bun.argv.slice(2)): Promise<number> {
   const parsed = parseArgs(argv);
-  if (parsed.options["help"] === true || parsed.command === undefined) {
+  if (parsed.options["help"] === true) {
+    printHelp();
+    return 0;
+  }
+  if (parsed.command === undefined) {
+    // Check if there's an unknown subcommand (non-option, non-file token)
+    const unknownToken = argv.find((arg) => {
+      if (arg === undefined || arg.startsWith("--") || arg.startsWith("-")) return false;
+      return !COMMANDS.has(arg) && !Bun.file(arg).exists();
+    });
+    if (unknownToken !== undefined) {
+      console.error(red(`Unknown command: '${unknownToken}'`));
+      printHelp();
+      return 1;
+    }
     printHelp();
     return 0;
   }
@@ -159,7 +172,8 @@ async function runRender(parsed: ParsedArgs, config: DrawspecConfig): Promise<nu
       ...(themeName === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
     };
     const svg = await renderSvg(item.document, renderOptions);
-    const outputPath = `${trimTrailingSlash(outDir)}/${safeFileName(item.document.id)}.svg`;
+    const pathHash = hashString(item.file).toString(36).slice(0, 8);
+    const outputPath = `${trimTrailingSlash(outDir)}/${safeFileName(item.document.id)}_${pathHash}.svg`;
     await Bun.write(outputPath, svg);
     written.push(outputPath);
   }
@@ -215,6 +229,7 @@ async function loadAll(
 
 async function discoverFiles(inputs: readonly string[]): Promise<string[]> {
   const files = new Set<string>();
+  const dirsToScan = new Set<string>();
   for (const input of inputs) {
     if (isDiagramFile(input) && (await Bun.file(input).exists())) {
       files.add(input);
@@ -225,7 +240,13 @@ async function discoverFiles(inputs: readonly string[]): Promise<string[]> {
       continue;
     }
     if (await Bun.file(input).exists()) {
-      await Promise.all(DISCOVERY_PATTERNS.map((pattern) => scanGlob(input, pattern, files)));
+      dirsToScan.add(input);
+    }
+  }
+  if (dirsToScan.size > 0) {
+    const combinedPattern = `**/{*.diagram.ts,*.arch.ts,*.sequence.ts}`;
+    for (const dir of dirsToScan) {
+      await scanGlob(dir, combinedPattern, files);
     }
   }
   return [...files].sort();
@@ -249,7 +270,26 @@ async function loadModule(file: string): Promise<LoadedDocument[]> {
         .sort()
         .map((key) => module[key]),
     ];
-    const documents = values.flatMap((value) => compileExport(value));
+    const documents: DiagramDocument[] = [];
+    const errors: string[] = [];
+    for (const value of values) {
+      const result = compileExport(value);
+      if ("error" in result) {
+        errors.push(result.error);
+      } else {
+        documents.push(...result);
+      }
+    }
+    if (errors.length > 0 && documents.length === 0) {
+      return [
+        {
+          file,
+          diagnostics: [
+            diagnostic("drawspec/module", "error", `In '${file}': ${errors.join("; ")}`),
+          ],
+        },
+      ];
+    }
     if (documents.length === 0) {
       return [
         {
@@ -258,7 +298,7 @@ async function loadModule(file: string): Promise<LoadedDocument[]> {
             diagnostic(
               "drawspec/module",
               "error",
-              "Module did not export a DiagramDocument or Workspace"
+              `Module at '${file}' did not export a DiagramDocument or Workspace`
             ),
           ],
         },
@@ -270,14 +310,49 @@ async function loadModule(file: string): Promise<LoadedDocument[]> {
       diagnostics: [...(document.diagnostics ?? [])],
     }));
   } catch (error) {
-    return [{ file, diagnostics: [diagnostic("drawspec/import", "error", errorMessage(error))] }];
+    return [
+      {
+        file,
+        diagnostics: [
+          diagnostic(
+            "drawspec/import",
+            "error",
+            `Failed to import ${file}: ${errorMessage(error)}`
+          ),
+        ],
+      },
+    ];
   }
 }
 
-function compileExport(value: unknown): DiagramDocument[] {
-  const result = typeof value === "function" ? callFactory(value) : value;
+function callFactory(value: unknown): { result: unknown } | { error: string } {
+  try {
+    return { result: (value as () => unknown)() };
+  } catch (err) {
+    return { error: errorMessage(err) };
+  }
+}
+
+function compileExport(value: unknown): DiagramDocument[] | { error: string } {
+  if (typeof value === "function") {
+    const factoryResult = callFactory(value);
+    if ("error" in factoryResult) {
+      return { error: factoryResult.error };
+    }
+    return handleResult(factoryResult.result);
+  }
+  return handleResult(value);
+}
+
+function handleResult(result: unknown): DiagramDocument[] | { error: string } {
+  if (result === undefined) {
+    return { error: "factory returned undefined" };
+  }
   if (Array.isArray(result)) {
-    return result.flatMap((item) => compileExport(item));
+    return result.flatMap((item) => {
+      const handled = handleResult(item);
+      return "error" in handled ? [] : handled;
+    });
   }
   if (isDiagramDocument(result)) {
     return [result];
@@ -285,15 +360,7 @@ function compileExport(value: unknown): DiagramDocument[] {
   if (isWorkspace(result)) {
     return compileWorkspace(result);
   }
-  return [];
-}
-
-function callFactory(value: unknown): unknown {
-  try {
-    return (value as () => unknown)();
-  } catch {
-    return undefined;
-  }
+  return { error: `exported value is not a DiagramDocument or Workspace (got ${typeof result})` };
 }
 
 function diagnosticsFor(loaded: readonly LoadedDocument[], config: DrawspecConfig): Diagnostic[] {
@@ -404,6 +471,16 @@ function toFileUrl(path: string): string {
 
 function safeFileName(value: string): string {
   return value.replaceAll(/[^a-zA-Z0-9._-]/g, "_");
+}
+
+function hashString(value: string): number {
+  let hash = 0;
+  for (let i = 0; i < value.length; i++) {
+    const char = value.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
 }
 
 function trimTrailingSlash(value: string): string {

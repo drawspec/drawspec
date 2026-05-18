@@ -8,6 +8,17 @@ const cli = join(repoRoot, "packages/cli/src/index.ts");
 const fixtures = join(import.meta.dir, "fixtures");
 const tempDirs: string[] = [];
 
+describe("package.json", () => {
+  test("bin field contains expected aliases", async () => {
+    const pkg = await import(join(repoRoot, "packages/cli/package.json"));
+    expect(pkg.bin).toEqual({
+      drawspec: "./dist/index.js",
+      ds: "./dist/index.js",
+      dspec: "./dist/index.js",
+    });
+  });
+});
+
 afterEach(async () => {
   await Promise.all(tempDirs.splice(0).map((path) => rm(path, { recursive: true, force: true })));
 });
