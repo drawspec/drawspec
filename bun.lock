@@ -22,6 +22,19 @@
     "packages/cli": {
       "name": "@drawspec/cli",
       "version": "0.0.1",
+      "bin": {
+        "drawspec": "./dist/index.js",
+        "ds": "./dist/index.js",
+        "dspec": "./dist/index.js",
+      },
+      "dependencies": {
+        "@drawspec/architecture": "workspace:*",
+        "@drawspec/core": "workspace:*",
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "@drawspec/uml-sequence": "workspace:*",
+        "@drawspec/validation": "workspace:*",
+      },
       "devDependencies": {
         "typescript": "latest",
       },
