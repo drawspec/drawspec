@@ -16,6 +16,11 @@ jobs:
         with:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install
       - run: bun run check
 
@@ -28,6 +33,11 @@ jobs:
         with:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install
       - run: bun run typecheck
 
@@ -40,6 +50,11 @@ jobs:
         with:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install
       - run: bun run test
 
@@ -52,5 +67,10 @@ jobs:
         with:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install
       - run: bun run build
