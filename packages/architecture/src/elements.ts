@@ -56,12 +56,10 @@ export class ArchitectureElementImpl implements ArchitectureElement {
   }
 
   get id(): string {
-    if (this.#id === undefined) {
-      throw new Error(
-        `Element "${this.name}" must be added to a workspace model before accessing .id.`
-      );
+    if (this.#model === undefined) {
+      throw new Error("Cannot access id before element is attached to a model");
     }
-    return this.#id;
+    return this.#id as string;
   }
 
   get parent(): ArchitectureElement | undefined {
