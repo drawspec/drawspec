@@ -1,4 +1,3 @@
-import { createDeterministicId } from "@drawspec/core";
 import { compileSequenceDocument } from "./compile";
 import type {
   SequenceActor,
@@ -16,6 +15,31 @@ import type {
   SequenceRole,
 } from "./types";
 
+const FNV_OFFSET_BASIS = 0xcbf29ce484222325n;
+const FNV_PRIME = 0x100000001b3n;
+const UINT64_MASK = 0xffffffffffffffffn;
+
+function deterministicId(prefix: string, parts: readonly string[]): string {
+  let hash = FNV_OFFSET_BASIS;
+  const input = parts.join("\u001f");
+
+  for (let index = 0; index < input.length; index += 1) {
+    const codePoint = input.codePointAt(index);
+    if (codePoint === undefined) {
+      continue;
+    }
+
+    hash ^= BigInt(codePoint);
+    hash = (hash * FNV_PRIME) & UINT64_MASK;
+
+    if (codePoint > 0xffff) {
+      index += 1;
+    }
+  }
+
+  return `${prefix}_${hash.toString(16).padStart(16, "0")}`;
+}
+
 class MutableSequenceElement implements SequenceElement {
   readonly id: string;
   readonly name: string;
@@ -27,10 +51,7 @@ class MutableSequenceElement implements SequenceElement {
     this.role = role;
     this.name = name;
     this.#builder = builder;
-    this.id = createDeterministicId(
-      { scope: "sequence-element", role, name, index },
-      { prefix: "seq" }
-    );
+    this.id = deterministicId("seq", ["element", role, name, index.toString()]);
   }
 
   to(other: SequenceElement, label: string): SequenceMessage {
@@ -62,10 +83,7 @@ class MutableSequenceMessage implements SequenceMessage {
     this.targetId = targetId;
     this.label = label;
     this.#builder = builder;
-    this.id = createDeterministicId(
-      { scope: "sequence-message", sourceId, targetId, label, index },
-      { prefix: "msg" }
-    );
+    this.id = deterministicId("msg", ["message", sourceId, targetId, label, index.toString()]);
   }
 
   note(text: string): this {
@@ -80,10 +98,7 @@ class MutableSequenceFragment implements SequenceFragment {
   readonly operands: SequenceFragmentOperand[];
 
   constructor(index: number, operands: SequenceFragmentOperand[]) {
-    this.id = createDeterministicId(
-      { scope: "sequence-fragment", kind: "alt", index },
-      { prefix: "frag" }
-    );
+    this.id = deterministicId("frag", ["fragment", "alt", index.toString()]);
     this.operands = operands;
   }
 }
@@ -149,10 +164,7 @@ class MutableSequenceBuilder implements SequenceBuilder {
 
   note(targetId: string, text: string): SequenceNote {
     const note = {
-      id: createDeterministicId(
-        { scope: "sequence-note", targetId, text, index: this.#noteCount },
-        { prefix: "note" }
-      ),
+      id: deterministicId("note", ["note", targetId, text, this.#noteCount.toString()]),
       targetId,
       text,
     };
@@ -171,10 +183,7 @@ class MutableSequenceBuilder implements SequenceBuilder {
 
   toModel(): SequenceDomainModel {
     return {
-      id: createDeterministicId(
-        { scope: "sequence-document", title: this.title },
-        { prefix: "seqdoc" }
-      ),
+      id: deterministicId("seqdoc", ["document", this.title]),
       title: this.title,
       elements: this.elements,
       children: this.rootChildren,

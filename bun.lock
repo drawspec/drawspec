@@ -55,9 +55,6 @@
     "packages/uml-sequence": {
       "name": "@drawspec/uml-sequence",
       "version": "0.0.1",
-      "dependencies": {
-        "@drawspec/core": "workspace:*",
-      },
       "devDependencies": {
         "typescript": "latest",
       },
