@@ -230,6 +230,38 @@ function compileEdges(
   return edges.sort((left, right) => left.id.localeCompare(right.id));
 }
 
+function validateRelationshipRefs(
+  elements: readonly ClassDiagramElement[],
+  relationships: readonly ClassRelationship[],
+  diagnostics: Diagnostic[]
+): void {
+  const knownNames = new Set(elements.map((element) => element.name));
+  for (const rel of relationships) {
+    if (!knownNames.has(rel.sourceName)) {
+      diagnostics.push(
+        createDiagnostic({
+          code: "class/no-unknown-type-ref",
+          severity: "error",
+          message: `Unknown type reference '${rel.sourceName}' in relationship.`,
+          target: target("relationship", rel.id),
+          help: "Reference another class, interface, or enum that exists in the diagram.",
+        })
+      );
+    }
+    if (!knownNames.has(rel.targetName)) {
+      diagnostics.push(
+        createDiagnostic({
+          code: "class/no-unknown-type-ref",
+          severity: "error",
+          message: `Unknown type reference '${rel.targetName}' in relationship.`,
+          target: target("relationship", rel.id),
+          help: "Reference another class, interface, or enum that exists in the diagram.",
+        })
+      );
+    }
+  }
+}
+
 export function compileClassDocument(model: ClassDomainModel): ClassDiagramDocument {
   const diagnostics: Diagnostic[] = [];
   const registry = new IdRegistry();
@@ -259,6 +291,7 @@ export function compileClassDocument(model: ClassDomainModel): ClassDiagramDocum
   }
   validateCircularInheritance(classes, diagnostics);
   validateUnknownTypes(model.elements, diagnostics);
+  validateRelationshipRefs(model.elements, model.relationships, diagnostics);
 
   return {
     schemaVersion: "1.0.0",

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { simpleGraphLayout } from "../../../layout/src/index";
-import { renderSvg } from "../../../renderer-svg/src/index";
+import { simpleGraphLayout } from "@drawspec/layout";
+import { renderSvg } from "@drawspec/renderer-svg";
 import {
   class_,
   classDiagram,
@@ -8,6 +8,7 @@ import {
   enum_,
   implements as implements_,
   interface_,
+  uses,
 } from "../index";
 
 const payable = interface_("Payable", (i) =>
@@ -130,5 +131,17 @@ describe("@drawspec/uml-class", () => {
 
   test("matches the class diagram golden fixture", async () => {
     await expectGolden("class", await classSvg());
+  });
+
+  test("reports unknown type references in explicit relationships", () => {
+    const document = compile(
+      "Invalid",
+      [class_("Foo", (c) => c.method("bar", { visibility: "public" }))],
+      [implements_("Foo", "NonExistent"), uses("AlsoMissing", "Foo")]
+    );
+
+    expect(document.diagnostics).toContainEqual(
+      expect.objectContaining({ code: "class/no-unknown-type-ref", severity: "error" })
+    );
   });
 });
