@@ -37,8 +37,11 @@ jobs:
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install
+      - run: bun run build
       - run: bun run typecheck
 
   test:
@@ -54,8 +57,11 @@ jobs:
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install
+      - run: bun run build
       - run: bun run test
 
   build:
@@ -71,6 +77,8 @@ jobs:
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install
       - run: bun run build
