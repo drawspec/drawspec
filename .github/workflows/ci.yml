@@ -20,7 +20,7 @@ jobs:
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
-      - run: bun install
+          bun install
       - run: bun run check
 
   typecheck:
@@ -36,7 +36,7 @@ jobs:
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
-      - run: bun install
+          bun install
       - run: bun run typecheck
 
   test:
@@ -52,7 +52,7 @@ jobs:
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
-      - run: bun install
+          bun install
       - run: bun run test
 
   build:
@@ -68,5 +68,5 @@ jobs:
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
-      - run: bun install
+          bun install
       - run: bun run build
