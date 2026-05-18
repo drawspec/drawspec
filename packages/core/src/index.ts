@@ -18,6 +18,7 @@ export { createDiagnostic, createIdCollisionDiagnostic, DiagnosticCode } from ".
 export type { CreateIdOptions } from "./id";
 export { createDeterministicId, IdRegistry } from "./id";
 export { serializeDocument, stableStringify, stableValue } from "./serialize";
+export { SymbolRegistry } from "./symbol-registry";
 export type {
   DiagramAnnotation,
   DiagramDocument,
