@@ -17,9 +17,9 @@ jobs:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
       - run: curl https://mise.run | sh
-      - run: bun install
       - run: mise install
-      - run: bash -c 'eval "$(mise activate bash)" && bun run check'
+      - run: bun install
+      - run: bun run check
 
   typecheck:
     name: typecheck
@@ -30,6 +30,8 @@ jobs:
         with:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
+      - run: curl https://mise.run | sh
+      - run: mise install
       - run: bun install
       - run: bun run typecheck
 
@@ -42,6 +44,8 @@ jobs:
         with:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
+      - run: curl https://mise.run | sh
+      - run: mise install
       - run: bun install
       - run: bun run test
 
@@ -54,5 +58,7 @@ jobs:
         with:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
+      - run: curl https://mise.run | sh
+      - run: mise install
       - run: bun install
       - run: bun run build
