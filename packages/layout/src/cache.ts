@@ -33,9 +33,9 @@ export class LayoutCache {
   }
 
   clear(): void {
-    for (const key of Object.keys(this.#entries).sort()) {
+    Object.keys(this.#entries).forEach((key) => {
       delete this.#entries[key];
-    }
+    });
   }
 }
 
