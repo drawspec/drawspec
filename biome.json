@@ -1,5 +1,9 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+  "files": {
+    "ignoreUnknown": true,
+    "includes": ["packages/**", "fixtures/**", "!.omo", "!.sisyphus"]
+  },
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -9,7 +13,10 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "complexity": {
+        "useLiteralKeys": "off"
+      }
     }
   },
   "formatter": {
@@ -26,5 +33,17 @@
       "semicolons": "always",
       "arrowParentheses": "always"
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.svelte"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off"
+          }
+        }
+      }
+    }
+  ]
 }

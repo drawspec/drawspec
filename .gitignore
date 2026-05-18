@@ -16,7 +16,7 @@ dist/
 .generated/
 
 # Evidence
-.sisyphus/evidence
+.omo/evidence
 
 # OS
 .DS_Store
