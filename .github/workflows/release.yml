@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release workflow
-        run: echo "release workflow"
+        run: echo "Release workflow not yet implemented" && exit 1
