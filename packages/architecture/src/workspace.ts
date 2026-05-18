@@ -80,7 +80,14 @@ class ArchitectureModelImpl implements ArchitectureModel {
         { prefix: "rel" }
       );
     const id = allocateUnique(base, this.#ids);
-    const relationship = new ArchitectureRelationshipImpl(id, source, target, label, options);
+    const { id: _requestedId, ...optionsWithoutId } = options;
+    const relationship = new ArchitectureRelationshipImpl(
+      id,
+      source,
+      target,
+      label,
+      optionsWithoutId
+    );
     this.relationships.push(relationship);
     return relationship;
   }

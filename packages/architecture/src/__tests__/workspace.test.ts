@@ -70,4 +70,9 @@ describe("architecture workspace", () => {
     expect(ws.model.elements.map((element) => element.id)).toHaveLength(2);
     expect(new Set(ws.model.elements.map((element) => element.id)).size).toBe(2);
   });
+
+  test("accessing id before attachment throws", () => {
+    const user = person("Unattached");
+    expect(() => user.id).toThrow("Cannot access id before element is attached to a model");
+  });
 });
