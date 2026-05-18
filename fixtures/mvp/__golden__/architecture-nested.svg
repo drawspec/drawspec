@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-view_49b744c8cc155f25-15h7gpi-desc-0je4h82" aria-labelledby="drawspec-view_49b744c8cc155f25-15h7gpi-title-15fmjvz" height="664" id="drawspec-view_49b744c8cc155f25-15h7gpi" role="img" viewBox="0 0 800 664" width="800" xmlns="http://www.w3.org/2000/svg">
+  <title id="drawspec-view_49b744c8cc155f25-15h7gpi-title-15fmjvz">
+    nested-commerce-containers
+  </title>
+  <desc id="drawspec-view_49b744c8cc155f25-15h7gpi-desc-0je4h82">
+    architecture diagram view_49b744c8cc155f25
+  </desc>
+  <rect fill="#ffffff" height="664" width="800" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_730a18c6ea565480-1rc7ots">
+    <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="326">
+      Saves changes
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_828cd01b042fca7e-13p40q9">
+    <path d="M 100 420 L 100 596" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="502">
+      Persists settings
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_8d053a5378268edf-0x9vz70">
+    <path d="M 300 68 L 100 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="201.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="150">
+      Configures payment rules
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-container_0fac53dae12bb9fe-09rsbvl">
+    <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="40" y="392" />
+    <text data-width="75.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
+      Admin API
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-container_3015d7cc580484e2-1bmi3rm">
+    <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="40" y="216" />
+    <text data-width="126" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
+      Admin Dashboard
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-container_ea612b28b0b1fefd-1j6e7mf">
+    <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="40" y="40" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      OIDC Provider
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-database_03ab52d399de1e70-1elq0uo">
+    <path d="M 40 582 C 40 563.333 160 563.333 160 582 L 160 610 C 160 628.667 40 628.667 40 610 Z" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
+    <text data-width="159.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="600.667">
+      Configuration Store
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-person_494a4f7dfd392f13-0768usz">
+    <rect fill="#f0fdf4" height="56" rx="12" ry="12" stroke="#15803d" stroke-width="1.5" width="120" x="240" y="40" />
+    <circle cx="258" cy="56" fill="none" r="6" stroke="#15803d" />
+    <path d="M 258 62 v 15 M 249 70 h 18" fill="none" stroke="#15803d" />
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="72.667">
+      Operator
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-softwaresystem_e27ada29a9783f1d-052iwmf">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="40" />
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="72.667">
+      Commerce
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-softwaresystem_f31d789af8a06024-1chvdlf">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="640" y="40" />
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="700" y="72.667">
+      Identity
+    </text>
+  </g>
+</svg>

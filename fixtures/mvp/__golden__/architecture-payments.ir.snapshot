@@ -1,0 +1,140 @@
+{
+  "annotations": [],
+  "edges": [
+    {
+      "direction": "forward",
+      "id": "rel_3093dfff7a08d97f",
+      "kind": "uses",
+      "label": "Requests payment",
+      "metadata": {
+        "technology": "HTTPS"
+      },
+      "sourceId": "container_4c19412c99504b8f",
+      "tags": [
+        "relationship"
+      ],
+      "targetId": "container_ac6c49ec729308c5"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_51b9312d0f5b5c39",
+      "kind": "uses",
+      "label": "Places order",
+      "metadata": {
+        "technology": "HTTPS"
+      },
+      "sourceId": "person_bc8335d0874d8bfb",
+      "tags": [
+        "relationship"
+      ],
+      "targetId": "container_4c19412c99504b8f"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_d0f8539ad07ce354",
+      "kind": "uses",
+      "label": "Stores authorization",
+      "metadata": {
+        "technology": "SQL"
+      },
+      "sourceId": "container_ac6c49ec729308c5",
+      "tags": [
+        "relationship"
+      ],
+      "targetId": "database_2e2143da83454bad"
+    }
+  ],
+  "groups": [
+    {
+      "childIds": [
+        "container_4c19412c99504b8f",
+        "container_ac6c49ec729308c5",
+        "database_2e2143da83454bad"
+      ],
+      "description": "Online storefront",
+      "id": "group_softwareSystem_47a27c87ada29e42",
+      "kind": "softwareSystem",
+      "label": "Shop",
+      "metadata": {},
+      "tags": [
+        "softwareSystem"
+      ]
+    }
+  ],
+  "id": "view_dcd46170de182cc6",
+  "kind": "architecture",
+  "layout": {
+    "direction": "lr",
+    "engine": "auto"
+  },
+  "metadata": {
+    "subjectId": "softwareSystem_47a27c87ada29e42",
+    "viewKind": "container",
+    "workspaceId": "workspace_5760d1395932f6f1",
+    "workspaceName": "Payments platform"
+  },
+  "nodes": [
+    {
+      "id": "container_4c19412c99504b8f",
+      "kind": "container",
+      "label": "Web App",
+      "metadata": {
+        "technology": "Bun + React"
+      },
+      "parentId": "softwareSystem_47a27c87ada29e42",
+      "tags": [
+        "container",
+        "frontend"
+      ]
+    },
+    {
+      "id": "container_ac6c49ec729308c5",
+      "kind": "container",
+      "label": "Payments API",
+      "metadata": {
+        "technology": "Bun"
+      },
+      "parentId": "softwareSystem_47a27c87ada29e42",
+      "tags": [
+        "container"
+      ]
+    },
+    {
+      "id": "database_2e2143da83454bad",
+      "kind": "database",
+      "label": "Ledger",
+      "metadata": {
+        "technology": "PostgreSQL"
+      },
+      "parentId": "softwareSystem_47a27c87ada29e42",
+      "tags": [
+        "database"
+      ]
+    },
+    {
+      "description": "Buyer placing an order",
+      "id": "person_bc8335d0874d8bfb",
+      "kind": "person",
+      "label": "Customer",
+      "metadata": {},
+      "tags": [
+        "person"
+      ]
+    },
+    {
+      "description": "Online storefront",
+      "id": "softwareSystem_47a27c87ada29e42",
+      "kind": "softwareSystem",
+      "label": "Shop",
+      "metadata": {},
+      "tags": [
+        "softwareSystem"
+      ]
+    }
+  ],
+  "schemaVersion": "1.0",
+  "styles": {
+    "rules": {}
+  },
+  "title": "payments-containers"
+}

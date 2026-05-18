@@ -1,0 +1,105 @@
+{
+  "annotations": [],
+  "edges": [
+    {
+      "direction": "forward",
+      "id": "msg_84a91499",
+      "kind": "message",
+      "label": "Submit card",
+      "sourceId": "seq_f0d7723a",
+      "targetId": "seq_6d48fc82"
+    },
+    {
+      "direction": "forward",
+      "id": "msg_41a3117b",
+      "kind": "message",
+      "label": "Authorize",
+      "sourceId": "seq_6d48fc82",
+      "targetId": "seq_75aa37ac"
+    },
+    {
+      "direction": "forward",
+      "id": "msg_a6ff72df",
+      "kind": "message",
+      "label": "Approval code",
+      "sourceId": "seq_75aa37ac",
+      "targetId": "seq_6d48fc82"
+    },
+    {
+      "direction": "forward",
+      "id": "msg_148fcc18",
+      "kind": "message",
+      "label": "Receipt",
+      "sourceId": "seq_6d48fc82",
+      "targetId": "seq_f0d7723a"
+    },
+    {
+      "direction": "forward",
+      "id": "msg_d73b174f",
+      "kind": "message",
+      "label": "Decline reason",
+      "sourceId": "seq_75aa37ac",
+      "targetId": "seq_6d48fc82"
+    },
+    {
+      "direction": "forward",
+      "id": "msg_32d78e47",
+      "kind": "message",
+      "label": "Request another payment method",
+      "sourceId": "seq_6d48fc82",
+      "targetId": "seq_f0d7723a"
+    }
+  ],
+  "groups": [
+    {
+      "childIds": [
+        "msg_a6ff72df",
+        "msg_148fcc18",
+        "msg_d73b174f",
+        "msg_32d78e47"
+      ],
+      "id": "frag_a7e3f9f2",
+      "kind": "alt",
+      "label": "alt",
+      "metadata": {
+        "operands": [
+          {
+            "childIds": [
+              "msg_a6ff72df",
+              "msg_148fcc18"
+            ],
+            "condition": "approved"
+          },
+          {
+            "childIds": [
+              "msg_d73b174f",
+              "msg_32d78e47"
+            ],
+            "condition": "declined"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "seqdoc_50f5132c",
+  "kind": "sequence",
+  "nodes": [
+    {
+      "id": "seq_f0d7723a",
+      "kind": "actor",
+      "label": "User"
+    },
+    {
+      "id": "seq_6d48fc82",
+      "kind": "participant",
+      "label": "Shop"
+    },
+    {
+      "id": "seq_75aa37ac",
+      "kind": "participant",
+      "label": "Payments"
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "title": "Payment authorization branches"
+}
