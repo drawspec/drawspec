@@ -18,7 +18,6 @@
     "release": "bun run check && changeset version && bun run build"
   },
   "devDependencies": {
-    "@biomejs/biome": "latest",
     "@changesets/cli": "latest",
     "typescript": "latest"
   }

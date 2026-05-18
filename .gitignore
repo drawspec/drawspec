@@ -26,3 +26,6 @@ Thumbs.db
 *.tmp
 # TypeScript build info
 *.tsbuildinfo
+
+# Lefthook
+.lefthook/

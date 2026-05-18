@@ -1,5 +1,7 @@
 [tools]
-bun = "latest"
+bun = "1"
+biome = "2.4"
+lefthook = "2"
 
 [env]
 _.file = ".env"
