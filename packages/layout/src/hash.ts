@@ -2,8 +2,6 @@ type JsonPrimitive = string | number | boolean | null;
 type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
-  if (value === null) return false;
-  if (Array.isArray(value)) return false;
   return typeof value === "object";
 }
 
