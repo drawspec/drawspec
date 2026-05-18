@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-statedoc_429b95ea84-1fklrl2-desc-0qsi5r7" aria-labelledby="drawspec-statedoc_429b95ea84-1fklrl2-title-0vm9mv8" height="136" id="drawspec-statedoc_429b95ea84-1fklrl2" role="img" viewBox="0 0 904 136" width="904" xmlns="http://www.w3.org/2000/svg">
+  <title id="drawspec-statedoc_429b95ea84-1fklrl2-title-0vm9mv8">
+    Payment Lifecycle
+  </title>
+  <desc id="drawspec-statedoc_429b95ea84-1fklrl2-desc-0qsi5r7">
+    state diagram statedoc_429b95ea84
+  </desc>
+  <rect fill="#ffffff" height="136" width="904" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-statedoc_429b95ea84-1fklrl2-marker-arrow-0352jcc" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-edge-transition_6e6a2a329e-1b6b95c">
+    <path d="M 452 68 L 628 68" fill="none" marker-end="url(#drawspec-statedoc_429b95ea84-1fklrl2-marker-arrow-0352jcc)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="540" y="62">
+      capture
+    </text>
+  </g>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-edge-transition_6fd769ce61-02v2n53">
+    <path d="M 628 68 L 804 68" fill="none" marker-end="url(#drawspec-statedoc_429b95ea84-1fklrl2-marker-arrow-0352jcc)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="50.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="716" y="62">
+      finish
+    </text>
+  </g>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-edge-transition_9e25a56cc3-15llca2">
+    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-statedoc_429b95ea84-1fklrl2-marker-arrow-0352jcc)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-edge-transition_b31995fe5d-1y4dqc9">
+    <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-statedoc_429b95ea84-1fklrl2-marker-arrow-0352jcc)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="75.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="364" y="62">
+      authorize
+    </text>
+  </g>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-node-state_08ade4c7cd-13n3qka">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="392" y="40" />
+    <text data-width="84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="452" y="72.667">
+      Authorized
+    </text>
+  </g>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-node-state_110e8c75e7-0gnzfm3">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="568" y="40" />
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="628" y="72.667">
+      Captured
+    </text>
+  </g>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-node-state_dd5a43c1ea-0ddwbsq">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="40" />
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="72.667">
+      Created
+    </text>
+  </g>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-node-state_f87cbba254-1437i85">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="744" y="40" />
+    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="804" y="72.667">
+      end
+    </text>
+  </g>
+  <g id="drawspec-statedoc_429b95ea84-1fklrl2-node-state_feadcbaf79-0ip3u05">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      start
+    </text>
+  </g>
+</svg>
