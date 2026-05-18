@@ -4,11 +4,28 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "drawspec": "./dist/index.js",
+    "ds": "./dist/index.js",
+    "dspec": "./dist/index.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
     }
+  },
+  "dependencies": {
+    "@drawspec/architecture": "workspace:*",
+    "@drawspec/core": "workspace:*",
+    "@drawspec/layout": "workspace:*",
+    "@drawspec/renderer-svg": "workspace:*",
+    "@drawspec/uml-sequence": "workspace:*",
+    "@drawspec/validation": "workspace:*"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json"
