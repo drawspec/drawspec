@@ -6,8 +6,12 @@
 # Agents
 .claude
 .codex
-.omo
 .serena
+
+# Agent runtime state (plans and notepads are tracked)
+.omo/boulder.json
+.omo/drafts/
+.omo/run-continuation/
 
 # Dependencies
 node_modules/
