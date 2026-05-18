@@ -13,7 +13,6 @@ import type {
   ArchitectureView,
   ArchitectureViewKind,
   AutoLayoutDirection,
-  Stylesheet,
   Workspace,
 } from "./types";
 
@@ -152,7 +151,7 @@ function toGroups(
       .filter((id) => visibleIds.has(id))
       .sort();
     if (element.kind === "softwareSystem" && childIds.length > 0) {
-      const style = styleRef("element", element.tags);
+      const style = styleRef("element", element.tags, undefined);
       groups.push({
         id: `group_${element.id}`,
         kind: "softwareSystem",
