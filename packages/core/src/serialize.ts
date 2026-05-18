@@ -47,7 +47,8 @@ export function stableValue(value: unknown): JsonValue | undefined {
 }
 
 export function stableStringify(value: unknown): string {
-  return JSON.stringify(stableValue(value));
+  const stable = stableValue(value);
+  return JSON.stringify(stable === undefined ? null : stable);
 }
 
 export function serializeDocument(doc: DiagramDocument): string {

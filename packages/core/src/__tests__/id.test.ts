@@ -31,6 +31,22 @@ describe("deterministic IDs", () => {
     expect(id).toMatch(/^node_[0-9a-f]{8}$/);
   });
 
+  test("handles undefined input without throwing", () => {
+    expect(() => createDeterministicId(undefined)).not.toThrow();
+    expect(createDeterministicId(undefined)).toMatch(/^ds_[0-9a-f]{16}$/);
+  });
+
+  test("clamps length to 1-16 range", () => {
+    const base = createDeterministicId("test", { length: 0 });
+    expect(base).toMatch(/^ds_[0-9a-f]{1}$/);
+
+    const large = createDeterministicId("test", { length: 100 });
+    expect(large).toMatch(/^ds_[0-9a-f]{16}$/);
+
+    const negative = createDeterministicId("test", { length: -5 });
+    expect(negative).toMatch(/^ds_[0-9a-f]{1}$/);
+  });
+
   test("ID registry accepts first registration", () => {
     const registry = new IdRegistry();
 
