@@ -1,7 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { LayoutCache, sequenceLayout, simpleGraphLayout } from "../index";
+import type { DiagramDocument } from "../types";
 
-function doc(overrides = {}) {
+function doc(overrides: Partial<DiagramDocument> = {}): DiagramDocument {
   return {
     schemaVersion: "1.0.0",
     id: "doc",
@@ -11,10 +12,12 @@ function doc(overrides = {}) {
     groups: [],
     annotations: [],
     ...overrides,
-  };
+  } as DiagramDocument;
 }
 
-const graphDoc = doc({
+const graphDoc: DiagramDocument = doc({
+  id: "graph",
+  kind: "graph",
   nodes: [
     { id: "b", kind: "component", label: "B" },
     { id: "a", kind: "component", label: "A" },
@@ -24,9 +27,9 @@ const graphDoc = doc({
     { id: "e2", kind: "depends-on", sourceId: "b", targetId: "c" },
     { id: "e1", kind: "depends-on", sourceId: "a", targetId: "b" },
   ],
-});
+}) as DiagramDocument;
 
-const sequenceDoc = doc({
+const sequenceDoc: DiagramDocument = doc({
   id: "seq",
   kind: "sequence",
   nodes: [
@@ -52,7 +55,7 @@ const sequenceDoc = doc({
       },
     },
   ],
-});
+}) as DiagramDocument;
 
 describe("sequence layout", () => {
   test("supports only sequence documents", () => {

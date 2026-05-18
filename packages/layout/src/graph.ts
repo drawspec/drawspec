@@ -61,8 +61,10 @@ function computeDepths(nodes: DiagramNode[], edges: DiagramEdge[]): Record<strin
   return depth;
 }
 
-function positionGraphNodes(document: DiagramDocument, options: LayoutOptions): PositionedNode[] {
-  const normalized = normalizeLayoutOptions(document, options);
+function positionGraphNodes(
+  document: DiagramDocument,
+  normalized: ReturnType<typeof normalizeLayoutOptions>
+): PositionedNode[] {
   const nodes = sortedNodes(document);
   const depths = computeDepths(nodes, sortedEdges(document));
 
@@ -133,7 +135,8 @@ function createGraphLayout(
   document: DiagramDocument,
   options: LayoutOptions = {}
 ): PositionedDiagram {
-  const nodes = positionGraphNodes(document, options);
+  const normalized = normalizeLayoutOptions(document, options);
+  const nodes = positionGraphNodes(document, normalized);
   const nodesById: Record<string, PositionedNode> = {};
   for (const node of nodes) {
     nodesById[node.id] = node;
@@ -144,12 +147,8 @@ function createGraphLayout(
     waypoints: edgeWaypoints(edge, nodesById),
   }));
 
-  const width =
-    Math.max(0, ...nodes.map((node) => node.x + node.width)) +
-    normalizeLayoutOptions(document, options).padding;
-  const height =
-    Math.max(0, ...nodes.map((node) => node.y + node.height)) +
-    normalizeLayoutOptions(document, options).padding;
+  const width = Math.max(0, ...nodes.map((node) => node.x + node.width)) + normalized.padding;
+  const height = Math.max(0, ...nodes.map((node) => node.y + node.height)) + normalized.padding;
 
   return { document, nodes, edges, groups: [], activations: [], width, height };
 }

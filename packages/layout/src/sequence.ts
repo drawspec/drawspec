@@ -89,7 +89,7 @@ function childIdsFrom(value: unknown): string[] {
     return [];
   }
 
-  return value.filter((item): item is string => typeof item === "string").sort();
+  return value.filter((item): item is string => typeof item === "string");
 }
 
 function operandsOf(group: DiagramGroup): SequenceOperand[] {
@@ -104,22 +104,22 @@ function operandsOf(group: DiagramGroup): SequenceOperand[] {
   );
 }
 
-function edgeBounds(
+function edgeYRange(
   childIds: string[],
   edgesById: Record<string, PositionedEdge>
-): { first: number; last: number } | undefined {
-  const indexes = childIds
+): { top: number; bottom: number } | undefined {
+  const ys = childIds
     .map((id) => edgesById[id]?.waypoints[0]?.y)
     .filter((y): y is number => typeof y === "number")
     .sort((left, right) => left - right);
 
-  const first = indexes[0];
-  const last = indexes[indexes.length - 1];
-  if (first === undefined || last === undefined) {
+  const top = ys[0];
+  const bottom = ys[ys.length - 1];
+  if (top === undefined || bottom === undefined) {
     return undefined;
   }
 
-  return { first, last };
+  return { top, bottom };
 }
 
 function groupXBounds(
@@ -175,12 +175,12 @@ function positionGroups(
 
   return document.groups.map((group) => {
     const childIds = childIdsFrom(group.childIds);
-    const bounds = edgeBounds(childIds, edgesById);
+    const bounds = edgeYRange(childIds, edgesById);
     const xBounds = groupXBounds(childIds, edgesById, nodesById);
     const top =
-      (bounds?.first ?? normalized.padding + normalized.nodeSize.height) -
+      (bounds?.top ?? normalized.padding + normalized.nodeSize.height) -
       normalized.spacing.message / 2;
-    const bottom = (bounds?.last ?? top) + normalized.spacing.message / 2;
+    const bottom = (bounds?.bottom ?? top) + normalized.spacing.message / 2;
     const operands = operandsOf(group);
     const laneHeight = operands.length > 0 ? (bottom - top) / operands.length : bottom - top;
     const lanes = operands.map((operand, index) =>
