@@ -10,6 +10,69 @@
         "typescript": "latest",
       },
     },
+    "packages/architecture": {
+      "name": "@drawspec/architecture",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/cli": {
+      "name": "@drawspec/cli",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/core": {
+      "name": "@drawspec/core",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/layout": {
+      "name": "@drawspec/layout",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/renderer-svg": {
+      "name": "@drawspec/renderer-svg",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/testkit": {
+      "name": "@drawspec/testkit",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/uml-sequence": {
+      "name": "@drawspec/uml-sequence",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/validation": {
+      "name": "@drawspec/validation",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/viewer": {
+      "name": "@drawspec/viewer",
+      "version": "0.0.1",
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
   },
   "packages": {
     "@babel/runtime": ["@babel/runtime@7.29.2", "", {}, "sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g=="],
@@ -65,6 +128,24 @@
     "@changesets/types": ["@changesets/types@6.1.0", "", {}, "sha512-rKQcJ+o1nKNgeoYRHKOS07tAMNd3YSN0uHaJOZYjBAgxfV7TUE7JE+z4BzZdQwb5hKaYbayKN5KrYV7ODb2rAA=="],
 
     "@changesets/write": ["@changesets/write@0.4.0", "", { "dependencies": { "@changesets/types": "^6.1.0", "fs-extra": "^7.0.1", "human-id": "^4.1.1", "prettier": "^2.7.1" } }, "sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q=="],
+
+    "@drawspec/architecture": ["@drawspec/architecture@workspace:packages/architecture"],
+
+    "@drawspec/cli": ["@drawspec/cli@workspace:packages/cli"],
+
+    "@drawspec/core": ["@drawspec/core@workspace:packages/core"],
+
+    "@drawspec/layout": ["@drawspec/layout@workspace:packages/layout"],
+
+    "@drawspec/renderer-svg": ["@drawspec/renderer-svg@workspace:packages/renderer-svg"],
+
+    "@drawspec/testkit": ["@drawspec/testkit@workspace:packages/testkit"],
+
+    "@drawspec/uml-sequence": ["@drawspec/uml-sequence@workspace:packages/uml-sequence"],
+
+    "@drawspec/validation": ["@drawspec/validation@workspace:packages/validation"],
+
+    "@drawspec/viewer": ["@drawspec/viewer@workspace:packages/viewer"],
 
     "@inquirer/external-editor": ["@inquirer/external-editor@1.0.3", "", { "dependencies": { "chardet": "^2.1.1", "iconv-lite": "^0.7.0" }, "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-RWbSrDiYmO4LbejWY7ttpxczuwQyZLBUyygsA9Nsv95hpzUWwnNTVQmAq3xuh7vNwCp07UTmE5i11XAEExx4RA=="],
 
