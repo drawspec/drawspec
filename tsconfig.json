@@ -3,6 +3,7 @@
   "references": [
     { "path": "./packages/core" },
     { "path": "./packages/architecture" },
+    { "path": "./packages/uml-class" },
     { "path": "./packages/uml-sequence" },
     { "path": "./packages/validation" },
     { "path": "./packages/layout" },
