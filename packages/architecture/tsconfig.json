@@ -3,7 +3,12 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "@drawspec/core": ["../core/src/index.ts"]
+    }
   },
-  "include": ["src"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/__tests__/**/*.ts"],
+  "references": [{ "path": "../core" }]
 }
