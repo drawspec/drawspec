@@ -12,13 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1
       - run: |
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install --frozen-lockfile
       - run: bun run check
@@ -28,9 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1
       - run: |
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
@@ -47,9 +43,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1
       - run: |
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
@@ -66,9 +59,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1
       - run: |
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
