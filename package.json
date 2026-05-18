@@ -1,0 +1,25 @@
+{
+  "name": "drawspec",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "check": "biome check . && bun run typecheck && bun test",
+    "format": "biome check --write .",
+    "lint": "biome lint .",
+    "typecheck": "tsc -b",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "build": "bun run --filter './packages/*' build",
+    "changeset": "changeset",
+    "release": "bun run check && changeset version && bun run build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "latest",
+    "@changesets/cli": "latest",
+    "typescript": "latest"
+  }
+}

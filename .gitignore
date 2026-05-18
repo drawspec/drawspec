@@ -1,0 +1,26 @@
+# Env files
+.env
+.env.*
+!.env.example
+
+# Agents
+.claude
+.codex
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.ds-out/
+
+# Evidence
+.sisyphus/evidence
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.tmp
