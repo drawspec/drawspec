@@ -1,4 +1,3 @@
-import { createDeterministicId } from "@drawspec/core";
 import type {
   ArchitectureElement,
   ArchitectureElementOptions,
