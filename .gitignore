@@ -13,6 +13,7 @@ node_modules/
 # Build outputs
 dist/
 .ds-out/
+.generated/
 
 # Evidence
 .sisyphus/evidence
