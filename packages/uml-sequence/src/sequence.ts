@@ -15,20 +15,18 @@ import type {
   SequenceRole,
 } from "./types";
 
-const FNV_OFFSET_BASIS = 0xcbf29ce484222325n;
-const FNV_PRIME = 0x100000001b3n;
-const UINT64_MASK = 0xffffffffffffffffn;
+const FNV_OFFSET_BASIS = 0x811c9dc5;
+const FNV_PRIME = 0x01000193;
 
 function deterministicId(prefix: string, parts: readonly string[]): string {
   let hash = FNV_OFFSET_BASIS;
   const input = parts.join("\u001f");
 
   for (let index = 0; index < input.length; index += 1) {
-    hash ^= BigInt(input.charCodeAt(index));
-    hash = (hash * FNV_PRIME) & UINT64_MASK;
+    hash = Math.imul(hash ^ input.charCodeAt(index), FNV_PRIME) >>> 0;
   }
 
-  return `${prefix}_${hash.toString(16).padStart(16, "0")}`;
+  return `${prefix}_${hash.toString(16).padStart(8, "0")}`;
 }
 
 class MutableSequenceElement implements SequenceElement {
