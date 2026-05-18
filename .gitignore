@@ -6,6 +6,8 @@
 # Agents
 .claude
 .codex
+.omo
+.serena
 
 # Dependencies
 node_modules/
