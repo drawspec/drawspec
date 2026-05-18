@@ -36,6 +36,9 @@
     "packages/layout": {
       "name": "@drawspec/layout",
       "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
       "devDependencies": {
         "typescript": "latest",
       },
