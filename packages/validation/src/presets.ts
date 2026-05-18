@@ -7,6 +7,18 @@ export const recommendedRules = [
   ...diagramRules,
 ] as const satisfies readonly Rule[];
 
+// Assert no duplicate rule names before building the config.
+const nameCount = new Map<string, number>();
+for (const rule of recommendedRules) {
+  const n = (nameCount.get(rule.name) ?? 0) + 1;
+  nameCount.set(rule.name, n);
+}
+for (const [name, n] of nameCount) {
+  if (n > 1) {
+    throw new Error(`Duplicate rule name '${name}' found in recommended rules.`);
+  }
+}
+
 export const recommended: ValidationConfig = {
   rules: Object.fromEntries(
     recommendedRules

@@ -87,6 +87,19 @@ export const noOrphanElementsRule: Rule = {
           }
         }
 
+        // Also include elements whose parent is in connected set, or whose children exist
+        // (a child element is non-orphan when its parent/ancestor is reachable via a relationship)
+        for (const element of model.elements) {
+          if (element.parent !== undefined && connected.has(element.parent.id)) {
+            connected.add(element.id);
+          }
+          if (element.children !== undefined) {
+            for (const child of element.children) {
+              connected.add(child.id);
+            }
+          }
+        }
+
         for (const element of model.elements) {
           if (!connected.has(element.id) && !included.has(element.id)) {
             context.report({

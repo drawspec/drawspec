@@ -227,7 +227,11 @@ describe("rule engine and presets", () => {
   test("recommended preset exports all recommended rules", () => {
     expect(recommendedRules).toHaveLength(architectureRules.length + diagramRules.length);
     for (const rule of recommendedRules) {
-      expect(recommended.rules?.[rule.name]).toBe(rule.meta.defaultSeverity ?? "error");
+      if (rule.meta.recommended === false) {
+        expect(recommended.rules?.[rule.name]).toBeUndefined();
+      } else {
+        expect(recommended.rules?.[rule.name]).toBe(rule.meta.defaultSeverity ?? "error");
+      }
     }
   });
 });

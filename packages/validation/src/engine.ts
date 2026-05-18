@@ -1,7 +1,7 @@
 import type { Diagnostic } from "@drawspec/core";
 import type {
-  DiagnosticInput,
   DiagnosticSeverity,
+  ReportInput,
   Rule,
   RuleConfigContext,
   RuleConfigEntry,
@@ -36,19 +36,26 @@ export function normalizeRuleConfig<Options>(
   };
 }
 
-export function targetToString(target: DiagnosticInput["target"]): string | undefined {
+export function targetToString(target: ReportInput["target"]): string | undefined {
   if (target === undefined) {
     return undefined;
   }
   if (typeof target === "string") {
     return target;
   }
+  // Encodes the structured target as a "kind:id" string.
+  // The Diagnostic type from @drawspec/core uses target?: string,
+  // so downstream consumers can parse this string to recover kind and id.
   return `${target.kind}:${target.id}`;
 }
 
 export class RuleEngine {
   readonly #rules: readonly Rule[];
 
+  /**
+   * Rules are sorted alphabetically by name to ensure deterministic output
+   * across environments and runs.
+   */
   constructor(rules: readonly Rule[]) {
     this.#rules = [...rules].sort((left, right) => left.name.localeCompare(right.name));
   }
@@ -64,7 +71,9 @@ export class RuleEngine {
 
       const context = {
         config: ruleConfig,
-        report: (diagnostic: DiagnosticInput) => {
+        report: (diagnostic: ReportInput) => {
+          // Diagnostic.target is typed as string in @drawspec/core, so we encode
+          // the structured { kind, id } target as "kind:id" here.
           const target = targetToString(diagnostic.target);
           diagnostics.push({
             code: rule.name,

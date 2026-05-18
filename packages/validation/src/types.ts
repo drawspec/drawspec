@@ -23,7 +23,11 @@ export interface DiagnosticTarget {
   id: string;
 }
 
-export interface DiagnosticInput {
+/**
+ * Input for reporting a diagnostic from a rule.
+ * Note: Renamed from `DiagnosticInput` to avoid name collision with `@drawspec/core`'s DiagnosticInput.
+ */
+export interface ReportInput {
   message: string;
   source?: SourceRef;
   target?: DiagnosticTarget | string;
@@ -32,6 +36,11 @@ export interface DiagnosticInput {
 
 export type C4ElementKind = "person" | "softwareSystem" | "container" | "database" | string;
 
+/**
+ * Mirrors `ArchitectureElement` from `@drawspec/architecture` using structural typing.
+ * Must stay in sync with the source type — changes to the architecture package
+ * (renames, optional-to-required, readonly modifiers) are not enforced at compile time.
+ */
 export interface ArchitectureElementLike {
   readonly id: string;
   readonly kind: C4ElementKind;
@@ -42,6 +51,11 @@ export interface ArchitectureElementLike {
   readonly children?: readonly ArchitectureElementLike[];
 }
 
+/**
+ * Mirrors `ArchitectureRelationship` from `@drawspec/architecture` using structural typing.
+ * Must stay in sync with the source type — changes to the architecture package
+ * (renames, optional-to-required, readonly modifiers) are not enforced at compile time.
+ */
 export interface ArchitectureRelationshipLike {
   readonly id: string;
   readonly source: ArchitectureElementLike;
@@ -49,11 +63,21 @@ export interface ArchitectureRelationshipLike {
   readonly label?: string;
 }
 
+/**
+ * Mirrors the view shape from `@drawspec/architecture` using structural typing.
+ * Must stay in sync with the source type — changes to the architecture package
+ * (renames, optional-to-required, readonly modifiers) are not enforced at compile time.
+ */
 export interface ArchitectureViewLike {
   readonly id: string;
   readonly includedElements?: readonly ArchitectureElementLike[];
 }
 
+/**
+ * Mirrors `ArchitectureModel` from `@drawspec/architecture` using structural typing.
+ * Must stay in sync with the source type — changes to the architecture package
+ * (renames, optional-to-required, readonly modifiers) are not enforced at compile time.
+ */
 export interface ArchitectureModelLike {
   readonly elements: readonly ArchitectureElementLike[];
   readonly relationships: readonly ArchitectureRelationshipLike[];
@@ -66,7 +90,7 @@ export interface RuleContext<Options = unknown> {
   readonly model?: ArchitectureModelLike;
   readonly diagram?: DiagramDocument;
   readonly config: RuleConfigContext<Options>;
-  report(diagnostic: DiagnosticInput): void;
+  report(diagnostic: ReportInput): void;
 }
 
 export interface RuleVisitor {
