@@ -10,7 +10,9 @@
         "technology": "HTTPS"
       },
       "sourceId": "container_3015d7cc580484e2",
-      "tags": ["relationship"],
+      "tags": [
+        "relationship"
+      ],
       "targetId": "container_0fac53dae12bb9fe"
     },
     {
@@ -22,7 +24,9 @@
         "technology": "SQL"
       },
       "sourceId": "container_0fac53dae12bb9fe",
-      "tags": ["relationship"],
+      "tags": [
+        "relationship"
+      ],
       "targetId": "database_03ab52d399de1e70"
     },
     {
@@ -34,7 +38,9 @@
         "technology": "HTTPS"
       },
       "sourceId": "person_494a4f7dfd392f13",
-      "tags": ["relationship"],
+      "tags": [
+        "relationship"
+      ],
       "targetId": "container_3015d7cc580484e2"
     }
   ],
@@ -49,15 +55,21 @@
       "kind": "softwareSystem",
       "label": "Commerce",
       "metadata": {},
-      "tags": ["softwareSystem"]
+      "tags": [
+        "softwareSystem"
+      ]
     },
     {
-      "childIds": ["container_ea612b28b0b1fefd"],
+      "childIds": [
+        "container_ea612b28b0b1fefd"
+      ],
       "id": "group_softwareSystem_f31d789af8a06024",
       "kind": "softwareSystem",
       "label": "Identity",
       "metadata": {},
-      "tags": ["softwareSystem"]
+      "tags": [
+        "softwareSystem"
+      ]
     }
   ],
   "id": "view_49b744c8cc155f25",
@@ -81,7 +93,9 @@
         "technology": "Bun"
       },
       "parentId": "softwareSystem_e27ada29a9783f1d",
-      "tags": ["container"]
+      "tags": [
+        "container"
+      ]
     },
     {
       "id": "container_3015d7cc580484e2",
@@ -91,7 +105,9 @@
         "technology": "React"
       },
       "parentId": "softwareSystem_e27ada29a9783f1d",
-      "tags": ["container"]
+      "tags": [
+        "container"
+      ]
     },
     {
       "id": "container_ea612b28b0b1fefd",
@@ -101,7 +117,9 @@
         "technology": "Bun"
       },
       "parentId": "softwareSystem_f31d789af8a06024",
-      "tags": ["container"]
+      "tags": [
+        "container"
+      ]
     },
     {
       "id": "database_03ab52d399de1e70",
@@ -111,28 +129,36 @@
         "technology": "SQLite"
       },
       "parentId": "softwareSystem_e27ada29a9783f1d",
-      "tags": ["database"]
+      "tags": [
+        "database"
+      ]
     },
     {
       "id": "person_494a4f7dfd392f13",
       "kind": "person",
       "label": "Operator",
       "metadata": {},
-      "tags": ["person"]
+      "tags": [
+        "person"
+      ]
     },
     {
       "id": "softwareSystem_e27ada29a9783f1d",
       "kind": "softwareSystem",
       "label": "Commerce",
       "metadata": {},
-      "tags": ["softwareSystem"]
+      "tags": [
+        "softwareSystem"
+      ]
     },
     {
       "id": "softwareSystem_f31d789af8a06024",
       "kind": "softwareSystem",
       "label": "Identity",
       "metadata": {},
-      "tags": ["softwareSystem"]
+      "tags": [
+        "softwareSystem"
+      ]
     }
   ],
   "schemaVersion": "1.0",

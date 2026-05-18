@@ -10,7 +10,9 @@
         "technology": "HTTPS"
       },
       "sourceId": "container_4c19412c99504b8f",
-      "tags": ["relationship"],
+      "tags": [
+        "relationship"
+      ],
       "targetId": "container_ac6c49ec729308c5"
     },
     {
@@ -22,7 +24,9 @@
         "technology": "HTTPS"
       },
       "sourceId": "person_bc8335d0874d8bfb",
-      "tags": ["relationship"],
+      "tags": [
+        "relationship"
+      ],
       "targetId": "container_4c19412c99504b8f"
     },
     {
@@ -34,7 +38,9 @@
         "technology": "SQL"
       },
       "sourceId": "container_ac6c49ec729308c5",
-      "tags": ["relationship"],
+      "tags": [
+        "relationship"
+      ],
       "targetId": "database_2e2143da83454bad"
     }
   ],
@@ -50,7 +56,9 @@
       "kind": "softwareSystem",
       "label": "Shop",
       "metadata": {},
-      "tags": ["softwareSystem"]
+      "tags": [
+        "softwareSystem"
+      ]
     }
   ],
   "id": "view_dcd46170de182cc6",
@@ -74,7 +82,10 @@
         "technology": "Bun + React"
       },
       "parentId": "softwareSystem_47a27c87ada29e42",
-      "tags": ["container", "frontend"]
+      "tags": [
+        "container",
+        "frontend"
+      ]
     },
     {
       "id": "container_ac6c49ec729308c5",
@@ -84,7 +95,9 @@
         "technology": "Bun"
       },
       "parentId": "softwareSystem_47a27c87ada29e42",
-      "tags": ["container"]
+      "tags": [
+        "container"
+      ]
     },
     {
       "id": "database_2e2143da83454bad",
@@ -94,7 +107,9 @@
         "technology": "PostgreSQL"
       },
       "parentId": "softwareSystem_47a27c87ada29e42",
-      "tags": ["database"]
+      "tags": [
+        "database"
+      ]
     },
     {
       "description": "Buyer placing an order",
@@ -102,7 +117,9 @@
       "kind": "person",
       "label": "Customer",
       "metadata": {},
-      "tags": ["person"]
+      "tags": [
+        "person"
+      ]
     },
     {
       "description": "Online storefront",
@@ -110,7 +127,9 @@
       "kind": "softwareSystem",
       "label": "Shop",
       "metadata": {},
-      "tags": ["softwareSystem"]
+      "tags": [
+        "softwareSystem"
+      ]
     }
   ],
   "schemaVersion": "1.0",

@@ -52,18 +52,29 @@
   ],
   "groups": [
     {
-      "childIds": ["msg_a6ff72df", "msg_148fcc18", "msg_d73b174f", "msg_32d78e47"],
+      "childIds": [
+        "msg_a6ff72df",
+        "msg_148fcc18",
+        "msg_d73b174f",
+        "msg_32d78e47"
+      ],
       "id": "frag_a7e3f9f2",
       "kind": "alt",
       "label": "alt",
       "metadata": {
         "operands": [
           {
-            "childIds": ["msg_a6ff72df", "msg_148fcc18"],
+            "childIds": [
+              "msg_a6ff72df",
+              "msg_148fcc18"
+            ],
             "condition": "approved"
           },
           {
-            "childIds": ["msg_d73b174f", "msg_32d78e47"],
+            "childIds": [
+              "msg_d73b174f",
+              "msg_32d78e47"
+            ],
             "condition": "declined"
           }
         ]

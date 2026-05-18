@@ -54,7 +54,7 @@ describe("MVP fixture suite", () => {
       if ("group" in fixture) {
         assertion.toHaveGroup(fixture.group);
       }
-      await expectGoldenIr(`${goldenDir}/${fixture.name}.ir.json`, document);
+      await expectGoldenIr(`${goldenDir}/${fixture.name}.ir.snapshot`, document);
       await expectGoldenSvg(`${goldenDir}/${fixture.name}.svg`, document);
     });
   }
