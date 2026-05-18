@@ -17,7 +17,8 @@ jobs:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
       - run: curl https://mise.run | sh
-      - run: mise install
+      - run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - run: eval "$(mise activate bash)" && mise install
       - run: bun install
       - run: bun run check
 
@@ -31,7 +32,8 @@ jobs:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
       - run: curl https://mise.run | sh
-      - run: mise install
+      - run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - run: eval "$(mise activate bash)" && mise install
       - run: bun install
       - run: bun run typecheck
 
@@ -45,7 +47,8 @@ jobs:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
       - run: curl https://mise.run | sh
-      - run: mise install
+      - run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - run: eval "$(mise activate bash)" && mise install
       - run: bun install
       - run: bun run test
 
@@ -59,6 +62,7 @@ jobs:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
       - run: curl https://mise.run | sh
-      - run: mise install
+      - run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - run: eval "$(mise activate bash)" && mise install
       - run: bun install
       - run: bun run build
