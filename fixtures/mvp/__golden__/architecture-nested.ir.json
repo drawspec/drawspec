@@ -1,0 +1,143 @@
+{
+  "annotations": [],
+  "edges": [
+    {
+      "direction": "forward",
+      "id": "rel_730a18c6ea565480",
+      "kind": "uses",
+      "label": "Saves changes",
+      "metadata": {
+        "technology": "HTTPS"
+      },
+      "sourceId": "container_3015d7cc580484e2",
+      "tags": ["relationship"],
+      "targetId": "container_0fac53dae12bb9fe"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_828cd01b042fca7e",
+      "kind": "uses",
+      "label": "Persists settings",
+      "metadata": {
+        "technology": "SQL"
+      },
+      "sourceId": "container_0fac53dae12bb9fe",
+      "tags": ["relationship"],
+      "targetId": "database_03ab52d399de1e70"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_8d053a5378268edf",
+      "kind": "uses",
+      "label": "Configures payment rules",
+      "metadata": {
+        "technology": "HTTPS"
+      },
+      "sourceId": "person_494a4f7dfd392f13",
+      "tags": ["relationship"],
+      "targetId": "container_3015d7cc580484e2"
+    }
+  ],
+  "groups": [
+    {
+      "childIds": [
+        "container_0fac53dae12bb9fe",
+        "container_3015d7cc580484e2",
+        "database_03ab52d399de1e70"
+      ],
+      "id": "group_softwareSystem_e27ada29a9783f1d",
+      "kind": "softwareSystem",
+      "label": "Commerce",
+      "metadata": {},
+      "tags": ["softwareSystem"]
+    },
+    {
+      "childIds": ["container_ea612b28b0b1fefd"],
+      "id": "group_softwareSystem_f31d789af8a06024",
+      "kind": "softwareSystem",
+      "label": "Identity",
+      "metadata": {},
+      "tags": ["softwareSystem"]
+    }
+  ],
+  "id": "view_49b744c8cc155f25",
+  "kind": "architecture",
+  "layout": {
+    "direction": "tb",
+    "engine": "auto"
+  },
+  "metadata": {
+    "subjectId": "softwareSystem_e27ada29a9783f1d",
+    "viewKind": "container",
+    "workspaceId": "workspace_d2c6e64bff782cf2",
+    "workspaceName": "Nested commerce platform"
+  },
+  "nodes": [
+    {
+      "id": "container_0fac53dae12bb9fe",
+      "kind": "container",
+      "label": "Admin API",
+      "metadata": {
+        "technology": "Bun"
+      },
+      "parentId": "softwareSystem_e27ada29a9783f1d",
+      "tags": ["container"]
+    },
+    {
+      "id": "container_3015d7cc580484e2",
+      "kind": "container",
+      "label": "Admin Dashboard",
+      "metadata": {
+        "technology": "React"
+      },
+      "parentId": "softwareSystem_e27ada29a9783f1d",
+      "tags": ["container"]
+    },
+    {
+      "id": "container_ea612b28b0b1fefd",
+      "kind": "container",
+      "label": "OIDC Provider",
+      "metadata": {
+        "technology": "Bun"
+      },
+      "parentId": "softwareSystem_f31d789af8a06024",
+      "tags": ["container"]
+    },
+    {
+      "id": "database_03ab52d399de1e70",
+      "kind": "database",
+      "label": "Configuration Store",
+      "metadata": {
+        "technology": "SQLite"
+      },
+      "parentId": "softwareSystem_e27ada29a9783f1d",
+      "tags": ["database"]
+    },
+    {
+      "id": "person_494a4f7dfd392f13",
+      "kind": "person",
+      "label": "Operator",
+      "metadata": {},
+      "tags": ["person"]
+    },
+    {
+      "id": "softwareSystem_e27ada29a9783f1d",
+      "kind": "softwareSystem",
+      "label": "Commerce",
+      "metadata": {},
+      "tags": ["softwareSystem"]
+    },
+    {
+      "id": "softwareSystem_f31d789af8a06024",
+      "kind": "softwareSystem",
+      "label": "Identity",
+      "metadata": {},
+      "tags": ["softwareSystem"]
+    }
+  ],
+  "schemaVersion": "1.0",
+  "styles": {
+    "rules": {}
+  },
+  "title": "nested-commerce-containers"
+}
