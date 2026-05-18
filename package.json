@@ -25,6 +25,7 @@
     "@drawspec/layout": "workspace:*",
     "@drawspec/renderer-svg": "workspace:*",
     "@drawspec/testkit": "workspace:*",
+    "@drawspec/uml-component": "workspace:*",
     "@drawspec/uml-sequence": "workspace:*",
     "@drawspec/validation": "workspace:*",
     "@changesets/cli": "latest",
