@@ -17,6 +17,7 @@ jobs:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
       - run: curl https://mise.run | sh
+      - run: echo "export PATH=\"$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH\"" >> $GITHUB_ENV
       - run: bun install
       - run: mise install
       - run: bun run check
