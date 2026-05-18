@@ -7,7 +7,7 @@ DrawSpec is a TypeScript-native diagram-as-code platform. Diagrams are written a
 - **Repo**: [github.com/drawspec/drawspec](https://github.com/drawspec/drawspec)
 - **Org**: [github.com/drawspec](https://github.com/drawspec)
 - **Project Board**: [github.com/orgs/drawspec/projects/1](https://github.com/orgs/drawspec/projects/1)
-- **Full Plan**: `.sisyphus/plans/drawspec-platform.md`
+- **Full Plan**: `.omo/plans/drawspec-platform.md`
 
 ---
 
@@ -402,3 +402,41 @@ All rendering must be **deterministic**: the same input produces byte-for-byte i
 - `Math.random()` or `Date.now()` in rendering code
 - `Map` iteration order (use sorted entries)
 - Unordered collections in serialization
+
+---
+
+## Serena (Code Intelligence)
+
+Serena provides LSP-backed code intelligence — symbol navigation, refactoring, diagnostics, and cross-reference support. It's configured at `.serena/project.yml` with TypeScript and Svelte language servers, and all 9 packages registered as workspace folders for monorepo-aware symbol resolution.
+
+### When to Use Serena
+
+| Scenario | Tool |
+|----------|------|
+| Find symbol definition | `serena_find_symbol` or `serena_find_declaration` |
+| Find all references to a symbol | `serena_find_referencing_symbols` |
+| Rename a symbol across the codebase | `serena_rename_symbol` |
+| Get file outline / symbols | `serena_get_symbols_overview` |
+| Check diagnostics for a file | `serena_get_diagnostics_for_file` |
+| Find implementations of an interface | `serena_find_implementations` |
+| Replace code by pattern (regex) | `serena_replace_content` |
+| Insert code before/after a symbol | `serena_insert_before_symbol` / `serena_insert_after_symbol` |
+
+### Memories
+
+Serena has persistent memories stored in `.serena/memories/`. These are project knowledge that persists across sessions:
+
+- **project-overview**: Architecture, packages, key constraints
+- **conventions**: Code style, testing patterns, commit conventions
+- **package-dependencies**: Dependency graph and build order
+
+**Writing memories**: Use `serena_write_memory` to store new knowledge (e.g., patterns discovered during implementation, gotchas, architectural decisions). Use meaningful names with `/` for topics (e.g., `layout/dagre-integration`).
+
+**Reading memories**: Use `serena_read_memory` to load context. Serena auto-loads the `initial_prompt` from `project.yml` which directs agents to read key memories.
+
+### Configuration
+
+- **Languages**: TypeScript (primary), Svelte (for viewer package)
+- **Workspace folders**: All 9 packages registered for cross-package symbol resolution
+- **Gitignore**: `.serena/.gitignore` excludes `cache/` and `project.local.yml` (local overrides)
+- **Memories are tracked in git** so all agents share the same knowledge base

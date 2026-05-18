@@ -6,7 +6,6 @@
 # Agents
 .claude
 .codex
-.serena
 
 # Agent runtime state (plans and notepads are tracked)
 .omo/boulder.json
