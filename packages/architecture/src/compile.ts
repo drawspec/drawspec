@@ -5,6 +5,7 @@ import type {
   DiagramNode,
   LayoutSpec,
   StyleRef,
+  StyleSheet,
 } from "@drawspec/core";
 import type {
   ArchitectureElement,
@@ -66,7 +67,7 @@ function layoutDirection(direction: AutoLayoutDirection | undefined): LayoutSpec
 function styleRef(
   prefix: "element" | "relationship",
   tags: readonly string[],
-  stylesheet: Stylesheet | undefined
+  stylesheet: StyleSheet | undefined
 ): StyleRef | undefined {
   const sortedTags = [...tags].sort();
   const tag = sortedTags[0];
@@ -104,7 +105,7 @@ function visibleElementIds(
   }
   return ids;
 }
-function toNode(element: ArchitectureElement, stylesheet: Stylesheet | undefined): DiagramNode {
+function toNode(element: ArchitectureElement, stylesheet: StyleSheet | undefined): DiagramNode {
   const style = styleRef("element", element.tags, stylesheet);
   return {
     id: element.id,
@@ -124,7 +125,7 @@ function toNode(element: ArchitectureElement, stylesheet: Stylesheet | undefined
 }
 function toEdge(
   relationship: ArchitectureRelationship,
-  stylesheet: Stylesheet | undefined
+  stylesheet: StyleSheet | undefined
 ): DiagramEdge {
   const style = styleRef("relationship", relationship.tags, stylesheet);
   return {
