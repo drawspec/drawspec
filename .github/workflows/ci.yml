@@ -16,6 +16,7 @@ jobs:
         with:
           bun-version: latest
           cache-folder: ~/.bun/install/cache
+      - run: curl https://mise.run | sh
       - run: bun install
       - run: mise install
       - run: bun run check
