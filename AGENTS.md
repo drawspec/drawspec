@@ -113,8 +113,35 @@ For more information, read the Bun API docs in `node_modules/bun-types/docs/**.m
 2. PRs are self-contained: one feature, fix, or concern per PR
 3. Every PR must reference a project board issue (e.g., `Closes #12` or `Refs #12`)
 4. CI must pass before merge (check, typecheck, test, build)
-5. Squash merge to `main` — the PR title becomes the commit message
-6. Delete the feature branch after merge
+5. **ALL Copilot review comments MUST be addressed before merge** (see Review Protocol below)
+6. Squash merge to `main` — the PR title becomes the commit message
+7. Delete the feature branch after merge
+
+### Copilot Review Protocol (CRITICAL)
+
+**NEVER merge a PR until ALL automated review feedback has been addressed.**
+
+GitHub Copilot automatically reviews every PR. Its comments frequently catch real bugs, type safety issues, API design problems, and code quality concerns. Every Copilot comment MUST be handled before merge — no exceptions.
+
+**Required steps before merging ANY PR:**
+
+1. **Wait for Copilot review** — Copilot posts its review within 1-2 minutes of PR creation. Do NOT merge immediately after CI passes.
+2. **Read every comment** — Check `github_pull_request_read(method="get_review_comments", ...)` or `gh pr view <N> --comments`.
+3. **Address or reply to each comment:**
+   - **Bug/issue found** → Fix in the same PR, push, wait for CI again
+   - **Design suggestion** → Either implement it or reply explaining why it's not applicable
+   - **False positive** → Reply explaining why, then resolve the thread
+4. **Resolve all threads** — Every review thread must be resolved before merge
+5. **For already-merged PRs** — If Copilot comments are found after merge, create a follow-up PR addressing them immediately. Reply to each comment with the follow-up PR number.
+
+**Enforcement:**
+- Branch protection should require "Require conversation resolution before merging" (requires GitHub Pro on private repos)
+- The orchestrator (Atlas) MUST check `get_review_comments` before approving any merge
+- Sub-agents MUST wait for `gh pr checks N --watch` AND check Copilot reviews before reporting done
+
+**Why this matters:**
+- Copilot reviews have caught: type safety issues (PR #50), API asymmetry (PR #51), coupling bugs (PR #55), name collisions (PR #56), misleading naming (PR #57), and semantic ordering violations
+- Merging without addressing reviews accumulates technical debt that compounds across dependent packages
 
 ---
 

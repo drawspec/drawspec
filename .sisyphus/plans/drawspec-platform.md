@@ -305,7 +305,7 @@ testkit ← core, validation
   - Message: `chore(repo): initialize monorepo with bun, biome, typescript, and AGENTS.md`
   - Files: `package.json, tsconfig.json, biome.json, .gitignore, bunfig.toml, AGENTS.md`
 
-- [ ] 2. Create all 9 package skeletons with TypeScript project references
+- [x] 2. Create all 9 package skeletons with TypeScript project references
 
   **What to do**:
   - Create package directories under `packages/`:
@@ -361,7 +361,7 @@ testkit ← core, validation
   - Message: `chore: create 9 package skeletons with typescript project references`
   - Files: `packages/*/package.json, packages/*/tsconfig.json, packages/*/src/index.ts, tsconfig.json`
 
-- [ ] 3. Set up shared dev dependencies, scripts, and CI foundation
+- [x] 3. Set up shared dev dependencies, scripts, and CI foundation
 
   **What to do**:
   - Add root `devDependencies`: `@biomejs/biome`, `typescript`, `@changesets/cli`
@@ -414,7 +414,7 @@ testkit ← core, validation
   - Message: `ci(repo): add GitHub Actions CI pipeline with check, typecheck, test, build`
   - Files: `package.json, .github/workflows/ci.yml`
 
-- [ ] 4. Implement @drawspec/core — Diagram IR types, diagnostics, and deterministic IDs
+- [x] 4. Implement @drawspec/core — Diagram IR types, diagnostics, and deterministic IDs
 
   **What to do**:
   - Define `DiagramDocument` interface (schemaVersion, id, title, kind, nodes, edges, groups, annotations, layout, styles, metadata, diagnostics)
@@ -498,7 +498,7 @@ testkit ← core, validation
   - Message: `feat(core): implement diagram IR types, diagnostics, and deterministic IDs`
   - Files: `packages/core/src/**`
 
-- [ ] 5. Implement @drawspec/core — Builder primitives and symbol registry
+- [x] 5. Implement @drawspec/core — Builder primitives and symbol registry
 
   **What to do**:
   - Create builder factory pattern: `createBuilder<T>()` for typed element construction
@@ -562,7 +562,7 @@ testkit ← core, validation
 
 ---
 
-- [ ] 6. Implement @drawspec/uml-sequence — Authoring API, domain model, and IR compilation
+- [x] 6. Implement @drawspec/uml-sequence — Authoring API, domain model, and IR compilation
 
   **What to do**:
   - Define sequence-specific types: `SequenceParticipant`, `SequenceActor`, `SequenceMessage`, `SequenceFragment`
@@ -637,7 +637,7 @@ testkit ← core, validation
   - Message: `feat(uml-sequence): implement authoring API, domain model, and IR compilation`
   - Files: `packages/uml-sequence/src/**`
 
-- [ ] 7. Implement @drawspec/architecture — Workspace, C4 elements, relationships, and views
+- [x] 7. Implement @drawspec/architecture — Workspace, C4 elements, relationships, and views
 
   **What to do**:
   - Define architecture-specific types: `Workspace`, `ArchitectureModel`, `ArchitectureView`
@@ -727,7 +727,7 @@ testkit ← core, validation
 
 ---
 
-- [ ] 8. Implement @drawspec/validation — Rule engine, context, and initial rule packs
+- [x] 8. Implement @drawspec/validation — Rule engine, context, and initial rule packs
 
   **What to do**:
   - Define `Rule` interface with name, meta (description, recommended, fixable), and `create(context)` method
@@ -807,7 +807,7 @@ testkit ← core, validation
 
 ---
 
-- [ ] 9. Implement @drawspec/layout — Interfaces, sequence layout, and simple graph layout
+- [x] 9. Implement @drawspec/layout — Interfaces, sequence layout, and simple graph layout
 
   **What to do**:
   - Define `LayoutEngine` interface: `name`, `supports(doc)`, `layout(doc, opts) → PositionedDiagram`

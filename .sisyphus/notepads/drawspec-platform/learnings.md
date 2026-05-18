@@ -35,8 +35,17 @@ tsc -b       ✓ (no output = success)
 - GitHub MCP tools (github_add_issue_comment) failed with 403 - using gh CLI instead for PR creation
 - Worktree approach worked well for isolation
 - Task is complete - all acceptance criteria met
-## Issue #8 - Validation rule engine
-- Implemented `@drawspec/validation` with deterministic sorted rule execution, visitor hooks for architecture models and diagram IR, severity overrides (`off|info|warn|error`), tuple rule options, and recommended presets.
-- Validation rules import core diagram/diagnostic types and define local architecture-compatible interfaces instead of importing `@drawspec/architecture`.
-- Validation package needs a TypeScript reference/path to `@drawspec/core` and excludes `src/**/__tests__` from package build, matching existing package patterns.
-- Final local verification passed: `bun run typecheck`, `bun test packages/validation` (44 pass), `bun run build`, and `bun run check` (106 pass).
+## Issue #9 - Layout package implementation
+- Implemented `@drawspec/layout` entirely under `packages/layout/src/`: layout interfaces, positioned diagram types, deterministic sequence layout, deterministic simple graph layout, stable content hash, and cache.
+- Kept tests under `packages/layout/src/__tests__/layout.test.js` so package `tsc` build can exclude runtime test imports without touching package tsconfig.
+- Sequence layout uses input order for lifeline/message semantics; graph layout uses sorted node/edge IDs for deterministic layered placement.
+- `MISE_TRUSTED_CONFIG_PATHS=/tmp/drawspec-issue-9/mise.toml` is needed for local verification commands in this worktree.
+
+## Issue #9 - Layout Package (Final Implementation)
+- Previous attempt duplicated core types in `types.ts` — fixed to import from `@drawspec/core` via `workspace:*` dependency
+- Duplicate/truncated test files (`sequence.test.js`, `graph-cache.test.js`) removed in favor of comprehensive `layout.test.js`
+- 15 tests covering sequence layout (6), graph layout (7), and cache (2)
+- FNV-1a content hash ensures deterministic cache keys (sorted object keys, no Map iteration)
+- Sequence layout: lifelines at equal horizontal intervals, messages at sequential vertical intervals, fragments as boxes with operand lanes, activation bars from message flow
+- Graph layout: nodes sorted by ID, depths computed via Bellman-Ford-like propagation, supports TB/LR/BT/RL directions
+- PR: https://github.com/drawspec/drawspec/pull/57 — all CI checks pass
