@@ -8,12 +8,21 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./drawspec-viewer.js": {
+      "import": "./dist/drawspec-viewer.js"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json && bun scripts/build-viewer.ts"
+  },
+  "dependencies": {
+    "@drawspec/core": "workspace:*",
+    "@drawspec/layout": "workspace:*",
+    "@drawspec/renderer-svg": "workspace:*"
   },
   "devDependencies": {
+    "svelte": "latest",
     "typescript": "latest"
   }
 }

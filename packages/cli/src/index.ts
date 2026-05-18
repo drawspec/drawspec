@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+import { existsSync, type FSWatcher, watch } from "node:fs";
 import type { Workspace } from "@drawspec/architecture";
 import { compileWorkspace } from "@drawspec/architecture";
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
@@ -8,13 +9,14 @@ import { renderSvg } from "@drawspec/renderer-svg";
 import { type RuleConfig, recommended, recommendedRules, validate } from "@drawspec/validation";
 import type { DrawspecConfig } from "./config";
 
-declare const process: { argv: string[]; cwd(): string; exit(code?: number): never };
+declare const process: {
+  argv: string[];
+  platform: "darwin" | "linux" | "win32" | string;
+  cwd(): string;
+  exit(code?: number): never;
+  on(event: "SIGINT" | "SIGTERM", listener: () => void): void;
+};
 declare const console: { log(message?: unknown): void; error(message?: unknown): void };
-declare global {
-  interface ImportMeta {
-    readonly url: string;
-  }
-}
 declare const Bun: {
   argv: string[];
   file(path: string): {
@@ -24,6 +26,8 @@ declare const Bun: {
   };
   write(path: string, content: string): Promise<number>;
   $: (strings: TemplateStringsArray, ...values: unknown[]) => { quiet(): Promise<unknown> };
+  spawn(command: string[], options?: { stdout?: "ignore"; stderr?: "ignore" }): unknown;
+  serve(options: ServeOptions): Server;
   Glob: new (
     pattern: string
   ) => {
@@ -31,7 +35,30 @@ declare const Bun: {
   };
 };
 
-type Command = "check" | "render" | "inspect";
+interface ServeOptions {
+  hostname?: string;
+  port: number;
+  fetch(request: Request, server: Server): Response | Promise<Response>;
+  websocket?: {
+    open?(socket: ServerWebSocket): void;
+    close?(socket: ServerWebSocket): void;
+    message?(socket: ServerWebSocket, message: string | ArrayBuffer): void;
+  };
+}
+
+interface Server {
+  hostname: string;
+  port: number;
+  stop(force?: boolean): void;
+  upgrade(request: Request): boolean;
+}
+
+interface ServerWebSocket {
+  send(message: string): void;
+  close(): void;
+}
+
+type Command = "check" | "render" | "inspect" | "watch" | "serve";
 
 interface ParsedArgs {
   command: Command | undefined;
@@ -45,7 +72,26 @@ interface LoadedDocument {
   diagnostics: Diagnostic[];
 }
 
-const COMMANDS = new Set<string>(["check", "render", "inspect"]);
+interface PreviewDiagram {
+  file: string;
+  diagramId: string;
+  document: DiagramDocument;
+  svg: string;
+  diagnostics: Diagnostic[];
+}
+
+interface PreviewPayload {
+  diagrams: PreviewDiagram[];
+  diagnostics: Diagnostic[];
+}
+
+type PreviewMessage =
+  | { type: "update"; diagramId: string; svg: string }
+  | { type: "diagnostics"; items: Diagnostic[] };
+
+const COMMANDS = new Set<string>(["check", "render", "inspect", "watch", "serve"]);
+const DEFAULT_PREVIEW_PORT = 4173;
+const DEFAULT_DEBOUNCE_MS = 80;
 const red = (value: string) => `\u001b[31m${value}\u001b[0m`;
 const yellow = (value: string) => `\u001b[33m${value}\u001b[0m`;
 const green = (value: string) => `\u001b[32m${value}\u001b[0m`;
@@ -78,7 +124,13 @@ export async function main(argv: readonly string[] = Bun.argv.slice(2)): Promise
   if (parsed.command === "render") {
     return runRender(parsed, config);
   }
-  return runInspect(parsed, config);
+  if (parsed.command === "inspect") {
+    return runInspect(parsed, config);
+  }
+  if (parsed.command === "watch") {
+    return runWatch(parsed, config);
+  }
+  return runServe(parsed, config);
 }
 
 function parseArgs(argv: readonly string[]): ParsedArgs {
@@ -121,6 +173,8 @@ Usage:
   drawspec check [files...] [--format pretty|json]
   drawspec render [files...] [--out dist] [--format svg] [--theme name]
   drawspec inspect [file] [--format json|pretty]
+  drawspec watch [files...] [--port 4173] [--debounce 80]
+  drawspec serve [files...] [--host localhost] [--port 4173] [--open]
 
 Aliases: ds, dspec
 Discovery: **/*.diagram.ts, **/*.arch.ts, **/*.sequence.ts`);
@@ -206,6 +260,112 @@ async function runInspect(parsed: ParsedArgs, config: DrawspecConfig): Promise<n
     console.log(JSON.stringify(payload));
   }
   return diagnostics.some((item) => item.severity === "error") ? 1 : 0;
+}
+
+async function runWatch(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {
+  const port = asNumber(parsed.options["port"], DEFAULT_PREVIEW_PORT);
+  const debounceMs = asNumber(parsed.options["debounce"], DEFAULT_DEBOUNCE_MS);
+  const sockets = new Set<ServerWebSocket>();
+  let latest = await compilePreview(parsed.files, config);
+  const server = Bun.serve({
+    port,
+    fetch(request, server) {
+      if (new URL(request.url).pathname === "/ws" && server.upgrade(request)) {
+        return new Response(null, { status: 101 });
+      }
+      return Response.json(latest);
+    },
+    websocket: {
+      open(socket) {
+        sockets.add(socket);
+        sendSnapshot(socket, latest);
+      },
+      close(socket) {
+        sockets.delete(socket);
+      },
+    },
+  });
+  const watched = await discoverFiles(
+    parsed.files.length > 0 ? parsed.files : (config.files ?? [process.cwd()])
+  );
+  const watcher = watchFiles(
+    watched,
+    debounce(() => {
+      void compilePreview(parsed.files, config).then((payload) => {
+        latest = payload;
+        broadcast(sockets, payload);
+      });
+    }, debounceMs)
+  );
+  console.log(green(`watching ${watched.length} file(s) on ws://localhost:${server.port}/ws`));
+  await waitForShutdown(() => {
+    watcher.close();
+    for (const socket of sockets) socket.close();
+    server.stop(true);
+  });
+  return 0;
+}
+
+async function runServe(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {
+  const host = asString(parsed.options["host"]) ?? "localhost";
+  const port = asNumber(parsed.options["port"], DEFAULT_PREVIEW_PORT);
+  const debounceMs = asNumber(parsed.options["debounce"], DEFAULT_DEBOUNCE_MS);
+  const sockets = new Set<ServerWebSocket>();
+  let latest = await compilePreview(parsed.files, config);
+  const server = Bun.serve({
+    hostname: host,
+    port,
+    fetch(request, server) {
+      const url = new URL(request.url);
+      if (url.pathname === "/ws" && server.upgrade(request)) {
+        return new Response(null, { status: 101 });
+      }
+      if (url.pathname === "/viewer.js") {
+        return serveViewerBundle();
+      }
+      if (url.pathname === "/api/diagrams") {
+        return Response.json(latest);
+      }
+      if (url.pathname === "/" || url.pathname === "/index.html") {
+        return new Response(previewHtml(latest), {
+          headers: { "content-type": "text/html; charset=utf-8" },
+        });
+      }
+      return new Response("Not found", { status: 404 });
+    },
+    websocket: {
+      open(socket) {
+        sockets.add(socket);
+        sendSnapshot(socket, latest);
+      },
+      close(socket) {
+        sockets.delete(socket);
+      },
+    },
+  });
+  const watched = await discoverFiles(
+    parsed.files.length > 0 ? parsed.files : (config.files ?? [process.cwd()])
+  );
+  const watcher = watchFiles(
+    watched,
+    debounce(() => {
+      void compilePreview(parsed.files, config).then((payload) => {
+        latest = payload;
+        broadcast(sockets, payload);
+      });
+    }, debounceMs)
+  );
+  const url = `http://${host}:${server.port}/`;
+  console.log(green(`serving DrawSpec preview at ${url}`));
+  if (parsed.options["open"] === true) {
+    openBrowser(url);
+  }
+  await waitForShutdown(() => {
+    watcher.close();
+    for (const socket of sockets) socket.close();
+    server.stop(true);
+  });
+  return 0;
 }
 
 async function loadAll(
@@ -375,6 +535,167 @@ function validateDocument(document: DiagramDocument, config: DrawspecConfig): Di
   return validate({ diagram: document, rules: recommendedRules, config: { rules } }).diagnostics;
 }
 
+async function compilePreview(
+  files: readonly string[],
+  config: DrawspecConfig
+): Promise<PreviewPayload> {
+  const loaded = await loadAll(files, config);
+  const diagnostics = diagnosticsFor(loaded, config);
+  const themeName = config.render?.theme ?? config.theme;
+  const diagrams: PreviewDiagram[] = [];
+  for (const item of loaded) {
+    if (item.document === undefined) {
+      continue;
+    }
+    const documentDiagnostics = [...item.diagnostics, ...validateDocument(item.document, config)];
+    if (documentDiagnostics.some((diagnostic) => diagnostic.severity === "error")) {
+      continue;
+    }
+    const positionedDiagram = await layoutFor(item.document).layout(
+      item.document,
+      layoutOptions(item.document)
+    );
+    const svg = await renderSvg(item.document, {
+      positionedDiagram,
+      accessibility: { title: item.document.title ?? item.document.id },
+      ...(themeName === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
+    });
+    diagrams.push({
+      file: item.file,
+      diagramId: item.document.id,
+      document: item.document,
+      svg,
+      diagnostics: documentDiagnostics,
+    });
+  }
+  return { diagrams, diagnostics };
+}
+
+function broadcast(sockets: Set<ServerWebSocket>, payload: PreviewPayload): void {
+  for (const socket of sockets) {
+    sendSnapshot(socket, payload);
+  }
+}
+
+function sendSnapshot(socket: ServerWebSocket, payload: PreviewPayload): void {
+  socket.send(
+    JSON.stringify({ type: "diagnostics", items: payload.diagnostics } satisfies PreviewMessage)
+  );
+  for (const diagram of payload.diagrams) {
+    socket.send(
+      JSON.stringify({
+        type: "update",
+        diagramId: diagram.diagramId,
+        svg: diagram.svg,
+      } satisfies PreviewMessage)
+    );
+  }
+}
+
+function watchFiles(files: readonly string[], onChange: () => void): { close(): void } {
+  const watchers: FSWatcher[] = [];
+  for (const file of files) {
+    if (!existsSync(file)) {
+      continue;
+    }
+    watchers.push(watch(file, { persistent: true }, onChange));
+  }
+  return {
+    close() {
+      for (const watcher of watchers) watcher.close();
+    },
+  };
+}
+
+function debounce(callback: () => void, delayMs: number): () => void {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  return () => {
+    if (timer !== undefined) clearTimeout(timer);
+    timer = setTimeout(callback, delayMs);
+  };
+}
+
+async function waitForShutdown(cleanup: () => void): Promise<void> {
+  await new Promise<void>((resolve) => {
+    let settled = false;
+    const stop = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve();
+    };
+    process.on("SIGINT", stop);
+    process.on("SIGTERM", stop);
+  });
+}
+
+async function serveViewerBundle(): Promise<Response> {
+  const candidates = [
+    `${process.cwd()}/packages/viewer/dist/drawspec-viewer.js`,
+    `${process.cwd()}/node_modules/@drawspec/viewer/dist/drawspec-viewer.js`,
+  ];
+  const bundle = candidates.find((path) => existsSync(path));
+  if (bundle === undefined) {
+    return new Response(viewerFallbackScript(), {
+      headers: { "content-type": "text/javascript; charset=utf-8" },
+    });
+  }
+  return new Response(await Bun.file(bundle).text(), {
+    headers: { "content-type": "text/javascript; charset=utf-8" },
+  });
+}
+
+function previewHtml(payload: PreviewPayload): string {
+  const first = payload.diagrams[0];
+  const initialSvg = first === undefined ? "" : JSON.stringify(first.svg);
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DrawSpec Preview</title>
+    <script type="module" src="/viewer.js"></script>
+    <style>body{margin:0;font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a}.shell{display:grid;grid-template-columns:16rem 1fr;min-height:100vh}.sidebar{border-right:1px solid #cbd5e1;padding:1rem;background:#fff}.main{padding:1rem}button{display:block;margin:.25rem 0}</style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <h1>DrawSpec</h1>
+        <div id="diagram-list">${payload.diagrams.map((diagram) => `<button type="button" data-diagram="${escapeHtml(diagram.diagramId)}">${escapeHtml(diagram.diagramId)}</button>`).join("")}</div>
+      </aside>
+      <main class="main">
+        <drawspec-diagram id="viewer" interactive theme="light"></drawspec-diagram>
+      </main>
+    </div>
+    <script type="module">
+      const viewer = document.getElementById('viewer');
+      if (${initialSvg}) viewer.svg = ${initialSvg};
+      const socketProtocol = location.protocol === 'https:' ? 'wss' : 'ws';
+      const socket = new WebSocket(socketProtocol + '://' + location.host + '/ws');
+      socket.addEventListener('message', (event) => {
+        const message = JSON.parse(event.data);
+        if (message.type === 'update') viewer.svg = message.svg;
+        if (message.type === 'diagnostics') viewer.diagnostics = message.items;
+      });
+    </script>
+  </body>
+</html>`;
+}
+
+function viewerFallbackScript(): string {
+  return `customElements.define('drawspec-diagram', class extends HTMLElement {
+  set svg(value) { this.innerHTML = '<div style="overflow:auto">' + value + '</div>'; }
+  set diagnostics(items) { this.dataset.diagnostics = String(items.length); }
+});`;
+}
+
+function openBrowser(url: string): void {
+  const command =
+    process.platform === "darwin" ? "open" : process.platform === "win32" ? "cmd" : "xdg-open";
+  const args = command === "cmd" ? [command, "/c", "start", "", url] : [command, url];
+  Bun.spawn(args, { stdout: "ignore", stderr: "ignore" });
+}
+
 function printDiagnostics(diagnostics: readonly Diagnostic[]): void {
   if (diagnostics.length === 0) {
     return;
@@ -450,6 +771,22 @@ function diagnostic(code: string, severity: Diagnostic["severity"], message: str
 
 function asString(value: string | boolean | undefined): string | undefined {
   return typeof value === "string" ? value : undefined;
+}
+
+function asNumber(value: string | boolean | undefined, fallback: number): number {
+  if (typeof value !== "string") {
+    return fallback;
+  }
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 }
 
 function errorMessage(error: unknown): string {
