@@ -1,3 +1,5 @@
+import { createIdCollisionDiagnostic, type Diagnostic } from "./diagnostic";
+
 interface SymbolScope {
   name: string;
   symbols: Map<string, string>;
@@ -6,8 +8,15 @@ interface SymbolScope {
 export class SymbolRegistry {
   private readonly scopes: SymbolScope[] = [{ name: "", symbols: new Map() }];
 
-  register(name: string, id: string): void {
-    this.activeScope().symbols.set(name, id);
+  register(name: string, id: string): Diagnostic | null {
+    const scope = this.activeScope();
+
+    if (scope.symbols.has(name)) {
+      return createIdCollisionDiagnostic(id);
+    }
+
+    scope.symbols.set(name, id);
+    return null;
   }
 
   resolve(name: string): string | undefined {

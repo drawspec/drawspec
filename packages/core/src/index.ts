@@ -1,10 +1,3 @@
-export {
-  createBuilder,
-  createBuilderFactory,
-  createRelationshipBuilder,
-  ElementBuilder,
-  RelationshipBuilder,
-} from "./builders";
 export type {
   BuilderFactory,
   BuilderFactoryOptions,
@@ -12,6 +5,13 @@ export type {
   Direction,
   ElementBuilderOptions,
   RelationshipBuilderOptions,
+} from "./builders";
+export {
+  createBuilder,
+  createBuilderFactory,
+  createRelationshipBuilder,
+  ElementBuilder,
+  RelationshipBuilder,
 } from "./builders";
 export type { Diagnostic, DiagnosticInput, DiagnosticSeverity } from "./diagnostic";
 export { createDiagnostic, createIdCollisionDiagnostic, DiagnosticCode } from "./diagnostic";

@@ -1,6 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import type { DiagramEdge, DiagramNode, Direction, SourceRef, StyleRef } from "../index";
-import { createBuilder, createBuilderFactory, createRelationshipBuilder, IdRegistry } from "../index";
+import {
+  createBuilder,
+  createBuilderFactory,
+  createRelationshipBuilder,
+  IdRegistry,
+} from "../index";
 
 interface ServiceNode extends DiagramNode {
   kind: "service";
@@ -53,6 +58,7 @@ describe("builder primitives", () => {
   test("RelationshipBuilder produces a valid DiagramEdge", () => {
     const direction: Direction = "forward";
     const edge = createRelationshipBuilder<CallsEdge>("calls")
+      .id("edge_api_db")
       .from("node_api")
       .to("node_db")
       .label("queries")
@@ -63,6 +69,7 @@ describe("builder primitives", () => {
       .build();
 
     expect(edge.kind).toBe("calls");
+    expect(edge.id).toBe("edge_api_db");
     expect(edge.sourceId).toBe("node_api");
     expect(edge.targetId).toBe("node_db");
     expect(edge.label).toBe("queries");
@@ -70,12 +77,54 @@ describe("builder primitives", () => {
     expect(edge.tags).toEqual(["sync"]);
     expect(edge.metadata).toEqual({ protocol: "sql" });
     expect(edge.style).toEqual({ id: "dashed" });
-    expect(edge.id).toMatch(/^edge_[0-9a-f]{16}$/);
+  });
+
+  test("RelationshipBuilder without .id() generates deterministic ID", () => {
+    const first = createRelationshipBuilder("calls")
+      .from("node_api")
+      .to("node_db")
+      .label("queries")
+      .build();
+    const second = createRelationshipBuilder("calls")
+      .from("node_api")
+      .to("node_db")
+      .label("queries")
+      .build();
+
+    expect(first.id).toBe(second.id);
+    expect(first.id).toMatch(/^edge_[0-9a-f]{16}$/);
+  });
+
+  test("RelationshipBuilder.id() sets explicit ID", () => {
+    const first = createRelationshipBuilder("calls")
+      .id("edge_explicit")
+      .from("node_api")
+      .to("node_db")
+      .build();
+    const second = createRelationshipBuilder("calls")
+      .id("edge_explicit")
+      .from("node_api")
+      .to("node_db")
+      .build();
+
+    expect(first.id).toBe("edge_explicit");
+    expect(second.id).toBe("edge_explicit");
+    expect(first.id).toBe(second.id);
+  });
+
+  test("RelationshipBuilder.id() chainable method returns the same builder", () => {
+    const builder = createRelationshipBuilder("calls");
+
+    expect(builder.id("edge_test")).toBe(builder);
   });
 
   test("RelationshipBuilder requires source and target before build", () => {
-    expect(() => createRelationshipBuilder("calls").to("node_db").build()).toThrow("Relationship source is required.");
-    expect(() => createRelationshipBuilder("calls").from("node_api").build()).toThrow("Relationship target is required.");
+    expect(() => createRelationshipBuilder("calls").to("node_db").build()).toThrow(
+      "Relationship source is required."
+    );
+    expect(() => createRelationshipBuilder("calls").from("node_api").build()).toThrow(
+      "Relationship target is required."
+    );
   });
 
   test("builder factory shares an ID registry for collision detection", () => {
@@ -83,7 +132,9 @@ describe("builder primitives", () => {
 
     factory.element("service").id("node_api").build();
 
-    expect(() => factory.element("service").id("node_api").build()).toThrow("Duplicate diagram element ID: node_api");
+    expect(() => factory.element("service").id("node_api").build()).toThrow(
+      "Duplicate diagram element ID: node_api"
+    );
     expect(factory.idRegistry.has("node_api")).toBe(true);
   });
 
@@ -96,8 +147,16 @@ describe("builder primitives", () => {
   });
 
   test("deterministic edge IDs are stable without explicit IDs", () => {
-    const first = createRelationshipBuilder("calls").from("node_api").to("node_db").label("queries").build();
-    const second = createRelationshipBuilder("calls").from("node_api").to("node_db").label("queries").build();
+    const first = createRelationshipBuilder("calls")
+      .from("node_api")
+      .to("node_db")
+      .label("queries")
+      .build();
+    const second = createRelationshipBuilder("calls")
+      .from("node_api")
+      .to("node_db")
+      .label("queries")
+      .build();
 
     expect(first.id).toBe(second.id);
     expect(first.id).toMatch(/^edge_[0-9a-f]{16}$/);

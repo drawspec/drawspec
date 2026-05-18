@@ -5,8 +5,8 @@ describe("SymbolRegistry", () => {
   test("resolves names to IDs in the current scope", () => {
     const registry = new SymbolRegistry();
 
-    registry.register("Api", "node_api");
-
+    const diagnostic = registry.register("Api", "node_api");
+    expect(diagnostic).toBeNull();
     expect(registry.resolve("Api")).toBe("node_api");
     expect(registry.has("Api")).toBe(true);
   });
@@ -33,13 +33,38 @@ describe("SymbolRegistry", () => {
     const registry = new SymbolRegistry();
     registry.register("Api", "node_root_api");
     registry.enterScope("PackageA");
-    registry.register("Api", "node_package_api");
+    const diagnostic = registry.register("Api", "node_package_api");
+    expect(diagnostic).toBeNull();
 
     expect(registry.resolve("Api")).toBe("node_package_api");
 
     registry.exitScope();
 
     expect(registry.resolve("Api")).toBe("node_root_api");
+  });
+
+  test("registering duplicate name in same scope returns diagnostic", () => {
+    const registry = new SymbolRegistry();
+    registry.register("Api", "node_api");
+
+    const diagnostic = registry.register("Api", "node_api_2");
+
+    expect(diagnostic).not.toBeNull();
+    expect(diagnostic?.code).toBe("DS_CORE_ID_COLLISION");
+    expect(diagnostic?.severity).toBe("error");
+    expect(diagnostic?.message).toContain("Duplicate diagram element ID");
+    expect(diagnostic?.target).toBe("node_api_2");
+  });
+
+  test("registering same name in different scope works (shadowing)", () => {
+    const registry = new SymbolRegistry();
+    registry.register("Api", "node_root_api");
+    registry.enterScope("PackageA");
+
+    const diagnostic = registry.register("Api", "node_package_api");
+
+    expect(diagnostic).toBeNull();
+    expect(registry.resolve("Api")).toBe("node_package_api");
   });
 
   test("currentScope returns the nested scope path", () => {

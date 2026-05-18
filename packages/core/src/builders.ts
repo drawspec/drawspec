@@ -122,7 +122,7 @@ export class ElementBuilder<TNode extends DiagramNode = DiagramNode> {
         fields: this.fields,
         tags,
       },
-      { prefix: "node" },
+      { prefix: "node" }
     );
     return this.builtId;
   }
@@ -133,6 +133,7 @@ export class RelationshipBuilder<TEdge extends DiagramEdge = DiagramEdge> {
   readonly idRegistry: IdRegistry | undefined;
   private sourceId: string | undefined;
   private targetId: string | undefined;
+  private explicitId: string | undefined;
   private fields: EdgeFields;
   private tags = new Set<string>();
   private builtId: string | undefined;
@@ -145,6 +146,12 @@ export class RelationshipBuilder<TEdge extends DiagramEdge = DiagramEdge> {
     if (options.source !== undefined) {
       this.fields.source = options.source;
     }
+  }
+
+  id(value: string): this {
+    this.explicitId = value;
+    this.builtId = undefined;
+    return this;
   }
 
   from(sourceId: string): this {
@@ -215,6 +222,10 @@ export class RelationshipBuilder<TEdge extends DiagramEdge = DiagramEdge> {
   }
 
   private resolveId(tags: readonly string[]): string {
+    if (this.explicitId !== undefined) {
+      return this.explicitId;
+    }
+
     if (this.builtId !== undefined) {
       return this.builtId;
     }
@@ -227,7 +238,7 @@ export class RelationshipBuilder<TEdge extends DiagramEdge = DiagramEdge> {
         fields: this.fields,
         tags,
       },
-      { prefix: "edge" },
+      { prefix: "edge" }
     );
     return this.builtId;
   }
@@ -235,23 +246,26 @@ export class RelationshipBuilder<TEdge extends DiagramEdge = DiagramEdge> {
 
 export interface BuilderFactory {
   idRegistry: IdRegistry;
-  element<TNode extends DiagramNode = DiagramNode>(kind: string, options?: Omit<ElementBuilderOptions, "idRegistry">): ElementBuilder<TNode>;
+  element<TNode extends DiagramNode = DiagramNode>(
+    kind: string,
+    options?: Omit<ElementBuilderOptions, "idRegistry">
+  ): ElementBuilder<TNode>;
   relationship<TEdge extends DiagramEdge = DiagramEdge>(
     kind?: string,
-    options?: Omit<RelationshipBuilderOptions, "idRegistry">,
+    options?: Omit<RelationshipBuilderOptions, "idRegistry">
   ): RelationshipBuilder<TEdge>;
 }
 
 export function createBuilder<TNode extends DiagramNode = DiagramNode>(
   kind: string,
-  options: ElementBuilderOptions = {},
+  options: ElementBuilderOptions = {}
 ): ElementBuilder<TNode> {
   return new ElementBuilder<TNode>(kind, options);
 }
 
 export function createRelationshipBuilder<TEdge extends DiagramEdge = DiagramEdge>(
   kind = "relationship",
-  options: RelationshipBuilderOptions = {},
+  options: RelationshipBuilderOptions = {}
 ): RelationshipBuilder<TEdge> {
   return new RelationshipBuilder<TEdge>(kind, options);
 }
@@ -261,12 +275,15 @@ export function createBuilderFactory(options: BuilderFactoryOptions = {}): Build
 
   return {
     idRegistry,
-    element<TNode extends DiagramNode = DiagramNode>(kind: string, elementOptions: Omit<ElementBuilderOptions, "idRegistry"> = {}) {
+    element<TNode extends DiagramNode = DiagramNode>(
+      kind: string,
+      elementOptions: Omit<ElementBuilderOptions, "idRegistry"> = {}
+    ) {
       return createBuilder<TNode>(kind, { ...elementOptions, idRegistry });
     },
     relationship<TEdge extends DiagramEdge = DiagramEdge>(
       kind = "relationship",
-      relationshipOptions: Omit<RelationshipBuilderOptions, "idRegistry"> = {},
+      relationshipOptions: Omit<RelationshipBuilderOptions, "idRegistry"> = {}
     ) {
       return createRelationshipBuilder<TEdge>(kind, { ...relationshipOptions, idRegistry });
     },
