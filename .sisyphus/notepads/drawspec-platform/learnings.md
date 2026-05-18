@@ -10,3 +10,28 @@
 - SvelteKit with adapter-bun for preview app
 - Viewer: Svelte customElement → Web Components (framework-neutral)
 - Deterministic rendering: byte-for-byte identical SVGs
+# Package Skeleton Creation - Issue #2
+
+## Completed
+- Created 9 package skeletons under `packages/`: core, architecture, uml-sequence, validation, layout, renderer-svg, cli, viewer, testkit
+- Each package has: `package.json` (with @drawspec/{name}, version 0.0.1, exports map), `tsconfig.json` (extends ../../tsconfig.base.json, composite: true), `src/index.ts` (placeholder export {})
+- Created `tsconfig.base.json` at root with strict mode, ES2022 target, moduleResolution: bundler
+- Updated root `tsconfig.json` to reference all 9 packages
+- Created `apps/preview/` directory placeholder with README.md
+- `bun install` succeeded
+- `tsc -b` passed with no errors
+- Pushed branch and created PR #48
+
+## Verification
+```
+bun install  ✓ (208 packages installed)
+tsc -b       ✓ (no output = success)
+```
+
+## PR
+- https://github.com/drawspec/drawspec/pull/48
+
+## Notes
+- GitHub MCP tools (github_add_issue_comment) failed with 403 - using gh CLI instead for PR creation
+- Worktree approach worked well for isolation
+- Task is complete - all acceptance criteria met

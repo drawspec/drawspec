@@ -229,7 +229,7 @@ testkit ← core, validation
 
 ## Gate 1A: Monorepo Scaffold + Tooling
 
-- [ ] 1. Initialize monorepo with Bun workspaces, Biome, TypeScript, and git
+- [x] 1. Initialize monorepo with Bun workspaces, Biome, TypeScript, and git
 
   **What to do**:
   - `git init` and connect to `https://github.com/drawspec/drawspec` (drawspec org)

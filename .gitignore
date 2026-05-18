@@ -24,3 +24,5 @@ Thumbs.db
 # Logs
 *.log
 *.tmp
+# TypeScript build info
+*.tsbuildinfo
