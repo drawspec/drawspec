@@ -1,0 +1,199 @@
+import { createDeterministicId } from "@drawspec/core";
+import { compileSequenceDocument } from "./compile";
+import type {
+  SequenceActor,
+  SequenceBuilder,
+  SequenceDocument,
+  SequenceDomainModel,
+  SequenceElement,
+  SequenceFragment,
+  SequenceFragmentBuilder,
+  SequenceFragmentChild,
+  SequenceFragmentOperand,
+  SequenceMessage,
+  SequenceNote,
+  SequenceParticipant,
+  SequenceRole,
+} from "./types";
+
+class MutableSequenceElement implements SequenceElement {
+  readonly id: string;
+  readonly name: string;
+  readonly role: SequenceRole;
+  readonly notes: SequenceNote[] = [];
+  readonly #builder: MutableSequenceBuilder;
+
+  constructor(role: SequenceRole, name: string, index: number, builder: MutableSequenceBuilder) {
+    this.role = role;
+    this.name = name;
+    this.#builder = builder;
+    this.id = createDeterministicId(
+      { scope: "sequence-element", role, name, index },
+      { prefix: "seq" }
+    );
+  }
+
+  to(other: SequenceElement, label: string): SequenceMessage {
+    return this.#builder.message(this, other, label);
+  }
+
+  note(text: string): this {
+    this.notes.push(this.#builder.note(this.id, text));
+    return this;
+  }
+}
+
+class MutableSequenceMessage implements SequenceMessage {
+  readonly id: string;
+  readonly sourceId: string;
+  readonly targetId: string;
+  readonly label: string;
+  readonly notes: SequenceNote[] = [];
+  readonly #builder: MutableSequenceBuilder;
+
+  constructor(
+    sourceId: string,
+    targetId: string,
+    label: string,
+    index: number,
+    builder: MutableSequenceBuilder
+  ) {
+    this.sourceId = sourceId;
+    this.targetId = targetId;
+    this.label = label;
+    this.#builder = builder;
+    this.id = createDeterministicId(
+      { scope: "sequence-message", sourceId, targetId, label, index },
+      { prefix: "msg" }
+    );
+  }
+
+  note(text: string): this {
+    this.notes.push(this.#builder.note(this.id, text));
+    return this;
+  }
+}
+
+class MutableSequenceFragment implements SequenceFragment {
+  readonly id: string;
+  readonly kind = "alt";
+  readonly operands: SequenceFragmentOperand[];
+
+  constructor(index: number, operands: SequenceFragmentOperand[]) {
+    this.id = createDeterministicId(
+      { scope: "sequence-fragment", kind: "alt", index },
+      { prefix: "frag" }
+    );
+    this.operands = operands;
+  }
+}
+
+class MutableSequenceFragmentBuilder implements SequenceFragmentBuilder {
+  readonly #builder: MutableSequenceBuilder;
+  readonly #fragment: MutableSequenceFragment;
+
+  constructor(builder: MutableSequenceBuilder, fragment: MutableSequenceFragment) {
+    this.#builder = builder;
+    this.#fragment = fragment;
+  }
+
+  else(condition: string, callback: (sequence: SequenceBuilder) => void): SequenceFragmentBuilder {
+    const children = this.#builder.capture(callback);
+    this.#fragment.operands.push({ condition, children });
+    return this;
+  }
+}
+
+class MutableSequenceBuilder implements SequenceBuilder {
+  readonly title: string;
+  readonly elements: SequenceElement[] = [];
+  readonly rootChildren: SequenceFragmentChild[] = [];
+  #activeChildren: SequenceFragmentChild[] = this.rootChildren;
+  #elementCount = 0;
+  #messageCount = 0;
+  #fragmentCount = 0;
+  #noteCount = 0;
+
+  constructor(title: string) {
+    this.title = title;
+  }
+
+  actor(name: string): SequenceActor {
+    return this.element("actor", name) as SequenceActor;
+  }
+
+  participant(name: string): SequenceParticipant {
+    return this.element("participant", name) as SequenceParticipant;
+  }
+
+  alt(condition: string, callback: (sequence: SequenceBuilder) => void): SequenceFragmentBuilder {
+    const firstOperand = { condition, children: this.capture(callback) };
+    const fragment = new MutableSequenceFragment(this.#fragmentCount, [firstOperand]);
+    this.#fragmentCount += 1;
+    this.#activeChildren.push(fragment);
+    return new MutableSequenceFragmentBuilder(this, fragment);
+  }
+
+  message(source: SequenceElement, target: SequenceElement, label: string): SequenceMessage {
+    const message = new MutableSequenceMessage(
+      source.id,
+      target.id,
+      label,
+      this.#messageCount,
+      this
+    );
+    this.#messageCount += 1;
+    this.#activeChildren.push(message);
+    return message;
+  }
+
+  note(targetId: string, text: string): SequenceNote {
+    const note = {
+      id: createDeterministicId(
+        { scope: "sequence-note", targetId, text, index: this.#noteCount },
+        { prefix: "note" }
+      ),
+      targetId,
+      text,
+    };
+    this.#noteCount += 1;
+    return note;
+  }
+
+  capture(callback: (sequence: SequenceBuilder) => void): SequenceFragmentChild[] {
+    const parentChildren = this.#activeChildren;
+    const children: SequenceFragmentChild[] = [];
+    this.#activeChildren = children;
+    callback(this);
+    this.#activeChildren = parentChildren;
+    return children;
+  }
+
+  toModel(): SequenceDomainModel {
+    return {
+      id: createDeterministicId(
+        { scope: "sequence-document", title: this.title },
+        { prefix: "seqdoc" }
+      ),
+      title: this.title,
+      elements: this.elements,
+      children: this.rootChildren,
+    };
+  }
+
+  private element(role: SequenceRole, name: string): SequenceElement {
+    const element = new MutableSequenceElement(role, name, this.#elementCount, this);
+    this.#elementCount += 1;
+    this.elements.push(element);
+    return element;
+  }
+}
+
+export function sequence(
+  title: string,
+  callback?: (sequence: SequenceBuilder) => void
+): SequenceDocument {
+  const builder = new MutableSequenceBuilder(title);
+  callback?.(builder);
+  return compileSequenceDocument(builder.toModel());
+}
