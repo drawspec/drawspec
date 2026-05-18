@@ -35,3 +35,8 @@ tsc -b       ✓ (no output = success)
 - GitHub MCP tools (github_add_issue_comment) failed with 403 - using gh CLI instead for PR creation
 - Worktree approach worked well for isolation
 - Task is complete - all acceptance criteria met
+## Issue #8 - Validation rule engine
+- Implemented `@drawspec/validation` with deterministic sorted rule execution, visitor hooks for architecture models and diagram IR, severity overrides (`off|info|warn|error`), tuple rule options, and recommended presets.
+- Validation rules import core diagram/diagnostic types and define local architecture-compatible interfaces instead of importing `@drawspec/architecture`.
+- Validation package needs a TypeScript reference/path to `@drawspec/core` and excludes `src/**/__tests__` from package build, matching existing package patterns.
+- Final local verification passed: `bun run typecheck`, `bun test packages/validation` (44 pass), `bun run build`, and `bun run check` (106 pass).
