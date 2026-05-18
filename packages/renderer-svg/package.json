@@ -13,6 +13,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json"
   },
+  "dependencies": {
+    "@drawspec/core": "workspace:*",
+    "@drawspec/layout": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "latest"
   }

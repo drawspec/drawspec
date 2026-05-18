@@ -46,6 +46,10 @@
     "packages/renderer-svg": {
       "name": "@drawspec/renderer-svg",
       "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+        "@drawspec/layout": "workspace:*",
+      },
       "devDependencies": {
         "typescript": "latest",
       },
