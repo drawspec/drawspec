@@ -6,6 +6,14 @@
       "name": "drawspec",
       "devDependencies": {
         "@changesets/cli": "latest",
+        "@drawspec/architecture": "workspace:*",
+        "@drawspec/cli": "workspace:*",
+        "@drawspec/core": "workspace:*",
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "@drawspec/testkit": "workspace:*",
+        "@drawspec/uml-sequence": "workspace:*",
+        "@drawspec/validation": "workspace:*",
         "typescript": "latest",
       },
     },
@@ -70,6 +78,13 @@
     "packages/testkit": {
       "name": "@drawspec/testkit",
       "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/architecture": "workspace:*",
+        "@drawspec/core": "workspace:*",
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "@drawspec/validation": "workspace:*",
+      },
       "devDependencies": {
         "typescript": "latest",
       },

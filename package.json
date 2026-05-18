@@ -19,6 +19,14 @@
     "release": "bun run check && changeset version && bun run build"
   },
   "devDependencies": {
+    "@drawspec/architecture": "workspace:*",
+    "@drawspec/cli": "workspace:*",
+    "@drawspec/core": "workspace:*",
+    "@drawspec/layout": "workspace:*",
+    "@drawspec/renderer-svg": "workspace:*",
+    "@drawspec/testkit": "workspace:*",
+    "@drawspec/uml-sequence": "workspace:*",
+    "@drawspec/validation": "workspace:*",
     "@changesets/cli": "latest",
     "typescript": "latest"
   }
