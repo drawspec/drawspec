@@ -31,7 +31,6 @@ export const noEmptyLabelRule: Rule = {
   meta: {
     description: "Diagram nodes and edges must not have empty labels.",
     recommended: false,
-    defaultSeverity: "warn",
   },
   create(context) {
     return {

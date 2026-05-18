@@ -87,15 +87,30 @@ export const noOrphanElementsRule: Rule = {
           }
         }
 
-        // Also include elements whose parent is in connected set, or whose children exist
-        // (a child element is non-orphan when its parent/ancestor is reachable via a relationship)
+        // Propagate connectivity within parent/child hierarchies.
+        // Child is non-orphan when its parent is connected (via relationships or views).
         for (const element of model.elements) {
           if (element.parent !== undefined && connected.has(element.parent.id)) {
             connected.add(element.id);
           }
-          if (element.children !== undefined) {
-            for (const child of element.children) {
-              connected.add(child.id);
+        }
+
+        // Propagate upward: if a child is connected, its parent is too.
+        // This handles containers that have relationships while the containing
+        // software system does not.
+        let changed = true;
+        while (changed) {
+          changed = false;
+          for (const element of model.elements) {
+            if (connected.has(element.id)) continue;
+            if (element.children !== undefined) {
+              for (const child of element.children) {
+                if (connected.has(child.id)) {
+                  connected.add(element.id);
+                  changed = true;
+                  break;
+                }
+              }
             }
           }
         }

@@ -109,6 +109,38 @@ describe("architecture rules", () => {
     expect(diagnosticsFor(noOrphanElementsRule, { model: model([app]) })).toHaveLength(1);
   });
 
+  test("no-orphan-elements accepts connected parent with orphaned children", () => {
+    const system = element("system", "softwareSystem", "System");
+    const container = element("container", "container", "Container", { parent: system });
+    const architecture = model(
+      [system, container],
+      [{ id: "rel", source: container, target: system }]
+    );
+    expect(diagnosticsFor(noOrphanElementsRule, { model: architecture })).toHaveLength(0);
+  });
+
+  test("no-orphan-elements accepts connected child propagating to parent", () => {
+    const system = element("system", "softwareSystem", "System");
+    const container = element("container", "container", "Container", { parent: system });
+    const architecture = model(
+      [system, container],
+      [{ id: "rel", source: container, target: system }]
+    );
+    const diagnostics = diagnosticsFor(noOrphanElementsRule, { model: architecture });
+    expect(diagnostics).toHaveLength(0);
+  });
+
+  test("no-orphan-elements reports isolated parent/child pair as both orphaned", () => {
+    const system = element("system", "softwareSystem", "System");
+    const container = element("container", "container", "Container", { parent: system });
+    const architecture = model([system, container]);
+    const diagnostics = diagnosticsFor(noOrphanElementsRule, { model: architecture });
+    expect(diagnostics.map((d) => d.target).sort()).toEqual([
+      "element:container",
+      "element:system",
+    ]);
+  });
+
   test("no-duplicate-names-in-scope accepts duplicate names in different parents", () => {
     const systemA = element("system_a", "softwareSystem", "A");
     const systemB = element("system_b", "softwareSystem", "B");
@@ -138,19 +170,34 @@ describe("diagram rules", () => {
   });
 
   test("no-empty-label accepts labelled nodes and edges", () => {
-    expect(diagnosticsFor(noEmptyLabelRule, { diagram: diagram() })).toHaveLength(0);
+    expect(
+      diagnosticsFor(noEmptyLabelRule, {
+        diagram: diagram(),
+        config: { rules: { "diagram/no-empty-label": "warn" } },
+      })
+    ).toHaveLength(0);
   });
 
   test("no-empty-label reports blank node labels", () => {
     const doc = diagram({ nodes: [{ id: "node_a", kind: "container", label: "" }], edges: [] });
-    expect(diagnosticsFor(noEmptyLabelRule, { diagram: doc })).toHaveLength(1);
+    expect(
+      diagnosticsFor(noEmptyLabelRule, {
+        diagram: doc,
+        config: { rules: { "diagram/no-empty-label": "warn" } },
+      })
+    ).toHaveLength(1);
   });
 
   test("no-empty-label reports blank edge labels", () => {
     const doc = diagram({
       edges: [{ id: "edge", kind: "uses", sourceId: "a", targetId: "b", label: " " }],
     });
-    expect(diagnosticsFor(noEmptyLabelRule, { diagram: doc })).toHaveLength(1);
+    expect(
+      diagnosticsFor(noEmptyLabelRule, {
+        diagram: doc,
+        config: { rules: { "diagram/no-empty-label": "warn" } },
+      })
+    ).toHaveLength(1);
   });
 
   test("no-duplicate-node-id accepts unique node IDs", () => {
