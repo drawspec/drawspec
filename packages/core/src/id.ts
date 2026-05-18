@@ -32,7 +32,7 @@ export interface CreateIdOptions {
 
 export function createDeterministicId(input: unknown, options: CreateIdOptions = {}): string {
   const prefix = options.prefix ?? "ds";
-  const length = options.length ?? 16;
+  const length = Math.max(1, Math.min(16, options.length ?? 16));
   const payload = stableStringify(input);
   const digest = fnv1a64(payload).slice(0, length);
 
@@ -40,22 +40,26 @@ export function createDeterministicId(input: unknown, options: CreateIdOptions =
 }
 
 export class IdRegistry {
-  readonly ids = new Set<string>();
+  #ids = new Set<string>();
+
+  get ids(): ReadonlySet<string> {
+    return this.#ids;
+  }
 
   registerId(id: string): Diagnostic | null {
-    if (this.ids.has(id)) {
+    if (this.#ids.has(id)) {
       return createIdCollisionDiagnostic(id);
     }
 
-    this.ids.add(id);
+    this.#ids.add(id);
     return null;
   }
 
   has(id: string): boolean {
-    return this.ids.has(id);
+    return this.#ids.has(id);
   }
 
   clear(): void {
-    this.ids.clear();
+    this.#ids.clear();
   }
 }

@@ -66,6 +66,10 @@ describe("stable serialization", () => {
     expect(stableStringify({ value: Number.POSITIVE_INFINITY })).toBe('{"value":null}');
   });
 
+  test("normalizes top-level undefined to null string", () => {
+    expect(stableStringify(undefined)).toBe("null");
+  });
+
   test("documents with equivalent object key order serialize identically", () => {
     const first = makeDocument();
     const second: DiagramDocument = {
