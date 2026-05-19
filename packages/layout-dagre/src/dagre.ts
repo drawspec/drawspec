@@ -1,0 +1,206 @@
+import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
+import type {
+  LayoutEngine,
+  LayoutOptions,
+  NormalizedLayoutOptions,
+  Point,
+  PositionedDiagram,
+  PositionedEdge,
+  PositionedNode,
+} from "@drawspec/layout";
+import { normalizeLayoutOptions } from "@drawspec/layout";
+import dagre from "dagre";
+
+const DIRECTION_MAP: Record<string, string> = {
+  TB: "TB",
+  BT: "BT",
+  LR: "LR",
+  RL: "RL",
+};
+
+function sortedNodes(document: DiagramDocument): DiagramNode[] {
+  return [...document.nodes].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+function sortedEdges(document: DiagramDocument): DiagramEdge[] {
+  return [...document.edges].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+interface DagreLayoutResult {
+  nodeMap: Record<string, { x: number; y: number; width: number; height: number }>;
+  edgePointsMap: Record<string, Array<{ x: number; y: number }>>;
+}
+
+function buildDagreGraph(
+  document: DiagramDocument,
+  normalized: NormalizedLayoutOptions
+): DagreLayoutResult {
+  const g = new dagre.graphlib.Graph({ multigraph: true });
+  g.setGraph({
+    rankdir: DIRECTION_MAP[normalized.direction] ?? "TB",
+    nodesep: normalized.spacing.node,
+    ranksep: normalized.spacing.rank,
+    marginx: normalized.padding,
+    marginy: normalized.padding,
+    align: "UL",
+  });
+  g.setDefaultEdgeLabel(() => ({}));
+
+  const nodes = sortedNodes(document);
+  const edges = sortedEdges(document);
+
+  for (const node of nodes) {
+    g.setNode(node.id, {
+      width: normalized.nodeSize.width,
+      height: normalized.nodeSize.height,
+      label: node.id,
+    });
+  }
+
+  for (const edge of edges) {
+    if (
+      edge.sourceId !== edge.targetId &&
+      document.nodes.some((n: DiagramNode) => n.id === edge.sourceId) &&
+      document.nodes.some((n: DiagramNode) => n.id === edge.targetId)
+    ) {
+      g.setEdge(edge.sourceId, edge.targetId, {}, edge.id);
+    }
+  }
+
+  dagre.layout(g);
+
+  const nodeMap: Record<string, { x: number; y: number; width: number; height: number }> = {};
+  for (const node of nodes) {
+    const pos = g.node(node.id);
+    if (pos !== undefined) {
+      nodeMap[node.id] = { x: pos.x, y: pos.y, width: pos.width, height: pos.height };
+    }
+  }
+
+  const edgePointsMap: Record<string, Array<{ x: number; y: number }>> = {};
+  for (const edge of edges) {
+    const pos = g.edge(edge.sourceId, edge.targetId, edge.id);
+    if (pos !== undefined) {
+      edgePointsMap[edge.id] = pos.points.map((p) => ({ x: p.x, y: p.y }));
+    }
+  }
+
+  return { nodeMap, edgePointsMap };
+}
+
+function positionNodes(
+  document: DiagramDocument,
+  normalized: NormalizedLayoutOptions,
+  nodePositions: Record<string, { x: number; y: number; width: number; height: number }>
+): PositionedNode[] {
+  return sortedNodes(document).map((node) => {
+    const pos = nodePositions[node.id];
+    if (pos === undefined) {
+      return {
+        ...node,
+        x: normalized.padding,
+        y: normalized.padding,
+        width: normalized.nodeSize.width,
+        height: normalized.nodeSize.height,
+      };
+    }
+    return {
+      ...node,
+      x: pos.x - pos.width / 2,
+      y: pos.y - pos.height / 2,
+      width: pos.width,
+      height: pos.height,
+    };
+  });
+}
+
+function edgeWaypoints(
+  edge: DiagramEdge,
+  nodesById: Record<string, PositionedNode>,
+  edgePoints: Record<string, Array<{ x: number; y: number }>>
+): Point[] {
+  if (edge.sourceId === edge.targetId) {
+    const source = nodesById[edge.sourceId];
+    if (source === undefined) return [];
+    const cx = source.x + source.width / 2;
+    const cy = source.y + source.height / 2;
+    return [
+      { x: cx, y: cy },
+      { x: source.x + source.width + 28, y: cy },
+      { x: source.x + source.width + 28, y: source.y - 28 },
+      { x: cx, y: source.y - 28 },
+      { x: cx, y: cy },
+    ];
+  }
+
+  const points = edgePoints[edge.id];
+  if (points !== undefined && points.length > 0) {
+    return points.map((p) => ({
+      x: Math.round(p.x * 1000) / 1000,
+      y: Math.round(p.y * 1000) / 1000,
+    }));
+  }
+
+  const source = nodesById[edge.sourceId];
+  const target = nodesById[edge.targetId];
+  if (source === undefined || target === undefined) return [];
+  return [
+    { x: source.x + source.width / 2, y: source.y + source.height / 2 },
+    { x: target.x + target.width / 2, y: target.y + target.height / 2 },
+  ];
+}
+
+function createDagreLayout(
+  document: DiagramDocument,
+  options: LayoutOptions = {}
+): PositionedDiagram {
+  const normalized = normalizeLayoutOptions(document, options);
+
+  if (document.nodes.length === 0) {
+    return {
+      document,
+      nodes: [],
+      edges: [],
+      groups: [],
+      activations: [],
+      width: normalized.padding * 2,
+      height: normalized.padding * 2,
+    };
+  }
+
+  const { nodeMap, edgePointsMap } = buildDagreGraph(document, normalized);
+
+  const nodes = positionNodes(document, normalized, nodeMap);
+  const nodesById: Record<string, PositionedNode> = {};
+  for (const node of nodes) {
+    nodesById[node.id] = node;
+  }
+
+  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => ({
+    ...edge,
+    waypoints: edgeWaypoints(edge, nodesById, edgePointsMap),
+  }));
+
+  const width =
+    Math.max(normalized.padding * 2, ...nodes.map((n) => n.x + n.width)) + normalized.padding;
+  const height =
+    Math.max(normalized.padding * 2, ...nodes.map((n) => n.y + n.height)) + normalized.padding;
+
+  return { document, nodes, edges, groups: [], activations: [], width, height };
+}
+
+export class DagreLayoutEngine implements LayoutEngine {
+  readonly name = "dagre";
+
+  supports(document: DiagramDocument): boolean {
+    return document.kind !== "sequence";
+  }
+
+  async layout(document: DiagramDocument, options: LayoutOptions = {}): Promise<PositionedDiagram> {
+    return createDagreLayout(document, options);
+  }
+}
+
+export function dagreLayout(): DagreLayoutEngine {
+  return new DagreLayoutEngine();
+}
