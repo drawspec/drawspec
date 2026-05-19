@@ -90,6 +90,18 @@
         "typescript": "latest",
       },
     },
+    "packages/uml-class": {
+      "name": "@drawspec/uml-class",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
     "packages/uml-component": {
       "name": "@drawspec/uml-component",
       "version": "0.0.1",
@@ -184,6 +196,8 @@
     "@drawspec/renderer-svg": ["@drawspec/renderer-svg@workspace:packages/renderer-svg"],
 
     "@drawspec/testkit": ["@drawspec/testkit@workspace:packages/testkit"],
+
+    "@drawspec/uml-class": ["@drawspec/uml-class@workspace:packages/uml-class"],
 
     "@drawspec/uml-component": ["@drawspec/uml-component@workspace:packages/uml-component"],
 
