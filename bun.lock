@@ -12,6 +12,7 @@
         "@drawspec/layout": "workspace:*",
         "@drawspec/renderer-svg": "workspace:*",
         "@drawspec/testkit": "workspace:*",
+        "@drawspec/uml-component": "workspace:*",
         "@drawspec/uml-sequence": "workspace:*",
         "@drawspec/validation": "workspace:*",
         "typescript": "latest",
@@ -91,6 +92,30 @@
     },
     "packages/uml-activity": {
       "name": "@drawspec/uml-activity",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
+    "packages/uml-class": {
+      "name": "@drawspec/uml-class",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
+    "packages/uml-component": {
+      "name": "@drawspec/uml-component",
       "version": "0.0.1",
       "dependencies": {
         "@drawspec/core": "workspace:*",
@@ -185,6 +210,10 @@
     "@drawspec/testkit": ["@drawspec/testkit@workspace:packages/testkit"],
 
     "@drawspec/uml-activity": ["@drawspec/uml-activity@workspace:packages/uml-activity"],
+
+    "@drawspec/uml-class": ["@drawspec/uml-class@workspace:packages/uml-class"],
+
+    "@drawspec/uml-component": ["@drawspec/uml-component@workspace:packages/uml-component"],
 
     "@drawspec/uml-sequence": ["@drawspec/uml-sequence@workspace:packages/uml-sequence"],
 
