@@ -3,7 +3,9 @@ import type { DiagramDocument } from "@drawspec/core";
 import type { ArchitectureElementLike, ArchitectureModelLike, Rule } from "../index";
 import {
   architectureRules,
+  classRules,
   diagramRules,
+  generalDiagramRules,
   noDuplicateNamesInScopeRule,
   noDuplicateNodeIdRule,
   noEmptyLabelRule,
@@ -272,7 +274,12 @@ describe("rule engine and presets", () => {
   });
 
   test("recommended preset exports all recommended rules", () => {
-    expect(recommendedRules).toHaveLength(architectureRules.length + diagramRules.length);
+    expect(recommendedRules).toHaveLength(
+      architectureRules.length +
+        diagramRules.length +
+        classRules.length +
+        generalDiagramRules.length
+    );
     for (const rule of recommendedRules) {
       if (rule.meta.recommended === false) {
         expect(recommended.rules?.[rule.name]).toBeUndefined();
