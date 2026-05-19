@@ -33,3 +33,4 @@ renderer-svg = { path = "packages/renderer-svg" }
 cli = { path = "packages/cli" }
 viewer = { path = "packages/viewer" }
 testkit = { path = "packages/testkit" }
+vite-plugin = { path = "packages/vite-plugin" }
