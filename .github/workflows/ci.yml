@@ -7,6 +7,23 @@ on:
     branches: [main]
 
 jobs:
+  commit-lint:
+    name: commit-lint
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+      - run: cog check ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
+
   check:
     name: check
     runs-on: ubuntu-latest

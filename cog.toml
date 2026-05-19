@@ -1,0 +1,35 @@
+from_latest_tag = true
+ignore_merge_commits = true
+
+# Branch whitelist — only allow bumps from main
+branch_whitelist = ["main"]
+
+# Tag prefix
+tag_prefix = "v"
+
+[changelog]
+path = "CHANGELOG.md"
+template = "remote"
+remote = "github.com"
+owner = "drawspec"
+repository = "drawspec"
+
+# Monorepo packages (Npm workspace resolver)
+# The resolver is auto-detected from the presence of package.json workspaces
+[packages]
+core = { path = "packages/core" }
+architecture = { path = "packages/architecture" }
+uml-class = { path = "packages/uml-class" }
+uml-component = { path = "packages/uml-component" }
+uml-state = { path = "packages/uml-state" }
+uml-deployment = { path = "packages/uml-deployment" }
+uml-activity = { path = "packages/uml-activity" }
+uml-sequence = { path = "packages/uml-sequence" }
+validation = { path = "packages/validation" }
+layout = { path = "packages/layout" }
+layout-dagre = { path = "packages/layout-dagre" }
+layout-elk = { path = "packages/layout-elk" }
+renderer-svg = { path = "packages/renderer-svg" }
+cli = { path = "packages/cli" }
+viewer = { path = "packages/viewer" }
+testkit = { path = "packages/testkit" }

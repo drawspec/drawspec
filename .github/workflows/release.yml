@@ -2,11 +2,47 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      bump_rule:
+        description: "Version bump rule"
+        required: true
+        default: "auto"
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+# RELEASE_TOKEN must be a PAT with repo scope and branch-protection bypass permissions.
 
 jobs:
   release:
     name: release
     runs-on: ubuntu-latest
     steps:
-      - name: Release workflow
-        run: echo "Release workflow not yet implemented" && exit 1
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - run: cog bump --auto
+        if: inputs.bump_rule == 'auto'
+      - run: cog bump ${{ inputs.bump_rule }}
+        if: inputs.bump_rule != 'auto'
+      - run: git push origin main --follow-tags
