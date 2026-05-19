@@ -8,7 +8,7 @@ import type {
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { normalizeLayoutOptions } from "@drawspec/layout";
+import { LayoutCache, normalizeLayoutOptions } from "@drawspec/layout";
 import dagre from "dagre";
 
 const DIRECTION_MAP: Record<string, string> = {
@@ -150,6 +150,32 @@ function edgeWaypoints(
   ];
 }
 
+function computeBounds(
+  nodes: PositionedNode[],
+  edges: PositionedEdge[],
+  padding: number
+): { width: number; height: number } {
+  const allX: number[] = [];
+  const allY: number[] = [];
+
+  for (const node of nodes) {
+    allX.push(node.x + node.width);
+    allY.push(node.y + node.height);
+  }
+
+  for (const edge of edges) {
+    for (const wp of edge.waypoints) {
+      allX.push(wp.x);
+      allY.push(wp.y);
+    }
+  }
+
+  return {
+    width: Math.max(padding * 2, ...allX) + padding,
+    height: Math.max(padding * 2, ...allY) + padding,
+  };
+}
+
 function createDagreLayout(
   document: DiagramDocument,
   options: LayoutOptions = {}
@@ -181,23 +207,28 @@ function createDagreLayout(
     waypoints: edgeWaypoints(edge, nodesById, edgePointsMap),
   }));
 
-  const width =
-    Math.max(normalized.padding * 2, ...nodes.map((n) => n.x + n.width)) + normalized.padding;
-  const height =
-    Math.max(normalized.padding * 2, ...nodes.map((n) => n.y + n.height)) + normalized.padding;
+  const { width, height } = computeBounds(nodes, edges, normalized.padding);
 
   return { document, nodes, edges, groups: [], activations: [], width, height };
 }
 
 export class DagreLayoutEngine implements LayoutEngine {
   readonly name = "dagre";
+  readonly #cache = new LayoutCache();
 
   supports(document: DiagramDocument): boolean {
     return document.kind !== "sequence";
   }
 
   async layout(document: DiagramDocument, options: LayoutOptions = {}): Promise<PositionedDiagram> {
-    return createDagreLayout(document, options);
+    const cached = this.#cache.get(document, options);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const positioned = createDagreLayout(document, options);
+    this.#cache.set(document, options, positioned);
+    return positioned;
   }
 }
 

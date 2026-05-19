@@ -8,7 +8,7 @@ import type {
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { normalizeLayoutOptions } from "@drawspec/layout";
+import { LayoutCache, normalizeLayoutOptions } from "@drawspec/layout";
 import type { ElkExtendedEdge, ElkNode } from "elkjs/lib/elk-api";
 import ELKConstructor from "elkjs/lib/elk-api.js";
 
@@ -27,7 +27,10 @@ function sortedEdges(document: DiagramDocument): DiagramEdge[] {
   return [...document.edges].sort((a, b) => a.id.localeCompare(b.id));
 }
 
-function createElkInstance(): InstanceType<typeof ELKConstructor> {
+let elkInstance: InstanceType<typeof ELKConstructor> | undefined;
+
+function getElkInstance(): InstanceType<typeof ELKConstructor> {
+  if (elkInstance !== undefined) return elkInstance;
   const req = import.meta.require as (id: string) => unknown & { resolve(id: string): string };
   req("elkjs/lib/elk-worker.js");
   const FakeWorker = (globalThis as Record<string, unknown>)["Worker"] as new (
@@ -37,12 +40,11 @@ function createElkInstance(): InstanceType<typeof ELKConstructor> {
     "elkjs/lib/elk-worker.js"
   );
 
-  return new ELKConstructor({
+  elkInstance = new ELKConstructor({
     workerFactory: () => new FakeWorker(workerPath),
   });
+  return elkInstance;
 }
-
-const elk = createElkInstance();
 
 function buildElkGraph(document: DiagramDocument, normalized: NormalizedLayoutOptions): ElkNode {
   const children: ElkNode[] = sortedNodes(document).map((node) => ({
@@ -158,6 +160,32 @@ function edgeWaypoints(
   ];
 }
 
+function computeBounds(
+  nodes: PositionedNode[],
+  edges: PositionedEdge[],
+  padding: number
+): { width: number; height: number } {
+  const allX: number[] = [];
+  const allY: number[] = [];
+
+  for (const node of nodes) {
+    allX.push(node.x + node.width);
+    allY.push(node.y + node.height);
+  }
+
+  for (const edge of edges) {
+    for (const wp of edge.waypoints) {
+      allX.push(wp.x);
+      allY.push(wp.y);
+    }
+  }
+
+  return {
+    width: Math.max(padding * 2, ...allX) + padding,
+    height: Math.max(padding * 2, ...allY) + padding,
+  };
+}
+
 async function createElkLayout(
   document: DiagramDocument,
   options: LayoutOptions = {}
@@ -177,6 +205,7 @@ async function createElkLayout(
   }
 
   const elkGraph = buildElkGraph(document, normalized);
+  const elk = getElkInstance();
   const elkResult = await elk.layout(elkGraph);
 
   const nodes = positionNodes(document, normalized, elkResult);
@@ -195,23 +224,28 @@ async function createElkLayout(
     waypoints: edgeWaypoints(edge, nodesById, elkEdgesById),
   }));
 
-  const width =
-    Math.max(normalized.padding * 2, ...nodes.map((n) => n.x + n.width)) + normalized.padding;
-  const height =
-    Math.max(normalized.padding * 2, ...nodes.map((n) => n.y + n.height)) + normalized.padding;
+  const { width, height } = computeBounds(nodes, edges, normalized.padding);
 
   return { document, nodes, edges, groups: [], activations: [], width, height };
 }
 
 export class ElkLayoutEngine implements LayoutEngine {
   readonly name = "elk";
+  readonly #cache = new LayoutCache();
 
   supports(document: DiagramDocument): boolean {
     return document.kind !== "sequence";
   }
 
   async layout(document: DiagramDocument, options: LayoutOptions = {}): Promise<PositionedDiagram> {
-    return createElkLayout(document, options);
+    const cached = this.#cache.get(document, options);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const positioned = await createElkLayout(document, options);
+    this.#cache.set(document, options, positioned);
+    return positioned;
   }
 }
 
