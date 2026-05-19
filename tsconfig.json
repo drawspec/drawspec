@@ -5,6 +5,7 @@
     { "path": "./packages/architecture" },
     { "path": "./packages/uml-class" },
     { "path": "./packages/uml-sequence" },
+    { "path": "./packages/uml-component" },
     { "path": "./packages/validation" },
     { "path": "./packages/layout" },
     { "path": "./packages/renderer-svg" },
