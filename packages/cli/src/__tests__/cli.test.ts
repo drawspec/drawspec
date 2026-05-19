@@ -168,4 +168,38 @@ describe("drawspec CLI", () => {
       expect(JSON.parse(message)).toMatchObject({ type: "diagnostics" });
     });
   });
+
+  test("build-site generates static HTML site", async () => {
+    const outDir = await tempDir();
+    const result = await runDrawspec([
+      "build-site",
+      join(fixtures, "payment.sequence.ts"),
+      "--out",
+      outDir,
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("built site");
+
+    const indexHtml = await Bun.file(join(outDir, "index.html")).text();
+    expect(indexHtml).toContain("<!doctype html>");
+    expect(indexHtml).toContain("DrawSpec Diagrams");
+    expect(indexHtml).toContain("Payment CLI");
+
+    const styleCss = await Bun.file(join(outDir, "style.css")).text();
+    expect(styleCss).toContain(".card");
+    expect(styleCss).toContain(".grid");
+
+    const dir = await Array.fromAsync(new Bun.Glob("*.html").scan({ cwd: outDir }));
+    const diagramPages = dir.filter((f) => f !== "index.html");
+    expect(diagramPages).toHaveLength(1);
+
+    const diagramPageFile = diagramPages[0];
+    expect(diagramPageFile).toBeDefined();
+    const diagramPage = await Bun.file(join(outDir, diagramPageFile as string)).text();
+    expect(diagramPage).toContain("<!doctype html>");
+    expect(diagramPage).toContain("<svg");
+    expect(diagramPage).toContain("Payment CLI");
+    expect(diagramPage).toContain("sequence");
+  });
 });

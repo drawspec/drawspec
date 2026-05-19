@@ -7,6 +7,12 @@ import { serializeDocument } from "@drawspec/core";
 import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
 import { type RuleConfig, recommended, recommendedRules, validate } from "@drawspec/validation";
+import {
+  generateDiagramHtml,
+  generateIndexHtml,
+  generateStyleCss,
+  toSiteDiagram,
+} from "./build-site";
 import type { DrawspecConfig } from "./config";
 
 declare const process: {
@@ -58,7 +64,7 @@ interface ServerWebSocket {
   close(): void;
 }
 
-type Command = "check" | "render" | "inspect" | "watch" | "serve";
+type Command = "check" | "render" | "inspect" | "watch" | "serve" | "build-site";
 
 interface ParsedArgs {
   command: Command | undefined;
@@ -89,7 +95,12 @@ type PreviewMessage =
   | { type: "update"; diagramId: string; svg: string }
   | { type: "diagnostics"; items: Diagnostic[] };
 
-const COMMANDS = new Set<string>(["check", "render", "inspect", "watch", "serve"]);
+interface SiteDiagramInternal {
+  file: string;
+  siteDiagram: import("./build-site").SiteDiagram;
+}
+
+const COMMANDS = new Set<string>(["check", "render", "inspect", "watch", "serve", "build-site"]);
 const DEFAULT_PREVIEW_PORT = 4173;
 const DEFAULT_DEBOUNCE_MS = 80;
 const red = (value: string) => `\u001b[31m${value}\u001b[0m`;
@@ -129,6 +140,9 @@ export async function main(argv: readonly string[] = Bun.argv.slice(2)): Promise
   }
   if (parsed.command === "watch") {
     return runWatch(parsed, config);
+  }
+  if (parsed.command === "build-site") {
+    return runBuildSite(parsed, config);
   }
   return runServe(parsed, config);
 }
@@ -175,6 +189,7 @@ Usage:
   drawspec inspect [file] [--format json|pretty]
   drawspec watch [files...] [--port 4173] [--debounce 80]
   drawspec serve [files...] [--host localhost] [--port 4173] [--open]
+  drawspec build-site [files...] [--out site]
 
 Aliases: ds, dspec
 Discovery: **/*.diagram.ts, **/*.arch.ts, **/*.sequence.ts`);
@@ -260,6 +275,48 @@ async function runInspect(parsed: ParsedArgs, config: DrawspecConfig): Promise<n
     console.log(JSON.stringify(payload));
   }
   return diagnostics.some((item) => item.severity === "error") ? 1 : 0;
+}
+
+async function runBuildSite(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {
+  const outDir = asString(parsed.options["out"]) ?? "site";
+  await Bun.$`mkdir -p ${outDir}`.quiet();
+  const loaded = await loadAll(parsed.files, config);
+  const diagnostics = diagnosticsFor(loaded, config);
+  if (diagnostics.some((item) => item.severity === "error")) {
+    printDiagnostics(diagnostics);
+    return 1;
+  }
+  const themeName = asString(parsed.options["theme"]) ?? config.render?.theme ?? config.theme;
+  const siteDiagrams: SiteDiagramInternal[] = [];
+  for (const item of loaded) {
+    if (item.document === undefined) continue;
+    const positionedDiagram = await layoutFor(item.document).layout(
+      item.document,
+      layoutOptions(item.document)
+    );
+    const svg = await renderSvg(item.document, {
+      positionedDiagram,
+      accessibility: { title: item.document.title ?? item.document.id },
+      ...(themeName === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
+    });
+    siteDiagrams.push({
+      file: item.file,
+      siteDiagram: toSiteDiagram(item.document, svg),
+    });
+  }
+  const allDiagrams = siteDiagrams.map((d) => d.siteDiagram);
+  await Bun.write(`${trimTrailingSlash(outDir)}/style.css`, generateStyleCss());
+  await Bun.write(`${trimTrailingSlash(outDir)}/index.html`, generateIndexHtml(allDiagrams));
+  for (const { siteDiagram } of siteDiagrams) {
+    const pageHtml = generateDiagramHtml(siteDiagram);
+    await Bun.write(`${trimTrailingSlash(outDir)}/${safeFileName(siteDiagram.id)}.html`, pageHtml);
+  }
+  console.log(
+    green(
+      `built site with ${allDiagrams.length} diagram${allDiagrams.length === 1 ? "" : "s"} → ${outDir}/`
+    )
+  );
+  return 0;
 }
 
 async function runWatch(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {
