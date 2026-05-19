@@ -32,6 +32,8 @@ interface ClassNodeMetadata {
 
 const PRIMITIVE_TYPES = new Set(["boolean", "number", "string", "void", "unknown", "null"]);
 
+const TYPE_DIAGRAM_KINDS = new Set(["class", "interface", "enum"]);
+
 function isClassNode(node: DiagramNode): boolean {
   return node.kind === "class";
 }
@@ -58,39 +60,45 @@ export const noCircularInheritanceRule: Rule = {
   create(context) {
     return {
       diagram(diagram) {
-        const classNodes = diagram.nodes.filter(isClassNode);
-        const byLabel = new Map<string, DiagramNode>();
-        for (const node of classNodes) {
-          if (node.label) {
-            byLabel.set(node.label, node);
-          }
+        const nodeById = new Map<string, DiagramNode>();
+        for (const node of diagram.nodes) {
+          nodeById.set(node.id, node);
         }
 
-        // Build inheritance map: child label -> parent label
+        // Build inheritance map: child id -> parent id
         // Inheritance is encoded as an "extends" edge.
-        const inheritanceEdges = diagram.edges.filter((edge) => edge.kind === "extends");
-        const edgeMap = new Map<string, string>();
-        for (const edge of inheritanceEdges) {
-          const sourceNode = diagram.nodes.find((n) => n.id === edge.sourceId);
-          const targetNode = diagram.nodes.find((n) => n.id === edge.targetId);
-          if (sourceNode?.label && targetNode?.label) {
-            edgeMap.set(sourceNode.label, targetNode.label);
+        const extendsMap = new Map<string, string>();
+        for (const edge of diagram.edges) {
+          if (edge.kind === "extends") {
+            extendsMap.set(edge.sourceId, edge.targetId);
           }
         }
 
-        for (const node of classNodes) {
-          const startLabel = node.label;
-          if (!startLabel) continue;
+        // Track node IDs that are part of an already-reported cycle.
+        const reportedCycleNodes = new Set<string>();
+
+        for (const node of diagram.nodes) {
+          if (node.kind !== "class") continue;
+          if (reportedCycleNodes.has(node.id)) continue;
 
           const path: string[] = [];
           const visited = new Set<string>();
-          let current = startLabel;
+          let current = node.id;
 
-          while (edgeMap.has(current)) {
+          while (extendsMap.has(current)) {
             if (visited.has(current)) {
-              path.push(current);
+              const cycleStart = current;
+              const cycleIdx = path.indexOf(cycleStart);
+              const cyclePath = cycleIdx >= 0 ? path.slice(cycleIdx) : path;
+              cyclePath.push(cycleStart);
+              // Mark all nodes in the cycle as reported to avoid duplicate diagnostics.
+              for (const id of cyclePath) {
+                reportedCycleNodes.add(id);
+              }
+              const cycleLabels = cyclePath.map((id) => nodeById.get(id)?.label ?? id).join(" -> ");
               context.report({
-                message: `Circular inheritance detected: ${path.join(" -> ")}.`,
+                message: `Circular inheritance detected: ${cycleLabels}.`,
+                ...(node.source === undefined ? {} : { source: node.source }),
                 target: { kind: "node", id: node.id },
                 help: "Class inheritance must form an acyclic graph.",
               });
@@ -98,7 +106,7 @@ export const noCircularInheritanceRule: Rule = {
             }
             visited.add(current);
             path.push(current);
-            const next = edgeMap.get(current);
+            const next = extendsMap.get(current);
             if (next === undefined) break;
             current = next;
           }
@@ -164,7 +172,7 @@ export const noUnknownTypeRefRule: Rule = {
       diagram(diagram) {
         const knownTypes = new Set<string>();
         for (const node of diagram.nodes) {
-          if (node.label) {
+          if (TYPE_DIAGRAM_KINDS.has(node.kind) && node.label) {
             knownTypes.add(node.label);
           }
         }

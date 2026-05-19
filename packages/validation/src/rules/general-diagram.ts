@@ -14,7 +14,7 @@ const DEFAULT_MAX_EDGES = 200;
 export const maxNodesRule: Rule<MaxNodesOptions> = {
   name: "diagram/max-nodes",
   meta: {
-    description: "Diagram must not exceed the configurable maximum number of nodes.",
+    description: "Diagram must not exceed the configurable maximum number of nodes (default 100).",
     recommended: true,
     defaultSeverity: "warn",
   },
@@ -37,7 +37,7 @@ export const maxNodesRule: Rule<MaxNodesOptions> = {
 export const maxEdgesRule: Rule<MaxEdgesOptions> = {
   name: "diagram/max-edges",
   meta: {
-    description: "Diagram must not exceed the configurable maximum number of edges.",
+    description: "Diagram must not exceed the configurable maximum number of edges (default 200).",
     recommended: true,
     defaultSeverity: "warn",
   },

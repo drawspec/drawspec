@@ -2,7 +2,9 @@ import { describe, expect, test } from "bun:test";
 import type { DiagramDocument } from "@drawspec/core";
 import type { Rule } from "../index";
 import {
+  architectureRules,
   classRules,
+  diagramRules,
   generalDiagramRules,
   maxEdgesRule,
   maxNodesRule,
@@ -73,8 +75,9 @@ describe("class/no-circular-inheritance", () => {
       ],
     });
     const diags = diagnosticsFor(noCircularInheritanceRule, { diagram: doc });
-    expect(diags.length).toBeGreaterThanOrEqual(1);
+    expect(diags).toHaveLength(1);
     expect(diags[0]?.code).toBe("class/no-circular-inheritance");
+    expect(diags[0]?.message).toContain("A -> B -> A");
   });
 
   test("reports indirect circular inheritance (A -> B -> C -> A)", () => {
@@ -87,7 +90,8 @@ describe("class/no-circular-inheritance", () => {
       ],
     });
     const diags = diagnosticsFor(noCircularInheritanceRule, { diagram: doc });
-    expect(diags.length).toBeGreaterThanOrEqual(1);
+    expect(diags).toHaveLength(1);
+    expect(diags[0]?.message).toContain("A -> B -> C -> A");
   });
 
   test("accepts class with no inheritance", () => {
@@ -368,7 +372,7 @@ describe("diagram/no-floating-node", () => {
     expect(diagnosticsFor(noFloatingNodeRule, { diagram: doc })).toHaveLength(0);
   });
 
-  test("accepts node connected as target only", () => {
+  test("reports floating node not connected to any edge", () => {
     const doc = diagram({
       nodes: [
         { id: "a", kind: "class", label: "A" },
@@ -432,6 +436,11 @@ describe("expanded presets", () => {
   });
 
   test("recommended rules count includes all rule packs", () => {
-    expect(recommendedRules.length).toBe(classRules.length + generalDiagramRules.length + 7);
+    expect(recommendedRules.length).toBe(
+      architectureRules.length +
+        diagramRules.length +
+        classRules.length +
+        generalDiagramRules.length
+    );
   });
 });
