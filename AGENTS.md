@@ -451,7 +451,7 @@ Serena has persistent memories stored in `.serena/memories/`. These are project 
 
 - **Tool**: `cocogitto` in `mise.toml`
 - **Config**: `cog.toml` at repo root
-- **Monorepo**: Npm resolver with all 16 packages registered
+- **Monorepo**: All 16 packages registered in `[packages]` section
 
 ### Commit Message Validation
 
