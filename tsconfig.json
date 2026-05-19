@@ -3,13 +3,15 @@
   "references": [
     { "path": "./packages/core" },
     { "path": "./packages/architecture" },
+    { "path": "./packages/uml-class" },
+    { "path": "./packages/uml-component" },
+    { "path": "./packages/uml-deployment" },
     { "path": "./packages/uml-sequence" },
     { "path": "./packages/validation" },
     { "path": "./packages/layout" },
     { "path": "./packages/renderer-svg" },
     { "path": "./packages/cli" },
     { "path": "./packages/viewer" },
-    { "path": "./packages/testkit" },
-    { "path": "./packages/uml-deployment" }
+    { "path": "./packages/testkit" }
   ]
 }

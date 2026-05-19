@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-classdoc_f5ee8bb6-0paqxzb-desc-0822wwq" aria-labelledby="drawspec-classdoc_f5ee8bb6-0paqxzb-title-1wmin6v" height="536" id="drawspec-classdoc_f5ee8bb6-0paqxzb" role="img" viewBox="0 0 376 536" width="376" xmlns="http://www.w3.org/2000/svg">
+  <title id="drawspec-classdoc_f5ee8bb6-0paqxzb-title-1wmin6v">
+    Payment Class Diagram
+  </title>
+  <desc id="drawspec-classdoc_f5ee8bb6-0paqxzb-desc-0822wwq">
+    class diagram classdoc_f5ee8bb6
+  </desc>
+  <rect fill="#ffffff" height="536" width="376" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-classdoc_f5ee8bb6-0paqxzb-marker-arrow-13wcdcp" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_24678296-1m326lp">
+    <path d="M 100 68 L 276 468" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-arrow-13wcdcp)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_78a277d9-155onlo">
+    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-arrow-13wcdcp)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_f2545dbb-03yqdt9">
+    <path d="M 100 68 L 276 268" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-arrow-13wcdcp)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-class_412c2b79-1p5yoan">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="40" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="72.667">
+      AggregateRoot
+    </text>
+  </g>
+  <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-class_9fb30820-1crwmvp">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      Payment
+    </text>
+  </g>
+  <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-enum_a36c23b8-0kp7rqa">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="240" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="272.667">
+      PaymentStatus
+    </text>
+  </g>
+  <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-iface_bc02efc2-09toevq">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="440" />
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="472.667">
+      Payable
+    </text>
+  </g>
+</svg>
