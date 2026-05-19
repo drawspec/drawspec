@@ -133,4 +133,31 @@ describe("state diagrams", () => {
 
     await expectGolden("state", svg);
   });
+
+  test("emits diagnostic for dangling transition target", () => {
+    const doc = stateDiagram("Dangling", () => [state("Created", (s) => [s.to("NonExistent")])]);
+
+    expect(doc.edges).toHaveLength(0);
+    expect(doc.diagnostics?.map((d) => d.code)).toEqual(["state/dangling-transition-target"]);
+  });
+
+  test("duplicate state names get unique IDs via helper callback", () => {
+    const doc = stateDiagram("Dup")(({ state }) => {
+      return [state("Active"), state("Active")];
+    });
+
+    const ids = doc.nodes.map((n) => n.id);
+    expect(new Set(ids).size).toBe(2);
+    expect(doc.nodes).toHaveLength(2);
+  });
+
+  test("duplicate pseudostate names get unique IDs via helper callback", () => {
+    const doc = stateDiagram("DupPseudo")(({ initial, final }) => {
+      return [initial(), initial(), final(), final()];
+    });
+
+    const ids = doc.nodes.map((n) => n.id);
+    expect(new Set(ids).size).toBe(4);
+    expect(doc.nodes).toHaveLength(4);
+  });
 });

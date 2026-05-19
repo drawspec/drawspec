@@ -30,9 +30,12 @@ export class MutableStateElement implements StateElement {
   readonly kind = "state";
   readonly transitions: Transition[] = [];
 
-  constructor(name: string) {
+  constructor(name: string, index = 0) {
     this.name = name;
-    this.id = createDeterministicId({ kind: "state", name }, { prefix: "state", length: 10 });
+    this.id = createDeterministicId(
+      { kind: "state", name, index },
+      { prefix: "state", length: 10 }
+    );
   }
 
   to(target: StateTransitionTarget, label?: string): TransitionLabelBuilder {

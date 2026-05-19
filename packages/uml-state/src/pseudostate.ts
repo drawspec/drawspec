@@ -15,11 +15,11 @@ class MutablePseudostateElement implements PseudostateElement {
   readonly pseudostate: PseudostateKind;
   readonly transitions: Transition[] = [];
 
-  constructor(pseudostate: PseudostateKind, name: string) {
+  constructor(pseudostate: PseudostateKind, name: string, index = 0) {
     this.name = name;
     this.pseudostate = pseudostate;
     this.id = createDeterministicId(
-      { kind: "pseudostate", name, pseudostate },
+      { kind: "pseudostate", name, pseudostate, index },
       { prefix: "state", length: 10 }
     );
   }
@@ -42,10 +42,10 @@ class MutablePseudostateElement implements PseudostateElement {
   }
 }
 
-export function initial(name = "initial"): PseudostateElement {
-  return new MutablePseudostateElement("initial", name);
+export function initial(name = "initial", index = 0): PseudostateElement {
+  return new MutablePseudostateElement("initial", name, index);
 }
 
-export function final(name = "final"): PseudostateElement {
-  return new MutablePseudostateElement("final", name);
+export function final(name = "final", index = 0): PseudostateElement {
+  return new MutablePseudostateElement("final", name, index);
 }
