@@ -73,7 +73,10 @@ export function compileComponentDiagramDocument(
   }
 
   for (const component of components) {
+    const seenProvided = new Set<string>();
     for (const provided of component.providedInterfaces) {
+      if (seenProvided.has(provided.name)) continue;
+      seenProvided.add(provided.name);
       const targetId = interfaceIdsByName.get(provided.name);
       if (targetId !== undefined) {
         edges.push({
@@ -83,9 +86,19 @@ export function compileComponentDiagramDocument(
           targetId,
           direction: "forward",
         });
+      } else {
+        diagnostics.push(
+          diagnostic(
+            "component/no-unknown-component-ref",
+            `Component "${component.name}" provides unknown interface "${provided.name}"`
+          )
+        );
       }
     }
+    const seenRequired = new Set<string>();
     for (const required of component.requiredInterfaces) {
+      if (seenRequired.has(required.name)) continue;
+      seenRequired.add(required.name);
       const targetId = interfaceIdsByName.get(required.name);
       if (targetId !== undefined) {
         edges.push({
@@ -95,6 +108,13 @@ export function compileComponentDiagramDocument(
           targetId,
           direction: "forward",
         });
+      } else {
+        diagnostics.push(
+          diagnostic(
+            "component/no-unknown-component-ref",
+            `Component "${component.name}" requires unknown interface "${required.name}"`
+          )
+        );
       }
     }
   }

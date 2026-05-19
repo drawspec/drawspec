@@ -59,10 +59,7 @@ class MutableComponentDiagramBuilder {
     this.elements.push(element);
   }
 
-  component(
-    name: string,
-    configure?: (component: ComponentBuilder) => ComponentBuilder
-  ): ComponentElement {
+  component(name: string, configure?: (component: ComponentBuilder) => void): ComponentElement {
     const element = new MutableComponent(name, this.#componentCount);
     this.#componentCount += 1;
     configure?.(element);
@@ -88,7 +85,7 @@ class MutableComponentDiagramBuilder {
 
 export function component(
   name: string,
-  configure?: (component: ComponentBuilder) => ComponentBuilder
+  configure?: (component: ComponentBuilder) => void
 ): ComponentElement {
   const element = new MutableComponent(name, 0);
   configure?.(element);
@@ -121,19 +118,15 @@ export function componentDiagram(
   callback?: (diagram: {
     component: MutableComponentDiagramBuilder["component"];
     dependency: MutableComponentDiagramBuilder["dependency"];
-  }) => readonly ComponentDiagramElement[] | undefined
+    add: MutableComponentDiagramBuilder["add"];
+  }) => void
 ): ComponentDiagramDocument {
   const builder = new MutableComponentDiagramBuilder(title);
-  const result = callback?.({
+  callback?.({
     component: builder.component.bind(builder),
     dependency: builder.dependency.bind(builder),
+    add: builder.add.bind(builder),
   });
-
-  if (result !== undefined) {
-    for (const element of result) {
-      builder.add(element);
-    }
-  }
 
   return compileComponentDiagramDocument(builder.toModel());
 }
