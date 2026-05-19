@@ -4,6 +4,9 @@ import type { Workspace } from "@drawspec/architecture";
 import { compileWorkspace } from "@drawspec/architecture";
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
 import { serializeDocument } from "@drawspec/core";
+import { exportToD2 } from "@drawspec/exporter-d2";
+import { exportToMermaid } from "@drawspec/exporter-mermaid";
+import { exportToPlantUML } from "@drawspec/exporter-plantuml";
 import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
 import { type RuleConfig, recommended, recommendedRules, validate } from "@drawspec/validation";
@@ -58,7 +61,7 @@ interface ServerWebSocket {
   close(): void;
 }
 
-type Command = "check" | "render" | "inspect" | "watch" | "serve";
+type Command = "check" | "render" | "inspect" | "watch" | "serve" | "export";
 
 interface ParsedArgs {
   command: Command | undefined;
@@ -89,7 +92,7 @@ type PreviewMessage =
   | { type: "update"; diagramId: string; svg: string }
   | { type: "diagnostics"; items: Diagnostic[] };
 
-const COMMANDS = new Set<string>(["check", "render", "inspect", "watch", "serve"]);
+const COMMANDS = new Set<string>(["check", "render", "inspect", "watch", "serve", "export"]);
 const DEFAULT_PREVIEW_PORT = 4173;
 const DEFAULT_DEBOUNCE_MS = 80;
 const red = (value: string) => `\u001b[31m${value}\u001b[0m`;
@@ -126,6 +129,9 @@ export async function main(argv: readonly string[] = Bun.argv.slice(2)): Promise
   }
   if (parsed.command === "inspect") {
     return runInspect(parsed, config);
+  }
+  if (parsed.command === "export") {
+    return runExport(parsed, config);
   }
   if (parsed.command === "watch") {
     return runWatch(parsed, config);
@@ -173,6 +179,7 @@ Usage:
   drawspec check [files...] [--format pretty|json]
   drawspec render [files...] [--out dist] [--format svg] [--theme name]
   drawspec inspect [file] [--format json|pretty]
+  drawspec export [files...] --format mermaid|plantuml|d2|json --out <dir>
   drawspec watch [files...] [--port 4173] [--debounce 80]
   drawspec serve [files...] [--host localhost] [--port 4173] [--open]
 
@@ -260,6 +267,63 @@ async function runInspect(parsed: ParsedArgs, config: DrawspecConfig): Promise<n
     console.log(JSON.stringify(payload));
   }
   return diagnostics.some((item) => item.severity === "error") ? 1 : 0;
+}
+
+const EXPORT_FORMATS = new Set(["json", "mermaid", "plantuml", "d2"]);
+
+async function runExport(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {
+  const format = asString(parsed.options["format"]);
+  if (format === undefined || !EXPORT_FORMATS.has(format)) {
+    console.error(red(`--format is required and must be one of: json, mermaid, plantuml, d2`));
+    return 1;
+  }
+  const outDir = asString(parsed.options["out"]);
+  if (outDir === undefined) {
+    console.error(red("--out is required"));
+    return 1;
+  }
+  await Bun.$`mkdir -p ${outDir}`.quiet();
+  const loaded = await loadAll(parsed.files, config);
+  const diagnostics = diagnosticsFor(loaded, config);
+  if (diagnostics.some((item) => item.severity === "error")) {
+    printDiagnostics(diagnostics);
+    return 1;
+  }
+  const written: string[] = [];
+  for (const item of loaded) {
+    if (item.document === undefined) {
+      continue;
+    }
+    const content = exportDocument(item.document, format);
+    const ext = format === "plantuml" ? "puml" : format === "json" ? "json" : format;
+    const pathHash = hashString(item.file).toString(36).slice(0, 8);
+    const outputPath = `${trimTrailingSlash(outDir)}/${safeFileName(item.document.id)}_${pathHash}.${ext}`;
+    await Bun.write(outputPath, content);
+    written.push(outputPath);
+  }
+  if (written.length === 0) {
+    console.error(red("no documents found to export"));
+    return 1;
+  }
+  for (const path of written.sort()) {
+    console.log(path);
+  }
+  return 0;
+}
+
+function exportDocument(document: DiagramDocument, format: string): string {
+  switch (format) {
+    case "json":
+      return JSON.stringify(document, null, 2);
+    case "mermaid":
+      return exportToMermaid(document);
+    case "plantuml":
+      return exportToPlantUML(document);
+    case "d2":
+      return exportToD2(document);
+    default:
+      return JSON.stringify(document, null, 2);
+  }
 }
 
 async function runWatch(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {

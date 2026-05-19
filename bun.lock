@@ -39,6 +39,9 @@
       "dependencies": {
         "@drawspec/architecture": "workspace:*",
         "@drawspec/core": "workspace:*",
+        "@drawspec/exporter-d2": "workspace:*",
+        "@drawspec/exporter-mermaid": "workspace:*",
+        "@drawspec/exporter-plantuml": "workspace:*",
         "@drawspec/layout": "workspace:*",
         "@drawspec/renderer-svg": "workspace:*",
         "@drawspec/uml-sequence": "workspace:*",
