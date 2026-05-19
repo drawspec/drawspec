@@ -9,6 +9,7 @@
     { "path": "./packages/renderer-svg" },
     { "path": "./packages/cli" },
     { "path": "./packages/viewer" },
-    { "path": "./packages/testkit" }
+    { "path": "./packages/testkit" },
+    { "path": "./packages/uml-deployment" }
   ]
 }

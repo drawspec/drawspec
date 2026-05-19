@@ -89,6 +89,16 @@
         "typescript": "latest",
       },
     },
+    "packages/uml-deployment": {
+      "name": "@drawspec/uml-deployment",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
     "packages/uml-sequence": {
       "name": "@drawspec/uml-sequence",
       "version": "0.0.1",
@@ -171,6 +181,8 @@
     "@drawspec/renderer-svg": ["@drawspec/renderer-svg@workspace:packages/renderer-svg"],
 
     "@drawspec/testkit": ["@drawspec/testkit@workspace:packages/testkit"],
+
+    "@drawspec/uml-deployment": ["@drawspec/uml-deployment@workspace:packages/uml-deployment"],
 
     "@drawspec/uml-sequence": ["@drawspec/uml-sequence@workspace:packages/uml-sequence"],
 
