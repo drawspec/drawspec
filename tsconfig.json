@@ -18,6 +18,7 @@
     { "path": "./packages/viewer" },
     { "path": "./packages/testkit" },
     { "path": "./packages/exporter-mermaid" },
-    { "path": "./packages/exporter-plantuml" }
+    { "path": "./packages/exporter-plantuml" },
+    { "path": "./packages/exporter-d2" }
   ]
 }
