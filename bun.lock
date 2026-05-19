@@ -65,6 +65,16 @@
         "typescript": "latest",
       },
     },
+    "packages/exporter-plantuml": {
+      "name": "@drawspec/exporter-plantuml",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
     "packages/layout": {
       "name": "@drawspec/layout",
       "version": "0.0.1",
@@ -261,6 +271,8 @@
     "@drawspec/core": ["@drawspec/core@workspace:packages/core"],
 
     "@drawspec/exporter-mermaid": ["@drawspec/exporter-mermaid@workspace:packages/exporter-mermaid"],
+
+    "@drawspec/exporter-plantuml": ["@drawspec/exporter-plantuml@workspace:packages/exporter-plantuml"],
 
     "@drawspec/layout": ["@drawspec/layout@workspace:packages/layout"],
 
