@@ -440,3 +440,70 @@ Serena has persistent memories stored in `.serena/memories/`. These are project 
 - **Workspace folders**: All 9 packages registered for cross-package symbol resolution
 - **Gitignore**: `.serena/.gitignore` excludes `cache/` and `project.local.yml` (local overrides)
 - **Memories are tracked in git** so all agents share the same knowledge base
+
+---
+
+## Cocogitto (Conventional Commits)
+
+[Cocogitto](https://docs.cocogitto.io/) enforces conventional commit messages and generates changelogs. It's installed via `mise` and configured in `cog.toml`.
+
+### Configuration
+
+- **Tool**: `cocogitto` in `mise.toml`
+- **Config**: `cog.toml` at repo root
+- **Monorepo**: Npm resolver with all 16 packages registered
+
+### Commit Message Validation
+
+Commit messages are validated in two places:
+
+1. **Lefthook (`commit-msg` hook)**: Validates every local commit with `cog verify --file {1}`
+2. **CI (`commit-lint` job)**: Validates all commits in a PR with `cog check`
+
+All commit messages MUST follow the [Conventional Commits](https://www.conventionalcommits.org/) spec:
+
+```
+type(scope): description
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Valid types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+
+### Common Commands
+
+| Command | Description |
+|---------|-------------|
+| `cog verify "feat(core): add thing"` | Verify a single commit message |
+| `cog verify --file $1` | Verify commit message from file (used in hooks) |
+| `cog check` | Check all commits since last tag |
+| `cog log` | Pretty-print commit log |
+| `cog bump --auto` | Auto-bump version based on conventional commits |
+| `cog bump patch\|minor\|major` | Bump with explicit rule |
+| `cog changelog` | Generate changelog |
+
+### Release Workflow
+
+Releases are triggered via the GitHub Actions `Release` workflow:
+
+1. Go to Actions → Release → Run workflow
+2. Select bump rule: `auto` (recommended), `patch`, `minor`, or `major`
+3. The workflow runs `bun run check`, then `cog bump` to generate a changelog and git tag
+4. The tag is pushed to `main`
+
+### Sub-Agent Commit Guidelines
+
+Sub-agents MUST format commits as:
+```
+type(scope): description
+
+Closes #N
+```
+
+Examples:
+- `feat(core): add DiagramDocument IR type`
+- `fix(layout): correct sequence lifeline spacing`
+- `test(uml-sequence): add fragment nesting tests`
+- `chore(ci): add typecheck job to CI`
