@@ -17,6 +17,8 @@ on:
 permissions:
   contents: write
 
+# RELEASE_TOKEN must be a PAT with repo scope and branch-protection bypass permissions.
+
 jobs:
   release:
     name: release
@@ -24,8 +26,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
       - run: |
           curl https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
@@ -35,6 +38,9 @@ jobs:
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install --frozen-lockfile
       - run: bun run check
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
       - run: cog bump --auto
         if: inputs.bump_rule == 'auto'
       - run: cog bump ${{ inputs.bump_rule }}

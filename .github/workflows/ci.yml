@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
-      - run: cog check
+      - run: cog check ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
 
   check:
     name: check
