@@ -5,6 +5,8 @@
     { "path": "./packages/architecture" },
     { "path": "./packages/uml-class" },
     { "path": "./packages/uml-component" },
+    { "path": "./packages/uml-state" },
+    { "path": "./packages/uml-activity" },
     { "path": "./packages/uml-deployment" },
     { "path": "./packages/uml-sequence" },
     { "path": "./packages/validation" },
