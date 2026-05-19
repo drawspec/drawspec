@@ -1,0 +1,54 @@
+{
+  "name": "drawspec",
+  "displayName": "DrawSpec",
+  "description": "Preview, inspect, and validate DrawSpec diagrams in VS Code",
+  "version": "0.1.0",
+  "publisher": "drawspec",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Visualization",
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onCommand:drawspec.preview"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "drawspec.preview",
+        "title": "DrawSpec: Preview Diagram"
+      },
+      {
+        "command": "drawspec.inspect",
+        "title": "DrawSpec: Inspect IR"
+      }
+    ],
+    "configuration": {
+      "title": "DrawSpec",
+      "properties": {
+        "drawspec.diagramFilePatterns": {
+          "type": "array",
+          "default": [
+            "**/*.diagram.ts",
+            "**/*.sequence.ts",
+            "**/*.arch.ts"
+          ],
+          "description": "Glob patterns for DrawSpec diagram files"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@drawspec/core": "workspace:*",
+    "@drawspec/renderer-svg": "workspace:*",
+    "@drawspec/layout": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0"
+  }
+}
