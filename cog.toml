@@ -14,10 +14,9 @@ remote = "github.com"
 owner = "drawspec"
 repository = "drawspec"
 
-[monorepo]
-resolver = "Npm"
-
-[monorepo.packages]
+# Monorepo packages (Npm workspace resolver)
+# The resolver is auto-detected from the presence of package.json workspaces
+[packages]
 core = { path = "packages/core" }
 architecture = { path = "packages/architecture" }
 uml-class = { path = "packages/uml-class" }
