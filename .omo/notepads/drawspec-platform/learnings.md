@@ -49,3 +49,9 @@ tsc -b       ✓ (no output = success)
 - Sequence layout: lifelines at equal horizontal intervals, messages at sequential vertical intervals, fragments as boxes with operand lanes, activation bars from message flow
 - Graph layout: nodes sorted by ID, depths computed via Bellman-Ford-like propagation, supports TB/LR/BT/RL directions
 - PR: https://github.com/drawspec/drawspec/pull/57 — all CI checks pass
+
+## Issue #14 - UML Class package implementation
+- Added `@drawspec/uml-class` as a new workspace package with class/interface/enum builders and deterministic `class` DiagramDocument compilation.
+- Class validation currently emits package-local diagnostics on the compiled document for `class/no-circular-inheritance`, `class/no-duplicate-member`, `class/require-visibility`, and unknown type refs.
+- Golden SVG coverage can reuse `simpleGraphLayout` + `renderSvg`; package tests import layout/renderer source paths because workspace package exports point at `dist` and root `bun test` runs source tests after `tsc -b`.
+- Local verification in this worktree requires `MISE_TRUSTED_CONFIG_PATHS=/tmp/drawspec-issue-14/mise.toml`.
