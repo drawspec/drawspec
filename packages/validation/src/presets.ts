@@ -1,13 +1,16 @@
 import { architectureRules } from "./rules/architecture";
+import { classRules } from "./rules/class-rules";
 import { diagramRules } from "./rules/diagram";
+import { generalDiagramRules } from "./rules/general-diagram";
 import type { Rule, RuleConfig, ValidationConfig } from "./types";
 
 export const recommendedRules = [
   ...architectureRules,
+  ...classRules,
   ...diagramRules,
+  ...generalDiagramRules,
 ] as const satisfies readonly Rule[];
 
-// Assert no duplicate rule names before building the config.
 const nameCount = new Map<string, number>();
 for (const rule of recommendedRules) {
   const n = (nameCount.get(rule.name) ?? 0) + 1;

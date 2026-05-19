@@ -2,14 +2,23 @@ export { normalizeRuleConfig, RuleEngine, targetToString, validate } from "./eng
 export { recommended, recommendedRules } from "./presets";
 export {
   architectureRules,
+  classRules,
   diagramRules,
+  generalDiagramRules,
+  maxEdgesRule,
+  maxNodesRule,
+  noCircularInheritanceRule,
+  noDuplicateMemberRule,
   noDuplicateNamesInScopeRule,
   noDuplicateNodeIdRule,
   noEmptyLabelRule,
+  noFloatingNodeRule,
   noFrontendToDatabaseRule,
   noOrphanElementsRule,
+  noUnknownTypeRefRule,
   requireTechnologyRule,
   requireTitleRule,
+  requireVisibilityRule,
 } from "./rules";
 export type {
   ArchitectureElementLike,
