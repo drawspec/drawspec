@@ -10,9 +10,9 @@ describe("deploymentDiagram", () => {
 
     expect(doc.kind).toBe("deployment");
     expect(doc.schemaVersion).toBe("1.0.0");
-    const kinds = doc.nodes.map((n) => ({ kind: n.kind, label: n.label }));
-    expect(kinds).toContainEqual({ kind: "deployment-node", label: "Web Server" });
-    expect(kinds).toContainEqual({ kind: "infrastructure-node", label: "Database" });
+    const kinds = new Set(doc.nodes.map((n) => `${n.kind}:${n.label}`));
+    expect(kinds.has("deployment-node:Web Server")).toBe(true);
+    expect(kinds.has("infrastructure-node:Database")).toBe(true);
   });
 
   test("artifacts nest within deployment nodes as child nodes and groups", () => {
@@ -25,11 +25,12 @@ describe("deploymentDiagram", () => {
 
     const artifactNodes = doc.nodes.filter((n) => n.kind === "artifact");
     expect(artifactNodes).toHaveLength(2);
-    expect(artifactNodes.map((n) => n.label)).toEqual(["API Service", "Worker"]);
+    expect(new Set(artifactNodes.map((n) => n.label))).toEqual(new Set(["API Service", "Worker"]));
 
-    const parentIds = artifactNodes.map((n) => n.parentId);
     const serverNode = doc.nodes.find((n) => n.kind === "deployment-node");
-    expect(parentIds).toEqual([serverNode?.id, serverNode?.id]);
+    for (const art of artifactNodes) {
+      expect(art.parentId).toBe(serverNode?.id);
+    }
 
     expect(doc.groups).toHaveLength(1);
     expect(doc.groups[0]?.kind).toBe("deployment-node");
@@ -131,5 +132,37 @@ describe("deploymentDiagram", () => {
 
     expect(doc.edges).toHaveLength(1);
     expect(doc.edges[0]?.label).toBeUndefined();
+  });
+
+  test("emits diagnostic for unresolved communication path endpoints", () => {
+    const doc = deploymentDiagram("BadPath", (d) => {
+      d.deploymentNode("A");
+      d.communicationPath("A", "NonExistent");
+    });
+
+    expect(doc.edges).toHaveLength(0);
+    expect(doc.diagnostics?.map((d) => d.code)).toEqual(["deployment/unresolved-endpoint"]);
+  });
+
+  test("duplicate node names get unique IDs", () => {
+    const doc = deploymentDiagram("DupNodes", (d) => {
+      d.deploymentNode("Server");
+      d.deploymentNode("Server");
+    });
+
+    const ids = doc.nodes.map((n) => n.id);
+    expect(new Set(ids).size).toBe(2);
+  });
+
+  test("deploymentNode returns node ID for reference safety", () => {
+    let returnedId = "";
+    deploymentDiagram("IdRef", (d) => {
+      returnedId = d.deploymentNode("Web Server");
+    });
+    const doc = deploymentDiagram("IdRef", (d) => {
+      d.deploymentNode("Web Server");
+    });
+    const node = doc.nodes.find((n) => n.kind === "deployment-node");
+    expect(returnedId).toBe(node?.id);
   });
 });

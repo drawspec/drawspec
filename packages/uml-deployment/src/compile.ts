@@ -1,11 +1,21 @@
-import type { DiagramEdge, DiagramGroup, DiagramNode } from "@drawspec/core";
-import { createDeterministicId } from "@drawspec/core";
+import {
+  createDeterministicId,
+  type Diagnostic,
+  type DiagramEdge,
+  type DiagramGroup,
+  type DiagramNode,
+} from "@drawspec/core";
 import type { DeploymentDocument, DeploymentDomainModel } from "./types";
+
+function diagnostic(code: string, message: string): Diagnostic {
+  return { severity: "error", code, message };
+}
 
 export function compileDeploymentDocument(model: DeploymentDomainModel): DeploymentDocument {
   const nodes: DiagramNode[] = [];
   const edges: DiagramEdge[] = [];
   const groups: DiagramGroup[] = [];
+  const diagnostics: Diagnostic[] = [];
 
   const nameToId = new Map<string, string>();
 
@@ -26,7 +36,7 @@ export function compileDeploymentDocument(model: DeploymentDomainModel): Deploym
         id: art.id,
         kind: "artifact",
         label: art.name,
-        parentId: dn.id,
+        parentId: art.parentNodeId,
       });
     }
 
@@ -56,7 +66,19 @@ export function compileDeploymentDocument(model: DeploymentDomainModel): Deploym
   for (const cp of model.communicationPaths) {
     const sourceId = nameToId.get(cp.sourceName);
     const targetId = nameToId.get(cp.targetName);
-    if (sourceId === undefined || targetId === undefined) continue;
+
+    if (sourceId === undefined || targetId === undefined) {
+      const missing: string[] = [];
+      if (sourceId === undefined) missing.push(`source "${cp.sourceName}"`);
+      if (targetId === undefined) missing.push(`target "${cp.targetName}"`);
+      diagnostics.push(
+        diagnostic(
+          "deployment/unresolved-endpoint",
+          `Communication path references unresolved ${missing.join(" and ")}`
+        )
+      );
+      continue;
+    }
 
     const edge: DiagramEdge = {
       id: cp.id,
@@ -75,7 +97,7 @@ export function compileDeploymentDocument(model: DeploymentDomainModel): Deploym
   edges.sort((a, b) => a.id.localeCompare(b.id));
   groups.sort((a, b) => a.id.localeCompare(b.id));
 
-  return {
+  const document: DeploymentDocument = {
     schemaVersion: "1.0.0",
     id: model.id,
     title: model.title,
@@ -85,4 +107,8 @@ export function compileDeploymentDocument(model: DeploymentDomainModel): Deploym
     groups,
     annotations: [],
   };
+  if (diagnostics.length > 0) {
+    document.diagnostics = diagnostics;
+  }
+  return document;
 }
