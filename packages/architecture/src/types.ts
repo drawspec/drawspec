@@ -5,11 +5,17 @@ export type ArchitectureRelationshipKind = "uses";
 export type ArchitectureViewKind = "systemContext" | "container";
 export type AutoLayoutDirection = "left-right" | "right-left" | "top-down" | "bottom-up";
 
+export interface OwnerMetadata {
+  team?: string;
+  individual?: string;
+  escalation?: string;
+}
+
 export interface ArchitectureElementOptions {
   id?: string;
   description?: string;
   technology?: string;
-  owner?: string;
+  owner?: string | OwnerMetadata;
   tags?: readonly string[];
   metadata?: Record<string, unknown>;
   properties?: Record<string, unknown>;
@@ -33,7 +39,7 @@ export interface ArchitectureElement {
   readonly name: string;
   readonly description: string | undefined;
   readonly technology: string | undefined;
-  readonly owner: string | undefined;
+  readonly owner: string | OwnerMetadata | undefined;
   readonly tags: readonly string[];
   readonly metadata: Readonly<Record<string, unknown>>;
   readonly properties: Readonly<Record<string, unknown>>;

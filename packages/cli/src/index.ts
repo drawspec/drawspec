@@ -13,7 +13,13 @@ import type { Diagnostic, DiagramDocument } from "@drawspec/core";
 import { serializeDocument } from "@drawspec/core";
 import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
-import { type RuleConfig, recommended, recommendedRules, validate } from "@drawspec/validation";
+import {
+  loadPolicyPack,
+  type RuleConfig,
+  recommended,
+  recommendedRules,
+  validate,
+} from "@drawspec/validation";
 import {
   generateDiagramHtml,
   generateIndexHtml,
@@ -201,7 +207,7 @@ function printHelp(): void {
   console.log(`drawspec — TypeScript-native diagrams as code
 
 Usage:
-  drawspec check [files...] [--format pretty|json]
+  drawspec check [files...] [--format pretty|json] [--policy name]
   drawspec render [files...] [--out dist] [--format svg] [--theme name] [--no-cache] [--cache-dir path]
   drawspec inspect [file] [--format json|pretty]
   drawspec watch [files...] [--port 4173] [--debounce 80]
@@ -215,7 +221,8 @@ Discovery: **/*.diagram.ts, **/*.arch.ts, **/*.sequence.ts`);
 
 async function runCheck(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {
   const loaded = await loadAll(parsed.files, config);
-  const diagnostics = diagnosticsFor(loaded, config);
+  const policyName = asString(parsed.options["policy"]);
+  const diagnostics = diagnosticsFor(loaded, config, policyName);
   if (asString(parsed.options["format"]) === "json") {
     console.log(JSON.stringify({ diagnostics }, null, 2));
   } else {
@@ -618,15 +625,29 @@ function handleResult(result: unknown): DiagramDocument[] | { error: string } {
   return { error: `exported value is not a DiagramDocument or Workspace (got ${typeof result})` };
 }
 
-function diagnosticsFor(loaded: readonly LoadedDocument[], config: DrawspecConfig): Diagnostic[] {
+function diagnosticsFor(
+  loaded: readonly LoadedDocument[],
+  config: DrawspecConfig,
+  policyName?: string
+): Diagnostic[] {
   return loaded.flatMap((item) => [
     ...item.diagnostics,
-    ...(item.document === undefined ? [] : validateDocument(item.document, config)),
+    ...(item.document === undefined ? [] : validateDocument(item.document, config, policyName)),
   ]);
 }
 
-function validateDocument(document: DiagramDocument, config: DrawspecConfig): Diagnostic[] {
-  const rules: RuleConfig = { ...recommended.rules, ...config.validation?.rules, ...config.rules };
+function validateDocument(
+  document: DiagramDocument,
+  config: DrawspecConfig,
+  policyName?: string
+): Diagnostic[] {
+  const policyRules = policyName !== undefined ? loadPolicyPack(policyName).rules : {};
+  const rules: RuleConfig = {
+    ...recommended.rules,
+    ...policyRules,
+    ...config.validation?.rules,
+    ...config.rules,
+  };
   return validate({ diagram: document, rules: recommendedRules, config: { rules } }).diagnostics;
 }
 

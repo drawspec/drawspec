@@ -1712,7 +1712,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-34-benchmarks.txt
   ```
 
-- [ ] 35. Add workspace query API — Programmatic access to architecture model
+- [x] 35. Add workspace query API — Programmatic access to architecture model
 
   **What to do**: Implement query API over compiled architecture model: find elements by tag, find relationships between elements, trace dependency paths, count elements by kind. Enable advanced architecture tests.
   **References**: `spec.md` lines 126-133 (model-first approach benefits)
@@ -1754,7 +1754,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-36-large-explorer.png
   ```
 
-- [ ] 37. Add WASM layout adapter — Optional high-performance layout via WASM
+- [x] 37. Add WASM layout adapter — Optional high-performance layout via WASM
 
   **What to do**: Create `@drawspec/layout-wasm` package. Wrap a graph layout algorithm (e.g., Graphviz's dot via WASM) as an optional layout adapter. Benchmark against pure JS/TS layout.
   **References**: `spec.md` lines 776-788 (layout adapters), Q8 decision (optional WASM)

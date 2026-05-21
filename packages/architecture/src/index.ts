@@ -22,6 +22,7 @@ export type {
   ArchitectureViews,
   AutoLayoutDirection,
   C4ElementKind,
+  OwnerMetadata,
   Workspace,
   WorkspaceContext,
   WorkspaceInitializer,

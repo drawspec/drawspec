@@ -126,3 +126,9 @@ export interface ValidationInput {
 export interface ValidationResult {
   readonly diagnostics: Diagnostic[];
 }
+
+export interface PolicyPack {
+  readonly name: string;
+  readonly description: string;
+  readonly rules: RuleConfig;
+}

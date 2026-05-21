@@ -90,6 +90,7 @@ describe("drawspec CLI", () => {
     expect(result.stdout).toContain("drawspec inspect");
     expect(result.stdout).toContain("drawspec build:site");
     expect(result.stdout).toContain("--theme name");
+    expect(result.stdout).toContain("--policy name");
   });
 
   test("checks fixture files", async () => {
@@ -110,6 +111,18 @@ describe("drawspec CLI", () => {
     expect(result.exitCode).toBe(1);
     const payload = JSON.parse(result.stdout) as { diagnostics: Array<{ code: string }> };
     expect(payload.diagnostics.map((item) => item.code)).toContain("diagram/no-duplicate-node-id");
+  });
+
+  test("check with --policy applies policy pack overrides", async () => {
+    const result = await runDrawspec([
+      "check",
+      join(fixtures, "payment.sequence.ts"),
+      "--policy",
+      "recommended",
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("check passed");
   });
 
   test("renders SVG files", async () => {

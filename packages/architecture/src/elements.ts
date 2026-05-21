@@ -5,6 +5,7 @@ import type {
   ArchitectureRelationship,
   ArchitectureRelationshipOptions,
   C4ElementKind,
+  OwnerMetadata,
 } from "./types";
 
 interface MutableArchitectureModel extends ArchitectureModel {
@@ -32,7 +33,7 @@ export class ArchitectureElementImpl implements ArchitectureElement {
   readonly name: string;
   readonly description: string | undefined;
   readonly technology: string | undefined;
-  readonly owner: string | undefined;
+  readonly owner: string | OwnerMetadata | undefined;
   readonly tags: readonly string[];
   readonly metadata: Readonly<Record<string, unknown>>;
   readonly properties: Readonly<Record<string, unknown>>;

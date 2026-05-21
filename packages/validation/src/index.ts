@@ -1,4 +1,5 @@
 export { normalizeRuleConfig, RuleEngine, targetToString, validate } from "./engine";
+export { listPolicyPacks, loadPolicyPack, registerPolicyPack } from "./policy-pack";
 export { recommended, recommendedRules } from "./presets";
 export {
   architectureRules,
@@ -28,6 +29,7 @@ export type {
   C4ElementKind,
   DiagnosticSeverity,
   DiagnosticTarget,
+  PolicyPack,
   ReportInput,
   Rule,
   RuleConfig,

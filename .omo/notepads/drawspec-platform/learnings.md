@@ -57,3 +57,12 @@ core → (architecture, validation, uml-sequence, uml-class, uml-state, uml-comp
 - `WasmGraphInput` serializes graph to plain objects (no class instances) for WASM compatibility
 - No `Math.random()` or `Date.now()` — all sorting is alphabetical by ID, barycenter uses deterministic arithmetic
 - For chain graphs (all nodes at different ranks), spacing.node doesn't affect width in TB direction — only spacing.rank affects height
+
+### @drawspec/architecture + @drawspec/validation (Stage 5/6 — Ownership & Policy Packs)
+- `ArchitectureElement.owner` accepts `string | OwnerMetadata | undefined` — backward compatible, OwnerMetadata is `{ team?, individual?, escalation? }`
+- `ArchitectureElementOptions.owner` mirrors the same union type
+- Policy packs live in `@drawspec/validation/src/policy-pack.ts`: `PolicyPack` interface with `name`, `description`, `rules` (RuleConfig overrides)
+- Built-in packs: `recommended` (default severities), `strict` (all errors), `relaxed` (all warnings)
+- Registry via `registerPolicyPack()` / `loadPolicyPack()` / `listPolicyPacks()` — no external deps
+- CLI `drawspec check --policy <name>` merges policy rules on top of recommended, below config rules: `{ ...recommended, ...policyRules, ...config }`
+- Child elements (e.g., containers added to a softwareSystem) are in `system.children`, not in `model.elements` — model.elements only contains top-level elements
