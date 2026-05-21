@@ -69,6 +69,16 @@
         "typescript": "latest",
       },
     },
+    "packages/exporter-mermaid": {
+      "name": "@drawspec/exporter-mermaid",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
     "packages/layout": {
       "name": "@drawspec/layout",
       "version": "0.0.1",
@@ -263,6 +273,8 @@
     "@drawspec/cli": ["@drawspec/cli@workspace:packages/cli"],
 
     "@drawspec/core": ["@drawspec/core@workspace:packages/core"],
+
+    "@drawspec/exporter-mermaid": ["@drawspec/exporter-mermaid@workspace:packages/exporter-mermaid"],
 
     "@drawspec/layout": ["@drawspec/layout@workspace:packages/layout"],
 
