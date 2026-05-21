@@ -1,4 +1,4 @@
-import type { DiagramDocument } from "@drawspec/core";
+import type { DiagramDocument, SourceRef } from "@drawspec/core";
 import type {
   ActivationBar,
   Point,
@@ -82,6 +82,11 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
     children,
   });
   return `${XML_DECLARATION}\n${svg}\n`;
+}
+
+function sourceDataAttrs(source: SourceRef | undefined): Record<string, string | number> {
+  if (source === undefined) return {};
+  return { "data-source-file": source.file, "data-source-line": source.line };
 }
 
 function byId<T extends { id: string }>(left: T, right: T): number {
@@ -168,7 +173,11 @@ function renderGroup(
       children.push(textElement(lane.label, lane.x + 8, lane.y + 18, style, "start"));
     }
   }
-  return { name: "g", attrs: { id: stableSvgId(idPrefix, "group", group.id) }, children };
+  return {
+    name: "g",
+    attrs: { id: stableSvgId(idPrefix, "group", group.id), ...sourceDataAttrs(group.source) },
+    children,
+  };
 }
 
 function renderNode(
@@ -189,7 +198,11 @@ function renderNode(
       "middle"
     )
   );
-  return { name: "g", attrs: { id: stableSvgId(idPrefix, "node", node.id) }, children };
+  return {
+    name: "g",
+    attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
+    children,
+  };
 }
 
 function shapeForNode(
@@ -282,7 +295,11 @@ function renderEdge(
     const mid = midpoint(edge.waypoints);
     children.push(textElement(edge.label, mid.x, mid.y - 6, style, "middle"));
   }
-  return { name: "g", attrs: { id: stableSvgId(idPrefix, "edge", edge.id) }, children };
+  return {
+    name: "g",
+    attrs: { id: stableSvgId(idPrefix, "edge", edge.id), ...sourceDataAttrs(edge.source) },
+    children,
+  };
 }
 function edgePath(points: Point[]): string {
   const [first, ...rest] = points;
