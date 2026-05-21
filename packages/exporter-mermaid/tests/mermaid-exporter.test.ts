@@ -470,6 +470,78 @@ describe("exportToMermaid", () => {
     expect(result).toContain("%% drawspec: unsupported - group descriptions");
   });
 
+  test("escapes angle brackets in labels", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "angle",
+      kind: "graph",
+      nodes: [{ id: "a", kind: "box", label: "div < 5 && value > 10" }],
+      edges: [{ id: "e1", kind: "default", sourceId: "a", targetId: "a", label: "x < y" }],
+      groups: [],
+      annotations: [],
+    };
+    const result = exportToMermaid(doc);
+    expect(result).toContain("div &lt; 5 &amp;&amp; value &gt; 10");
+    expect(result).toContain("x &lt; y");
+  });
+
+  test("exports activity diagram as flowchart", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "act",
+      kind: "activity",
+      nodes: [
+        { id: "start", kind: "start" },
+        { id: "action", kind: "action", label: "Do" },
+        { id: "end", kind: "end" },
+      ],
+      edges: [
+        { id: "e1", kind: "default", sourceId: "start", targetId: "action" },
+        { id: "e2", kind: "default", sourceId: "action", targetId: "end" },
+      ],
+      groups: [],
+      annotations: [],
+    };
+    const result = exportToMermaid(doc);
+    expect(result).toMatch(/^flowchart TD$/m);
+    expect(result).toContain("start");
+    expect(result).toContain('action["Do"]');
+  });
+
+  test("exports ER diagram with relationships", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "er",
+      kind: "er",
+      nodes: [],
+      edges: [
+        { id: "e1", kind: "one-to-many", sourceId: "User", targetId: "Order", label: "places" },
+      ],
+      groups: [],
+      annotations: [],
+    };
+    const result = exportToMermaid(doc);
+    expect(result).toMatch(/^erDiagram$/m);
+    expect(result).toContain("User ||--o{ Order");
+  });
+
+  test("emits unsupported comment for sequence groups", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "seq-grp",
+      kind: "sequence",
+      nodes: [
+        { id: "a", kind: "actor", label: "A" },
+        { id: "b", kind: "actor", label: "B" },
+      ],
+      edges: [{ id: "e1", kind: "message", sourceId: "a", targetId: "b", label: "hi" }],
+      groups: [{ id: "g1", kind: "group", label: "alt", childIds: ["a", "b"] }],
+      annotations: [],
+    };
+    const result = exportToMermaid(doc);
+    expect(result).toContain("%% drawspec: unsupported - sequence fragments");
+  });
+
   test("output passes basic Mermaid syntax checks", () => {
     const doc: DiagramDocument = {
       schemaVersion: "1",

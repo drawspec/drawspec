@@ -17,6 +17,8 @@ function escapeLabel(label: string): string {
   return label
     .replace(/&/g, "&amp;")
     .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
     .replace(/\|/g, "&#124;")
     .replace(/\n/g, "<br/>");
 }
@@ -201,12 +203,23 @@ function renderSequence(doc: DiagramDocument): string {
   const idMap = buildIdMap(doc);
   const lines: string[] = ["sequenceDiagram", ...unsupportedFeatureComments(doc)];
 
+  if (doc.groups.length > 0) {
+    lines.push("  %% drawspec: unsupported - sequence fragments");
+  }
+
+  const nodeIds = new Set(doc.nodes.map((n) => n.id));
+
   for (const node of doc.nodes) {
     const label = node.label ?? node.id;
     lines.push(`  participant ${nodeId(node, idMap)} as ${escapeLabel(label)}`);
   }
 
   for (const edge of doc.edges) {
+    if (!nodeIds.has(edge.sourceId) || !nodeIds.has(edge.targetId)) {
+      const missingId = !nodeIds.has(edge.sourceId) ? edge.sourceId : edge.targetId;
+      lines.push(`  %% drawspec: unsupported - dangling reference to "${missingId}"`);
+      continue;
+    }
     const src = idMap.get(edge.sourceId) ?? sanitizeId(edge.sourceId);
     const tgt = idMap.get(edge.targetId) ?? sanitizeId(edge.targetId);
     const arrow = edge.kind === "dashed" || edge.kind === "return" ? "-->>" : "->>";
