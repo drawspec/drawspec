@@ -35,8 +35,25 @@ function escapeLabel(label: string): string {
   return label;
 }
 
-function d2Id(id: string): string {
+function sanitizeIdPart(id: string): string {
   return id.replace(/[^a-zA-Z0-9_]/gu, "_");
+}
+
+function buildIdMap(ids: string[]): Map<string, string> {
+  const map = new Map<string, string>();
+  const seen = new Map<string, number>();
+  for (const id of ids) {
+    const base = sanitizeIdPart(id);
+    const count = seen.get(base);
+    if (count === undefined) {
+      seen.set(base, 1);
+      map.set(id, base);
+    } else {
+      seen.set(base, count + 1);
+      map.set(id, `${base}_${count}`);
+    }
+  }
+  return map;
 }
 
 function formatDirection(layout: LayoutSpec | undefined): string | undefined {
@@ -44,9 +61,9 @@ function formatDirection(layout: LayoutSpec | undefined): string | undefined {
   return D2_DIRECTION_MAP[layout.direction];
 }
 
-function formatNode(node: DiagramNode, indent: string): string[] {
+function formatNode(node: DiagramNode, idMap: Map<string, string>, indent: string): string[] {
   const lines: string[] = [];
-  const id = d2Id(node.id);
+  const id = idMap.get(node.id) ?? sanitizeIdPart(node.id);
   if (node.label) {
     lines.push(`${indent}${id}: ${escapeLabel(node.label)}`);
   } else {
@@ -75,10 +92,10 @@ function d2Arrow(direction: DiagramEdge["direction"]): string {
   }
 }
 
-function formatEdge(edge: DiagramEdge, indent: string): string[] {
+function formatEdge(edge: DiagramEdge, idMap: Map<string, string>, indent: string): string[] {
   const lines: string[] = [];
-  const src = d2Id(edge.sourceId);
-  const tgt = d2Id(edge.targetId);
+  const src = idMap.get(edge.sourceId) ?? sanitizeIdPart(edge.sourceId);
+  const tgt = idMap.get(edge.targetId) ?? sanitizeIdPart(edge.targetId);
   const arrow = d2Arrow(edge.direction);
   if (edge.label) {
     lines.push(`${indent}${src} ${arrow} ${tgt}: ${escapeLabel(edge.label)}`);
@@ -98,17 +115,22 @@ function formatGroup(
   group: DiagramGroup,
   nodes: DiagramNode[],
   allGroups: DiagramGroup[],
+  idMap: Map<string, string>,
   indent: string
 ): string[] {
   const lines: string[] = [];
-  const id = d2Id(group.id);
-  lines.push(`${indent}${id}: {`);
+  const id = idMap.get(group.id) ?? sanitizeIdPart(group.id);
+  const label = group.label ? ` ${escapeLabel(group.label)}` : "";
+  lines.push(`${indent}${id}:${label} {`);
   const inner = `${indent}  `;
+  if (group.description) {
+    lines.push(`${inner}tooltip: ${escapeLabel(group.description)}`);
+  }
   for (const child of collectChildNodes(group, nodes)) {
-    lines.push(...formatNode(child, inner));
+    lines.push(...formatNode(child, idMap, inner));
   }
   for (const child of getChildGroups(group, allGroups)) {
-    lines.push(...formatGroup(child, nodes, allGroups, inner));
+    lines.push(...formatGroup(child, nodes, allGroups, idMap, inner));
   }
   lines.push(`${indent}}`);
   return lines;
@@ -131,7 +153,43 @@ function getRootNodes(nodes: DiagramNode[], groups: DiagramGroup[]): DiagramNode
       }
     }
   }
-  return nodes.filter((n) => !groupedNodeIds.has(n.id));
+  const parentNodeIds = new Set<string>();
+  for (const node of nodes) {
+    if (node.parentId) {
+      parentNodeIds.add(node.id);
+    }
+  }
+  return nodes.filter((n) => !groupedNodeIds.has(n.id) && !parentNodeIds.has(n.id));
+}
+
+function getNodeChildren(parentId: string, nodes: DiagramNode[]): DiagramNode[] {
+  return nodes.filter((n) => n.parentId === parentId);
+}
+
+function formatNodeWithChildren(
+  node: DiagramNode,
+  nodes: DiagramNode[],
+  idMap: Map<string, string>,
+  indent: string
+): string[] {
+  const lines: string[] = [];
+  const id = idMap.get(node.id) ?? sanitizeIdPart(node.id);
+  const children = getNodeChildren(node.id, nodes);
+  if (children.length > 0) {
+    const label = node.label ? ` ${escapeLabel(node.label)}` : "";
+    lines.push(`${indent}${id}:${label} {`);
+    const inner = `${indent}  `;
+    if (node.description) {
+      lines.push(`${inner}tooltip: ${escapeLabel(node.description)}`);
+    }
+    for (const child of children) {
+      lines.push(...formatNodeWithChildren(child, nodes, idMap, inner));
+    }
+    lines.push(`${indent}}`);
+  } else {
+    lines.push(...formatNode(node, idMap, indent));
+  }
+  return lines;
 }
 
 function getRootEdges(edges: DiagramEdge[]): DiagramEdge[] {
@@ -140,6 +198,15 @@ function getRootEdges(edges: DiagramEdge[]): DiagramEdge[] {
 
 export function exportToD2(doc: DiagramDocument): string {
   const lines: string[] = [];
+
+  const uniqueIds = new Set<string>();
+  for (const n of doc.nodes) uniqueIds.add(n.id);
+  for (const g of doc.groups) uniqueIds.add(g.id);
+  for (const e of doc.edges) {
+    uniqueIds.add(e.sourceId);
+    uniqueIds.add(e.targetId);
+  }
+  const idMap = buildIdMap([...uniqueIds]);
 
   const dir = formatDirection(doc.layout);
   if (dir) {
@@ -151,15 +218,15 @@ export function exportToD2(doc: DiagramDocument): string {
   const rootGroups = getRootGroups(doc.groups);
 
   for (const group of rootGroups) {
-    lines.push(...formatGroup(group, doc.nodes, doc.groups, ""));
+    lines.push(...formatGroup(group, doc.nodes, doc.groups, idMap, ""));
   }
 
   for (const node of rootNodes) {
-    lines.push(...formatNode(node, ""));
+    lines.push(...formatNodeWithChildren(node, doc.nodes, idMap, ""));
   }
 
   for (const edge of rootEdges) {
-    lines.push(...formatEdge(edge, ""));
+    lines.push(...formatEdge(edge, idMap, ""));
   }
 
   return `${lines.join("\n")}\n`;

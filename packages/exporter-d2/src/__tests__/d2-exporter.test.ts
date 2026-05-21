@@ -154,13 +154,30 @@ describe("exportToD2", () => {
       ],
     });
     const result = exportToD2(doc);
-    expect(result).toContain("g1: {");
+    expect(result).toContain("g1: Group1 {");
     expect(result).toContain("a: Alpha");
     expect(result).toContain("b: Beta");
     expect(result).toContain("}");
   });
 
-  test("exports nested groups", () => {
+  test("exports group description as tooltip", () => {
+    const doc = makeDoc({
+      groups: [
+        {
+          id: "g1",
+          kind: "default",
+          label: "My Group",
+          description: "A group description",
+          childIds: [],
+        },
+      ],
+    });
+    const result = exportToD2(doc);
+    expect(result).toContain("g1: My Group {");
+    expect(result).toContain("tooltip: A group description");
+  });
+
+  test("exports nested groups with parentId", () => {
     const doc = makeDoc({
       nodes: [
         { id: "a", kind: "default", label: "Alpha" },
@@ -184,17 +201,17 @@ describe("exportToD2", () => {
       ],
     });
     const result = exportToD2(doc);
-    expect(result).toContain("outer: {");
-    expect(result).toContain("inner: {");
+    expect(result).toContain("outer: Outer {");
+    expect(result).toContain("inner: Inner {");
     expect(result).toContain("a: Alpha");
     expect(result).toContain("b: Beta");
     expect(result).toContain("c: Gamma");
-    const outerIdx = result.indexOf("outer: {");
-    const innerIdx = result.indexOf("inner: {");
-    expect(innerIdx).toBeGreaterThan(outerIdx);
-    const outerClose = result.indexOf("}", innerIdx);
-    const innerClose = result.indexOf("}", outerClose + 1);
-    expect(innerClose).toBeGreaterThan(outerClose);
+    const outerOpen = result.indexOf("outer: Outer {");
+    const innerOpen = result.indexOf("inner: Inner {");
+    expect(innerOpen).toBeGreaterThan(outerOpen);
+    const innerClose = result.indexOf("}", innerOpen);
+    const outerClose = result.indexOf("}", innerClose + 1);
+    expect(outerClose).toBeGreaterThan(innerClose);
   });
 
   test("escapes labels with special characters", () => {
@@ -205,15 +222,32 @@ describe("exportToD2", () => {
     expect(result).toContain('n1: "Hello \\"World\\""');
   });
 
-  test("includes nodes with parentId in output", () => {
+  test("nodes with parentId are nested inside parent node", () => {
     const doc = makeDoc({
       nodes: [
-        { id: "a", kind: "default", label: "Alpha", parentId: "g1" },
-        { id: "b", kind: "default", label: "Beta" },
+        { id: "parent", kind: "default", label: "Parent" },
+        { id: "child", kind: "default", label: "Child", parentId: "parent" },
       ],
     });
     const result = exportToD2(doc);
-    expect(result).toContain("a: Alpha");
-    expect(result).toContain("b: Beta");
+    expect(result).toContain("parent: Parent {");
+    expect(result).toContain("child: Child");
+    const parentOpen = result.indexOf("parent: Parent {");
+    const childLine = result.indexOf("child: Child");
+    const parentClose = result.indexOf("}", childLine);
+    expect(childLine).toBeGreaterThan(parentOpen);
+    expect(parentClose).toBeGreaterThan(childLine);
+  });
+
+  test("disambiguates colliding IDs", () => {
+    const doc = makeDoc({
+      nodes: [
+        { id: "a-b", kind: "default", label: "Node1" },
+        { id: "a_b", kind: "default", label: "Node2" },
+      ],
+    });
+    const result = exportToD2(doc);
+    expect(result).toContain("a_b: Node1");
+    expect(result).toContain("a_b_1: Node2");
   });
 });
