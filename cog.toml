@@ -34,4 +34,5 @@ cli = { path = "packages/cli" }
 viewer = { path = "packages/viewer" }
 testkit = { path = "packages/testkit" }
 exporter-mermaid = { path = "packages/exporter-mermaid" }
+exporter-plantuml = { path = "packages/exporter-plantuml" }
 vscode = { path = "extensions/vscode" }
