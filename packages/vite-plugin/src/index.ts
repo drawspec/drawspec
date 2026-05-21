@@ -43,8 +43,19 @@ function isDiagramDocument(value: unknown): value is DiagramDocument {
   );
 }
 
+function toFileUrl(path: string): string {
+  if (path.startsWith("file://")) {
+    return path;
+  }
+  const absolute = path.startsWith("/") ? path : `${process.cwd()}/${path}`;
+  return `file://${absolute.split("/").map(encodeURIComponent).join("/").replaceAll("%2F", "/")}`;
+}
+
 async function compileDiagramFile(filePath: string): Promise<DiagramDocument> {
-  const module = (await import(`${filePath}?t=${Date.now()}`)) as Record<string, unknown>;
+  const module = (await import(`${toFileUrl(filePath)}?t=${Date.now()}`)) as Record<
+    string,
+    unknown
+  >;
   const candidates = [
     module["default"],
     ...Object.keys(module)
@@ -61,18 +72,34 @@ async function compileDiagramFile(filePath: string): Promise<DiagramDocument> {
   throw new Error(`Module at '${filePath}' did not export a DiagramDocument`);
 }
 
+interface ResolveContext {
+  resolve: (
+    id: string,
+    importer: string | undefined,
+    options: { skipSelf: boolean }
+  ) => Promise<{ id: string } | null>;
+}
+
 export function drawspecVitePlugin(options?: DrawspecVitePluginOptions): Plugin {
   const include = options?.include;
   const exclude = options?.exclude;
-  const cache = new Map<string, string>();
 
   return {
     name: "drawspec-vite-plugin",
     enforce: "pre" as const,
 
-    resolveId(source: string): string | null {
-      if (isDiagramFile(source) && matchesPattern(source, include, exclude)) {
-        return `${VIRTUAL_PREFIX}${source}`;
+    async resolveId(
+      this: ResolveContext,
+      source: string,
+      importer: string | undefined
+    ): Promise<string | null> {
+      const resolved = await this.resolve(source, importer, { skipSelf: true });
+      if (
+        resolved !== null &&
+        isDiagramFile(resolved.id) &&
+        matchesPattern(resolved.id, include, exclude)
+      ) {
+        return `${VIRTUAL_PREFIX}${resolved.id}`;
       }
       return null;
     },
@@ -85,18 +112,16 @@ export function drawspecVitePlugin(options?: DrawspecVitePluginOptions): Plugin 
       try {
         const document = await compileDiagramFile(filePath);
         const json = serializeDocument(document);
-        cache.set(filePath, json);
         return `export default ${json}`;
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        cache.set(filePath, `{"error":"${message}"}`);
         return `throw new Error(${JSON.stringify(message)})`;
       }
     },
 
-    handleHotUpdate(ctx: HmrContext): ModuleNode[] | undefined {
+    handleHotUpdate(ctx: HmrContext): Array<ModuleNode> | undefined {
       if (!isDiagramFile(ctx.file) || !matchesPattern(ctx.file, include, exclude)) {
-        return;
+        return undefined;
       }
       const virtualId = `${VIRTUAL_PREFIX}${ctx.file}`;
       const mod = ctx.server.moduleGraph.getModuleById(virtualId);
@@ -104,7 +129,7 @@ export function drawspecVitePlugin(options?: DrawspecVitePluginOptions): Plugin 
         ctx.server.moduleGraph.invalidateModule(mod);
         return [mod];
       }
-      return [];
+      return undefined;
     },
   };
 }
