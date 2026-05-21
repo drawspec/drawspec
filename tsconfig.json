@@ -22,6 +22,9 @@
     { "path": "./packages/exporter-plantuml" },
     { "path": "./packages/exporter-plantuml" },
     { "path": "./packages/exporter-d2" },
+    { "path": "./packages/exporter-d2" },
+    { "path": "./packages/vite-plugin" },
+    { "path": "./packages/lsp" },
     { "path": "./extensions/vscode" }
   ]
 }

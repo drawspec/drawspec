@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "paths": {
+      "@drawspec/core": ["../core/src/index.ts"],
+      "@drawspec/validation": ["../validation/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/__tests__/**/*.ts"],
+  "references": [{ "path": "../core" }, { "path": "../validation" }]
+}
