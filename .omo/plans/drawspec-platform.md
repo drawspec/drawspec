@@ -1690,7 +1690,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-33-incremental.txt
   ```
 
-- [ ] 34. Add performance benchmarks and baselines
+- [x] 34. Add performance benchmarks and baselines
 
   **What to do**: Create benchmark suite: 100 diagrams, 1000 diagrams, 10000 elements, large sequences, large graphs. Measure: cold render, warm render, cache hit, cache miss, watch-mode update. Capture baseline timings.
   **References**: `spec.md` lines 1460-1470 (performance test targets)
@@ -1733,7 +1733,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-35-query-api.txt
   ```
 
-- [ ] 36. Implement large architecture explorer — Interactive exploration of large models
+- [x] 36. Implement large architecture explorer — Interactive exploration of large models
 
   **What to do**: Enhance viewer with: relationship filtering, element search, collapse/expand groups, performance overlay, element details panel. Handle 10000+ element workspaces.
   **References**: `spec.md` lines 1365-1372 (later preview UI features)
@@ -1783,7 +1783,7 @@ testkit ← core, validation
 
 > **Depends on**: Stages 1 + 2 complete
 
-- [ ] 38. Implement dynamic view generation from sequence diagrams
+- [x] 38. Implement dynamic view generation from sequence diagrams
 
   **What to do**: Allow sequence diagrams to reference architecture model elements. Generate dynamic architecture views from sequence interactions. Q14 decision: "yes, but generate later" — this is "later".
   **References**: `spec.md` lines 488-495 (dynamic view type), `spec.md` lines 2112-2113 (Q13/Q14 decisions on diagram-model refs and sequence→dynamic)
@@ -1807,7 +1807,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-38-dynamic-views.txt
   ```
 
-- [ ] 39. Add architecture decision records (ADR) integration
+- [x] 39. Add architecture decision records (ADR) integration
 
   **What to do**: Allow associating ADR records with architecture elements. Support linking to external ADR files. Display ADR status in views.
   **References**: `spec.md` line 1977 ("Architecture decision records integration")
@@ -1828,7 +1828,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-39-adr-integration.txt
   ```
 
-- [ ] 40. Add drift detection hooks — Compare model to runtime state
+- [x] 40. Add drift detection hooks — Compare model to runtime state
 
   **What to do**: Define hooks/APIs for comparing architecture model against external sources (cloud inventory, service catalogs, OpenTelemetry). Not the integration itself — just the comparison API.
   **References**: `spec.md` line 1978 ("Drift detection hooks"), `spec.md` lines 1875-1880 (OpenTelemetry reference)
@@ -1871,7 +1871,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-41-policy-packs.txt
   ```
 
-- [ ] 42. Add service catalog integration hooks
+- [x] 42. Add service catalog integration hooks
 
   **What to do**: Define API for syncing architecture model with service catalogs (Backstage, OpsLevel, etc.). Not the integrations themselves — just the sync interface.
   **References**: `spec.md` line 1979 ("Service catalog integration")
@@ -1892,7 +1892,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-42-catalog-sync.txt
   ```
 
-- [ ] 43. Add Structurizr and LikeC4 compatibility layers
+- [x] 43. Add Structurizr and LikeC4 compatibility layers
 
   **What to do**: Add export to Structurizr JSON format. Add export/import for LikeC4 model concepts. Map DrawSpec elements to/from these formats.
   **References**: `spec.md` lines 1856-1874 (compatibility specifications)
