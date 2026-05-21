@@ -160,4 +160,105 @@ describe("SvgRenderer", () => {
   test("matches the sequence golden fixture", async () => {
     await expectGolden("sequence", await sequenceSvg());
   });
+
+  test("emits data-source-file and data-source-line on nodes with source locations", async () => {
+    const doc = document({
+      id: "source-loc-test",
+      kind: "graph",
+      nodes: [
+        {
+          id: "svc",
+          kind: "component",
+          label: "Service",
+          source: { file: "diagram.ts", line: 42, column: 5 },
+        },
+      ],
+      edges: [],
+      groups: [],
+    });
+    const positionedDiagram = await simpleGraphLayout().layout(doc);
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).toContain('data-source-file="diagram.ts"');
+    expect(svg).toContain('data-source-line="42"');
+  });
+
+  test("emits data-source attributes on edges with source locations", async () => {
+    const doc = document({
+      id: "edge-source-test",
+      kind: "graph",
+      nodes: [
+        { id: "a", kind: "component", label: "A" },
+        { id: "b", kind: "component", label: "B" },
+      ],
+      edges: [
+        {
+          id: "ab",
+          kind: "calls",
+          sourceId: "a",
+          targetId: "b",
+          source: { file: "flow.ts", line: 15, column: 3 },
+        },
+      ],
+      groups: [],
+    });
+    const positionedDiagram = await simpleGraphLayout().layout(doc);
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).toContain('data-source-file="flow.ts"');
+    expect(svg).toContain('data-source-line="15"');
+  });
+
+  test("emits data-source attributes on groups with source locations", () => {
+    const doc = document({
+      id: "group-source-test",
+      kind: "graph",
+      nodes: [],
+      edges: [],
+      groups: [
+        {
+          id: "grp",
+          kind: "boundary",
+          label: "System",
+          source: { file: "sys.ts", line: 7, column: 1 },
+        },
+      ],
+    });
+    const positionedDiagram = {
+      document: doc,
+      nodes: [],
+      edges: [],
+      groups: [
+        {
+          id: "grp",
+          kind: "boundary",
+          label: "System",
+          childIds: [],
+          x: 0,
+          y: 0,
+          width: 200,
+          height: 100,
+          source: { file: "sys.ts", line: 7, column: 1 },
+        },
+      ],
+      activations: [],
+      width: 200,
+      height: 100,
+    };
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).toContain('data-source-file="sys.ts"');
+    expect(svg).toContain('data-source-line="7"');
+  });
+
+  test("omits data-source attributes when source is absent", async () => {
+    const doc = document({
+      id: "no-source-test",
+      kind: "graph",
+      nodes: [{ id: "x", kind: "component", label: "X" }],
+      edges: [],
+      groups: [],
+    });
+    const positionedDiagram = await simpleGraphLayout().layout(doc);
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).not.toContain("data-source-file");
+    expect(svg).not.toContain("data-source-line");
+  });
 });
