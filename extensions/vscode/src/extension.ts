@@ -1,12 +1,37 @@
 import * as vscode from "vscode";
-import { PreviewPanel } from "./preview";
+import { PreviewManager } from "./preview";
+import { DiagnosticManager } from "./diagnostics";
 
 export function activate(context: vscode.ExtensionContext): void {
+  const outputChannel = vscode.window.createOutputChannel("DrawSpec");
+  const previewManager = new PreviewManager(context, outputChannel);
+  const diagnosticManager = new DiagnosticManager(outputChannel);
+
   context.subscriptions.push(
-    vscode.commands.registerCommand("drawspec.preview", () => {
-      PreviewPanel.create(context.extensionUri);
-    })
+    vscode.commands.registerCommand("drawspec.preview", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (editor === undefined) {
+        vscode.window.showWarningMessage("No active editor");
+        return;
+      }
+      return previewManager.openPreview(editor.document);
+    }),
+
+    vscode.commands.registerCommand("drawspec.inspect", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (editor === undefined) {
+        vscode.window.showWarningMessage("No active editor");
+        return;
+      }
+      return previewManager.inspectDocument(editor.document);
+    }),
+
+    diagnosticManager,
+
+    outputChannel
   );
+
+  diagnosticManager.refresh();
 }
 
 export function deactivate(): void {}

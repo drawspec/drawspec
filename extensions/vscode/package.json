@@ -1,28 +1,58 @@
 {
-  "name": "drawspec-vscode",
-  "displayName": "DrawSpec Preview",
-  "description": "Preview DrawSpec diagrams with click-to-source navigation",
+  "name": "drawspec",
+  "displayName": "DrawSpec",
+  "description": "Preview, inspect, and validate DrawSpec diagrams in VS Code",
   "version": "0.1.0",
   "publisher": "drawspec",
   "license": "MIT",
-  "engines": { "vscode": "^1.85.0" },
-  "categories": ["Visualization"],
-  "activationEvents": ["onCommand:drawspec.preview"],
-  "main": "./out/extension.js",
+  "type": "module",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Visualization",
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onCommand:drawspec.preview",
+    "onCommand:drawspec.inspect"
+  ],
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "drawspec.preview",
-        "title": "DrawSpec: Open Preview"
+        "title": "DrawSpec: Preview Diagram"
+      },
+      {
+        "command": "drawspec.inspect",
+        "title": "DrawSpec: Inspect IR"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "DrawSpec",
+      "properties": {
+        "drawspec.diagramFilePatterns": {
+          "type": "array",
+          "default": [
+            "**/*.diagram.ts",
+            "**/*.sequence.ts",
+            "**/*.arch.ts"
+          ],
+          "description": "Glob patterns for DrawSpec diagram files"
+        }
+      }
+    }
   },
-  "scripts": {
-    "compile": "tsc -p ./",
-    "watch": "tsc -p ./ --watch"
+  "dependencies": {
+    "@drawspec/core": "workspace:*",
+    "@drawspec/renderer-svg": "workspace:*",
+    "@drawspec/layout": "workspace:*",
+    "typescript": "^6.0.0"
   },
   "devDependencies": {
     "@types/vscode": "^1.85.0",
-    "typescript": "^5.0.0"
+    "@types/node": "^22.0.0"
   }
 }
