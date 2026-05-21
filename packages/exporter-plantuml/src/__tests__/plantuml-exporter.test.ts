@@ -157,7 +157,13 @@ describe("exportToPlantUML", () => {
   });
 
   test("does not emit start/stop for empty activity diagram", () => {
-    const doc = makeDoc({ id: "act-empty", kind: "activity", nodes: [], edges: [] });
+    const doc = makeDoc({
+      id: "act-empty",
+      kind: "activity",
+      nodes: [{ id: "note1", kind: "note", label: "No activity" }],
+      edges: [],
+      groups: [{ id: "g1", kind: "if", label: "condition", childIds: ["note1"] }],
+    });
     const out = exportToPlantUML(doc);
     expect(out).not.toContain("\nstart\n");
     expect(out).not.toContain("\nstop\n");

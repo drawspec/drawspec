@@ -122,9 +122,15 @@ function exportClass(doc: DiagramDocument): string[] {
 
 function exportState(doc: DiagramDocument): string[] {
   const lines: string[] = [];
+  const nestedStateIds = new Set(
+    doc.groups
+      .filter((group) => group.kind === "composite" || group.kind === "concurrent")
+      .flatMap((group) => group.childIds ?? [])
+  );
 
   for (const node of doc.nodes) {
     if (node.kind === "start" || node.kind === "end") continue;
+    if (nestedStateIds.has(node.id)) continue;
     lines.push(`state "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
   }
 
@@ -167,8 +173,7 @@ function exportActivity(doc: DiagramDocument): string[] {
   const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
 
   const activityNodes = doc.nodes.filter((n) => n.kind === "activity");
-  const hasContent = activityNodes.length > 0 || doc.groups.length > 0;
-  if (!hasContent) return lines;
+  if (activityNodes.length === 0) return lines;
 
   const groupedNodeIds = new Set(doc.groups.flatMap((g) => g.childIds ?? []));
   const nodeOrder = new Map(doc.nodes.map((n, i) => [n.id, i]));
