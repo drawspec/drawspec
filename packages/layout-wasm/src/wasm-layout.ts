@@ -1,0 +1,212 @@
+import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
+import type {
+  LayoutEngine,
+  LayoutOptions,
+  NormalizedLayoutOptions,
+  Point,
+  PositionedDiagram,
+  PositionedEdge,
+  PositionedNode,
+} from "@drawspec/layout";
+import { LayoutCache, normalizeLayoutOptions } from "@drawspec/layout";
+import { TypeScriptFallbackBridge } from "./fallback";
+import type { WasmBridge, WasmGraphInput } from "./wasm-bridge";
+
+function sortedNodes(document: DiagramDocument): DiagramNode[] {
+  return [...document.nodes].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+function sortedEdges(document: DiagramDocument): DiagramEdge[] {
+  return [...document.edges].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+function buildWasmInput(
+  document: DiagramDocument,
+  normalized: NormalizedLayoutOptions
+): WasmGraphInput {
+  const nodes = sortedNodes(document).map((n) => ({ id: n.id }));
+  const edges = sortedEdges(document)
+    .filter(
+      (e) =>
+        e.sourceId !== e.targetId &&
+        document.nodes.some((n) => n.id === e.sourceId) &&
+        document.nodes.some((n) => n.id === e.targetId)
+    )
+    .map((e) => ({ id: e.id, sourceId: e.sourceId, targetId: e.targetId }));
+
+  return {
+    nodes,
+    edges,
+    direction: normalized.direction,
+    nodeSize: { width: normalized.nodeSize.width, height: normalized.nodeSize.height },
+    spacing: { node: normalized.spacing.node, rank: normalized.spacing.rank },
+    padding: normalized.padding,
+  };
+}
+
+function selfLoopWaypoints(source: PositionedNode): Point[] {
+  const cx = source.x + source.width / 2;
+  const cy = source.y + source.height / 2;
+  const offset = 28;
+  return [
+    { x: cx, y: cy },
+    { x: source.x + source.width + offset, y: cy },
+    { x: source.x + source.width + offset, y: source.y - offset },
+    { x: cx, y: source.y - offset },
+    { x: cx, y: cy },
+  ];
+}
+
+function fallbackWaypoints(source: PositionedNode, target: PositionedNode): Point[] {
+  return [
+    { x: source.x + source.width / 2, y: source.y + source.height / 2 },
+    { x: target.x + target.width / 2, y: target.y + target.height / 2 },
+  ];
+}
+
+function positionEdge(
+  edge: DiagramEdge,
+  nodesById: Record<string, PositionedNode>,
+  wasmEdgeRoutes: Record<string, Array<{ x: number; y: number }>>
+): Point[] {
+  if (edge.sourceId === edge.targetId) {
+    const source = nodesById[edge.sourceId];
+    return source ? selfLoopWaypoints(source) : [];
+  }
+
+  const route = wasmEdgeRoutes[edge.id];
+  if (route !== undefined && route.length > 0) {
+    return route.map((p) => ({
+      x: Math.round(p.x * 1000) / 1000,
+      y: Math.round(p.y * 1000) / 1000,
+    }));
+  }
+
+  const source = nodesById[edge.sourceId];
+  const target = nodesById[edge.targetId];
+  if (source === undefined || target === undefined) return [];
+  return fallbackWaypoints(source, target);
+}
+
+function computeBounds(
+  nodes: PositionedNode[],
+  edges: PositionedEdge[],
+  padding: number
+): { width: number; height: number } {
+  const allX: number[] = [];
+  const allY: number[] = [];
+
+  for (const node of nodes) {
+    allX.push(node.x + node.width);
+    allY.push(node.y + node.height);
+  }
+
+  for (const edge of edges) {
+    for (const wp of edge.waypoints) {
+      allX.push(wp.x);
+      allY.push(wp.y);
+    }
+  }
+
+  return {
+    width: Math.max(padding * 2, ...allX) + padding,
+    height: Math.max(padding * 2, ...allY) + padding,
+  };
+}
+
+async function createWasmLayout(
+  document: DiagramDocument,
+  bridge: WasmBridge,
+  options: LayoutOptions = {}
+): Promise<PositionedDiagram> {
+  const normalized = normalizeLayoutOptions(document, options);
+
+  if (document.nodes.length === 0) {
+    return {
+      document,
+      nodes: [],
+      edges: [],
+      groups: [],
+      activations: [],
+      width: normalized.padding * 2,
+      height: normalized.padding * 2,
+    };
+  }
+
+  const input = buildWasmInput(document, normalized);
+  const result = await bridge.compute(input);
+
+  const wasmPositionsById: Record<string, (typeof result.nodes)[number]> = {};
+  for (const pos of result.nodes) {
+    wasmPositionsById[pos.id] = pos;
+  }
+
+  const nodes: PositionedNode[] = sortedNodes(document).map((node) => {
+    const pos = wasmPositionsById[node.id];
+    if (pos === undefined) {
+      return {
+        ...node,
+        x: normalized.padding,
+        y: normalized.padding,
+        width: normalized.nodeSize.width,
+        height: normalized.nodeSize.height,
+      };
+    }
+    return {
+      ...node,
+      x: pos.x,
+      y: pos.y,
+      width: pos.width,
+      height: pos.height,
+    };
+  });
+
+  const nodesById: Record<string, PositionedNode> = {};
+  for (const node of nodes) {
+    nodesById[node.id] = node;
+  }
+
+  const wasmEdgeRoutes: Record<string, Array<{ x: number; y: number }>> = {};
+  for (const route of result.edges) {
+    wasmEdgeRoutes[route.id] = route.waypoints;
+  }
+
+  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => ({
+    ...edge,
+    waypoints: positionEdge(edge, nodesById, wasmEdgeRoutes),
+  }));
+
+  const { width, height } = computeBounds(nodes, edges, normalized.padding);
+
+  return { document, nodes, edges, groups: [], activations: [], width, height };
+}
+
+export class WasmLayoutEngine implements LayoutEngine {
+  readonly name: string;
+  readonly #cache = new LayoutCache();
+  readonly #bridge: WasmBridge;
+
+  constructor(bridge?: WasmBridge) {
+    this.#bridge = bridge ?? new TypeScriptFallbackBridge();
+    this.name = `wasm:${this.#bridge.name}`;
+  }
+
+  supports(document: DiagramDocument): boolean {
+    return document.kind !== "sequence";
+  }
+
+  async layout(document: DiagramDocument, options: LayoutOptions = {}): Promise<PositionedDiagram> {
+    const cached = this.#cache.get(document, options);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const positioned = await createWasmLayout(document, this.#bridge, options);
+    this.#cache.set(document, options, positioned);
+    return positioned;
+  }
+}
+
+export function wasmLayout(bridge?: WasmBridge): WasmLayoutEngine {
+  return new WasmLayoutEngine(bridge);
+}

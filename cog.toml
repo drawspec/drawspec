@@ -29,6 +29,7 @@ validation = { path = "packages/validation" }
 layout = { path = "packages/layout" }
 layout-dagre = { path = "packages/layout-dagre" }
 layout-elk = { path = "packages/layout-elk" }
+layout-wasm = { path = "packages/layout-wasm" }
 renderer-svg = { path = "packages/renderer-svg" }
 cli = { path = "packages/cli" }
 viewer = { path = "packages/viewer" }

@@ -13,6 +13,7 @@
     { "path": "./packages/layout" },
     { "path": "./packages/layout-dagre" },
     { "path": "./packages/layout-elk" },
+    { "path": "./packages/layout-wasm" },
     { "path": "./packages/renderer-svg" },
     { "path": "./packages/cli" },
     { "path": "./packages/viewer" },

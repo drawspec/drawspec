@@ -48,3 +48,12 @@ core → (architecture, validation, uml-sequence, uml-class, uml-state, uml-comp
 - `createQuery(model)` returns a `WorkspaceQuery` object — standalone function, not a method on Workspace (consumer, not modifier)
 - Tag filtering supports negation via `!` prefix (e.g., `tags: ["!external"]` excludes elements with that tag)
 - Path finding uses BFS with configurable direction (`forward`, `reverse`, `both`) and `maxDepth` (default 20)
+
+### @drawspec/layout-wasm (Stage 5)
+- WASM layout adapter with `WasmBridge` interface for plugging in WASM binaries
+- `TypeScriptFallbackBridge` provides deterministic layered layout (topological ranking + barycenter ordering)
+- Engine naming: `wasm:{bridge.name}` — allows multiple bridge backends
+- Uses same `LayoutCache` and `normalizeLayoutOptions` as dagre/elk adapters
+- `WasmGraphInput` serializes graph to plain objects (no class instances) for WASM compatibility
+- No `Math.random()` or `Date.now()` — all sorting is alphabetical by ID, barycenter uses deterministic arithmetic
+- For chain graphs (all nodes at different ranks), spacing.node doesn't affect width in TB direction — only spacing.rank affects height
