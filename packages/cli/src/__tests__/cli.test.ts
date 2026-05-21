@@ -196,6 +196,7 @@ describe("drawspec CLI", () => {
 
     const diagramPageFile = diagramPages[0];
     expect(diagramPageFile).toBeDefined();
+    expect(diagramPageFile).toMatch(/^[a-zA-Z0-9_]+\.html$/);
     const diagramPage = await Bun.file(join(outDir, diagramPageFile as string)).text();
     expect(diagramPage).toContain("<!doctype html>");
     expect(diagramPage).toContain("<svg");

@@ -7,6 +7,7 @@ export interface SiteDiagram {
   nodeCount: number;
   edgeCount: number;
   svg: string;
+  fileName: string;
 }
 
 export function generateStyleCss(): string {
@@ -39,7 +40,7 @@ main{max-width:var(--max-width);margin:0 auto;padding:2rem}
 export function generateIndexHtml(diagrams: readonly SiteDiagram[]): string {
   const cards = diagrams
     .map(
-      (d) => `    <a class="card" href="${safeFileName(d.id)}.html">
+      (d) => `    <a class="card" href="${escapeHtml(d.fileName)}.html">
       <div class="card-preview">${d.svg}</div>
       <div class="card-body">
         <h2>${escapeHtml(d.title)}</h2>
@@ -121,6 +122,7 @@ export function toSiteDiagram(document: DiagramDocument, svg: string): SiteDiagr
     nodeCount: document.nodes.length,
     edgeCount: document.edges.length,
     svg,
+    fileName: safeFileName(document.id),
   };
 }
 

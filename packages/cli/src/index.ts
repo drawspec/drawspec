@@ -66,7 +66,7 @@ interface ServerWebSocket {
   close(): void;
 }
 
-type Command = "check" | "render" | "inspect" | "watch" | "serve" | "build-site";
+type Command = "check" | "render" | "inspect" | "watch" | "serve" | "build-site" | "build:site";
 
 interface ParsedArgs {
   command: Command | undefined;
@@ -102,7 +102,15 @@ interface SiteDiagramInternal {
   siteDiagram: import("./build-site").SiteDiagram;
 }
 
-const COMMANDS = new Set<string>(["check", "render", "inspect", "watch", "serve", "build-site"]);
+const COMMANDS = new Set<string>([
+  "check",
+  "render",
+  "inspect",
+  "watch",
+  "serve",
+  "build-site",
+  "build:site",
+]);
 const DEFAULT_PREVIEW_PORT = 4173;
 const DEFAULT_DEBOUNCE_MS = 80;
 const red = (value: string) => `\u001b[31m${value}\u001b[0m`;
@@ -143,7 +151,7 @@ export async function main(argv: readonly string[] = Bun.argv.slice(2)): Promise
   if (parsed.command === "watch") {
     return runWatch(parsed, config);
   }
-  if (parsed.command === "build-site") {
+  if (parsed.command === "build-site" || parsed.command === "build:site") {
     return runBuildSite(parsed, config);
   }
   return runServe(parsed, config);
@@ -191,7 +199,8 @@ Usage:
   drawspec inspect [file] [--format json|pretty]
   drawspec watch [files...] [--port 4173] [--debounce 80]
   drawspec serve [files...] [--host localhost] [--port 4173] [--open]
-  drawspec build-site [files...] [--out site]
+  drawspec build-site [files...] [--out site] [--theme name]
+  drawspec build:site [files...] [--out site] [--theme name]
 
 Aliases: ds, dspec
 Discovery: **/*.diagram.ts, **/*.arch.ts, **/*.sequence.ts`);
@@ -301,9 +310,12 @@ async function runBuildSite(parsed: ParsedArgs, config: DrawspecConfig): Promise
       accessibility: { title: item.document.title ?? item.document.id },
       ...(themeName === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
     });
+    const sd = toSiteDiagram(item.document, svg);
+    const pathHash = hashString(item.file).toString(36).slice(0, 8);
+    sd.fileName = `${safeFileName(sd.id)}_${pathHash}`;
     siteDiagrams.push({
       file: item.file,
-      siteDiagram: toSiteDiagram(item.document, svg),
+      siteDiagram: sd,
     });
   }
   const allDiagrams = siteDiagrams.map((d) => d.siteDiagram);
@@ -311,7 +323,7 @@ async function runBuildSite(parsed: ParsedArgs, config: DrawspecConfig): Promise
   await Bun.write(`${trimTrailingSlash(outDir)}/index.html`, generateIndexHtml(allDiagrams));
   for (const { siteDiagram } of siteDiagrams) {
     const pageHtml = generateDiagramHtml(siteDiagram);
-    await Bun.write(`${trimTrailingSlash(outDir)}/${safeFileName(siteDiagram.id)}.html`, pageHtml);
+    await Bun.write(`${trimTrailingSlash(outDir)}/${siteDiagram.fileName}.html`, pageHtml);
   }
   console.log(
     green(

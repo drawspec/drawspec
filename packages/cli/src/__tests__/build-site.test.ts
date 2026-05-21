@@ -34,6 +34,7 @@ describe("toSiteDiagram", () => {
     expect(result.nodeCount).toBe(2);
     expect(result.edgeCount).toBe(1);
     expect(result.svg).toBe(sampleSvg);
+    expect(result.fileName).toBe("my-diagram");
   });
 
   test("uses id as fallback title", () => {
@@ -68,6 +69,13 @@ describe("generateIndexHtml", () => {
     expect(html).toContain("1 edge");
     expect(html).toContain(sampleSvg);
     expect(html).toContain('href="style.css"');
+  });
+
+  test("uses fileName field for card href", () => {
+    const diagram = toSiteDiagram(sampleDoc, sampleSvg);
+    diagram.fileName = "custom-name_abc12345";
+    const html = generateIndexHtml([diagram]);
+    expect(html).toContain('href="custom-name_abc12345.html"');
   });
 
   test("pluralizes diagram count", () => {
