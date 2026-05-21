@@ -1647,7 +1647,7 @@ testkit ← core, validation
 
 > **Depends on**: Stage 1 complete
 
-- [ ] 32. Implement persistent cache — Content-hash-keyed cache for compiled IR and rendered SVGs
+- [x] 32. Implement persistent cache — Content-hash-keyed cache for compiled IR and rendered SVGs
 
   **What to do**: Add persistent filesystem cache for: compiled IR, layout results, rendered SVGs. Cache key = content hash + config hash + theme hash + package versions. Cache invalidation on config changes.
   **References**: `spec.md` lines 1339-1351 (caching specification)

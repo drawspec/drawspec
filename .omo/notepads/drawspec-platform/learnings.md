@@ -39,3 +39,12 @@ core → (architecture, validation, uml-sequence, uml-class, uml-state, uml-comp
 - `exactOptionalPropertyTypes: true` in root tsconfig means optional fields with `string | undefined` values must be spread conditionally (`...(x !== undefined ? { x } : {})`)
 - CLI's `Bun` type is declared inline in `src/index.ts`, not via `@types/bun`
 - `Bun.hash(input)` returns a `number` — cast with `as number` for `.toString()` calls
+
+### @drawspec/architecture Query API (Stage 5)
+- `model.elements` only contains top-level elements; children (containers/databases inside software systems) are nested via `element.children` — query API must flatten recursively
+- `element.tags` always includes the element kind as the first tag (e.g., `["person", ...userTags]`) — tag is auto-sorted and deduplicated
+- `relationship.tags` always includes `"relationship"` as the first tag — same auto-sort/dedup pattern
+- Relationships reference child elements directly (e.g., `source` can be a container, not just a top-level element)
+- `createQuery(model)` returns a `WorkspaceQuery` object — standalone function, not a method on Workspace (consumer, not modifier)
+- Tag filtering supports negation via `!` prefix (e.g., `tags: ["!external"]` excludes elements with that tag)
+- Path finding uses BFS with configurable direction (`forward`, `reverse`, `both`) and `maxDepth` (default 20)

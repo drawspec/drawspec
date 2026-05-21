@@ -1,6 +1,14 @@
 export { compileWorkspace } from "./compile";
 export { container, database, person, softwareSystem } from "./elements";
 export type {
+  ElementQueryFilter,
+  PathQueryOptions,
+  PathResult,
+  RelationshipQueryFilter,
+  WorkspaceQuery,
+} from "./query";
+export { createQuery } from "./query";
+export type {
   ArchitectureDiagramNode,
   ArchitectureElement,
   ArchitectureElementOptions,
