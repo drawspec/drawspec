@@ -27,8 +27,8 @@ function exportSequence(doc: DiagramDocument): string[] {
   for (const node of doc.nodes) {
     if (node.kind === "participant" || node.kind === "actor") {
       const kw = node.kind === "actor" ? "actor" : "participant";
-      const lbl = node.label ? ` "${esc(node.label)}"` : "";
-      lines.push(`${kw} "${esc(node.id)}"${lbl ? ` as${lbl}` : ""}`);
+      const lbl = node.label ? ` as ${esc(node.id)}` : "";
+      lines.push(`${kw} "${esc(node.label ?? node.id)}"${lbl}`);
     }
   }
 
@@ -101,14 +101,21 @@ function exportClass(doc: DiagramDocument): string[] {
     const tgt = nodeMap.get(edge.targetId);
     if (!src || !tgt) continue;
     let rel = "--";
-    if (edge.kind === "extends" || edge.kind === "inheritance") rel = "<|--";
-    else if (edge.kind === "implements") rel = "..|>";
-    else if (edge.kind === "composition") rel = "*--";
+    let reverse = false;
+    if (edge.kind === "extends" || edge.kind === "inheritance") {
+      rel = "<|--";
+      reverse = true;
+    } else if (edge.kind === "implements") {
+      rel = "..|>";
+      reverse = true;
+    } else if (edge.kind === "composition") rel = "*--";
     else if (edge.kind === "aggregation") rel = "o--";
     else if (edge.kind === "dependency") rel = "..>";
     else if (edge.kind === "association") rel = "-->";
     const label = edge.label ? ` ${esc(edge.label)}` : "";
-    lines.push(`"${esc(nodeLabel(src))}" ${rel} "${esc(nodeLabel(tgt))}"${label}`);
+    const left = reverse ? tgt : src;
+    const right = reverse ? src : tgt;
+    lines.push(`"${esc(nodeLabel(left))}" ${rel} "${esc(nodeLabel(right))}"${label}`);
   }
 
   return lines;
@@ -118,13 +125,8 @@ function exportState(doc: DiagramDocument): string[] {
   const lines: string[] = [];
 
   for (const node of doc.nodes) {
-    if (node.kind === "start") {
-      lines.push(`[*] --> ${esc(nodeLabel(node))}`);
-    } else if (node.kind === "end") {
-      lines.push(`${esc(nodeLabel(node))} --> [*]`);
-    } else {
-      lines.push(`state "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
-    }
+    if (node.kind === "start" || node.kind === "end") continue;
+    lines.push(`state "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
   }
 
   for (const group of doc.groups) {
@@ -143,11 +145,22 @@ function exportState(doc: DiagramDocument): string[] {
   }
 
   const groupedNodeIds = new Set(doc.groups.flatMap((g) => g.childIds ?? []));
+  function stateRef(id: string): string {
+    const node = doc.nodes.find((n) => n.id === id);
+    if (node && (node.kind === "start" || node.kind === "end")) return "[*]";
+    if (!node) return esc(id);
+    return esc(nodeLabel(node));
+  }
   for (const edge of doc.edges) {
     const src = doc.nodes.find((n) => n.id === edge.sourceId);
     const tgt = doc.nodes.find((n) => n.id === edge.targetId);
     if (!src || !tgt) continue;
     if (groupedNodeIds.has(src.id) || groupedNodeIds.has(tgt.id)) continue;
+    if (src.kind === "start" || src.kind === "end" || tgt.kind === "start" || tgt.kind === "end") {
+      const trigger = edge.label ? ` : ${esc(edge.label)}` : "";
+      lines.push(`${stateRef(src.id)} --> ${stateRef(tgt.id)}${trigger}`);
+      continue;
+    }
     const trigger = edge.label ? ` : ${esc(edge.label)}` : "";
     lines.push(`${esc(nodeLabel(src))} --> ${esc(nodeLabel(tgt))}${trigger}`);
   }
@@ -159,29 +172,74 @@ function exportActivity(doc: DiagramDocument): string[] {
   const lines: string[] = [];
   const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
 
+  const activityNodes = doc.nodes.filter((n) => n.kind === "activity");
+  if (activityNodes.length === 0 && doc.groups.length === 0) return lines;
+
   lines.push("start");
 
+  const groupedNodeIds = new Set(doc.groups.flatMap((g) => g.childIds ?? []));
+  const childIdToGroup = new Map<string, string>();
   for (const group of doc.groups) {
-    if (group.kind === "branch" || group.kind === "if") {
+    for (const cid of group.childIds ?? []) {
+      childIdToGroup.set(cid, group.id);
+    }
+  }
+
+  const groupOrder = new Map(doc.groups.map((g, i) => [g.id, i]));
+  const nodeOrder = new Map(doc.nodes.map((n, i) => [n.id, i]));
+
+  const orderedGroups = [...doc.groups]
+    .filter((g) => g.kind === "branch" || g.kind === "if")
+    .sort((a, b) => (groupOrder.get(a.id) ?? 0) - (groupOrder.get(b.id) ?? 0));
+  const firstGroupNodeIdx =
+    orderedGroups.length > 0
+      ? Math.min(
+          ...orderedGroups.flatMap((g) => (g.childIds ?? []).map((cid) => nodeOrder.get(cid) ?? 0))
+        )
+      : Infinity;
+  const firstFreeNodeIdx = activityNodes
+    .filter((n) => !groupedNodeIds.has(n.id))
+    .map((n) => nodeOrder.get(n.id) ?? 0)
+    .reduce((a, b) => Math.min(a, b), Infinity);
+
+  const groupsFirst = firstGroupNodeIdx < firstFreeNodeIdx;
+
+  function emitFreeActivities(upToNodeIdx?: number) {
+    for (const node of activityNodes) {
+      if (groupedNodeIds.has(node.id)) continue;
+      const idx = nodeOrder.get(node.id) ?? 0;
+      if (upToNodeIdx !== undefined && idx >= upToNodeIdx) continue;
+      lines.push(`:${esc(nodeLabel(node))};`);
+    }
+  }
+
+  function emitGroups() {
+    for (const group of orderedGroups) {
       const children = (group.childIds ?? [])
         .map((cid) => nodeMap.get(cid))
         .filter((n): n is DiagramNode => n !== undefined);
       const condition = group.label ?? group.id;
-      lines.push(`if (${esc(condition)}) then`);
-      for (const child of children) {
-        if (child.kind === "activity") {
-          lines.push(`  :${esc(child.label ?? child.id)};`);
-        }
+      const actChildren = children.filter((c) => c.kind === "activity");
+      const otherChildren = children.filter((c) => c.kind !== "activity");
+      lines.push(`if (${esc(condition)}) then (yes)`);
+      for (const child of actChildren) {
+        lines.push(`  :${esc(child.label ?? child.id)};`);
       }
+      lines.push("else (no)");
       lines.push("endif");
+      for (const child of otherChildren) {
+        lines.push(`:${esc(child.label ?? child.id)};`);
+      }
     }
   }
 
-  const groupedNodeIds = new Set(doc.groups.flatMap((g) => g.childIds ?? []));
-  for (const node of doc.nodes) {
-    if (node.kind === "activity" && !groupedNodeIds.has(node.id)) {
-      lines.push(`:${esc(nodeLabel(node))};`);
-    }
+  if (groupsFirst) {
+    emitFreeActivities(firstGroupNodeIdx);
+    emitGroups();
+    emitFreeActivities();
+  } else {
+    emitGroups();
+    emitFreeActivities();
   }
 
   lines.push("stop");
