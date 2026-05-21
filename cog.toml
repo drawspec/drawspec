@@ -37,3 +37,4 @@ exporter-mermaid = { path = "packages/exporter-mermaid" }
 exporter-plantuml = { path = "packages/exporter-plantuml" }
 exporter-d2 = { path = "packages/exporter-d2" }
 vite-plugin = { path = "packages/vite-plugin" }
+lsp = { path = "packages/lsp" }
