@@ -65,7 +65,7 @@ describe("generateIndexHtml", () => {
     expect(html).toContain('href="my-diagram.html"');
     expect(html).toContain("My Diagram");
     expect(html).toContain("2 nodes");
-    expect(html).toContain("1 edges");
+    expect(html).toContain("1 edge");
     expect(html).toContain(sampleSvg);
     expect(html).toContain('href="style.css"');
   });

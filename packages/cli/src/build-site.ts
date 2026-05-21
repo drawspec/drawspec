@@ -39,11 +39,11 @@ main{max-width:var(--max-width);margin:0 auto;padding:2rem}
 export function generateIndexHtml(diagrams: readonly SiteDiagram[]): string {
   const cards = diagrams
     .map(
-      (d) => `    <a class="card" href="${escapeHtml(d.id)}.html">
+      (d) => `    <a class="card" href="${safeFileName(d.id)}.html">
       <div class="card-preview">${d.svg}</div>
       <div class="card-body">
         <h2>${escapeHtml(d.title)}</h2>
-        <div class="meta">${escapeHtml(d.kind)} &middot; ${d.nodeCount} nodes &middot; ${d.edgeCount} edges</div>
+        <div class="meta">${escapeHtml(d.kind)} &middot; ${d.nodeCount} node${d.nodeCount === 1 ? "" : "s"} &middot; ${d.edgeCount} edge${d.edgeCount === 1 ? "" : "s"}</div>
       </div>
     </a>`
     )
@@ -124,10 +124,14 @@ export function toSiteDiagram(document: DiagramDocument, svg: string): SiteDiagr
   };
 }
 
-function escapeHtml(value: string): string {
+export function escapeHtml(value: string): string {
   return value
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+export function safeFileName(value: string): string {
+  return value.replaceAll(/[^a-zA-Z0-9._-]/g, "_");
 }

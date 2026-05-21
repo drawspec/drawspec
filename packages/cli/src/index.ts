@@ -8,9 +8,11 @@ import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec
 import { renderSvg } from "@drawspec/renderer-svg";
 import { type RuleConfig, recommended, recommendedRules, validate } from "@drawspec/validation";
 import {
+  escapeHtml,
   generateDiagramHtml,
   generateIndexHtml,
   generateStyleCss,
+  safeFileName,
   toSiteDiagram,
 } from "./build-site";
 import type { DrawspecConfig } from "./config";
@@ -282,8 +284,8 @@ async function runBuildSite(parsed: ParsedArgs, config: DrawspecConfig): Promise
   await Bun.$`mkdir -p ${outDir}`.quiet();
   const loaded = await loadAll(parsed.files, config);
   const diagnostics = diagnosticsFor(loaded, config);
+  printDiagnostics(diagnostics);
   if (diagnostics.some((item) => item.severity === "error")) {
-    printDiagnostics(diagnostics);
     return 1;
   }
   const themeName = asString(parsed.options["theme"]) ?? config.render?.theme ?? config.theme;
@@ -838,14 +840,6 @@ function asNumber(value: string | boolean | undefined, fallback: number): number
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
@@ -861,10 +855,6 @@ function hasGlobSyntax(path: string): boolean {
 function toFileUrl(path: string): string {
   const absolute = path.startsWith("/") ? path : `${process.cwd()}/${path}`;
   return `file://${absolute.split("/").map(encodeURIComponent).join("/").replaceAll("%2F", "/")}`;
-}
-
-function safeFileName(value: string): string {
-  return value.replaceAll(/[^a-zA-Z0-9._-]/g, "_");
 }
 
 function hashString(value: string): number {
