@@ -469,7 +469,7 @@ async function discoverFiles(inputs: readonly string[]): Promise<string[]> {
       await scanGlob(process.cwd(), input, files);
       continue;
     }
-    if (await Bun.file(input).exists()) {
+    if (existsSync(input)) {
       dirsToScan.add(input);
     }
   }
