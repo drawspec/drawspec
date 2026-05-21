@@ -215,4 +215,95 @@ describe("exportToMermaid", () => {
 
     expect(result).toContain("Say #quot;hello#quot;");
   });
+
+  test("edge direction controls arrow direction", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "dir-test",
+      kind: "graph",
+      nodes: [
+        { id: "a", kind: "box" },
+        { id: "b", kind: "box" },
+        { id: "c", kind: "box" },
+        { id: "d", kind: "box" },
+      ],
+      edges: [
+        { id: "e1", kind: "default", sourceId: "a", targetId: "b", direction: "backward" },
+        { id: "e2", kind: "default", sourceId: "b", targetId: "c", direction: "bidirectional" },
+        { id: "e3", kind: "default", sourceId: "c", targetId: "d", direction: "none" },
+      ],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain("a <-- b");
+    expect(result).toContain("b <--> c");
+    expect(result).toContain("c --- d");
+  });
+
+  test("edge direction works with dashed style", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "dash-dir",
+      kind: "graph",
+      nodes: [
+        { id: "a", kind: "box" },
+        { id: "b", kind: "box" },
+      ],
+      edges: [{ id: "e1", kind: "dashed", sourceId: "a", targetId: "b", direction: "none" }],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain("a -.- b");
+  });
+
+  test("class diagram supports extends and implements kinds", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "cls",
+      kind: "class",
+      nodes: [
+        { id: "animal", kind: "class", label: "Animal" },
+        { id: "dog", kind: "class", label: "Dog" },
+        { id: "pet", kind: "class", label: "Pet" },
+      ],
+      edges: [
+        { id: "e1", kind: "extends", sourceId: "dog", targetId: "animal" },
+        { id: "e2", kind: "implements", sourceId: "dog", targetId: "pet" },
+      ],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain("dog --|> animal");
+    expect(result).toContain("dog ..|> pet");
+  });
+
+  test("ID sanitization avoids collisions", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "collision",
+      kind: "graph",
+      nodes: [
+        { id: "a-b", kind: "box", label: "A-B" },
+        { id: "a_b", kind: "box", label: "A_B" },
+      ],
+      edges: [{ id: "e1", kind: "default", sourceId: "a-b", targetId: "a_b" }],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain('a_b["A-B"]');
+    expect(result).toContain('a_b_1["A_B"]');
+    expect(result).toMatch(/a_b .+ a_b_1/);
+  });
 });

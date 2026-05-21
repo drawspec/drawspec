@@ -33,13 +33,53 @@ function isFlowchart(kind: DiagramKind): boolean {
   return kind === "activity";
 }
 
-function nodeId(node: DiagramNode): string {
-  return node.id.replace(/[^a-zA-Z0-9_]/g, "_");
+function sanitizeId(raw: string): string {
+  return raw.replace(/[^a-zA-Z0-9_]/g, "_");
 }
 
-function renderGraphNodes(nodes: DiagramNode[], indent: string): string[] {
+type IdMap = Map<string, string>;
+
+function buildIdMap(doc: DiagramDocument): IdMap {
+  const map = new Map<string, string>();
+  const usedSanitized = new Map<string, number>();
+
+  const allIds: string[] = [
+    ...doc.nodes.map((n) => n.id),
+    ...doc.edges.flatMap((e) => [e.sourceId, e.targetId]),
+    ...doc.groups.map((g) => g.id),
+  ];
+
+  for (const rawId of allIds) {
+    if (map.has(rawId)) continue;
+    const base = sanitizeId(rawId);
+    const count = usedSanitized.get(base) ?? 0;
+    usedSanitized.set(base, count + 1);
+    const unique = count === 0 ? base : `${base}_${count}`;
+    map.set(rawId, unique);
+  }
+
+  return map;
+}
+
+function nodeId(node: DiagramNode, idMap: IdMap): string {
+  return idMap.get(node.id) ?? sanitizeId(node.id);
+}
+
+function edgeArrow(edge: DiagramEdge): string {
+  const dashed = edge.kind === "dependency" || edge.kind === "dashed";
+
+  const dir = edge.direction;
+
+  if (dir === "none") return dashed ? "-.-" : "---";
+  if (dir === "bidirectional") return dashed ? "<-.->" : "<-->";
+  if (dir === "backward") return dashed ? "<-.-" : "<--";
+
+  return dashed ? "-.->" : "-->";
+}
+
+function renderGraphNodes(nodes: DiagramNode[], idMap: IdMap, indent: string): string[] {
   return nodes.map((n) => {
-    const id = nodeId(n);
+    const id = nodeId(n, idMap);
     if (n.label) {
       return `${indent}${id}["${escapeLabel(n.label)}"]`;
     }
@@ -47,13 +87,18 @@ function renderGraphNodes(nodes: DiagramNode[], indent: string): string[] {
   });
 }
 
-function renderGraphEdges(edges: DiagramEdge[], nodes: DiagramNode[], indent: string): string[] {
+function renderGraphEdges(
+  edges: DiagramEdge[],
+  nodes: DiagramNode[],
+  idMap: IdMap,
+  indent: string
+): string[] {
   const nodeIds = new Set(nodes.map((n) => n.id));
   return edges
     .filter((e) => nodeIds.has(e.sourceId) && nodeIds.has(e.targetId))
     .map((e) => {
-      const src = nodeId({ id: e.sourceId } as DiagramNode);
-      const tgt = nodeId({ id: e.targetId } as DiagramNode);
+      const src = idMap.get(e.sourceId) ?? sanitizeId(e.sourceId);
+      const tgt = idMap.get(e.targetId) ?? sanitizeId(e.targetId);
       const arrow = edgeArrow(e);
       if (e.label) {
         return `${indent}${src} ${arrow}|${escapeLabel(e.label)}| ${tgt}`;
@@ -62,28 +107,14 @@ function renderGraphEdges(edges: DiagramEdge[], nodes: DiagramNode[], indent: st
     });
 }
 
-function edgeArrow(edge: DiagramEdge): string {
-  switch (edge.kind) {
-    case "dependency":
-    case "dashed":
-      return "-.->";
-    case "bidirectional":
-    case "association":
-      return "<-->";
-    case "none":
-      return "---";
-    default:
-      return "-->";
-  }
-}
-
-function renderGroupDeclaration(group: DiagramGroup, indent: string): string {
-  const gid = group.id.replace(/[^a-zA-Z0-9_]/g, "_");
+function renderGroupDeclaration(group: DiagramGroup, idMap: IdMap, indent: string): string {
+  const gid = idMap.get(group.id) ?? sanitizeId(group.id);
   const label = group.label ? `["${escapeLabel(group.label)}"]` : "";
   return `${indent}subgraph ${gid}${label}`;
 }
 
 function renderGraph(doc: DiagramDocument): string {
+  const idMap = buildIdMap(doc);
   const direction = DIRECTION_MAP[doc.layout?.direction ?? "tb"] ?? "TD";
   const lines: string[] = [`graph ${direction}`];
   const indent = "  ";
@@ -91,48 +122,50 @@ function renderGraph(doc: DiagramDocument): string {
   const ungrouped = doc.nodes.filter((n) => !doc.groups.some((g) => g.childIds?.includes(n.id)));
 
   for (const node of ungrouped) {
-    lines.push(...renderGraphNodes([node], indent));
+    lines.push(...renderGraphNodes([node], idMap, indent));
   }
 
   for (const group of doc.groups) {
-    lines.push(renderGroupDeclaration(group, indent));
+    lines.push(renderGroupDeclaration(group, idMap, indent));
     const grouped = doc.nodes.filter((n) => group.childIds?.includes(n.id));
     for (const node of grouped) {
-      lines.push(...renderGraphNodes([node], indent + indent));
+      lines.push(...renderGraphNodes([node], idMap, indent + indent));
     }
     lines.push(`${indent}end`);
   }
 
-  lines.push(...renderGraphEdges(doc.edges, doc.nodes, indent));
+  lines.push(...renderGraphEdges(doc.edges, doc.nodes, idMap, indent));
 
   return lines.join("\n");
 }
 
 function renderFlowchart(doc: DiagramDocument): string {
+  const idMap = buildIdMap(doc);
   const direction = DIRECTION_MAP[doc.layout?.direction ?? "tb"] ?? "TD";
   const lines: string[] = [`flowchart ${direction}`];
   const indent = "  ";
 
   for (const node of doc.nodes) {
-    lines.push(...renderGraphNodes([node], indent));
+    lines.push(...renderGraphNodes([node], idMap, indent));
   }
 
-  lines.push(...renderGraphEdges(doc.edges, doc.nodes, indent));
+  lines.push(...renderGraphEdges(doc.edges, doc.nodes, idMap, indent));
 
   return lines.join("\n");
 }
 
 function renderSequence(doc: DiagramDocument): string {
+  const idMap = buildIdMap(doc);
   const lines: string[] = ["sequenceDiagram"];
 
   for (const node of doc.nodes) {
     const label = node.label ?? node.id;
-    lines.push(`  participant ${nodeId(node)} as ${escapeLabel(label)}`);
+    lines.push(`  participant ${nodeId(node, idMap)} as ${escapeLabel(label)}`);
   }
 
   for (const edge of doc.edges) {
-    const src = nodeId({ id: edge.sourceId } as DiagramNode);
-    const tgt = nodeId({ id: edge.targetId } as DiagramNode);
+    const src = idMap.get(edge.sourceId) ?? sanitizeId(edge.sourceId);
+    const tgt = idMap.get(edge.targetId) ?? sanitizeId(edge.targetId);
     const arrow = edge.kind === "dashed" || edge.kind === "return" ? "-->>" : "->>";
     if (edge.label) {
       lines.push(`  ${src}${arrow}${tgt}: ${escapeLabel(edge.label)}`);
@@ -145,10 +178,11 @@ function renderSequence(doc: DiagramDocument): string {
 }
 
 function renderClassDiagram(doc: DiagramDocument): string {
+  const idMap = buildIdMap(doc);
   const lines: string[] = ["classDiagram"];
 
   for (const node of doc.nodes) {
-    lines.push(`  class ${nodeId(node)} {`);
+    lines.push(`  class ${nodeId(node, idMap)} {`);
     if (node.description) {
       for (const line of node.description.split("\n")) {
         lines.push(`    ${escapeLabel(line)}`);
@@ -158,16 +192,18 @@ function renderClassDiagram(doc: DiagramDocument): string {
   }
 
   for (const edge of doc.edges) {
-    const src = nodeId({ id: edge.sourceId } as DiagramNode);
-    const tgt = nodeId({ id: edge.targetId } as DiagramNode);
+    const src = idMap.get(edge.sourceId) ?? sanitizeId(edge.sourceId);
+    const tgt = idMap.get(edge.targetId) ?? sanitizeId(edge.targetId);
     const arrow =
-      edge.kind === "inheritance"
+      edge.kind === "inheritance" || edge.kind === "extends"
         ? " --|> "
-        : edge.kind === "composition"
-          ? " *-- "
-          : edge.kind === "aggregation"
-            ? " o-- "
-            : " --> ";
+        : edge.kind === "implements"
+          ? " ..|> "
+          : edge.kind === "composition"
+            ? " *-- "
+            : edge.kind === "aggregation"
+              ? " o-- "
+              : " --> ";
     lines.push(`  ${src}${arrow}${tgt}`);
   }
 
@@ -175,10 +211,11 @@ function renderClassDiagram(doc: DiagramDocument): string {
 }
 
 function renderStateDiagram(doc: DiagramDocument): string {
+  const idMap = buildIdMap(doc);
   const lines: string[] = ["stateDiagram-v2"];
 
   for (const node of doc.nodes) {
-    const id = nodeId(node);
+    const id = nodeId(node, idMap);
     if (node.label && node.label !== node.id) {
       lines.push(`  state "${escapeLabel(node.label)}" as ${id}`);
     } else {
@@ -187,8 +224,8 @@ function renderStateDiagram(doc: DiagramDocument): string {
   }
 
   for (const edge of doc.edges) {
-    const src = nodeId({ id: edge.sourceId } as DiagramNode);
-    const tgt = nodeId({ id: edge.targetId } as DiagramNode);
+    const src = idMap.get(edge.sourceId) ?? sanitizeId(edge.sourceId);
+    const tgt = idMap.get(edge.targetId) ?? sanitizeId(edge.targetId);
     if (edge.label) {
       lines.push(`  ${src} --> ${tgt}: ${escapeLabel(edge.label)}`);
     } else {
@@ -200,11 +237,12 @@ function renderStateDiagram(doc: DiagramDocument): string {
 }
 
 function renderErDiagram(doc: DiagramDocument): string {
+  const idMap = buildIdMap(doc);
   const lines: string[] = ["erDiagram"];
 
   for (const edge of doc.edges) {
-    const src = nodeId({ id: edge.sourceId } as DiagramNode);
-    const tgt = nodeId({ id: edge.targetId } as DiagramNode);
+    const src = idMap.get(edge.sourceId) ?? sanitizeId(edge.sourceId);
+    const tgt = idMap.get(edge.targetId) ?? sanitizeId(edge.targetId);
     const rel =
       edge.kind === "one-to-one"
         ? "||--||"
