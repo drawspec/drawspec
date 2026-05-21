@@ -7,6 +7,8 @@ import {
   type CacheStore,
   createCacheStore,
   createNoopCacheStore,
+  DependencyGraph,
+  extractImports,
   generateCacheKey,
 } from "@drawspec/cache";
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
@@ -368,7 +370,11 @@ async function runWatch(parsed: ParsedArgs, config: DrawspecConfig): Promise<num
   const port = asNumber(parsed.options["port"], DEFAULT_PREVIEW_PORT);
   const debounceMs = asNumber(parsed.options["debounce"], DEFAULT_DEBOUNCE_MS);
   const sockets = new Set<ServerWebSocket>();
+  const allFiles = await discoverFiles(
+    parsed.files.length > 0 ? parsed.files : (config.files ?? [process.cwd()])
+  );
   let latest = await compilePreview(parsed.files, config);
+  let graph = await buildDependencyGraph(allFiles);
   const server = Bun.serve({
     port,
     fetch(request, server) {
@@ -387,19 +393,19 @@ async function runWatch(parsed: ParsedArgs, config: DrawspecConfig): Promise<num
       },
     },
   });
-  const watched = await discoverFiles(
-    parsed.files.length > 0 ? parsed.files : (config.files ?? [process.cwd()])
-  );
   const watcher = watchFiles(
-    watched,
-    debounce(() => {
-      void compilePreview(parsed.files, config).then((payload) => {
+    allFiles,
+    debounceArg((changedFile: string) => {
+      const affected = graph.getAffected(changedFile);
+      void (async () => {
+        graph = await buildDependencyGraph(allFiles);
+        const payload = await compilePreviewIncremental(allFiles, affected, config, latest);
         latest = payload;
         broadcast(sockets, payload);
-      });
+      })();
     }, debounceMs)
   );
-  console.log(green(`watching ${watched.length} file(s) on ws://localhost:${server.port}/ws`));
+  console.log(green(`watching ${allFiles.length} file(s) on ws://localhost:${server.port}/ws`));
   await waitForShutdown(() => {
     watcher.close();
     for (const socket of sockets) socket.close();
@@ -413,7 +419,11 @@ async function runServe(parsed: ParsedArgs, config: DrawspecConfig): Promise<num
   const port = asNumber(parsed.options["port"], DEFAULT_PREVIEW_PORT);
   const debounceMs = asNumber(parsed.options["debounce"], DEFAULT_DEBOUNCE_MS);
   const sockets = new Set<ServerWebSocket>();
+  const allFiles = await discoverFiles(
+    parsed.files.length > 0 ? parsed.files : (config.files ?? [process.cwd()])
+  );
   let latest = await compilePreview(parsed.files, config);
+  let graph = await buildDependencyGraph(allFiles);
   const server = Bun.serve({
     hostname: host,
     port,
@@ -445,16 +455,16 @@ async function runServe(parsed: ParsedArgs, config: DrawspecConfig): Promise<num
       },
     },
   });
-  const watched = await discoverFiles(
-    parsed.files.length > 0 ? parsed.files : (config.files ?? [process.cwd()])
-  );
   const watcher = watchFiles(
-    watched,
-    debounce(() => {
-      void compilePreview(parsed.files, config).then((payload) => {
+    allFiles,
+    debounceArg((changedFile: string) => {
+      const affected = graph.getAffected(changedFile);
+      void (async () => {
+        graph = await buildDependencyGraph(allFiles);
+        const payload = await compilePreviewIncremental(allFiles, affected, config, latest);
         latest = payload;
         broadcast(sockets, payload);
-      });
+      })();
     }, debounceMs)
   );
   const url = `http://${host}:${server.port}/`;
@@ -587,6 +597,137 @@ async function loadModule(file: string): Promise<LoadedDocument[]> {
   }
 }
 
+async function buildDependencyGraph(files: readonly string[]): Promise<DependencyGraph> {
+  const graph = new DependencyGraph();
+  const absoluteToRelative = new Map<string, string>();
+  const relativeToAbsolute = new Map<string, string>();
+
+  for (const file of files) {
+    const dir = file.includes("/") ? file.slice(0, file.lastIndexOf("/")) : ".";
+    absoluteToRelative.set(file, dir);
+  }
+
+  for (const file of files) {
+    relativeToAbsolute.set(file, file);
+  }
+
+  for (const file of files) {
+    try {
+      const source = await Bun.file(file).text();
+      const rawImports = extractImports(source);
+      const resolvedDeps: string[] = [];
+      const dir = absoluteToRelative.get(file) ?? ".";
+
+      for (const imp of rawImports) {
+        const resolved =
+          imp.startsWith("./") || imp.startsWith("../") ? resolvePath(dir, imp) : imp;
+        if (files.includes(resolved)) {
+          resolvedDeps.push(resolved);
+        }
+      }
+      graph.addNode(file, resolvedDeps);
+    } catch {
+      graph.addNode(file, []);
+    }
+  }
+  return graph;
+}
+
+function resolvePath(baseDir: string, relativePath: string): string {
+  const parts = baseDir.split("/");
+  const segments = relativePath.split("/");
+
+  if (segments[0] === ".") {
+    segments.shift();
+  }
+  for (const segment of segments) {
+    if (segment === "..") {
+      parts.pop();
+    } else {
+      parts.push(segment);
+    }
+  }
+  return parts.join("/");
+}
+
+async function loadAffected(
+  allFiles: readonly string[],
+  affectedFiles: readonly string[],
+  config: DrawspecConfig
+): Promise<LoadedDocument[]> {
+  if (affectedFiles.length >= allFiles.length) {
+    return loadAll(allFiles, config);
+  }
+  const affectedSet = new Set(affectedFiles);
+  const loaded = await Promise.all(
+    allFiles.map((file) => (affectedSet.has(file) ? loadModule(file) : null))
+  );
+  return loaded
+    .flat()
+    .filter((item): item is LoadedDocument => item !== null)
+    .sort((left, right) => left.file.localeCompare(right.file));
+}
+
+async function compilePreviewIncremental(
+  allFiles: readonly string[],
+  affectedFiles: readonly string[],
+  config: DrawspecConfig,
+  previous: PreviewPayload | null
+): Promise<PreviewPayload> {
+  const affectedSet = new Set(affectedFiles);
+
+  if (previous === null || affectedFiles.length >= allFiles.length) {
+    return compilePreview(allFiles, config);
+  }
+
+  const loaded = await loadAffected(allFiles, affectedFiles, config);
+  const diagnostics = diagnosticsFor(loaded, config);
+  const themeName = config.render?.theme ?? config.theme;
+  const diagrams: PreviewDiagram[] = [];
+
+  const previousById = new Map<string, PreviewDiagram>();
+  for (const diagram of previous.diagrams) {
+    previousById.set(diagram.diagramId, diagram);
+  }
+
+  for (const item of loaded) {
+    if (item.document === undefined) {
+      continue;
+    }
+    const documentDiagnostics = [...item.diagnostics, ...validateDocument(item.document, config)];
+    if (documentDiagnostics.some((d) => d.severity === "error")) {
+      continue;
+    }
+
+    if (!affectedSet.has(item.file)) {
+      const cached = previousById.get(item.document.id);
+      if (cached !== undefined) {
+        diagrams.push(cached);
+        continue;
+      }
+    }
+
+    const positionedDiagram = await layoutFor(item.document).layout(
+      item.document,
+      layoutOptions(item.document)
+    );
+    const svg = await renderSvg(item.document, {
+      positionedDiagram,
+      accessibility: { title: item.document.title ?? item.document.id },
+      ...(themeName === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
+    });
+    diagrams.push({
+      file: item.file,
+      diagramId: item.document.id,
+      document: item.document,
+      svg,
+      diagnostics: documentDiagnostics,
+    });
+  }
+
+  return { diagrams, diagnostics };
+}
+
 function callFactory(value: unknown): { result: unknown } | { error: string } {
   try {
     return { result: (value as () => unknown)() };
@@ -708,13 +849,13 @@ function sendSnapshot(socket: ServerWebSocket, payload: PreviewPayload): void {
   }
 }
 
-function watchFiles(files: readonly string[], onChange: () => void): { close(): void } {
+function watchFiles(files: readonly string[], onChange: (file: string) => void): { close(): void } {
   const watchers: FSWatcher[] = [];
   for (const file of files) {
     if (!existsSync(file)) {
       continue;
     }
-    watchers.push(watch(file, { persistent: true }, onChange));
+    watchers.push(watch(file, { persistent: true }, () => onChange(file)));
   }
   return {
     close() {
@@ -723,11 +864,13 @@ function watchFiles(files: readonly string[], onChange: () => void): { close(): 
   };
 }
 
-function debounce(callback: () => void, delayMs: number): () => void {
+function debounceArg<T>(callback: (arg: T) => void, delayMs: number): (arg: T) => void {
   let timer: ReturnType<typeof setTimeout> | undefined;
-  return () => {
+  let lastArg: T;
+  return (arg: T) => {
+    lastArg = arg;
     if (timer !== undefined) clearTimeout(timer);
-    timer = setTimeout(callback, delayMs);
+    timer = setTimeout(() => callback(lastArg), delayMs);
   };
 }
 

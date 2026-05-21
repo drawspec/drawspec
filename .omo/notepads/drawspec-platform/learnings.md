@@ -81,3 +81,17 @@ core → (architecture, validation, uml-sequence, uml-class, uml-state, uml-comp
 - Element tags auto-include the kind (e.g., "person", "softwareSystem") and are sorted; exporters filter these out since the target format infers type from the element kind field
 - Relationship tags auto-include "relationship"; exporters filter this out
 - No external dependencies needed — pure JSON serialization from existing types
+
+### @drawspec/cache — DependencyGraph for Incremental Compilation (Stage 5)
+- `DependencyGraph` class in `packages/cache/src/dependency-graph.ts` — tracks import relationships between diagram files
+- Dual adjacency lists: `dependencies` (node → what it imports) and `dependents` (node → what imports it)
+- `addNode(id, deps)` replaces existing edges — stale edges from previous calls are cleaned up automatically
+- `getAffected(id)` returns node + all transitive dependents via iterative BFS; handles cycles safely (visited set)
+- `getDependents(id)` returns direct dependents only; `getDependencies(id)` returns direct dependencies only
+- `extractImports(source)` uses `source.matchAll()` (not `exec` in a while loop — biome forbids assignment-in-expression) to extract `.ts` import specifiers, skipping `@`-prefixed bare specifiers
+- CLI integration: `buildDependencyGraph(files)` reads each file's source, resolves relative imports against the file's directory, only includes matches from the known file set
+- `compilePreviewIncremental()` reuses previous `PreviewPayload` for unaffected files — skips layout/render for diagrams whose source file wasn't in the affected set
+- `watchFiles` callback signature changed from `() => void` to `(file: string) => void` — uses per-file closure to identify the changed file
+- `debounceArg<T>` replaces `debounce` for typed argument passthrough — remembers last argument across rapid fires
+- When adding new files to `@drawspec/cache`, must run `bun run build` (tsc) to update `dist/` before dependent packages can import them
+- Biome rules: no non-null assertions (`stack.pop()!` → check for undefined), prefer optional chaining (`specifier?.endsWith()`), no assignment in expressions (use `matchAll` instead of `exec` loop)

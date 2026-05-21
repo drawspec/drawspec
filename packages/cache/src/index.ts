@@ -12,6 +12,8 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+export { DependencyGraph, extractImports } from "./dependency-graph";
+
 /** Configuration values that influence cache key generation. */
 export interface CacheConfig {
   readonly theme?: string;
