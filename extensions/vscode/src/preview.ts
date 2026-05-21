@@ -1,19 +1,21 @@
 import * as vscode from "vscode";
+import * as path from "node:path";
+import * as os from "node:os";
+import * as fs from "node:fs/promises";
+import * as ts from "typescript";
 import { serializeDocument } from "@drawspec/core";
 import type { DiagramDocument } from "@drawspec/core";
 import { SimpleGraphLayoutEngine, SequenceLayoutEngine } from "@drawspec/layout";
 import { renderSvgSync } from "@drawspec/renderer-svg";
 
 export class PreviewManager {
-  readonly #context: vscode.ExtensionContext;
   readonly #outputChannel: vscode.OutputChannel;
   readonly #panels = new Map<string, vscode.WebviewPanel>();
 
   constructor(
-    context: vscode.ExtensionContext,
+    _context: vscode.ExtensionContext,
     outputChannel: vscode.OutputChannel
   ) {
-    this.#context = context;
     this.#outputChannel = outputChannel;
   }
 
@@ -33,20 +35,21 @@ export class PreviewManager {
     );
 
     this.#panels.set(uri, panel);
-    panel.onDidDispose(() => this.#panels.delete(uri));
+
+    const saveSubscription = vscode.workspace.onDidSaveTextDocument(
+      async (saved) => {
+        if (saved.uri.toString() === uri) {
+          await this.#renderPreview(panel, saved);
+        }
+      }
+    );
+
+    panel.onDidDispose(() => {
+      this.#panels.delete(uri);
+      saveSubscription.dispose();
+    });
 
     await this.#renderPreview(panel, document);
-
-    const watcher = vscode.workspace.createFileSystemWatcher(
-      new vscode.RelativePattern(document.uri, "*")
-    );
-    this.#context.subscriptions.push(watcher);
-    watcher.onDidChange(async (changed) => {
-      if (changed.toString() === document.uri.toString()) {
-        const latest = await vscode.workspace.openTextDocument(changed);
-        await this.#renderPreview(panel, latest);
-      }
-    });
   }
 
   async inspectDocument(document: vscode.TextDocument): Promise<void> {
@@ -88,27 +91,52 @@ export class PreviewManager {
   async #compileDocument(
     document: vscode.TextDocument
   ): Promise<DiagramDocument | undefined> {
-    try {
-      const module: Record<string, unknown> = await import(
-        document.uri.fsPath
-      );
-      const exported =
-        module["default"] ?? module["diagram"] ?? module["doc"];
-      if (exported !== undefined && typeof exported === "object") {
-        return exported as DiagramDocument;
-      }
-
-      const values = Object.values(module);
-      for (const value of values) {
-        if (isDiagramDocument(value)) {
-          return value;
-        }
-      }
-
+    if (!vscode.workspace.isTrusted) {
       this.#outputChannel.appendLine(
-        `[DrawSpec] No DiagramDocument export found in ${document.uri.fsPath}`
+        "[DrawSpec] Cannot compile diagram: workspace is not trusted"
       );
       return undefined;
+    }
+
+    try {
+      const source = document.getText();
+      const result = ts.transpileModule(source, {
+        compilerOptions: {
+          module: ts.ModuleKind.ES2022,
+          target: ts.ScriptTarget.ES2022,
+          esModuleInterop: true,
+        },
+      });
+
+      const tempDir = os.tmpdir();
+      const tempFile = path.join(
+        tempDir,
+        `drawspec-${Date.now()}-${Math.random().toString(36).slice(2)}.mjs`
+      );
+
+      await fs.writeFile(tempFile, result.outputText);
+      try {
+        const module: Record<string, unknown> = await import(tempFile);
+        const exported =
+          module["default"] ?? module["diagram"] ?? module["doc"];
+        if (isDiagramDocument(exported)) {
+          return exported;
+        }
+
+        const values = Object.values(module);
+        for (const value of values) {
+          if (isDiagramDocument(value)) {
+            return value;
+          }
+        }
+
+        this.#outputChannel.appendLine(
+          `[DrawSpec] No DiagramDocument export found in ${document.uri.fsPath}`
+        );
+        return undefined;
+      } finally {
+        await fs.unlink(tempFile).catch(() => {});
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       this.#outputChannel.appendLine(
@@ -143,12 +171,14 @@ function isDiagramDocument(value: unknown): value is DiagramDocument {
   );
 }
 
+function sanitizeSvg(svg: string): string {
+  const stripped = svg.replace(/<script[\s\S]*?<\/script>/gi, "");
+  return stripped;
+}
+
 function previewHtml(svgContent: string): string {
-  const escaped = svgContent
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  const sanitized = sanitizeSvg(svgContent);
+  const encoded = encodeURIComponent(sanitized);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,11 +188,11 @@ function previewHtml(svgContent: string): string {
 <style>
   body { margin: 0; padding: 16px; background: #1e1e1e; color: #ccc; display: flex; justify-content: center; }
   .container { max-width: 100%; overflow: auto; }
-  svg { max-width: 100%; height: auto; }
+  img { max-width: 100%; height: auto; }
 </style>
 </head>
 <body>
-<div class="container">${escaped}</div>
+<div class="container"><img src="data:image/svg+xml,${encoded}" alt="DrawSpec Diagram" /></div>
 </body>
 </html>`;
 }

@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "publisher": "drawspec",
   "license": "MIT",
+  "type": "module",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -14,7 +15,8 @@
   ],
   "activationEvents": [
     "onLanguage:typescript",
-    "onCommand:drawspec.preview"
+    "onCommand:drawspec.preview",
+    "onCommand:drawspec.inspect"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -46,9 +48,11 @@
   "dependencies": {
     "@drawspec/core": "workspace:*",
     "@drawspec/renderer-svg": "workspace:*",
-    "@drawspec/layout": "workspace:*"
+    "@drawspec/layout": "workspace:*",
+    "typescript": "^6.0.0"
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0"
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^22.0.0"
   }
 }

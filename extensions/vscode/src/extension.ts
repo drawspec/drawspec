@@ -8,22 +8,22 @@ export function activate(context: vscode.ExtensionContext): void {
   const diagnosticManager = new DiagnosticManager(outputChannel);
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("drawspec.preview", () => {
+    vscode.commands.registerCommand("drawspec.preview", async () => {
       const editor = vscode.window.activeTextEditor;
       if (editor === undefined) {
         vscode.window.showWarningMessage("No active editor");
         return;
       }
-      previewManager.openPreview(editor.document);
+      return previewManager.openPreview(editor.document);
     }),
 
-    vscode.commands.registerCommand("drawspec.inspect", () => {
+    vscode.commands.registerCommand("drawspec.inspect", async () => {
       const editor = vscode.window.activeTextEditor;
       if (editor === undefined) {
         vscode.window.showWarningMessage("No active editor");
         return;
       }
-      previewManager.inspectDocument(editor.document);
+      return previewManager.inspectDocument(editor.document);
     }),
 
     diagnosticManager,

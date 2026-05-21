@@ -1,4 +1,8 @@
 import * as vscode from "vscode";
+import * as path from "node:path";
+import * as os from "node:os";
+import * as fs from "node:fs/promises";
+import * as ts from "typescript";
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
 
 export class DiagnosticManager implements vscode.Disposable {
@@ -33,13 +37,37 @@ export class DiagnosticManager implements vscode.Disposable {
   }
 
   async #checkFile(uri: vscode.Uri): Promise<vscode.Diagnostic[]> {
+    if (!vscode.workspace.isTrusted) {
+      return [];
+    }
+
     try {
-      const module: Record<string, unknown> = await import(uri.fsPath);
-      const doc = this.#extractDiagram(module);
-      if (doc === undefined) {
-        return [];
+      const document = await vscode.workspace.openTextDocument(uri);
+      const source = document.getText();
+      const result = ts.transpileModule(source, {
+        compilerOptions: {
+          module: ts.ModuleKind.ES2022,
+          target: ts.ScriptTarget.ES2022,
+          esModuleInterop: true,
+        },
+      });
+
+      const tempFile = path.join(
+        os.tmpdir(),
+        `drawspec-diag-${Date.now()}-${Math.random().toString(36).slice(2)}.mjs`
+      );
+
+      await fs.writeFile(tempFile, result.outputText);
+      try {
+        const module: Record<string, unknown> = await import(tempFile);
+        const doc = this.#extractDiagram(module);
+        if (doc === undefined) {
+          return [];
+        }
+        return this.#toVscodeDiagnostics(doc.diagnostics ?? []);
+      } finally {
+        await fs.unlink(tempFile).catch(() => {});
       }
-      return this.#toVscodeDiagnostics(doc.diagnostics ?? []);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       this.#outputChannel.appendLine(
