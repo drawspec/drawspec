@@ -62,11 +62,24 @@ function formatNode(node: DiagramNode, indent: string): string[] {
   return lines;
 }
 
+function d2Arrow(direction: DiagramEdge["direction"]): string {
+  switch (direction) {
+    case "none":
+      return "--";
+    case "backward":
+      return "<-";
+    case "bidirectional":
+      return "<>";
+    default:
+      return "->";
+  }
+}
+
 function formatEdge(edge: DiagramEdge, indent: string): string[] {
   const lines: string[] = [];
   const src = d2Id(edge.sourceId);
   const tgt = d2Id(edge.targetId);
-  const arrow = edge.direction === "none" ? "--" : "->";
+  const arrow = d2Arrow(edge.direction);
   if (edge.label) {
     lines.push(`${indent}${src} ${arrow} ${tgt}: ${escapeLabel(edge.label)}`);
   } else {
@@ -84,23 +97,18 @@ function collectChildNodes(group: DiagramGroup, nodes: DiagramNode[]): DiagramNo
 function formatGroup(
   group: DiagramGroup,
   nodes: DiagramNode[],
-  edges: DiagramEdge[],
-  childGroups: DiagramGroup[],
+  allGroups: DiagramGroup[],
   indent: string
 ): string[] {
   const lines: string[] = [];
   const id = d2Id(group.id);
-  if (group.label) {
-    lines.push(`${indent}${id}: {`);
-  } else {
-    lines.push(`${indent}${id}: {`);
-  }
+  lines.push(`${indent}${id}: {`);
   const inner = `${indent}  `;
   for (const child of collectChildNodes(group, nodes)) {
     lines.push(...formatNode(child, inner));
   }
-  for (const child of childGroups) {
-    lines.push(...formatGroup(child, nodes, edges, getChildGroups(child, childGroups), inner));
+  for (const child of getChildGroups(group, allGroups)) {
+    lines.push(...formatGroup(child, nodes, allGroups, inner));
   }
   lines.push(`${indent}}`);
   return lines;
@@ -123,7 +131,7 @@ function getRootNodes(nodes: DiagramNode[], groups: DiagramGroup[]): DiagramNode
       }
     }
   }
-  return nodes.filter((n) => !groupedNodeIds.has(n.id) && !n.parentId);
+  return nodes.filter((n) => !groupedNodeIds.has(n.id));
 }
 
 function getRootEdges(edges: DiagramEdge[]): DiagramEdge[] {
@@ -132,11 +140,6 @@ function getRootEdges(edges: DiagramEdge[]): DiagramEdge[] {
 
 export function exportToD2(doc: DiagramDocument): string {
   const lines: string[] = [];
-
-  if (doc.title) {
-    lines.push(`direction: right`);
-    lines.push(``);
-  }
 
   const dir = formatDirection(doc.layout);
   if (dir) {
@@ -148,22 +151,13 @@ export function exportToD2(doc: DiagramDocument): string {
   const rootGroups = getRootGroups(doc.groups);
 
   for (const group of rootGroups) {
-    const childGroups = getChildGroups(group, doc.groups);
-    lines.push(...formatGroup(group, doc.nodes, doc.edges, childGroups, ""));
+    lines.push(...formatGroup(group, doc.nodes, doc.groups, ""));
   }
 
   for (const node of rootNodes) {
     lines.push(...formatNode(node, ""));
   }
 
-  const allGroupedIds = new Set<string>();
-  for (const g of doc.groups) {
-    if (g.childIds) {
-      for (const id of g.childIds) {
-        allGroupedIds.add(id);
-      }
-    }
-  }
   for (const edge of rootEdges) {
     lines.push(...formatEdge(edge, ""));
   }

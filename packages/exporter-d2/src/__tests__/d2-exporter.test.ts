@@ -74,12 +74,59 @@ describe("exportToD2", () => {
     expect(result).toContain("x -- y");
   });
 
+  test("exports backward edges", () => {
+    const doc = makeDoc({
+      nodes: [
+        { id: "a", kind: "default" },
+        { id: "b", kind: "default" },
+      ],
+      edges: [
+        {
+          id: "e1",
+          kind: "default",
+          sourceId: "a",
+          targetId: "b",
+          direction: "backward",
+        },
+      ],
+    });
+    const result = exportToD2(doc);
+    expect(result).toContain("a <- b");
+  });
+
+  test("exports bidirectional edges", () => {
+    const doc = makeDoc({
+      nodes: [
+        { id: "a", kind: "default" },
+        { id: "b", kind: "default" },
+      ],
+      edges: [
+        {
+          id: "e1",
+          kind: "default",
+          sourceId: "a",
+          targetId: "b",
+          direction: "bidirectional",
+          label: "sync",
+        },
+      ],
+    });
+    const result = exportToD2(doc);
+    expect(result).toContain("a <> b: sync");
+  });
+
   test("exports layout direction", () => {
     const doc = makeDoc({
       layout: { direction: "lr" },
     });
     const result = exportToD2(doc);
     expect(result).toContain("direction: right");
+  });
+
+  test("does not emit direction from title", () => {
+    const doc = makeDoc({ title: "My Diagram" });
+    const result = exportToD2(doc);
+    expect(result).not.toContain("direction: right");
   });
 
   test("exports node shapes from kind", () => {
@@ -113,11 +160,60 @@ describe("exportToD2", () => {
     expect(result).toContain("}");
   });
 
+  test("exports nested groups", () => {
+    const doc = makeDoc({
+      nodes: [
+        { id: "a", kind: "default", label: "Alpha" },
+        { id: "b", kind: "default", label: "Beta" },
+        { id: "c", kind: "default", label: "Gamma" },
+      ],
+      groups: [
+        {
+          id: "outer",
+          kind: "default",
+          label: "Outer",
+          childIds: ["a"],
+        },
+        {
+          id: "inner",
+          kind: "default",
+          label: "Inner",
+          parentId: "outer",
+          childIds: ["b", "c"],
+        },
+      ],
+    });
+    const result = exportToD2(doc);
+    expect(result).toContain("outer: {");
+    expect(result).toContain("inner: {");
+    expect(result).toContain("a: Alpha");
+    expect(result).toContain("b: Beta");
+    expect(result).toContain("c: Gamma");
+    const outerIdx = result.indexOf("outer: {");
+    const innerIdx = result.indexOf("inner: {");
+    expect(innerIdx).toBeGreaterThan(outerIdx);
+    const outerClose = result.indexOf("}", innerIdx);
+    const innerClose = result.indexOf("}", outerClose + 1);
+    expect(innerClose).toBeGreaterThan(outerClose);
+  });
+
   test("escapes labels with special characters", () => {
     const doc = makeDoc({
       nodes: [{ id: "n1", kind: "default", label: 'Hello "World"' }],
     });
     const result = exportToD2(doc);
     expect(result).toContain('n1: "Hello \\"World\\""');
+  });
+
+  test("includes nodes with parentId in output", () => {
+    const doc = makeDoc({
+      nodes: [
+        { id: "a", kind: "default", label: "Alpha", parentId: "g1" },
+        { id: "b", kind: "default", label: "Beta" },
+      ],
+    });
+    const result = exportToD2(doc);
+    expect(result).toContain("a: Alpha");
+    expect(result).toContain("b: Beta");
   });
 });
