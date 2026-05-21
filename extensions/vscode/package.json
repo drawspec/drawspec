@@ -1,0 +1,28 @@
+{
+  "name": "drawspec-vscode",
+  "displayName": "DrawSpec Preview",
+  "description": "Preview DrawSpec diagrams with click-to-source navigation",
+  "version": "0.1.0",
+  "publisher": "drawspec",
+  "license": "MIT",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Visualization"],
+  "activationEvents": ["onCommand:drawspec.preview"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "drawspec.preview",
+        "title": "DrawSpec: Open Preview"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -p ./ --watch"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.0.0"
+  }
+}
