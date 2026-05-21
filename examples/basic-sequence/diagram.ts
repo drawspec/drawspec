@@ -10,10 +10,10 @@ export default sequence("User Login", (s) => {
   server.to(browser, "200 OK + JWT").note("Token expires in 1h");
   browser.to(user, "Redirect to dashboard");
 
-  s.alt("Invalid credentials", (s2) => {
+  s.alt("Invalid credentials", () => {
     server.to(browser, "401 Unauthorized");
     browser.to(user, "Show error message");
-  }).else("Success", (s2) => {
+  }).else("Success", () => {
     server.to(browser, "200 OK + JWT");
     browser.to(user, "Redirect to dashboard");
   });

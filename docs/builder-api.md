@@ -45,9 +45,9 @@ const doc = sequence("Title", (s) => {
   alice.to(bob, "Hello!").note("A greeting");
   bob.to(alice, "Hi!");
 
-  s.alt("No response", (s2) => {
+  s.alt("No response", () => {
     bob.to(alice, "Timeout");
-  }).else("Response received", (s2) => {
+  }).else("Response received", () => {
     bob.to(alice, "Here is the data");
   });
 });
@@ -88,7 +88,6 @@ const ws = workspace("My Workspace", (w) => {
 // Architecture builders return Workspace, not DiagramDocument.
 // The CLI accepts Workspace directly. For programmatic use, compile to documents:
 const docs = ws.compile(); // returns DiagramDocument[]
-```
 ```
 
 ### Element Builders
