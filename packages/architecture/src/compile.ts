@@ -16,6 +16,7 @@ import type {
   AutoLayoutDirection,
   Workspace,
 } from "./types";
+import { generateViews } from "./view-generator";
 
 interface CollectedModel {
   elements: ArchitectureElement[];
@@ -179,10 +180,11 @@ function compileView(
   const allElements = flattenElements(collected.elements);
   const visibleIds = visibleElementIds(view, allElements);
   const visibleElements = allElements.filter((element) => visibleIds.has(element.id));
-  const visibleRelationships = collected.relationships.filter(
-    (relationship) =>
-      visibleIds.has(relationship.source.id) && visibleIds.has(relationship.target.id)
-  );
+  const relationshipIds = view.relationships ? new Set(view.relationships) : undefined;
+  const visibleRelationships = collected.relationships.filter((relationship) => {
+    if (relationshipIds !== undefined) return relationshipIds.has(relationship.id);
+    return visibleIds.has(relationship.source.id) && visibleIds.has(relationship.target.id);
+  });
 
   const layout = layoutDirection(view.layoutDirection);
   return {
@@ -210,7 +212,11 @@ function compileView(
 }
 
 export function compileWorkspace(workspace: Workspace): DiagramDocument[] {
-  return [...workspace.views.items]
+  const views =
+    workspace.views.items.length > 0
+      ? [...workspace.views.items]
+      : generateViews(workspace.model, { strategy: "auto" });
+  return views
     .sort((left, right) => left.id.localeCompare(right.id))
     .map((view) => compileView(workspace, view, view.kind));
 }

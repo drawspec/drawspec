@@ -14,10 +14,10 @@ const compiled = compile(source, {
 });
 
 await mkdir(dirname(generatedPath), { recursive: true });
-await writeFile(
-  generatedPath,
-  compiled.js.code.replaceAll('from "./render"', 'from "../src/render"')
-);
+const rewritten = compiled.js.code
+  .replaceAll('from "./render"', 'from "../src/render"')
+  .replaceAll('from "./explorer/state"', 'from "../src/explorer/state"');
+await writeFile(generatedPath, rewritten);
 
 const result = await Bun.build({
   entrypoints: [generatedPath],

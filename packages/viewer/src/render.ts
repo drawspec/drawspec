@@ -1,7 +1,7 @@
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
 import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
-import type { DrawspecTheme, ViewerPayload } from "./types";
+import type { ArchitectureData, DrawspecTheme, ViewerPayload } from "./types";
 
 export async function renderDiagramSvg(
   document: DiagramDocument,
@@ -31,6 +31,9 @@ export function normalizeViewerPayload(value: unknown): ViewerPayload {
   return {
     ...(isDiagramDocument(payload.document) ? { document: payload.document } : {}),
     ...(typeof payload.svg === "string" ? { svg: payload.svg } : {}),
+    ...(isValidArchitectureData(payload.architecture)
+      ? { architecture: payload.architecture }
+      : {}),
     diagnostics: Array.isArray(payload.diagnostics) ? payload.diagnostics : [],
   };
 }
@@ -52,6 +55,12 @@ function isDiagramDocument(value: unknown): value is DiagramDocument {
     Array.isArray(maybe.groups) &&
     Array.isArray(maybe.annotations)
   );
+}
+
+function isValidArchitectureData(value: unknown): value is ArchitectureData {
+  if (typeof value !== "object" || value === null) return false;
+  const data = value as Partial<ArchitectureData>;
+  return Array.isArray(data.elements) && Array.isArray(data.relationships);
 }
 
 function diagnostic(code: string, severity: Diagnostic["severity"], message: string): Diagnostic {

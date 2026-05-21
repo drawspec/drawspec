@@ -276,6 +276,7 @@
       "name": "@drawspec/viewer",
       "version": "0.0.1",
       "dependencies": {
+        "@drawspec/architecture": "workspace:*",
         "@drawspec/core": "workspace:*",
         "@drawspec/layout": "workspace:*",
         "@drawspec/renderer-svg": "workspace:*",

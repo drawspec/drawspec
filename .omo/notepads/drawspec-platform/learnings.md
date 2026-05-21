@@ -95,3 +95,35 @@ core → (architecture, validation, uml-sequence, uml-class, uml-state, uml-comp
 - `debounceArg<T>` replaces `debounce` for typed argument passthrough — remembers last argument across rapid fires
 - When adding new files to `@drawspec/cache`, must run `bun run build` (tsc) to update `dist/` before dependent packages can import them
 - Biome rules: no non-null assertions (`stack.pop()!` → check for undefined), prefer optional chaining (`specifier?.endsWith()`), no assignment in expressions (use `matchAll` instead of `exec` loop)
+
+### @drawspec/architecture — Drift Detection (Stage 6)
+- `snapshotModel(workspace)` returns a plain serializable `ModelSnapshot` with flattened child elements and relationship endpoints as IDs; no live model references are retained.
+- `compareSnapshots(before, after)` treats `after`-only IDs as `added`, `before`-only IDs as `removed`, and shared IDs with field-level differences as `modified`.
+- Element diffs cover `kind`, `name`, `description`, `technology`, `tags`, `parentId`, `properties`, and `owner`; relationship diffs cover endpoints, label, protocol/direction, tags, and metadata.
+- `detectDrift(model, codeMetadata)` compares architecture IDs against explicit code metadata IDs; missing-in-code becomes `removed`, code-only becomes `added`, and provided metadata fields are compared without requiring code metadata to mirror every model field.
+- `generateDriftReport()` emits Markdown suitable for CLI output or PR comments with Added/Removed/Modified element sections and a combined Relationship Changes section.
+
+### DrawSpec Benchmarks (Task 34)
+- Bun benchmark files use local `bench()` wrappers backed by `bun:test` under `packages/*/src/__bench__`; package `tsconfig.json` excludes `__bench__` so benchmark-only cross-package imports do not leak into production builds. Bun 1.3.14 does not export `bench` and still discovers benchmark modules through `.test.ts` wrappers, so `*.bench.test.ts` imports the `*.bench.ts` definitions only when `DRAWSPEC_RUN_BENCH=1`.
+- Core benchmark fixtures generate deterministic diagrams at 1, 10, 100, and 1000 diagram scales plus 1000/10000-element compile workloads; layout benchmarks cover 10/100/1000/10000-element graphs and a 50-participant/500-message sequence.
+- `bun run bench` runs `bun test --bench packages/core/src/__bench__ packages/layout/src/__bench__`; baselines live in `benchmarks/baseline.json` and are non-gating.
+
+### @drawspec/architecture — ADR Integration (Stage 6)
+- Architecture Decision Records are model metadata on `Workspace.decisions`, not filesystem files; no markdown frontmatter parsing/storage.
+- `ArchitectureDecisionRecord` links to elements by stable `elementIds`; `ArchitectureElement.decisions` is optional reference metadata for element-authored ADR IDs.
+- ADR helpers in `packages/architecture/src/adr.ts` are pure and immutable: `linkAdrToElement()` returns a copied ADR and does not mutate workspace state.
+- `getElementAdrs()` resolves nested C4 elements recursively, matching ADRs by `elementIds` and optional element `decisions` references.
+- `generateAdrReport()` and `exportAdrJson()` sort ADRs by ID for deterministic output.
+
+### @drawspec/architecture — Service Catalog Hooks (Stage 6)
+- Service catalog extraction lives in `packages/architecture/src/service-catalog.ts` and flattens nested architecture elements before filtering service-like entries.
+- Current architecture types expose `softwareSystem` rather than `system`; catalog extraction treats `softwareSystem`, `system`, `container`, `service`, and any element tagged `service` as service-like for forward compatibility.
+- Catalog dependencies are derived from outgoing `ArchitectureRelationship.source.id -> target.id` edges and sorted for deterministic JSON/YAML output.
+- Backstage YAML is generated manually (no YAML dependency) as one `Component` document per catalog entry, with `softwareSystem` exported as Backstage `spec.type: service`.
+
+### @drawspec/architecture — Dynamic View Generation (Task 38)
+- `generateViews(model, options)` lives in `packages/architecture/src/view-generator.ts` and returns existing `ArchitectureView`-compatible objects augmented with deterministic `elements` and `relationships` ID arrays.
+- Tag strategy is OR-based across requested tags; kind strategy accepts current C4 kinds plus forward-compatible `component`, and both include only relationships whose endpoints are in the generated element set.
+- Path strategy resolves seeds by element ID or element name, then performs deterministic BFS over relationships (`forward` by default, with `reverse`/`both` options) up to `maxDepth`.
+- Auto strategy creates a `system-landscape` view for top-level software systems and one per top-level software system containing the system and its direct children.
+- `compileWorkspace()` now falls back to auto-generated views only when `workspace.views.items` is empty; generated relationship ID lists are honored during compilation.

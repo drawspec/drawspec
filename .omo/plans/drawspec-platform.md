@@ -1668,7 +1668,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-32-cache-hit.txt
   ```
 
-- [ ] 33. Implement incremental compilation — Dependency-aware invalidation
+- [x] 33. Implement incremental compilation — Dependency-aware invalidation
 
   **What to do**: Build dependency graph of diagram files (imports). On file change, invalidate only affected files and their dependents. Skip recompilation of unchanged modules.
   **References**: `spec.md` lines 149-160 (incremental by default design principle)

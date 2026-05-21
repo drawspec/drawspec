@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "runner": "bun test --bench packages/core/src/__bench__ packages/layout/src/__bench__",
+  "scope": ["@drawspec/core", "@drawspec/layout", "@drawspec/renderer-svg", "@drawspec/cache"],
+  "targetsMs": {
+    "coldCompile10x100Elements": 20,
+    "svgRenderMediumGraph": 50,
+    "warmPreviewUpdate": 100
+  },
+  "capturedBaselineMs": {
+    "compileSmall1x10Elements": 0.05,
+    "coldCompile10x100Elements": 1.22,
+    "warmCompile10x100Elements": 1.27,
+    "compile100Diagrams100ElementsEach": 7.04,
+    "compile1000TinyDiagrams": 8.54,
+    "compileSingle1000ElementDiagram": 0.65,
+    "compile10000TotalElements": 6.66,
+    "layoutSmallGraph10Elements": 0.16,
+    "layoutMediumGraph100Elements": 0.41,
+    "layoutLargeGraph1000Elements": 3.54,
+    "layoutLargeGraph10000Elements": 50.1,
+    "layoutLargeSequence50x500": 2.07,
+    "coldRenderMediumGraph": 3.95,
+    "warmRenderMediumGraph": 1.46,
+    "warmPreviewUpdate": 1.06,
+    "filesystemCacheHit": 0.24,
+    "filesystemCacheMiss": 0.03
+  },
+  "notes": [
+    "Baselines are intentionally descriptive and non-gating; no CI regression checks are enabled.",
+    "Benchmark fixtures are deterministic and avoid Math.random/Date.now in generated diagram content.",
+    "Large coverage includes 100 diagrams, 1000 diagrams, 1000-element diagrams, and 10000 total element layouts."
+  ]
+}

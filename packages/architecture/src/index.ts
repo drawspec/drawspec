@@ -1,4 +1,26 @@
+export type { CreateAdrInput } from "./adr";
+export {
+  createAdr,
+  exportAdrJson,
+  generateAdrReport,
+  getAdrStatus,
+  getElementAdrs,
+  linkAdrToElement,
+} from "./adr";
 export { compileWorkspace } from "./compile";
+export type {
+  CodeMetadata,
+  CodeMetadataElement,
+  CodeMetadataRelationship,
+  DriftChange,
+  DriftChangeType,
+  DriftPropertyDiff,
+  DriftReport,
+  ModelSnapshot,
+  SnapshotElement,
+  SnapshotRelationship,
+} from "./drift";
+export { compareSnapshots, detectDrift, generateDriftReport, snapshotModel } from "./drift";
 export { container, database, person, softwareSystem } from "./elements";
 export type {
   LikeC4Element,
@@ -17,6 +39,19 @@ export type {
 } from "./query";
 export { createQuery } from "./query";
 export type {
+  CatalogEntry,
+  ClassifiedElements,
+  DependencyMatrix,
+  ElementClassifier,
+} from "./service-catalog";
+export {
+  classifyElements,
+  exportCatalogJson,
+  exportCatalogYaml,
+  extractServices,
+  generateDependencyMatrix,
+} from "./service-catalog";
+export type {
   StructurizrContainer,
   StructurizrContainerView,
   StructurizrElement,
@@ -30,6 +65,8 @@ export type {
 } from "./structurizr-exporter";
 export { exportToStructurizr } from "./structurizr-exporter";
 export type {
+  ArchitectureDecisionRecord,
+  ArchitectureDecisionStatus,
   ArchitectureDiagramNode,
   ArchitectureElement,
   ArchitectureElementOptions,
@@ -48,4 +85,13 @@ export type {
   WorkspaceContext,
   WorkspaceInitializer,
 } from "./types";
+export type {
+  AutoViewGenerationOptions,
+  KindsViewGenerationOptions,
+  PathsViewGenerationOptions,
+  TagsViewGenerationOptions,
+  ViewElementKind,
+  ViewGenerationOptions,
+} from "./view-generator";
+export { generateViews } from "./view-generator";
 export { WorkspaceImpl, workspace } from "./workspace";

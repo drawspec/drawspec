@@ -19,6 +19,7 @@ export interface ArchitectureElementOptions {
   tags?: readonly string[];
   metadata?: Record<string, unknown>;
   properties?: Record<string, unknown>;
+  decisions?: readonly string[];
 }
 
 export interface ArchitectureRelationshipOptions {
@@ -33,6 +34,21 @@ export interface ArchitectureRelationshipOptions {
   owner?: string;
 }
 
+export type ArchitectureDecisionStatus = "proposed" | "accepted" | "deprecated" | "superseded";
+
+export interface ArchitectureDecisionRecord {
+  readonly id: string;
+  readonly title: string;
+  readonly date: string;
+  readonly status: ArchitectureDecisionStatus;
+  readonly context: string;
+  readonly decision: string;
+  readonly consequences: string;
+  readonly elementIds: readonly string[];
+  readonly relatedAdrs?: readonly string[];
+  readonly supersededBy?: string;
+}
+
 export interface ArchitectureElement {
   readonly id: string;
   readonly kind: C4ElementKind;
@@ -43,6 +59,7 @@ export interface ArchitectureElement {
   readonly tags: readonly string[];
   readonly metadata: Readonly<Record<string, unknown>>;
   readonly properties: Readonly<Record<string, unknown>>;
+  readonly decisions?: readonly string[];
   readonly parent: ArchitectureElement | undefined;
   readonly children: readonly ArchitectureElement[];
   add<T extends ArchitectureElement>(element: T): T;
@@ -71,6 +88,10 @@ export interface ArchitectureView {
   readonly kind: ArchitectureViewKind;
   readonly key: string;
   readonly title: string;
+  readonly description?: string;
+  readonly elements?: readonly string[];
+  readonly relationships?: readonly string[];
+  readonly tags?: readonly string[];
   readonly subject: ArchitectureElement;
   readonly includedElements: readonly ArchitectureElement[];
   readonly includeAll: boolean;
@@ -111,6 +132,7 @@ export interface Workspace {
   readonly model: ArchitectureModel;
   readonly views: ArchitectureViews;
   readonly styles: ArchitectureStyles;
+  readonly decisions?: readonly ArchitectureDecisionRecord[];
   compile(): DiagramDocument[];
 }
 

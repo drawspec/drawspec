@@ -9,12 +9,13 @@
   "type": "module",
   "scripts": {
     "postinstall": "lefthook install",
-    "check": "biome check . && bun run typecheck && bun test",
+    "check": "biome check . && bun run typecheck && bun run test",
     "format": "biome check --write .",
     "lint": "biome lint .",
     "typecheck": "tsc -b",
-    "test": "bun test",
+    "test": "bun test --path-ignore-patterns '**/__bench__/**'",
     "test:watch": "bun test --watch",
+    "bench": "DRAWSPEC_RUN_BENCH=1 bun test --bench packages/core/src/__bench__ packages/layout/src/__bench__",
     "build": "bun run --filter './packages/*' build",
     "changeset": "changeset",
     "release": "bun run check && changeset version && bun run build"

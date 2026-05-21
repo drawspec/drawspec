@@ -17,6 +17,7 @@
     "build": "tsc -p tsconfig.json && bun scripts/build-viewer.ts"
   },
   "dependencies": {
+    "@drawspec/architecture": "workspace:*",
     "@drawspec/core": "workspace:*",
     "@drawspec/layout": "workspace:*",
     "@drawspec/renderer-svg": "workspace:*"
