@@ -33,4 +33,5 @@ renderer-svg = { path = "packages/renderer-svg" }
 cli = { path = "packages/cli" }
 viewer = { path = "packages/viewer" }
 testkit = { path = "packages/testkit" }
+exporter-mermaid = { path = "packages/exporter-mermaid" }
 exporter-d2 = { path = "packages/exporter-d2" }

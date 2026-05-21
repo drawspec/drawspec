@@ -55,3 +55,11 @@ tsc -b       ✓ (no output = success)
 - Class validation currently emits package-local diagnostics on the compiled document for `class/no-circular-inheritance`, `class/no-duplicate-member`, `class/require-visibility`, and unknown type refs.
 - Golden SVG coverage can reuse `simpleGraphLayout` + `renderSvg`; package tests import layout/renderer source paths because workspace package exports point at `dist` and root `bun test` runs source tests after `tsc -b`.
 - Local verification in this worktree requires `MISE_TRUSTED_CONFIG_PATHS=/tmp/drawspec-issue-14/mise.toml`.
+
+## Issue #31 - Click-to-source in preview
+- `SourceRef` (`{ file, line, column, symbol? }`) and `source?: SourceRef` already existed on all IR element types in `@drawspec/core` — Phase 1 was already done.
+- SVG renderer uses `sourceDataAttrs()` helper to spread `data-source-file`/`data-source-line` onto `<g>` wrapper elements for nodes, edges, groups when source is present. Attributes are omitted entirely when source is absent.
+- `simpleGraphLayout` does NOT position groups — groups are absent from `positionedDiagram.groups`. For group source location tests, construct a positioned diagram manually or use `sequenceLayout`.
+- VS Code extension scaffold created at `extensions/vscode/` — NOT part of the monorepo workspace (root workspaces are `packages/*` and `apps/*`). Extension has its own `tsconfig.json` and `package.json` with `@types/vscode` dev dependency.
+- Worktree mise trust required: `mise trust` after creating worktree.
+- PR: https://github.com/drawspec/drawspec/pull/94
