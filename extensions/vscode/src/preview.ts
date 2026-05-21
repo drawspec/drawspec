@@ -10,9 +10,15 @@ export class PreviewPanel {
     this.panel.onDidDispose(() => {
       this.disposed = true;
     });
-    this.panel.webview.onDidReceiveMessage((msg: PreviewMessage) => {
-      if (msg.type === "openSource") {
-        void this.openSource(msg.filePath, msg.line);
+    this.panel.webview.onDidReceiveMessage((msg: unknown) => {
+      if (
+        typeof msg === "object" && msg !== null &&
+        "type" in msg && (msg as { type: string }).type === "openSource" &&
+        "filePath" in msg && typeof (msg as { filePath: unknown }).filePath === "string" &&
+        "line" in msg && typeof (msg as { line: unknown }).line === "number" && (msg as { line: number }).line >= 1
+      ) {
+        const { filePath, line } = msg as { type: string; filePath: string; line: number };
+        void this.openSource(filePath, line);
       }
     });
   }
@@ -31,16 +37,32 @@ export class PreviewPanel {
 
   setSvgContent(svgContent: string): void {
     if (this.disposed) return;
+    const safe = sanitizeSvg(svgContent);
     const script = getClickHandlerScript();
-    this.panel.webview.html = wrapSvg(svgContent, script);
+    this.panel.webview.html = wrapSvg(safe, script);
   }
 
   private async openSource(filePath: string, line: number): Promise<void> {
-    const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(filePath));
+    const resolved = this.resolvePath(filePath);
+    if (resolved === undefined) return;
+    const clampedLine = Math.max(1, Math.floor(line));
+    const doc = await vscode.workspace.openTextDocument(resolved);
     const editor = await vscode.window.showTextDocument(doc);
-    const position = new vscode.Position(line - 1, 0);
+    const lineIndex = Math.min(clampedLine - 1, doc.lineCount - 1);
+    const position = new vscode.Position(lineIndex, 0);
     editor.selection = new vscode.Selection(position, position);
     editor.revealRange(new vscode.Range(position, position), vscode.TextEditorRevealType.InCenter);
+  }
+
+  private resolvePath(filePath: string): vscode.Uri | undefined {
+    if (vscode.workspace.workspaceFolders === undefined) return undefined;
+    for (const folder of vscode.workspace.workspaceFolders) {
+      const candidate = vscode.Uri.joinPath(folder.uri, filePath);
+      if (candidate.path.startsWith(folder.uri.path)) {
+        return candidate;
+      }
+    }
+    return undefined;
   }
 
   private update(): void {
@@ -54,21 +76,22 @@ export class PreviewPanel {
   }
 }
 
-interface PreviewMessage {
-  type: "openSource";
-  filePath: string;
-  line: number;
+function sanitizeSvg(svg: string): string {
+  let clean = svg.replace(/<script[\s\S]*?<\/script\s*>/gi, "");
+  clean = clean.replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi, "");
+  return clean;
 }
 
 function getClickHandlerScript(): string {
   return `<script>
 (function() {
+  var vscode = acquireVsCodeApi();
   document.addEventListener('click', function(e) {
     var el = e.target.closest('[data-source-file]');
     if (el) {
       var file = el.getAttribute('data-source-file');
       var line = parseInt(el.getAttribute('data-source-line') || '0', 10);
-      if (file) {
+      if (file && line >= 1) {
         vscode.postMessage({ type: 'openSource', filePath: file, line: line });
       }
     }
@@ -83,6 +106,7 @@ function wrapSvg(svgContent: string, script: string): string {
     '<html lang="en">',
     "<head>",
     '<meta charset="UTF-8">',
+    '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data:; style-src \'unsafe-inline\';">',
     '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
     "<title>DrawSpec Preview</title>",
     "<style>",
