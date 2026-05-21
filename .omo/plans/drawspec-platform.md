@@ -1211,7 +1211,7 @@ testkit ← core, validation
 > **Gate**: Each UML package is independently deliverable. Add them in parallel where possible.
 > **Depends on**: Stage 1 complete (core IR, layout, renderer, CLI, validation all functional)
 
-- [ ] 14. Implement @drawspec/uml-class — Class diagrams with fields, methods, interfaces, enums, inheritance
+- [x] 14. Implement @drawspec/uml-class — Class diagrams with fields, methods, interfaces, enums, inheritance
 
   **What to do**: Implement class diagram authoring API matching spec Section 6.4 (`class_`, `interface_`, `enum_`, `implements`, `uses`). Compile to IR with kind="class". Add class-specific validation rules (no-circular-inheritance, no-duplicate-member, require-visibility). Add golden SVG tests.
   **References**: `spec.md` lines 346-369 (class diagram example), `spec.md` lines 1213-1218 (class rules)
@@ -1243,7 +1243,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-14-class-circular.txt
   ```
 
-- [ ] 15. Implement @drawspec/uml-state — State diagrams with states, transitions, initial/final pseudostates
+- [x] 15. Implement @drawspec/uml-state — State diagrams with states, transitions, initial/final pseudostates
 
   **What to do**: Implement state diagram authoring API matching spec Section 6.5 (`state`, `initial`, `final`, `.to()` transitions). Compile to IR with kind="state". Add state-specific layout strategy. Add golden SVG tests.
   **References**: `spec.md` lines 375-388 (state diagram example)
@@ -1275,7 +1275,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-15-state-golden.svg
   ```
 
-- [ ] 16. Implement @drawspec/uml-component — Component diagrams with components, interfaces, dependencies
+- [x] 16. Implement @drawspec/uml-component — Component diagrams with components, interfaces, dependencies
 
   **What to do**: Implement component diagram authoring API. Compile to IR with kind="component". Add component-specific layout. Add validation rules.
   **References**: `spec.md` lines 186-187 (component diagrams in initial target), `spec.md` lines 745-762 (UML package pattern)
@@ -1298,7 +1298,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-16-component-basic.txt
   ```
 
-- [ ] 17. Implement @drawspec/uml-deployment — Deployment diagrams with nodes, artifacts, communication paths
+- [x] 17. Implement @drawspec/uml-deployment — Deployment diagrams with nodes, artifacts, communication paths
 
   **What to do**: Implement deployment diagram authoring API with deploymentNode, infrastructureNode, artifact. Compile to IR with kind="deployment". Add deployment-specific layout. Add validation rules.
   **References**: `spec.md` lines 192 (deployment diagrams in initial target), `spec.md` lines 430-442 (deploymentNode element)
@@ -1320,7 +1320,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-17-deployment-basic.txt
   ```
 
-- [ ] 18. Implement @drawspec/uml-activity — Limited activity diagrams with actions, decisions, flows
+- [x] 18. Implement @drawspec/uml-activity — Limited activity diagrams with actions, decisions, flows
 
   **What to do**: Implement activity diagram authoring API matching spec Section 6.6 (`action`, `decision`, `start`, `end`, `.to()` chains, `.when()` branches). Compile to IR with kind="activity". Add activity-specific layout (flowchart-style). This is a LIMITED v1 subset — no swimlanes, no partitions.
   **References**: `spec.md` lines 393-407 (activity diagram example), `spec.md` lines 194 ("limited v1 subset")
@@ -1342,7 +1342,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-18-activity-basic.txt
   ```
 
-- [ ] 19. Expand validation rules — Add domain-specific rule packs for class, state, component, deployment
+- [x] 19. Expand validation rules — Add domain-specific rule packs for class, state, component, deployment
 
   **What to do**: Add class rules (no-circular-inheritance, no-duplicate-member, no-unknown-type-ref, require-visibility). Add diagram rules (max-nodes, max-edges, no-floating-node). Update `recommended` preset.
   **References**: `spec.md` lines 1162-1198 (all built-in diagram rules), `spec.md` lines 1213-1218 (class rules)
@@ -1363,7 +1363,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-19-new-rules.txt
   ```
 
-- [ ] 20. Expand layout strategies — Add dagre and elkjs adapters as optional packages
+- [x] 20. Expand layout strategies — Add dagre and elkjs adapters as optional packages
 
   **What to do**: Create `@drawspec/layout-dagre` and `@drawspec/layout-elk` packages. Implement `LayoutEngine` interface for each. Register as layout adapters. Add layout selection config in CLI.
   **References**: `spec.md` lines 776-788 (layout adapters)
@@ -1386,7 +1386,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-20-dagre-deterministic.txt
   ```
 
-- [ ] 21. Add use case diagram support (if cheap after actor/system modeling exists)
+- [x] 21. Add use case diagram support (if cheap after actor/system modeling exists) — Deferred: `packages/uml-usecase` does not exist; actor/system modeling from architecture did not make it cheap
 
   **What to do**: Implement use case diagram authoring API if actor/system modeling from architecture makes this cheap. Otherwise defer. Compile to IR with kind="use-case".
   **References**: `spec.md` lines 195 ("if cheap after actor/system modeling exists")
@@ -1437,7 +1437,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-22-mermaid-sequence.txt
   ```
 
-- [ ] 23. Implement @drawspec/exporter-plantuml — PlantUML text export from Diagram IR
+- [x] 23. Implement @drawspec/exporter-plantuml — PlantUML text export from Diagram IR
 
   **What to do**: Create exporter package. Transform DiagramDocument to PlantUML syntax. Support sequence, class, state, activity, component exports. Best-effort.
   **References**: `spec.md` lines 1689-1700 (PlantUML exporter spec)
@@ -1459,7 +1459,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-23-plantuml-sequence.txt
   ```
 
-- [ ] 24. Implement @drawspec/exporter-d2 — D2 text export from Diagram IR
+- [x] 24. Implement @drawspec/exporter-d2 — D2 text export from Diagram IR
 
   **What to do**: Create exporter package. Transform DiagramDocument to D2 syntax. Support general graph exports. Best-effort.
   **References**: `spec.md` lines 1702-1710 (D2 exporter spec)
@@ -1480,7 +1480,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-24-d2-arch.txt
   ```
 
-- [ ] 25. Stabilize JSON exporter and add CLI `export` command
+- [x] 25. Stabilize JSON exporter and add CLI `export` command
 
   **What to do**: Ensure JSON export is complete and stable. Add `drawspec export [files...] --format mermaid|plantuml|d2|json --out <dir>` command. Add integration tests.
   **References**: `spec.md` lines 1044-1060 (export command), `spec.md` lines 1712-1715 (JSON exporter)
@@ -1502,7 +1502,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-25-cli-export.txt
   ```
 
-- [ ] 26. Implement @drawspec/vite-plugin — Vite integration for diagram hot reload and virtual modules
+- [x] 26. Implement @drawspec/vite-plugin — Vite integration for diagram hot reload and virtual modules
 
   **What to do**: Create Vite plugin that compiles diagram modules on import. Support HMR. Generate virtual modules for compiled IR. Support static asset generation.
   **References**: `spec.md` lines 835-845 (Vite plugin responsibilities)
@@ -1523,7 +1523,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-26-vite-plugin.txt
   ```
 
-- [ ] 27. Implement `drawspec build:site` — Static documentation site generation
+- [x] 27. Implement `drawspec build:site` — Static documentation site generation
 
   **What to do**: Build static site from diagram files using SvelteKit. Include diagram index, SVG previews, element pages, search, diagnostics. Output is a static build deployable to any host.
   **References**: `spec.md` lines 1632-1658 (static site generation), `spec.md` lines 1038-1040 (build-site command)
@@ -1545,7 +1545,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-27-build-site.txt
   ```
 
-- [ ] 28. Add MDX integration examples and docs-site documentation
+- [x] 28. Add MDX integration examples and docs-site documentation
 
   **What to do**: Create examples showing DrawSpec usage in MDX, VitePress, Docusaurus, Astro. Document the viewer web component API. Write getting-started guide.
   **References**: `spec.md` lines 1564-1574 (documentation authoring targets)
@@ -1573,7 +1573,7 @@ testkit ← core, validation
 
 > **Depends on**: Stage 1 complete
 
-- [ ] 29. Create VS Code extension — Preview, diagnostics, and model explorer
+- [x] 29. Create VS Code extension — Preview, diagnostics, and model explorer
 
   **What to do**: Create `extensions/vscode/` package. Implement preview panel (webview with viewer component). Show diagnostics from `drawspec check`. Add model explorer sidebar. Commands: preview diagram, start watch server, inspect IR.
   **References**: `spec.md` lines 1741-1758 (VS Code extension features)
@@ -1597,7 +1597,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-29-vscode-extension.txt
   ```
 
-- [ ] 30. Implement @drawspec/lsp — Language server protocol augmentation
+- [x] 30. Implement @drawspec/lsp — Language server protocol augmentation
 
   **What to do**: Create LSP server that augments TypeScript language service. Provide diagram diagnostics, model element references, diagram outline, commands for rendering/preview. Do NOT reimplement TS features (autocomplete, rename, etc.).
   **References**: `spec.md` lines 1722-1740 (LSP responsibilities and non-responsibilities)
@@ -1618,7 +1618,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-30-lsp-diagnostics.txt
   ```
 
-- [ ] 31. Add click-to-source in preview — Link preview elements to TypeScript source
+- [x] 31. Add click-to-source in preview — Link preview elements to TypeScript source
 
   **What to do**: Enable clicking on an element in the preview SVG to jump to its definition in the TypeScript source file. Requires source map support.
   **References**: `spec.md` lines 1323 ("Link from preview element to source")
