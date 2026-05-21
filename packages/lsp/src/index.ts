@@ -2,6 +2,7 @@ export {
   type CompileResult,
   type CompilerOptions,
   compileDocument,
+  evaluateSource,
   validateDocument,
 } from "./compiler";
 export { toLspDiagnostics } from "./diagnostics";

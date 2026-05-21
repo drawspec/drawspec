@@ -7,7 +7,7 @@ import {
 } from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
-import { type CompilerOptions, compileDocument } from "./compiler";
+import { type CompilerOptions, compileDocument, evaluateSource } from "./compiler";
 import { toLspDiagnostics } from "./diagnostics";
 import { extractDocumentSymbols } from "./symbols";
 
@@ -47,6 +47,7 @@ export class LspServer {
     });
 
     this.documents.onDidClose((event) => {
+      this.publishDiagnosticsFor(event.document.uri, []);
       this.state.delete(event.document.uri);
     });
 
@@ -55,8 +56,10 @@ export class LspServer {
     this.documents.listen(this.connection);
   }
 
-  processDocument(textDocument: TextDocument): DocumentState {
-    const result = compileDocument(textDocument.getText(), this.compilerOptions);
+  async processDocument(textDocument: TextDocument): Promise<DocumentState> {
+    const filePath = URI.parse(textDocument.uri).fsPath;
+    const evaluated = await evaluateSource(textDocument.getText(), filePath);
+    const result = compileDocument(evaluated, this.compilerOptions);
     const docState: DocumentState = {
       diagram: result.document,
       diagnostics: result.diagnostics,
@@ -80,11 +83,11 @@ export class LspServer {
     this.connection.listen();
   }
 
-  private onDocumentChange(textDocument: TextDocument): void {
+  private async onDocumentChange(textDocument: TextDocument): Promise<void> {
     if (!isDiagramFile(textDocument.uri)) {
       return;
     }
-    const docState = this.processDocument(textDocument);
+    const docState = await this.processDocument(textDocument);
     this.publishDiagnosticsFor(textDocument.uri, docState.diagnostics);
   }
 

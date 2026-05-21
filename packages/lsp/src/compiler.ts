@@ -1,3 +1,4 @@
+import { dirname, join } from "node:path";
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
 import type { RuleConfig } from "@drawspec/validation";
 import { recommended, recommendedRules, validate } from "@drawspec/validation";
@@ -79,6 +80,28 @@ function extractDiagramDocument(value: unknown): DiagramDocument | undefined {
   }
 
   return undefined;
+}
+
+export async function evaluateSource(sourceText: string, filePath: string): Promise<unknown> {
+  if (!filePath) return undefined;
+
+  const dir = dirname(filePath);
+  const tmpPath = join(
+    dir,
+    `.drawspec-eval-${Date.now()}-${Math.random().toString(36).slice(2)}.ts`
+  );
+
+  try {
+    await Bun.write(tmpPath, sourceText);
+    const mod = await import(tmpPath);
+    return mod;
+  } catch {
+    return undefined;
+  } finally {
+    try {
+      await Bun.file(tmpPath).unlink();
+    } catch {}
+  }
 }
 
 function isDiagramDocument(value: unknown): value is DiagramDocument {

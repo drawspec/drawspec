@@ -1,11 +1,5 @@
 import type { DiagramDocument } from "@drawspec/core";
-import type { DocumentSymbol, Range } from "vscode-languageserver/node";
-
-const SYMBOL_KIND_NAMESPACE = 3;
-const SYMBOL_KIND_CLASS = 5;
-const SYMBOL_KIND_FIELD = 8;
-const SYMBOL_KIND_INTERFACE = 11;
-const SYMBOL_KIND_VARIABLE = 13;
+import { type DocumentSymbol, type Range, SymbolKind } from "vscode-languageserver/node";
 
 const DEFAULT_RANGE: Range = {
   start: { line: 0, character: 0 },
@@ -30,7 +24,7 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
   if (document.title !== undefined) {
     symbols.push({
       name: document.title,
-      kind: SYMBOL_KIND_NAMESPACE,
+      kind: SymbolKind.Namespace,
       range: DEFAULT_RANGE,
       selectionRange: DEFAULT_RANGE,
       children: [],
@@ -41,21 +35,23 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
     const range = sourceRange(node.source);
     symbols.push({
       name: node.label ?? node.id,
-      kind: SYMBOL_KIND_CLASS,
+      kind: SymbolKind.Class,
       range,
       selectionRange: range,
     });
   }
 
+  const nodeById = new Map(document.nodes.map((n) => [n.id, n]));
+
   for (const group of document.groups) {
     const groupChildren: DocumentSymbol[] = [];
     if (group.childIds !== undefined) {
       for (const childId of group.childIds) {
-        const childNode = document.nodes.find((n) => n.id === childId);
+        const childNode = nodeById.get(childId);
         const childRange = childNode !== undefined ? sourceRange(childNode.source) : DEFAULT_RANGE;
         groupChildren.push({
           name: childNode?.label ?? childId,
-          kind: SYMBOL_KIND_FIELD,
+          kind: SymbolKind.Field,
           range: childRange,
           selectionRange: childRange,
         });
@@ -64,7 +60,7 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
     const groupRange = sourceRange(group.source);
     const groupSymbol: DocumentSymbol = {
       name: group.label ?? group.id,
-      kind: SYMBOL_KIND_NAMESPACE,
+      kind: SymbolKind.Namespace,
       range: groupRange,
       selectionRange: groupRange,
     };
@@ -78,7 +74,7 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
     const range = sourceRange(edge.source);
     symbols.push({
       name: edge.label ?? `${edge.sourceId} → ${edge.targetId}`,
-      kind: SYMBOL_KIND_INTERFACE,
+      kind: SymbolKind.Interface,
       range,
       selectionRange: range,
     });
@@ -88,7 +84,7 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
     const range = sourceRange(annotation.source);
     symbols.push({
       name: annotation.label ?? annotation.id,
-      kind: SYMBOL_KIND_VARIABLE,
+      kind: SymbolKind.Variable,
       range,
       selectionRange: range,
     });
