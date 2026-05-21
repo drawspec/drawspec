@@ -27,8 +27,7 @@ function exportSequence(doc: DiagramDocument): string[] {
   for (const node of doc.nodes) {
     if (node.kind === "participant" || node.kind === "actor") {
       const kw = node.kind === "actor" ? "actor" : "participant";
-      const lbl = node.label ? ` as ${esc(node.id)}` : "";
-      lines.push(`${kw} "${esc(node.label ?? node.id)}"${lbl}`);
+      lines.push(`${kw} "${esc(node.label ?? node.id)}" as ${esc(node.id)}`);
     }
   }
 
@@ -106,7 +105,7 @@ function exportClass(doc: DiagramDocument): string[] {
       rel = "<|--";
       reverse = true;
     } else if (edge.kind === "implements") {
-      rel = "..|>";
+      rel = "<|..";
       reverse = true;
     } else if (edge.kind === "composition") rel = "*--";
     else if (edge.kind === "aggregation") rel = "o--";
@@ -137,32 +136,27 @@ function exportState(doc: DiagramDocument): string[] {
       if (children.length > 0) {
         lines.push(`state "${esc(group.label ?? group.id)}" {`);
         for (const child of children) {
-          lines.push(`  "${esc(nodeLabel(child))}"`);
+          if (child.kind === "start" || child.kind === "end") continue;
+          lines.push(`  state "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
         }
         lines.push("}");
       }
     }
   }
 
-  const groupedNodeIds = new Set(doc.groups.flatMap((g) => g.childIds ?? []));
   function stateRef(id: string): string {
     const node = doc.nodes.find((n) => n.id === id);
     if (node && (node.kind === "start" || node.kind === "end")) return "[*]";
     if (!node) return esc(id);
-    return esc(nodeLabel(node));
+    return esc(node.id);
   }
+
   for (const edge of doc.edges) {
     const src = doc.nodes.find((n) => n.id === edge.sourceId);
     const tgt = doc.nodes.find((n) => n.id === edge.targetId);
     if (!src || !tgt) continue;
-    if (groupedNodeIds.has(src.id) || groupedNodeIds.has(tgt.id)) continue;
-    if (src.kind === "start" || src.kind === "end" || tgt.kind === "start" || tgt.kind === "end") {
-      const trigger = edge.label ? ` : ${esc(edge.label)}` : "";
-      lines.push(`${stateRef(src.id)} --> ${stateRef(tgt.id)}${trigger}`);
-      continue;
-    }
     const trigger = edge.label ? ` : ${esc(edge.label)}` : "";
-    lines.push(`${esc(nodeLabel(src))} --> ${esc(nodeLabel(tgt))}${trigger}`);
+    lines.push(`${stateRef(src.id)} --> ${stateRef(tgt.id)}${trigger}`);
   }
 
   return lines;
@@ -173,73 +167,53 @@ function exportActivity(doc: DiagramDocument): string[] {
   const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
 
   const activityNodes = doc.nodes.filter((n) => n.kind === "activity");
-  if (activityNodes.length === 0 && doc.groups.length === 0) return lines;
-
-  lines.push("start");
+  const hasContent = activityNodes.length > 0 || doc.groups.length > 0;
+  if (!hasContent) return lines;
 
   const groupedNodeIds = new Set(doc.groups.flatMap((g) => g.childIds ?? []));
-  const childIdToGroup = new Map<string, string>();
-  for (const group of doc.groups) {
-    for (const cid of group.childIds ?? []) {
-      childIdToGroup.set(cid, group.id);
-    }
-  }
-
-  const groupOrder = new Map(doc.groups.map((g, i) => [g.id, i]));
   const nodeOrder = new Map(doc.nodes.map((n, i) => [n.id, i]));
+  const groupOrder = new Map(doc.groups.map((g, i) => [g.id, i]));
 
   const orderedGroups = [...doc.groups]
     .filter((g) => g.kind === "branch" || g.kind === "if")
     .sort((a, b) => (groupOrder.get(a.id) ?? 0) - (groupOrder.get(b.id) ?? 0));
-  const firstGroupNodeIdx =
-    orderedGroups.length > 0
-      ? Math.min(
-          ...orderedGroups.flatMap((g) => (g.childIds ?? []).map((cid) => nodeOrder.get(cid) ?? 0))
-        )
-      : Infinity;
-  const firstFreeNodeIdx = activityNodes
-    .filter((n) => !groupedNodeIds.has(n.id))
-    .map((n) => nodeOrder.get(n.id) ?? 0)
-    .reduce((a, b) => Math.min(a, b), Infinity);
 
-  const groupsFirst = firstGroupNodeIdx < firstFreeNodeIdx;
+  lines.push("start");
 
-  function emitFreeActivities(upToNodeIdx?: number) {
-    for (const node of activityNodes) {
-      if (groupedNodeIds.has(node.id)) continue;
-      const idx = nodeOrder.get(node.id) ?? 0;
-      if (upToNodeIdx !== undefined && idx >= upToNodeIdx) continue;
-      lines.push(`:${esc(nodeLabel(node))};`);
-    }
+  type Segment =
+    | { type: "activity"; nodeId: string; order: number }
+    | { type: "group"; group: (typeof doc.groups)[0]; order: number };
+  const segments: Segment[] = [];
+
+  for (const node of activityNodes) {
+    if (groupedNodeIds.has(node.id)) continue;
+    segments.push({ type: "activity", nodeId: node.id, order: nodeOrder.get(node.id) ?? 0 });
   }
 
-  function emitGroups() {
-    for (const group of orderedGroups) {
+  for (const group of orderedGroups) {
+    const minChildOrder = Math.min(...(group.childIds ?? []).map((cid) => nodeOrder.get(cid) ?? 0));
+    segments.push({ type: "group", group, order: minChildOrder });
+  }
+
+  segments.sort((a, b) => a.order - b.order);
+
+  for (const seg of segments) {
+    if (seg.type === "activity") {
+      const node = nodeMap.get(seg.nodeId);
+      if (node) lines.push(`:${esc(nodeLabel(node))};`);
+    } else {
+      const group = seg.group;
       const children = (group.childIds ?? [])
         .map((cid) => nodeMap.get(cid))
         .filter((n): n is DiagramNode => n !== undefined);
       const condition = group.label ?? group.id;
-      const actChildren = children.filter((c) => c.kind === "activity");
-      const otherChildren = children.filter((c) => c.kind !== "activity");
       lines.push(`if (${esc(condition)}) then (yes)`);
-      for (const child of actChildren) {
+      for (const child of children) {
         lines.push(`  :${esc(child.label ?? child.id)};`);
       }
       lines.push("else (no)");
       lines.push("endif");
-      for (const child of otherChildren) {
-        lines.push(`:${esc(child.label ?? child.id)};`);
-      }
     }
-  }
-
-  if (groupsFirst) {
-    emitFreeActivities(firstGroupNodeIdx);
-    emitGroups();
-    emitFreeActivities();
-  } else {
-    emitGroups();
-    emitFreeActivities();
   }
 
   lines.push("stop");

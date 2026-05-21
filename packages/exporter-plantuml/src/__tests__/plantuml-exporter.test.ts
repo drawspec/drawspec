@@ -49,7 +49,7 @@ describe("exportToPlantUML", () => {
     expect(out).toContain("bob -> alice : Hi");
   });
 
-  test("exports class diagram with relationships", () => {
+  test("exports class diagram with extends relationship (correct direction)", () => {
     const doc = makeDoc({
       id: "cls1",
       kind: "class",
@@ -65,7 +65,21 @@ describe("exportToPlantUML", () => {
     expect(out).toContain('"Animal" <|-- "Dog"');
   });
 
-  test("exports state diagram with transitions", () => {
+  test("exports class diagram with implements relationship (correct direction)", () => {
+    const doc = makeDoc({
+      id: "cls2",
+      kind: "class",
+      nodes: [
+        { id: "iface", kind: "interface", label: "Runnable" },
+        { id: "impl", kind: "class", label: "MyTask" },
+      ],
+      edges: [{ id: "e1", kind: "implements", sourceId: "impl", targetId: "iface" }],
+    });
+    const out = exportToPlantUML(doc);
+    expect(out).toContain('"Runnable" <|.. "MyTask"');
+  });
+
+  test("exports state diagram with alias-based transitions", () => {
     const doc = makeDoc({
       id: "st1",
       kind: "state",
@@ -78,8 +92,9 @@ describe("exportToPlantUML", () => {
       ],
     });
     const out = exportToPlantUML(doc);
-    expect(out).toContain('state "Idle"');
-    expect(out).toContain("Idle --> Running : start");
+    expect(out).toContain('state "Idle" as idle');
+    expect(out).toContain('state "Running" as running');
+    expect(out).toContain("idle --> running : start");
   });
 
   test("exports state diagram with start/end pseudo-states as [*]", () => {
@@ -97,10 +112,31 @@ describe("exportToPlantUML", () => {
       ],
     });
     const out = exportToPlantUML(doc);
-    expect(out).toContain("[*] --> Idle");
-    expect(out).toContain("Idle --> [*]");
+    expect(out).toContain("[*] --> idle");
+    expect(out).toContain("idle --> [*]");
     expect(out).not.toContain('state "Start"');
     expect(out).not.toContain('state "Done"');
+  });
+
+  test("exports state diagram with composite state groups", () => {
+    const doc = makeDoc({
+      id: "st3",
+      kind: "state",
+      nodes: [
+        { id: "outer", kind: "state", label: "Active" },
+        { id: "inner1", kind: "state", label: "Working" },
+        { id: "inner2", kind: "state", label: "Resting" },
+      ],
+      edges: [
+        { id: "e1", kind: "transition", sourceId: "inner1", targetId: "inner2", label: "pause" },
+      ],
+      groups: [{ id: "g1", kind: "composite", label: "Active", childIds: ["inner1", "inner2"] }],
+    });
+    const out = exportToPlantUML(doc);
+    expect(out).toContain('state "Active" {');
+    expect(out).toContain('  state "Working" as inner1');
+    expect(out).toContain('  state "Resting" as inner2');
+    expect(out).toContain("inner1 --> inner2 : pause");
   });
 
   test("exports activity diagram with actions", () => {
@@ -150,6 +186,26 @@ describe("exportToPlantUML", () => {
     expect(out).toContain(":Yes Action;");
     expect(out).toContain("else (no)");
     expect(out).toContain("endif");
+  });
+
+  test("activity diagram orders nodes by declared sequence", () => {
+    const doc = makeDoc({
+      id: "act3",
+      kind: "activity",
+      nodes: [
+        { id: "n1", kind: "activity", label: "First" },
+        { id: "n2", kind: "activity", label: "BranchAction" },
+        { id: "n3", kind: "activity", label: "Last" },
+      ],
+      edges: [],
+      groups: [{ id: "g1", kind: "if", label: "cond", childIds: ["n2"] }],
+    });
+    const out = exportToPlantUML(doc);
+    const firstIdx = out.indexOf(":First;");
+    const branchIdx = out.indexOf("if (cond)");
+    const lastIdx = out.indexOf(":Last;");
+    expect(firstIdx).toBeLessThan(branchIdx);
+    expect(branchIdx).toBeLessThan(lastIdx);
   });
 
   test("exports component diagram with interfaces", () => {
