@@ -66,3 +66,18 @@ core → (architecture, validation, uml-sequence, uml-class, uml-state, uml-comp
 - Registry via `registerPolicyPack()` / `loadPolicyPack()` / `listPolicyPacks()` — no external deps
 - CLI `drawspec check --policy <name>` merges policy rules on top of recommended, below config rules: `{ ...recommended, ...policyRules, ...config }`
 - Child elements (e.g., containers added to a softwareSystem) are in `system.children`, not in `model.elements` — model.elements only contains top-level elements
+
+### @drawspec/architecture — Structurizr & LikeC4 Exporters (Stage 5)
+- `exportToStructurizr(workspace)` in `structurizr-exporter.ts`: maps to Structurizr JSON workspace format
+  - person→Person, softwareSystem→SoftwareSystem, container→Container, database→Container (with "Database" tag)
+  - Structurizr nests containers inside SoftwareSystem objects; relationships are per-element
+  - Views: systemContext→SystemContextView, container→ContainerView, with autoLayout rankDirection mapping
+- `exportToLikeC4(workspace)` in `likec4-exporter.ts`: maps to LikeC4 model format (flat arrays)
+  - person→actor, softwareSystem→system, container→container, database→database
+  - IDs are sanitized (replace non-alphanumeric with `_`) for LikeC4 compatibility
+  - LikeC4 uses flat `elements[]`, `relations[]`, `views[]` arrays (no nesting)
+- Both exporters use `flattenElements()` to recursively collect children from `model.elements`
+- `exactOptionalPropertyTypes: true` means optional fields must use conditional spread (`...(x !== undefined ? { x } : {})`) not direct assignment of potentially-undefined values
+- Element tags auto-include the kind (e.g., "person", "softwareSystem") and are sorted; exporters filter these out since the target format infers type from the element kind field
+- Relationship tags auto-include "relationship"; exporters filter this out
+- No external dependencies needed — pure JSON serialization from existing types

@@ -1850,7 +1850,7 @@ testkit ← core, validation
     Evidence: .sisyphus/evidence/task-40-drift-detection.txt
   ```
 
-- [ ] 41. Add ownership metadata and policy packs
+- [x] 41. Add ownership metadata and policy packs
 
   **What to do**: Extend architecture model with ownership metadata (team, individual, escalation). Create policy pack system: bundles of validation rules with team-specific configurations.
   **References**: `spec.md` lines 1979-1980 (ownership metadata, policy packs)
