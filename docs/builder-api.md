@@ -46,7 +46,9 @@ const doc = sequence("Title", (s) => {
   bob.to(alice, "Hi!");
 
   s.alt("No response", (s2) => {
-    s2.participant("Bob").to(s2.actor("Alice"), "Timeout");
+    bob.to(alice, "Timeout");
+  }).else("Response received", (s2) => {
+    bob.to(alice, "Here is the data");
   });
 });
 ```
@@ -67,7 +69,7 @@ const doc = sequence("Title", (s) => {
 ```typescript
 import { container, database, person, softwareSystem, workspace } from "@drawspec/architecture";
 
-const docs = workspace("My Workspace", (w) => {
+const ws = workspace("My Workspace", (w) => {
   const user = w.model.add(person("User", { description: "End user" }));
   const system = w.model.add(softwareSystem("My System"));
 
@@ -81,7 +83,12 @@ const docs = workspace("My Workspace", (w) => {
     v.include(user);
     v.autoLayout("left-right");
   });
-}).compile();
+});
+
+// Architecture builders return Workspace, not DiagramDocument.
+// The CLI accepts Workspace directly. For programmatic use, compile to documents:
+const docs = ws.compile(); // returns DiagramDocument[]
+```
 ```
 
 ### Element Builders
@@ -117,8 +124,13 @@ interface ArchitectureRelationshipOptions {
   protocol?: string;
   direction?: "forward" | "backward" | "bidirectional" | "none";
   tags?: readonly string[];
+  metadata?: Record<string, unknown>;
+  criticality?: string;
+  owner?: string;
 }
 ```
+
+> Note: This is a simplified subset. The full interface includes additional optional fields.
 
 ### Views
 
@@ -151,7 +163,7 @@ const node2 = factory.element("class").label("Order").build();
 const edge = factory.relationship().from(node1.id).to(node2.id).label("places").build();
 
 const doc: DiagramDocument = {
-  schemaVersion: "1",
+  schemaVersion: "1.0",
   id: "my-diagram",
   kind: "class",
   nodes: [node1, node2],
@@ -195,4 +207,3 @@ const json = serializeDocument(doc);
 ```
 
 Produces deterministic, sorted JSON — the same document always serializes to the same string.
- serializes to the same string.

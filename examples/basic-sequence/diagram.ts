@@ -13,5 +13,8 @@ export default sequence("User Login", (s) => {
   s.alt("Invalid credentials", (s2) => {
     server.to(browser, "401 Unauthorized");
     browser.to(user, "Show error message");
+  }).else("Success", (s2) => {
+    server.to(browser, "200 OK + JWT");
+    browser.to(user, "Redirect to dashboard");
   });
 });

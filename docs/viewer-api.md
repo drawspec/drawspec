@@ -13,7 +13,7 @@ bun add @drawspec/viewer
 ### Plain HTML
 
 ```html
-<script type="module" src="node_modules/@drawspec/viewer/dist/drawspec-viewer.js"></script>
+<script type="module" src="node_modules/@drawspec/viewer/drawspec-viewer.js"></script>
 
 <drawspec-diagram id="diagram" theme="light" interactive></drawspec-diagram>
 
@@ -26,10 +26,17 @@ bun add @drawspec/viewer
 ### React
 
 ```tsx
-import "@drawspec/viewer";
+import "@drawspec/viewer/drawspec-viewer.js";
+import { useRef, useEffect } from "react";
 
 export function DiagramViewer({ svg, theme = "light" }) {
-  return <drawspec-diagram theme={theme} interactive ref={(el) => { el.svg = svg; }} />;
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.svg = svg;
+    }
+  }, [svg]);
+  return <drawspec-diagram theme={theme} interactive ref={ref} />;
 }
 ```
 
@@ -37,8 +44,11 @@ export function DiagramViewer({ svg, theme = "light" }) {
 
 ```svelte
 <script>
-  import "@drawspec/viewer";
+  import "@drawspec/viewer/drawspec-viewer.js";
+  let el;
   let svg = "";
+
+  $: if (el) el.svg = svg;
 </script>
 
 <drawspec-diagram bind:this={el} theme="light" interactive />
@@ -50,7 +60,7 @@ export function DiagramViewer({ svg, theme = "light" }) {
 |-----------|------|---------|-------------|
 | `src` | `string` | — | URL to load a `ViewerPayload` from |
 | `theme` | `"light" \| "dark"` | `"light"` | Color theme |
-| `interactive` | `boolean` | `false` | Enable pan/zoom interactions |
+| `interactive` | `boolean` | `true` | Enable pan/zoom interactions |
 
 ## Properties
 
@@ -106,5 +116,3 @@ bunx drawspec serve . --open
 ```
 
 The preview page at `http://localhost:4173/` uses `<drawspec-diagram>` with WebSocket-driven updates.
- with WebSocket-driven updates.
-he preview page at `http://localhost:4173/` uses `<drawspec-diagram>` with WebSocket-driven updates.

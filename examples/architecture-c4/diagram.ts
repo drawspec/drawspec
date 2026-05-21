@@ -35,10 +35,8 @@ export default workspace("Online Shop", (w) => {
     })
   );
 
-  customer.uses(webApp, "Browses products", { technology: "HTTPS" });
-  webApp.uses(api, "Fetches products", { technology: "REST" });
-  api.uses(db, "Reads/writes data", { technology: "SQL" });
-  api.uses(payments, "Processes payments", {
+  customer.uses(shop, "Browses products", { technology: "HTTPS" });
+  shop.uses(payments, "Processes payments", {
     technology: "HTTPS",
     direction: "forward",
   });
@@ -49,7 +47,7 @@ export default workspace("Online Shop", (w) => {
   });
 
   w.views.container(shop, "containers", (v) => {
-    v.include(customer, payments);
+    v.include(customer, webApp, api, payments);
     v.autoLayout("top-down");
   });
 });
