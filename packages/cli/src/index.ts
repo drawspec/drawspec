@@ -8,7 +8,6 @@ import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec
 import { renderSvg } from "@drawspec/renderer-svg";
 import { type RuleConfig, recommended, recommendedRules, validate } from "@drawspec/validation";
 import {
-  escapeHtml,
   generateDiagramHtml,
   generateIndexHtml,
   generateStyleCss,
@@ -16,6 +15,7 @@ import {
   toSiteDiagram,
 } from "./build-site";
 import type { DrawspecConfig } from "./config";
+import { escapeHtml } from "./html";
 
 declare const process: {
   argv: string[];
@@ -66,7 +66,7 @@ interface ServerWebSocket {
   close(): void;
 }
 
-type Command = "check" | "render" | "inspect" | "watch" | "serve" | "build-site" | "build:site";
+type Command = "check" | "render" | "inspect" | "watch" | "serve" | "build:site" | "build-site";
 
 interface ParsedArgs {
   command: Command | undefined;
@@ -108,8 +108,8 @@ const COMMANDS = new Set<string>([
   "inspect",
   "watch",
   "serve",
-  "build-site",
   "build:site",
+  "build-site",
 ]);
 const DEFAULT_PREVIEW_PORT = 4173;
 const DEFAULT_DEBOUNCE_MS = 80;
@@ -151,7 +151,7 @@ export async function main(argv: readonly string[] = Bun.argv.slice(2)): Promise
   if (parsed.command === "watch") {
     return runWatch(parsed, config);
   }
-  if (parsed.command === "build-site" || parsed.command === "build:site") {
+  if (parsed.command === "build:site" || parsed.command === "build-site") {
     return runBuildSite(parsed, config);
   }
   return runServe(parsed, config);
@@ -198,10 +198,10 @@ Usage:
   drawspec render [files...] [--out dist] [--format svg] [--theme name]
   drawspec inspect [file] [--format json|pretty]
   drawspec watch [files...] [--port 4173] [--debounce 80]
-  drawspec serve [files...] [--host localhost] [--port 4173] [--open]
-  drawspec build-site [files...] [--out site] [--theme name]
+  drawspec serve [files...] [--host localhost] [--port 4173] [--debounce 80] [--open]
   drawspec build:site [files...] [--out site] [--theme name]
 
+Command aliases: build-site → build:site
 Aliases: ds, dspec
 Discovery: **/*.diagram.ts, **/*.arch.ts, **/*.sequence.ts`);
 }
@@ -232,8 +232,8 @@ async function runRender(parsed: ParsedArgs, config: DrawspecConfig): Promise<nu
   await Bun.$`mkdir -p ${outDir}`.quiet();
   const loaded = await loadAll(parsed.files, config);
   const diagnostics = diagnosticsFor(loaded, config);
+  printDiagnostics(diagnostics);
   if (diagnostics.some((item) => item.severity === "error")) {
-    printDiagnostics(diagnostics);
     return 1;
   }
   const themeName = asString(parsed.options["theme"]) ?? config.render?.theme ?? config.theme;
@@ -310,12 +310,11 @@ async function runBuildSite(parsed: ParsedArgs, config: DrawspecConfig): Promise
       accessibility: { title: item.document.title ?? item.document.id },
       ...(themeName === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
     });
-    const sd = toSiteDiagram(item.document, svg);
     const pathHash = hashString(item.file).toString(36).slice(0, 8);
-    sd.fileName = `${safeFileName(sd.id)}_${pathHash}`;
+    const pageFileName = `${safeFileName(item.document.id)}_${pathHash}.html`;
     siteDiagrams.push({
       file: item.file,
-      siteDiagram: sd,
+      siteDiagram: toSiteDiagram(item.document, svg, pageFileName),
     });
   }
   const allDiagrams = siteDiagrams.map((d) => d.siteDiagram);
@@ -323,7 +322,7 @@ async function runBuildSite(parsed: ParsedArgs, config: DrawspecConfig): Promise
   await Bun.write(`${trimTrailingSlash(outDir)}/index.html`, generateIndexHtml(allDiagrams));
   for (const { siteDiagram } of siteDiagrams) {
     const pageHtml = generateDiagramHtml(siteDiagram);
-    await Bun.write(`${trimTrailingSlash(outDir)}/${siteDiagram.fileName}.html`, pageHtml);
+    await Bun.write(`${trimTrailingSlash(outDir)}/${siteDiagram.pageFileName}`, pageHtml);
   }
   console.log(
     green(

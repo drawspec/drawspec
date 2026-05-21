@@ -33,8 +33,8 @@ describe("toSiteDiagram", () => {
     expect(result.kind).toBe("sequence");
     expect(result.nodeCount).toBe(2);
     expect(result.edgeCount).toBe(1);
+    expect(result.pageFileName).toBe("my-diagram.html");
     expect(result.svg).toBe(sampleSvg);
-    expect(result.fileName).toBe("my-diagram");
   });
 
   test("uses id as fallback title", () => {
@@ -71,11 +71,19 @@ describe("generateIndexHtml", () => {
     expect(html).toContain('href="style.css"');
   });
 
-  test("uses fileName field for card href", () => {
-    const diagram = toSiteDiagram(sampleDoc, sampleSvg);
-    diagram.fileName = "custom-name_abc12345";
+  test("uses explicit page file names and pluralizes counts independently", () => {
+    const oneNodeDoc = { ...sampleDoc, nodes: sampleDoc.nodes.slice(0, 1) };
+    const diagram: SiteDiagram = {
+      ...toSiteDiagram(oneNodeDoc, sampleSvg),
+      pageFileName: "my_diagram_hash.html",
+    };
     const html = generateIndexHtml([diagram]);
-    expect(html).toContain('href="custom-name_abc12345.html"');
+
+    expect(html).toContain('href="my_diagram_hash.html"');
+    expect(html).toContain("1 node");
+    expect(html).toContain("1 edge");
+    expect(html).not.toContain("1 nodes");
+    expect(html).not.toContain("1 edges");
   });
 
   test("pluralizes diagram count", () => {

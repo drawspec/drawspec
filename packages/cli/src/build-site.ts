@@ -1,4 +1,5 @@
 import type { DiagramDocument } from "@drawspec/core";
+import { escapeHtml } from "./html";
 
 export interface SiteDiagram {
   id: string;
@@ -6,8 +7,8 @@ export interface SiteDiagram {
   kind: string;
   nodeCount: number;
   edgeCount: number;
+  pageFileName: string;
   svg: string;
-  fileName: string;
 }
 
 export function generateStyleCss(): string {
@@ -40,11 +41,11 @@ main{max-width:var(--max-width);margin:0 auto;padding:2rem}
 export function generateIndexHtml(diagrams: readonly SiteDiagram[]): string {
   const cards = diagrams
     .map(
-      (d) => `    <a class="card" href="${escapeHtml(d.fileName)}.html">
+      (d) => `    <a class="card" href="${escapeHtml(d.pageFileName)}">
       <div class="card-preview">${d.svg}</div>
       <div class="card-body">
         <h2>${escapeHtml(d.title)}</h2>
-        <div class="meta">${escapeHtml(d.kind)} &middot; ${d.nodeCount} node${d.nodeCount === 1 ? "" : "s"} &middot; ${d.edgeCount} edge${d.edgeCount === 1 ? "" : "s"}</div>
+        <div class="meta">${escapeHtml(d.kind)} &middot; ${formatCount(d.nodeCount, "node")} &middot; ${formatCount(d.edgeCount, "edge")}</div>
       </div>
     </a>`
     )
@@ -114,26 +115,26 @@ export function generateDiagramHtml(diagram: SiteDiagram): string {
 `;
 }
 
-export function toSiteDiagram(document: DiagramDocument, svg: string): SiteDiagram {
+export function toSiteDiagram(
+  document: DiagramDocument,
+  svg: string,
+  pageFileName = `${safeFileName(document.id)}.html`
+): SiteDiagram {
   return {
     id: document.id,
     title: document.title ?? document.id,
     kind: document.kind,
     nodeCount: document.nodes.length,
     edgeCount: document.edges.length,
+    pageFileName,
     svg,
-    fileName: safeFileName(document.id),
   };
-}
-
-export function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
 }
 
 export function safeFileName(value: string): string {
   return value.replaceAll(/[^a-zA-Z0-9._-]/g, "_");
+}
+
+function formatCount(count: number, singular: string): string {
+  return `${count} ${singular}${count === 1 ? "" : "s"}`;
 }

@@ -88,6 +88,8 @@ describe("drawspec CLI", () => {
     expect(result.stdout).toContain("drawspec check");
     expect(result.stdout).toContain("drawspec render");
     expect(result.stdout).toContain("drawspec inspect");
+    expect(result.stdout).toContain("drawspec build:site");
+    expect(result.stdout).toContain("--theme name");
   });
 
   test("checks fixture files", async () => {
@@ -172,7 +174,7 @@ describe("drawspec CLI", () => {
   test("build-site generates static HTML site", async () => {
     const outDir = await tempDir();
     const result = await runDrawspec([
-      "build-site",
+      "build:site",
       join(fixtures, "payment.sequence.ts"),
       "--out",
       outDir,
