@@ -1,6 +1,6 @@
 # Builder API
 
-DrawSpec provides TypeScript builder APIs for each diagram type. All builders produce a `DiagramDocument` — the intermediate representation that layout engines and renderers consume.
+DrawSpec provides TypeScript builder APIs for each diagram type. UML builders produce a `DiagramDocument`; architecture builders produce a `Workspace` containing multiple views. Both are consumed by layout engines and renderers.
 
 ## Core Concepts
 
@@ -195,3 +195,4 @@ const json = serializeDocument(doc);
 ```
 
 Produces deterministic, sorted JSON — the same document always serializes to the same string.
+ serializes to the same string.

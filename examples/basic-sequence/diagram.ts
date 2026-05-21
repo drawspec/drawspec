@@ -11,10 +11,7 @@ export default sequence("User Login", (s) => {
   browser.to(user, "Redirect to dashboard");
 
   s.alt("Invalid credentials", (s2) => {
-    const server2 = s2.participant("Auth Server");
-    const browser2 = s2.participant("Browser");
-
-    server2.to(browser2, "401 Unauthorized");
-    browser2.to(s2.actor("User"), "Show error message");
+    server.to(browser, "401 Unauthorized");
+    browser.to(user, "Show error message");
   });
 });

@@ -64,7 +64,7 @@ export function DiagramViewer({ svg, theme = "light" }) {
 
 ## Events
 
-The component dispatches standard DOM events on state changes. Use `addEventListener` to listen.
+Custom events are not yet implemented. Use property changes and polling for state observation for now.
 
 ## Viewer Payload
 
@@ -106,3 +106,5 @@ bunx drawspec serve . --open
 ```
 
 The preview page at `http://localhost:4173/` uses `<drawspec-diagram>` with WebSocket-driven updates.
+ with WebSocket-driven updates.
+he preview page at `http://localhost:4173/` uses `<drawspec-diagram>` with WebSocket-driven updates.

@@ -8,7 +8,7 @@ bun add @drawspec/core @drawspec/cli
 
 ## Create a Diagram
 
-DrawSpec diagrams are TypeScript files that export a `DiagramDocument`. Each diagram type has its own builder API.
+DrawSpec diagrams are TypeScript files that export either a `DiagramDocument` (for UML diagrams) or a `Workspace` (for architecture/C4 diagrams). Each diagram type has its own builder API.
 
 ### Sequence Diagram
 

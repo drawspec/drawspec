@@ -44,7 +44,7 @@ export default workspace("Online Shop", (w) => {
   });
 
   w.views.systemContext(shop, "context", (v) => {
-    v.include(customer, payments);
+    v.include(customer, shop, payments);
     v.autoLayout("left-right");
   });
 
