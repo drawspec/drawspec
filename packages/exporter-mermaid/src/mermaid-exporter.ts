@@ -14,7 +14,11 @@ const DIRECTION_MAP: Record<string, string> = {
 };
 
 function escapeLabel(label: string): string {
-  return label.replace(/"/g, "#quot;").replace(/\n/g, "<br/>");
+  return label
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/\|/g, "&#124;")
+    .replace(/\n/g, "<br/>");
 }
 
 function isGraphLike(kind: DiagramKind): boolean {
@@ -34,7 +38,8 @@ function isFlowchart(kind: DiagramKind): boolean {
 }
 
 function sanitizeId(raw: string): string {
-  return raw.replace(/[^a-zA-Z0-9_]/g, "_");
+  const sanitized = raw.replace(/[^a-zA-Z0-9_]/g, "_");
+  return sanitized.length > 0 ? sanitized : "_";
 }
 
 type IdMap = Map<string, string>;
@@ -261,26 +266,52 @@ function renderErDiagram(doc: DiagramDocument): string {
   return lines.join("\n");
 }
 
+function collectUnsupportedWarnings(doc: DiagramDocument): string[] {
+  const warnings: string[] = [];
+  if (doc.annotations && doc.annotations.length > 0) {
+    warnings.push("%% drawspec: unsupported - annotations");
+  }
+  if (doc.nodes.some((n) => n.style)) {
+    warnings.push("%% drawspec: unsupported - node styles");
+  }
+  if (doc.edges.some((e) => e.style)) {
+    warnings.push("%% drawspec: unsupported - edge styles");
+  }
+  if (doc.styles) {
+    warnings.push("%% drawspec: unsupported - stylesheet");
+  }
+  if (doc.metadata) {
+    warnings.push("%% drawspec: unsupported - metadata");
+  }
+  if (doc.groups.some((g) => g.description)) {
+    warnings.push("%% drawspec: unsupported - group descriptions");
+  }
+  return warnings;
+}
+
+function prependUnsupported(doc: DiagramDocument, body: string): string {
+  const warnings = collectUnsupportedWarnings(doc);
+  if (warnings.length === 0) return body;
+  return `${warnings.join("\n")}\n${body}`;
+}
+
 export function exportToMermaid(doc: DiagramDocument): string {
   const kind = doc.kind;
+  let result: string;
   if (isFlowchart(kind)) {
-    return renderFlowchart(doc);
+    result = renderFlowchart(doc);
+  } else if (isGraphLike(kind)) {
+    result = renderGraph(doc);
+  } else if (kind === "sequence") {
+    result = renderSequence(doc);
+  } else if (kind === "class") {
+    result = renderClassDiagram(doc);
+  } else if (kind === "state") {
+    result = renderStateDiagram(doc);
+  } else if (kind === "er") {
+    result = renderErDiagram(doc);
+  } else {
+    result = renderGraph(doc);
   }
-  if (isGraphLike(kind)) {
-    return renderGraph(doc);
-  }
-  if (kind === "sequence") {
-    return renderSequence(doc);
-  }
-  if (kind === "class") {
-    return renderClassDiagram(doc);
-  }
-  if (kind === "state") {
-    return renderStateDiagram(doc);
-  }
-  if (kind === "er") {
-    return renderErDiagram(doc);
-  }
-
-  return renderGraph(doc);
+  return prependUnsupported(doc, result);
 }

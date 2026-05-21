@@ -213,7 +213,7 @@ describe("exportToMermaid", () => {
 
     const result = exportToMermaid(doc);
 
-    expect(result).toContain("Say #quot;hello#quot;");
+    expect(result).toContain("Say &quot;hello&quot;");
   });
 
   test("edge direction controls arrow direction", () => {
@@ -305,5 +305,110 @@ describe("exportToMermaid", () => {
     expect(result).toContain('a_b["A-B"]');
     expect(result).toContain('a_b_1["A_B"]');
     expect(result).toMatch(/a_b .+ a_b_1/);
+  });
+
+  test("escapes pipe characters in edge labels", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "pipe",
+      kind: "graph",
+      nodes: [
+        { id: "a", kind: "box" },
+        { id: "b", kind: "box" },
+      ],
+      edges: [
+        {
+          id: "e1",
+          kind: "default",
+          sourceId: "a",
+          targetId: "b",
+          label: "left|right",
+        },
+      ],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain("&#124;");
+    const edgeLine = result.split("\n").find((l) => l.includes("left"));
+    const innerLabel = edgeLine?.match(/\|(.+)\|/)?.[1] ?? "";
+    expect(innerLabel).not.toContain("|");
+  });
+
+  test("sanitizeId handles all-non-alphanumeric IDs", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "dash",
+      kind: "graph",
+      nodes: [{ id: "-", kind: "box", label: "Dash" }],
+      edges: [],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain("_[");
+
+    const doc2: DiagramDocument = {
+      schemaVersion: "1",
+      id: "multi",
+      kind: "graph",
+      nodes: [
+        { id: "-", kind: "box", label: "Dash" },
+        { id: "--", kind: "box", label: "Dash2" },
+      ],
+      edges: [],
+      groups: [],
+      annotations: [],
+    };
+
+    const result2 = exportToMermaid(doc2);
+    const idPattern = /_.*\[.*Dash.*\]/g;
+    const matches = result2.match(idPattern);
+    expect(matches).toHaveLength(2);
+    expect(matches?.[0]).not.toBe(matches?.[1]);
+  });
+
+  test("emits unsupported warnings for annotations and styles", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "warn",
+      kind: "graph",
+      nodes: [{ id: "a", kind: "box", label: "A", style: { id: "primary" } }],
+      edges: [],
+      groups: [],
+      annotations: [{ id: "ann1", kind: "note", targetId: "a", label: "note" }],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain("%% drawspec: unsupported - annotations");
+    expect(result).toContain("%% drawspec: unsupported - node styles");
+  });
+
+  test("output passes basic Mermaid syntax checks", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "syntax",
+      kind: "graph",
+      nodes: [
+        { id: "a", kind: "box", label: "A" },
+        { id: "b", kind: "box", label: "B" },
+      ],
+      edges: [{ id: "e1", kind: "default", sourceId: "a", targetId: "b", label: "link" }],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toMatch(/^graph (TD|BT|LR|RL)$/m);
+    expect(result).toMatch(/a\[.*\]/);
+    expect(result).toMatch(/b\[.*\]/);
+    expect(result).not.toMatch(/\[\s*\]/);
+    expect(result).not.toMatch(/\|\s*\|/);
   });
 });
