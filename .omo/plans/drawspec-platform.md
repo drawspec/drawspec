@@ -1415,7 +1415,7 @@ testkit ← core, validation
 
 > **Depends on**: Stage 1 complete (Stage 2 optional, exporters work against IR)
 
-- [ ] 22. Implement @drawspec/exporter-mermaid — Mermaid text export from Diagram IR
+- [x] 22. Implement @drawspec/exporter-mermaid — Mermaid text export from Diagram IR
 
   **What to do**: Create exporter package. Transform DiagramDocument to Mermaid syntax. Support sequence, class, state diagram exports. Best-effort — document unsupported features.
   **References**: `spec.md` lines 1669-1687 (Mermaid exporter spec)
