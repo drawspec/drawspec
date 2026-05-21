@@ -17,6 +17,7 @@
     { "path": "./packages/cli" },
     { "path": "./packages/viewer" },
     { "path": "./packages/testkit" },
+    { "path": "./packages/exporter-mermaid" },
     { "path": "./packages/lsp" }
   ]
 }
