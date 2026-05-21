@@ -20,6 +20,7 @@
     "release": "bun run check && changeset version && bun run build"
   },
   "devDependencies": {
+    "@changesets/cli": "latest",
     "@drawspec/architecture": "workspace:*",
     "@drawspec/cli": "workspace:*",
     "@drawspec/core": "workspace:*",
@@ -29,7 +30,7 @@
     "@drawspec/uml-component": "workspace:*",
     "@drawspec/uml-sequence": "workspace:*",
     "@drawspec/validation": "workspace:*",
-    "@changesets/cli": "latest",
+    "@types/node": "25.9.1",
     "typescript": "latest"
   }
 }
