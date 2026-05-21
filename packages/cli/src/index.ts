@@ -2,6 +2,13 @@
 import { existsSync, type FSWatcher, watch } from "node:fs";
 import type { Workspace } from "@drawspec/architecture";
 import { compileWorkspace } from "@drawspec/architecture";
+import {
+  type CacheConfig,
+  type CacheStore,
+  createCacheStore,
+  createNoopCacheStore,
+  generateCacheKey,
+} from "@drawspec/cache";
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
 import { serializeDocument } from "@drawspec/core";
 import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
@@ -195,7 +202,7 @@ function printHelp(): void {
 
 Usage:
   drawspec check [files...] [--format pretty|json]
-  drawspec render [files...] [--out dist] [--format svg] [--theme name]
+  drawspec render [files...] [--out dist] [--format svg] [--theme name] [--no-cache] [--cache-dir path]
   drawspec inspect [file] [--format json|pretty]
   drawspec watch [files...] [--port 4173] [--debounce 80]
   drawspec serve [files...] [--host localhost] [--port 4173] [--debounce 80] [--open]
@@ -237,21 +244,39 @@ async function runRender(parsed: ParsedArgs, config: DrawspecConfig): Promise<nu
     return 1;
   }
   const themeName = asString(parsed.options["theme"]) ?? config.render?.theme ?? config.theme;
+  const noCache = parsed.options["no-cache"] === true;
+  const cacheDir = asString(parsed.options["cache-dir"]);
+  const cache: CacheStore = noCache
+    ? createNoopCacheStore()
+    : createCacheStore(cacheDir !== undefined ? { cacheDir } : {});
   const written: string[] = [];
   for (const item of loaded) {
     if (item.document === undefined) {
       continue;
     }
-    const positionedDiagram = await layoutFor(item.document).layout(
-      item.document,
-      layoutOptions(item.document)
-    );
-    const renderOptions = {
-      positionedDiagram,
-      accessibility: { title: item.document.title ?? item.document.id },
-      ...(themeName === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
+    const cacheConfig: CacheConfig = {
+      format,
+      packageVersions: { core: "0.0.1", layout: "0.0.1", "renderer-svg": "0.0.1" },
+      ...(themeName !== undefined ? { theme: themeName } : {}),
     };
-    const svg = await renderSvg(item.document, renderOptions);
+    const cacheKey = generateCacheKey(serializeDocument(item.document), cacheConfig);
+    const cached = (await cache.get(cacheKey)) as string | null;
+    let svg: string;
+    if (typeof cached === "string") {
+      svg = cached;
+    } else {
+      const positionedDiagram = await layoutFor(item.document).layout(
+        item.document,
+        layoutOptions(item.document)
+      );
+      const renderOptions = {
+        positionedDiagram,
+        accessibility: { title: item.document.title ?? item.document.id },
+        ...(themeName === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
+      };
+      svg = await renderSvg(item.document, renderOptions);
+      await cache.set(cacheKey, svg);
+    }
     const pathHash = hashString(item.file).toString(36).slice(0, 8);
     const outputPath = `${trimTrailingSlash(outDir)}/${safeFileName(item.document.id)}_${pathHash}.svg`;
     await Bun.write(outputPath, svg);

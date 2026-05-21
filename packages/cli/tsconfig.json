@@ -9,6 +9,7 @@
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/__tests__/**/*.ts"],
   "references": [
+    { "path": "../cache" },
     { "path": "../core" },
     { "path": "../architecture" },
     { "path": "../uml-sequence" },

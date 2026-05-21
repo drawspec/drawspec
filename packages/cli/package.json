@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@drawspec/architecture": "workspace:*",
+    "@drawspec/cache": "workspace:*",
     "@drawspec/core": "workspace:*",
     "@drawspec/layout": "workspace:*",
     "@drawspec/renderer-svg": "workspace:*",

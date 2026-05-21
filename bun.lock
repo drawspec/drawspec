@@ -43,6 +43,14 @@
         "typescript": "latest",
       },
     },
+    "packages/cache": {
+      "name": "@drawspec/cache",
+      "version": "0.0.1",
+      "devDependencies": {
+        "@types/node": "25.9.1",
+        "typescript": "latest",
+      },
+    },
     "packages/cli": {
       "name": "@drawspec/cli",
       "version": "0.0.1",
@@ -53,6 +61,7 @@
       },
       "dependencies": {
         "@drawspec/architecture": "workspace:*",
+        "@drawspec/cache": "workspace:*",
         "@drawspec/core": "workspace:*",
         "@drawspec/layout": "workspace:*",
         "@drawspec/renderer-svg": "workspace:*",
@@ -318,6 +327,8 @@
     "@changesets/write": ["@changesets/write@0.4.0", "", { "dependencies": { "@changesets/types": "^6.1.0", "fs-extra": "^7.0.1", "human-id": "^4.1.1", "prettier": "^2.7.1" } }, "sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q=="],
 
     "@drawspec/architecture": ["@drawspec/architecture@workspace:packages/architecture"],
+
+    "@drawspec/cache": ["@drawspec/cache@workspace:packages/cache"],
 
     "@drawspec/cli": ["@drawspec/cli@workspace:packages/cli"],
 
