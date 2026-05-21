@@ -125,6 +125,46 @@ describe("exportToMermaid", () => {
     expect(result).toContain("a --> b");
   });
 
+  test("emits basic parseable graph syntax", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "syntax",
+      kind: "graph",
+      nodes: [
+        { id: "start", kind: "box", label: "Start" },
+        { id: "end", kind: "box", label: "End" },
+      ],
+      edges: [{ id: "e1", kind: "default", sourceId: "start", targetId: "end", label: "go" }],
+      groups: [{ id: "g", kind: "group", label: "Group", childIds: ["end"] }],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+    const lines = result.split("\n");
+
+    expect(lines[0]).toBe("graph TD");
+    expect(result).toMatch(/^ {2}subgraph g\["Group"\]$/m);
+    expect(result).toMatch(/^ {2}end$/m);
+    expect(result).toMatch(/^ {2}start -->\|go\| end$/m);
+  });
+
+  test("escapes Mermaid label delimiters", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "pipe",
+      kind: "graph",
+      nodes: [{ id: "a", kind: "box", label: "A|B" }],
+      edges: [{ id: "e1", kind: "default", sourceId: "a", targetId: "a", label: "x|y" }],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain('a["A&#124;B"]');
+    expect(result).toContain("a -->|x&#124;y| a");
+  });
+
   test("exports class diagram", () => {
     const doc: DiagramDocument = {
       schemaVersion: "1",
@@ -216,6 +256,22 @@ describe("exportToMermaid", () => {
     expect(result).toContain("Say &quot;hello&quot;");
   });
 
+  test("sanitizes empty IDs to a stable fallback", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "empty-id",
+      kind: "graph",
+      nodes: [{ id: "", kind: "box", label: "empty" }],
+      edges: [],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain('id_["empty"]');
+  });
+
   test("edge direction controls arrow direction", () => {
     const doc: DiagramDocument = {
       schemaVersion: "1",
@@ -238,9 +294,30 @@ describe("exportToMermaid", () => {
 
     const result = exportToMermaid(doc);
 
-    expect(result).toContain("a <-- b");
+    expect(result).toContain("b --> a");
     expect(result).toContain("b <--> c");
     expect(result).toContain("c --- d");
+  });
+
+  test("backward edge direction reverses dashed endpoints", () => {
+    const doc: DiagramDocument = {
+      schemaVersion: "1",
+      id: "dash-backward",
+      kind: "graph",
+      nodes: [
+        { id: "a", kind: "box" },
+        { id: "b", kind: "box" },
+      ],
+      edges: [
+        { id: "e1", kind: "dependency", sourceId: "a", targetId: "b", direction: "backward" },
+      ],
+      groups: [],
+      annotations: [],
+    };
+
+    const result = exportToMermaid(doc);
+
+    expect(result).toContain("b -.-> a");
   });
 
   test("edge direction works with dashed style", () => {
@@ -372,21 +449,25 @@ describe("exportToMermaid", () => {
     expect(matches?.[0]).not.toBe(matches?.[1]);
   });
 
-  test("emits unsupported warnings for annotations and styles", () => {
+  test("emits unsupported feature comments", () => {
     const doc: DiagramDocument = {
       schemaVersion: "1",
-      id: "warn",
+      id: "unsupported",
       kind: "graph",
-      nodes: [{ id: "a", kind: "box", label: "A", style: { id: "primary" } }],
+      nodes: [{ id: "a", kind: "box", metadata: { owner: "team" }, style: { id: "primary" } }],
       edges: [],
-      groups: [],
-      annotations: [{ id: "ann1", kind: "note", targetId: "a", label: "note" }],
+      groups: [{ id: "g", kind: "group", description: "Dropped", childIds: [] }],
+      annotations: [{ id: "note", kind: "note", label: "Dropped" }],
+      styles: { tokens: { color: "red" } },
+      metadata: { generatedBy: "test" },
     };
 
     const result = exportToMermaid(doc);
 
     expect(result).toContain("%% drawspec: unsupported - annotations");
-    expect(result).toContain("%% drawspec: unsupported - node styles");
+    expect(result).toContain("%% drawspec: unsupported - styles");
+    expect(result).toContain("%% drawspec: unsupported - metadata");
+    expect(result).toContain("%% drawspec: unsupported - group descriptions");
   });
 
   test("output passes basic Mermaid syntax checks", () => {

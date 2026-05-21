@@ -39,7 +39,7 @@ function isFlowchart(kind: DiagramKind): boolean {
 
 function sanitizeId(raw: string): string {
   const sanitized = raw.replace(/[^a-zA-Z0-9_]/g, "_");
-  return sanitized.length > 0 ? sanitized : "_";
+  return sanitized.length > 0 ? sanitized : "id_";
 }
 
 type IdMap = Map<string, string>;
@@ -77,9 +77,48 @@ function edgeArrow(edge: DiagramEdge): string {
 
   if (dir === "none") return dashed ? "-.-" : "---";
   if (dir === "bidirectional") return dashed ? "<-.->" : "<-->";
-  if (dir === "backward") return dashed ? "<-.-" : "<--";
 
   return dashed ? "-.->" : "-->";
+}
+
+function edgeEndpointIds(edge: DiagramEdge, idMap: IdMap): [string, string] {
+  const src = idMap.get(edge.sourceId) ?? sanitizeId(edge.sourceId);
+  const tgt = idMap.get(edge.targetId) ?? sanitizeId(edge.targetId);
+
+  return edge.direction === "backward" ? [tgt, src] : [src, tgt];
+}
+
+function hasEntries(value: Record<string, unknown> | undefined): boolean {
+  return value !== undefined && Object.keys(value).length > 0;
+}
+
+function unsupportedFeatureComments(doc: DiagramDocument): string[] {
+  const comments: string[] = [];
+
+  if (doc.annotations.length > 0) {
+    comments.push("%% drawspec: unsupported - annotations");
+  }
+  if (
+    doc.styles !== undefined ||
+    doc.nodes.some((node) => node.style !== undefined) ||
+    doc.edges.some((edge) => edge.style !== undefined) ||
+    doc.groups.some((group) => group.style !== undefined)
+  ) {
+    comments.push("%% drawspec: unsupported - styles");
+  }
+  if (
+    hasEntries(doc.metadata) ||
+    doc.nodes.some((node) => hasEntries(node.metadata)) ||
+    doc.edges.some((edge) => hasEntries(edge.metadata)) ||
+    doc.groups.some((group) => hasEntries(group.metadata))
+  ) {
+    comments.push("%% drawspec: unsupported - metadata");
+  }
+  if (doc.groups.some((group) => group.description !== undefined && group.description.length > 0)) {
+    comments.push("%% drawspec: unsupported - group descriptions");
+  }
+
+  return comments;
 }
 
 function renderGraphNodes(nodes: DiagramNode[], idMap: IdMap, indent: string): string[] {
@@ -102,8 +141,7 @@ function renderGraphEdges(
   return edges
     .filter((e) => nodeIds.has(e.sourceId) && nodeIds.has(e.targetId))
     .map((e) => {
-      const src = idMap.get(e.sourceId) ?? sanitizeId(e.sourceId);
-      const tgt = idMap.get(e.targetId) ?? sanitizeId(e.targetId);
+      const [src, tgt] = edgeEndpointIds(e, idMap);
       const arrow = edgeArrow(e);
       if (e.label) {
         return `${indent}${src} ${arrow}|${escapeLabel(e.label)}| ${tgt}`;
@@ -121,7 +159,7 @@ function renderGroupDeclaration(group: DiagramGroup, idMap: IdMap, indent: strin
 function renderGraph(doc: DiagramDocument): string {
   const idMap = buildIdMap(doc);
   const direction = DIRECTION_MAP[doc.layout?.direction ?? "tb"] ?? "TD";
-  const lines: string[] = [`graph ${direction}`];
+  const lines: string[] = [`graph ${direction}`, ...unsupportedFeatureComments(doc)];
   const indent = "  ";
 
   const ungrouped = doc.nodes.filter((n) => !doc.groups.some((g) => g.childIds?.includes(n.id)));
@@ -147,7 +185,7 @@ function renderGraph(doc: DiagramDocument): string {
 function renderFlowchart(doc: DiagramDocument): string {
   const idMap = buildIdMap(doc);
   const direction = DIRECTION_MAP[doc.layout?.direction ?? "tb"] ?? "TD";
-  const lines: string[] = [`flowchart ${direction}`];
+  const lines: string[] = [`flowchart ${direction}`, ...unsupportedFeatureComments(doc)];
   const indent = "  ";
 
   for (const node of doc.nodes) {
@@ -161,7 +199,7 @@ function renderFlowchart(doc: DiagramDocument): string {
 
 function renderSequence(doc: DiagramDocument): string {
   const idMap = buildIdMap(doc);
-  const lines: string[] = ["sequenceDiagram"];
+  const lines: string[] = ["sequenceDiagram", ...unsupportedFeatureComments(doc)];
 
   for (const node of doc.nodes) {
     const label = node.label ?? node.id;
@@ -184,7 +222,7 @@ function renderSequence(doc: DiagramDocument): string {
 
 function renderClassDiagram(doc: DiagramDocument): string {
   const idMap = buildIdMap(doc);
-  const lines: string[] = ["classDiagram"];
+  const lines: string[] = ["classDiagram", ...unsupportedFeatureComments(doc)];
 
   for (const node of doc.nodes) {
     lines.push(`  class ${nodeId(node, idMap)} {`);
@@ -217,7 +255,7 @@ function renderClassDiagram(doc: DiagramDocument): string {
 
 function renderStateDiagram(doc: DiagramDocument): string {
   const idMap = buildIdMap(doc);
-  const lines: string[] = ["stateDiagram-v2"];
+  const lines: string[] = ["stateDiagram-v2", ...unsupportedFeatureComments(doc)];
 
   for (const node of doc.nodes) {
     const id = nodeId(node, idMap);
@@ -243,7 +281,7 @@ function renderStateDiagram(doc: DiagramDocument): string {
 
 function renderErDiagram(doc: DiagramDocument): string {
   const idMap = buildIdMap(doc);
-  const lines: string[] = ["erDiagram"];
+  const lines: string[] = ["erDiagram", ...unsupportedFeatureComments(doc)];
 
   for (const edge of doc.edges) {
     const src = idMap.get(edge.sourceId) ?? sanitizeId(edge.sourceId);
@@ -266,52 +304,26 @@ function renderErDiagram(doc: DiagramDocument): string {
   return lines.join("\n");
 }
 
-function collectUnsupportedWarnings(doc: DiagramDocument): string[] {
-  const warnings: string[] = [];
-  if (doc.annotations && doc.annotations.length > 0) {
-    warnings.push("%% drawspec: unsupported - annotations");
-  }
-  if (doc.nodes.some((n) => n.style)) {
-    warnings.push("%% drawspec: unsupported - node styles");
-  }
-  if (doc.edges.some((e) => e.style)) {
-    warnings.push("%% drawspec: unsupported - edge styles");
-  }
-  if (doc.styles) {
-    warnings.push("%% drawspec: unsupported - stylesheet");
-  }
-  if (doc.metadata) {
-    warnings.push("%% drawspec: unsupported - metadata");
-  }
-  if (doc.groups.some((g) => g.description)) {
-    warnings.push("%% drawspec: unsupported - group descriptions");
-  }
-  return warnings;
-}
-
-function prependUnsupported(doc: DiagramDocument, body: string): string {
-  const warnings = collectUnsupportedWarnings(doc);
-  if (warnings.length === 0) return body;
-  return `${warnings.join("\n")}\n${body}`;
-}
-
 export function exportToMermaid(doc: DiagramDocument): string {
   const kind = doc.kind;
-  let result: string;
   if (isFlowchart(kind)) {
-    result = renderFlowchart(doc);
-  } else if (isGraphLike(kind)) {
-    result = renderGraph(doc);
-  } else if (kind === "sequence") {
-    result = renderSequence(doc);
-  } else if (kind === "class") {
-    result = renderClassDiagram(doc);
-  } else if (kind === "state") {
-    result = renderStateDiagram(doc);
-  } else if (kind === "er") {
-    result = renderErDiagram(doc);
-  } else {
-    result = renderGraph(doc);
+    return renderFlowchart(doc);
   }
-  return prependUnsupported(doc, result);
+  if (isGraphLike(kind)) {
+    return renderGraph(doc);
+  }
+  if (kind === "sequence") {
+    return renderSequence(doc);
+  }
+  if (kind === "class") {
+    return renderClassDiagram(doc);
+  }
+  if (kind === "state") {
+    return renderStateDiagram(doc);
+  }
+  if (kind === "er") {
+    return renderErDiagram(doc);
+  }
+
+  return renderGraph(doc);
 }
