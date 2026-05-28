@@ -8,6 +8,7 @@ import type {
   SequenceFragment,
   SequenceFragmentBuilder,
   SequenceFragmentChild,
+  SequenceFragmentKind,
   SequenceFragmentOperand,
   SequenceMessage,
   SequenceNote,
@@ -83,11 +84,12 @@ class MutableSequenceMessage implements SequenceMessage {
 
 class MutableSequenceFragment implements SequenceFragment {
   readonly id: string;
-  readonly kind = "alt";
+  readonly kind: SequenceFragmentKind;
   readonly operands: SequenceFragmentOperand[];
 
-  constructor(index: number, operands: SequenceFragmentOperand[]) {
-    this.id = deterministicId("frag", ["fragment", "alt", index.toString()]);
+  constructor(kind: SequenceFragmentKind, index: number, operands: SequenceFragmentOperand[]) {
+    this.kind = kind;
+    this.id = deterministicId("frag", ["fragment", kind, index.toString()]);
     this.operands = operands;
   }
 }
@@ -132,7 +134,7 @@ class MutableSequenceBuilder implements SequenceBuilder {
 
   alt(condition: string, callback: (sequence: SequenceBuilder) => void): SequenceFragmentBuilder {
     const firstOperand = { condition, children: this.capture(callback) };
-    const fragment = new MutableSequenceFragment(this.#fragmentCount, [firstOperand]);
+    const fragment = new MutableSequenceFragment("alt", this.#fragmentCount, [firstOperand]);
     this.#fragmentCount += 1;
     this.#activeChildren.push(fragment);
     return new MutableSequenceFragmentBuilder(this, fragment);
