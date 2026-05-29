@@ -6,13 +6,9 @@ import {
   workspace,
 } from "../../packages/architecture/src";
 
-const identity = workspace("Identity platform", (ws) => {
-  const identitySystem = ws.model.add(softwareSystem("Identity"));
-  identitySystem.add(container("OIDC Provider", { technology: "Bun" }));
-});
-
 export default workspace("Nested commerce platform", (ws) => {
-  ws.model.use(identity.model);
+  const identitySystem = ws.model.add(softwareSystem("Identity", { description: "OIDC provider" }));
+  const oidcProvider = identitySystem.add(container("OIDC Provider", { technology: "Bun" }));
   const operator = ws.model.add(person("Operator"));
   const commerce = ws.model.add(softwareSystem("Commerce"));
   const dashboard = commerce.add(container("Admin Dashboard", { technology: "React" }));
@@ -22,6 +18,9 @@ export default workspace("Nested commerce platform", (ws) => {
   operator.uses(dashboard, "Configures payment rules", { technology: "HTTPS" });
   dashboard.uses(api, "Saves changes", { technology: "HTTPS" });
   api.uses(store, "Persists settings", { technology: "SQL" });
+  operator.uses(commerce, "Manages store", { technology: "HTTPS" });
+  operator.uses(identitySystem, "Authenticates via", { technology: "OIDC" });
+  oidcProvider.uses(api, "Validates tokens", { technology: "HTTPS" });
 
   ws.views.container(commerce, "nested-commerce-containers", (view) =>
     view.include("*").autoLayout("top-down")

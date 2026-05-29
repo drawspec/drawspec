@@ -3,6 +3,20 @@
   "edges": [
     {
       "direction": "forward",
+      "id": "rel_1119936806011451",
+      "kind": "uses",
+      "label": "Browses catalog",
+      "metadata": {
+        "technology": "HTTPS"
+      },
+      "sourceId": "person_bc8335d0874d8bfb",
+      "tags": [
+        "relationship"
+      ],
+      "targetId": "softwareSystem_47a27c87ada29e42"
+    },
+    {
+      "direction": "forward",
       "id": "rel_3093dfff7a08d97f",
       "kind": "uses",
       "label": "Requests payment",

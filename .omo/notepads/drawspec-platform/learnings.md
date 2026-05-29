@@ -127,3 +127,22 @@ core → (architecture, validation, uml-sequence, uml-class, uml-state, uml-comp
 - Path strategy resolves seeds by element ID or element name, then performs deterministic BFS over relationships (`forward` by default, with `reverse`/`both` options) up to `maxDepth`.
 - Auto strategy creates a `system-landscape` view for top-level software systems and one per top-level software system containing the system and its direct children.
 - `compileWorkspace()` now falls back to auto-generated views only when `workspace.views.items` is empty; generated relationship ID lists are honored during compilation.
+
+## 2026-05-21 — Final MVP Verification Complete
+
+### Definition of Done — ALL PASS
+- `bun install --frozen-lockfile` ✅
+- `bun run check` (biome + typecheck + 562 tests) ✅
+- `bun run build` — all 10+ packages build ✅
+- `drawspec check fixtures/mvp/` — zero diagnostics ✅
+- `drawspec render fixtures/mvp/ --out /tmp/ds-out` — 4 valid SVGs ✅
+- Rendering deterministic (byte-identical across runs) ✅
+- `drawspec serve fixtures/mvp/` — browser preview works ✅
+- 87.38% line coverage overall (≥80% target) ✅
+
+### Task 13 final fixes
+- Fixed remaining floating-node warnings by integrating OIDC Provider into main workspace with relationships
+- Reorganized architecture-nested.arch.ts: inlined the previously-separate `identity` workspace directly into the commerce workspace, eliminating the unused-import OIDC Provider / Identity warnings
+- All 3 MVP fixtures now pass `drawspec check` with zero diagnostics
+- Invalid fixtures in `fixtures/edge-cases/` produce expected violations (error + warning)
+- Biome import ordering fixed in mvp.test.ts

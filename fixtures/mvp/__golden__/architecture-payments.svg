@@ -12,6 +12,12 @@
       <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
     </marker>
   </defs>
+  <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_1119936806011451-0y9nwk5">
+    <path d="M 100 68 L 276 268" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-arrow-0k441nl)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="126" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="188" y="162">
+      Browses catalog
+    </text>
+  </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_3093dfff7a08d97f-134qjmy">
     <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-arrow-0k441nl)" stroke="#475569" stroke-width="1.5" />
     <text data-width="134.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="364" y="62">
@@ -57,8 +63,8 @@
     </text>
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-softwaresystem_47a27c87ada29e42-0cene4k">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="240" />
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="272.667">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="240" />
+    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="272.667">
       Shop
     </text>
   </g>
