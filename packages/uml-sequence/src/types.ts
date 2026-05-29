@@ -2,6 +2,20 @@ import type { DiagramDocument } from "@drawspec/core";
 
 export type SequenceRole = "actor" | "participant";
 
+export type SequenceFragmentKind =
+  | "alt"
+  | "loop"
+  | "opt"
+  | "par"
+  | "break"
+  | "critical"
+  | "strict"
+  | "neg"
+  | "ignore"
+  | "consider"
+  | "assert"
+  | "region";
+
 export interface SequenceNote {
   id: string;
   text: string;
@@ -44,7 +58,7 @@ export interface SequenceFragmentOperand {
 
 export interface SequenceFragment {
   readonly id: string;
-  readonly kind: "alt";
+  readonly kind: SequenceFragmentKind;
   readonly operands: readonly SequenceFragmentOperand[];
 }
 

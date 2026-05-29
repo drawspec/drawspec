@@ -75,11 +75,15 @@ function compileFragment(
 ): CompileChildResult {
   const operandMetadata: Array<{ condition: string; childIds: string[] }> = [];
   const childIds: string[] = [];
+  const edgeIds: string[] = [];
+  const groupIds: string[] = [];
 
   for (const operand of fragment.operands) {
     const result = compileChildren(operand.children, edges, groups, annotations);
     operandMetadata.push({ condition: operand.condition, childIds: result.childIds });
     childIds.push(...result.childIds);
+    edgeIds.push(...result.edgeIds);
+    groupIds.push(...result.groupIds);
   }
 
   groups.push({
@@ -90,7 +94,7 @@ function compileFragment(
     metadata: { operands: operandMetadata },
   });
 
-  return { childIds: [fragment.id], edgeIds: [], groupIds: [fragment.id] };
+  return { childIds: [fragment.id], edgeIds, groupIds: [fragment.id, ...groupIds] };
 }
 
 export function compileSequenceDocument(model: SequenceDomainModel): SequenceDocument {

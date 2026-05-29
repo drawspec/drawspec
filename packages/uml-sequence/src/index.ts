@@ -7,6 +7,7 @@ export type {
   SequenceElement,
   SequenceFragment,
   SequenceFragmentBuilder,
+  SequenceFragmentKind,
   SequenceFragmentOperand,
   SequenceMessage,
   SequenceNote,
