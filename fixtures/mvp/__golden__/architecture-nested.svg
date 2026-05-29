@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg aria-describedby="drawspec-view_49b744c8cc155f25-15h7gpi-desc-0je4h82" aria-labelledby="drawspec-view_49b744c8cc155f25-15h7gpi-title-15fmjvz" height="664" id="drawspec-view_49b744c8cc155f25-15h7gpi" role="img" viewBox="0 0 800 664" width="800" xmlns="http://www.w3.org/2000/svg">
+<svg aria-describedby="drawspec-view_49b744c8cc155f25-15h7gpi-desc-0je4h82" aria-labelledby="drawspec-view_49b744c8cc155f25-15h7gpi-title-15fmjvz" height="664" id="drawspec-view_49b744c8cc155f25-15h7gpi" role="img" viewBox="0 0 600 664" width="600" xmlns="http://www.w3.org/2000/svg">
   <title id="drawspec-view_49b744c8cc155f25-15h7gpi-title-15fmjvz">
     nested-commerce-containers
   </title>
   <desc id="drawspec-view_49b744c8cc155f25-15h7gpi-desc-0je4h82">
     architecture diagram view_49b744c8cc155f25
   </desc>
-  <rect fill="#ffffff" height="664" width="800" x="0" y="0" />
+  <rect fill="#ffffff" height="664" width="600" x="0" y="0" />
   <defs>
     <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
     </marker>
   </defs>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_18acfa6794477135-1jt6ixa">
+    <path d="M 300 68 L 300 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="150">
+      Manages store
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_254078794ac1a113-0c1a0za">
+    <path d="M 100 68 L 100 420" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="134.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="238">
+      Validates tokens
+    </text>
+  </g>
+  <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_51a563570f1aab38-0efz2zq">
+    <path d="M 300 68 L 500 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="400" y="150">
+      Authenticates via
+    </text>
+  </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_730a18c6ea565480-1rc7ots">
     <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
     <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="326">
@@ -63,14 +81,14 @@
     </text>
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-softwaresystem_e27ada29a9783f1d-052iwmf">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="40" />
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="72.667">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="216" />
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="248.667">
       Commerce
     </text>
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-softwaresystem_f31d789af8a06024-1chvdlf">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="640" y="40" />
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="700" y="72.667">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="216" />
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="248.667">
       Identity
     </text>
   </g>

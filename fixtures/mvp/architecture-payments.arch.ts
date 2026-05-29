@@ -13,6 +13,7 @@ export default workspace("Payments platform", (ws) => {
   const api = shop.add(container("Payments API", { technology: "Bun" }));
   const ledger = shop.add(database("Ledger", { technology: "PostgreSQL" }));
 
+  customer.uses(shop, "Browses catalog", { technology: "HTTPS" });
   customer.uses(web, "Places order", { technology: "HTTPS" });
   web.uses(api, "Requests payment", { technology: "HTTPS" });
   api.uses(ledger, "Stores authorization", { technology: "SQL" });

@@ -10,10 +10,10 @@ import {
   expectViolation,
 } from "../../packages/testkit/src";
 import { recommendedRules, validate } from "../../packages/validation/src";
+import invalidSequence from "../edge-cases/invalid-empty-title.sequence";
+import invalidWorkspace from "../edge-cases/invalid-missing-technology.arch";
 import nestedWorkspace from "./architecture-nested.arch";
 import paymentsWorkspace from "./architecture-payments.arch";
-import invalidSequence from "./invalid-empty-title.sequence";
-import invalidWorkspace from "./invalid-missing-technology.arch";
 import sequenceAlt from "./sequence-alt.sequence";
 import sequenceBasic from "./sequence-basic.sequence";
 

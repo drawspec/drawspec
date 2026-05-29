@@ -3,6 +3,48 @@
   "edges": [
     {
       "direction": "forward",
+      "id": "rel_18acfa6794477135",
+      "kind": "uses",
+      "label": "Manages store",
+      "metadata": {
+        "technology": "HTTPS"
+      },
+      "sourceId": "person_494a4f7dfd392f13",
+      "tags": [
+        "relationship"
+      ],
+      "targetId": "softwareSystem_e27ada29a9783f1d"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_254078794ac1a113",
+      "kind": "uses",
+      "label": "Validates tokens",
+      "metadata": {
+        "technology": "HTTPS"
+      },
+      "sourceId": "container_ea612b28b0b1fefd",
+      "tags": [
+        "relationship"
+      ],
+      "targetId": "container_0fac53dae12bb9fe"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_51a563570f1aab38",
+      "kind": "uses",
+      "label": "Authenticates via",
+      "metadata": {
+        "technology": "OIDC"
+      },
+      "sourceId": "person_494a4f7dfd392f13",
+      "tags": [
+        "relationship"
+      ],
+      "targetId": "softwareSystem_f31d789af8a06024"
+    },
+    {
+      "direction": "forward",
       "id": "rel_730a18c6ea565480",
       "kind": "uses",
       "label": "Saves changes",
@@ -63,6 +105,7 @@
       "childIds": [
         "container_ea612b28b0b1fefd"
       ],
+      "description": "OIDC provider",
       "id": "group_softwareSystem_f31d789af8a06024",
       "kind": "softwareSystem",
       "label": "Identity",
@@ -152,6 +195,7 @@
       ]
     },
     {
+      "description": "OIDC provider",
       "id": "softwareSystem_f31d789af8a06024",
       "kind": "softwareSystem",
       "label": "Identity",
