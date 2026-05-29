@@ -1154,7 +1154,7 @@ testkit ← core, validation
   **Acceptance Criteria**:
   - [ ] `bun test fixtures/` passes (golden tests for all MVP fixtures)
   - [x] `drawspec check fixtures/mvp/` reports 0 errors for valid fixtures
-  - [x] `drawspec check fixtures/mvp/invalid-*` reports expected violations
+  - [x] `drawspec check fixtures/edge-cases/invalid-*` reports expected violations
   - [ ] `drawspec render fixtures/mvp/ --out /tmp/ds-golden` produces golden SVGs
   - [ ] Golden SVGs are deterministic (re-render matches)
   - [ ] CI workflow includes fixture verification
@@ -2017,3 +2017,4 @@ drawspec serve fixtures/mvp/ --port 4173  # Expected: browser opens, SVG renders
 - [x] `AGENTS.md` exists with project conventions
 - [x] Kanban board tickets track all tasks — 55 issues across all 6 stages, all closed
 - [x] All PRs squashed to `main`, no direct commits — git log confirms PR-based workflow with squash merges
+h squash merges
