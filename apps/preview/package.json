@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "cp ../../packages/viewer/dist/drawspec-viewer.js static/viewer.js 2>/dev/null || true",
+    "predev": "bun run --filter @drawspec/viewer build && cp ../../packages/viewer/dist/drawspec-viewer.js static/viewer.js",
     "dev": "vite dev",
-    "prebuild": "cp ../../packages/viewer/dist/drawspec-viewer.js static/viewer.js 2>/dev/null || true",
+    "prebuild": "bun run --filter @drawspec/viewer build && cp ../../packages/viewer/dist/drawspec-viewer.js static/viewer.js",
     "build": "vite build",
     "preview": "vite preview"
   },

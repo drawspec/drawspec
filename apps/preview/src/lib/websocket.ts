@@ -10,6 +10,7 @@ import {
 
 let ws: WebSocket | null = null;
 let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+let autoReconnect = true;
 
 interface WsUpdateMessage {
   type: "update";
@@ -32,6 +33,8 @@ type WsMessage = WsUpdateMessage | WsDiagnosticsMessage | WsInitMessage;
 export function connectWebSocket(url?: string) {
   if (!browser) return;
 
+  autoReconnect = true;
+
   const protocol = location.protocol === "https:" ? "wss:" : "ws:";
   const wsUrl = url ?? `${protocol}//${location.host}/ws`;
 
@@ -51,7 +54,9 @@ export function connectWebSocket(url?: string) {
 
   ws.addEventListener("close", () => {
     connected.set(false);
-    scheduleReconnect(wsUrl);
+    if (autoReconnect) {
+      scheduleReconnect(wsUrl);
+    }
   });
 
   ws.addEventListener("error", () => {
@@ -94,6 +99,10 @@ export function connectWebSocket(url?: string) {
         selectedId.update((current) => {
           if (current === message.diagramId) {
             currentSvg.set(message.svg);
+          } else if (!current) {
+            // Auto-select first diagram if none selected
+            selectedId.set(message.diagramId);
+            currentSvg.set(message.svg);
           }
           return current;
         });
@@ -115,6 +124,7 @@ function scheduleReconnect(url: string) {
 }
 
 export function disconnectWebSocket() {
+  autoReconnect = false;
   if (reconnectTimer) {
     clearTimeout(reconnectTimer);
     reconnectTimer = null;
