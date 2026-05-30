@@ -36,6 +36,9 @@ export interface LayoutEngine { ... }
 - `bun test` only — test files use `.test.ts` extension
 - Golden test pattern: render fixtures, compare against `__golden__/` snapshots
 - `@drawspec/testkit` provides helpers
+- **~80% coverage** — aim for thorough but pragmatic coverage
+- **Test internal code only** — never test external dependencies or third-party libraries
+- Focus on: public API contracts, compilation pipeline, rendering determinism, edge cases
 
 ## Determinism
 - All rendering deterministic: sorted Map entries, no random, no Date.now
@@ -58,7 +61,23 @@ export interface LayoutEngine { ... }
 - Feature branch from main → PR → CI must pass → squash merge
 - Branch naming: `feat/issue-{N}/{slug}`, `fix/issue-{N}/{slug}`
 - ALL Copilot review comments must be addressed before merge
+- NEVER push to main directly — all changes go through PRs, no exceptions
 - Sub-agents use git worktrees at `/tmp/drawspec-issue-{N}/`
+
+## Cross-Package Changes
+When a change affects multiple packages/apps/docs, all updates go in the same PR.
+
+### Dependency Updates
+When changing a package, update ALL consumers:
+- Check memory `package-dependencies` for the full dependency graph
+- `apps/preview` depends on: core, viewer, vite-plugin, renderer-svg, layout-*, uml-* packages
+- `apps/docs` depends on: docs package, core
+
+### Documentation Maintenance Checklist
+When creating, removing, or renaming packages — or changing public APIs:
+- [ ] `AGENTS.md` — if project structure or tooling changed
+- [ ] Serena memories (`project-overview`, `package-dependencies`, `conventions`) — if packages or deps changed
+- [ ] `packages/*/src/index.ts` barrel exports — if public API changed
 
 ## Svelte (viewer, preview)
 - Svelte 5 with Runes (`$state`, `$derived`, `$effect`)
