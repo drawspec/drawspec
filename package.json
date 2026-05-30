@@ -25,6 +25,7 @@
     "@drawspec/architecture": "workspace:*",
     "@drawspec/cli": "workspace:*",
     "@drawspec/core": "workspace:*",
+    "@drawspec/docs": "workspace:*",
     "@drawspec/layout": "workspace:*",
     "@drawspec/renderer-svg": "workspace:*",
     "@drawspec/testkit": "workspace:*",
