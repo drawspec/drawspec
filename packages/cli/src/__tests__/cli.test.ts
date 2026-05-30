@@ -413,6 +413,8 @@ describe("drawspec CLI", () => {
     try {
       await readUntil(proc.stdout, "watching");
 
+      await new Promise((r) => setTimeout(r, 0));
+
       proc.kill("SIGTERM");
 
       const exitCode = await proc.exited;
