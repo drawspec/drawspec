@@ -257,4 +257,241 @@ describe("exportToPlantUML", () => {
     const out = exportToPlantUML(doc);
     expect(out).toContain('My \\"Class\\"');
   });
+
+  describe("architecture exporter", () => {
+    test("exports architecture diagram with C4-style macros", () => {
+      const doc = makeDoc({
+        id: "arch1",
+        kind: "architecture",
+        nodes: [
+          { id: "user", kind: "person", label: "User" },
+          { id: "sys", kind: "softwareSystem", label: "Main System" },
+          { id: "container", kind: "container", label: "Web App" },
+          { id: "db", kind: "database", label: "Database" },
+        ],
+        edges: [
+          { id: "e1", kind: "uses", sourceId: "user", targetId: "sys", label: "requests" },
+          { id: "e2", kind: "uses", sourceId: "sys", targetId: "db" },
+        ],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain(
+        "!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml"
+      );
+      expect(out).toContain('Person(user, "User")');
+      expect(out).toContain('System(sys, "Main System")');
+      expect(out).toContain('Container(container, "Web App")');
+      expect(out).toContain('ContainerDb(db, "Database")');
+      expect(out).toContain('Rel(user, sys, "requests")');
+      expect(out).toContain("Rel(sys, db, )");
+    });
+
+    test("exports architecture diagram with softwareSystem groups", () => {
+      const doc = makeDoc({
+        id: "arch2",
+        kind: "architecture",
+        nodes: [
+          { id: "web", kind: "container", label: "Web App" },
+          { id: "api", kind: "container", label: "API" },
+          { id: "ext", kind: "person", label: "External User" },
+        ],
+        edges: [],
+        groups: [
+          {
+            id: "g1",
+            kind: "softwareSystem",
+            label: "My System",
+            childIds: ["web", "api"],
+          },
+        ],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain('System(g1, "My System") {');
+      expect(out).toContain('  Container(web, "Web App")');
+      expect(out).toContain('  Container(api, "API")');
+      expect(out).toContain("}");
+      expect(out).toContain('Person(ext, "External User")');
+    });
+
+    test("exports architecture edges with uses kind and description", () => {
+      const doc = makeDoc({
+        id: "arch3",
+        kind: "architecture",
+        nodes: [
+          { id: "p1", kind: "person", label: "Admin" },
+          { id: "s1", kind: "softwareSystem", label: "Dashboard" },
+        ],
+        edges: [{ id: "e1", kind: "uses", sourceId: "p1", targetId: "s1", label: "manages" }],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain('Rel(p1, s1, "manages")');
+    });
+
+    test("exports architecture nodes with description in C4 macros", () => {
+      const doc = makeDoc({
+        id: "arch4",
+        kind: "architecture",
+        nodes: [{ id: "u1", kind: "person", label: "Admin", description: "System administrator" }],
+        edges: [],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain('Person(u1, "Admin", "System administrator")');
+    });
+  });
+
+  describe("deployment exporter", () => {
+    test("exports deployment diagram with node/artifact/infrastructure-node", () => {
+      const doc = makeDoc({
+        id: "dep1",
+        kind: "deployment",
+        nodes: [
+          { id: "prod", kind: "deployment-node", label: "Production" },
+          { id: "infra", kind: "infrastructure-node", label: "AWS" },
+        ],
+        edges: [
+          {
+            id: "e1",
+            kind: "communication",
+            sourceId: "prod",
+            targetId: "infra",
+            label: "deploys",
+          },
+        ],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain('node "Production" as prod');
+      expect(out).toContain('cloud "AWS" as infra');
+      expect(out).toContain("prod -> infra : deploys");
+    });
+
+    test("exports deployment diagram with nested nodes via parentId", () => {
+      const doc = makeDoc({
+        id: "dep2",
+        kind: "deployment",
+        nodes: [
+          { id: "server", kind: "deployment-node", label: "Server" },
+          { id: "app", kind: "artifact", label: "App", parentId: "server" },
+          { id: "cfg", kind: "artifact", label: "Config", parentId: "server" },
+        ],
+        edges: [],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain('node "Server" as server {');
+      expect(out).toContain('  artifact "App" as app');
+      expect(out).toContain('  artifact "Config" as cfg');
+      expect(out).toContain("}");
+    });
+
+    test("exports deployment diagram with communication edges respecting direction", () => {
+      const doc = makeDoc({
+        id: "dep3",
+        kind: "deployment",
+        nodes: [
+          { id: "n1", kind: "deployment-node", label: "Node A" },
+          { id: "n2", kind: "deployment-node", label: "Node B" },
+        ],
+        edges: [
+          {
+            id: "e1",
+            kind: "communication",
+            sourceId: "n1",
+            targetId: "n2",
+            label: "HTTP",
+            direction: "forward",
+          },
+          {
+            id: "e2",
+            kind: "communication",
+            sourceId: "n2",
+            targetId: "n1",
+            direction: "backward",
+          },
+        ],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain("n1 -> n2 : HTTP");
+      expect(out).toContain("n2 <- n1");
+    });
+  });
+
+  describe("graph exporter", () => {
+    test("exports graph diagram with rectangles and arrows", () => {
+      const doc = makeDoc({
+        id: "g1",
+        kind: "graph",
+        nodes: [
+          { id: "a", kind: "node", label: "A" },
+          { id: "b", kind: "node", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "link", sourceId: "a", targetId: "b", label: "connects" }],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain('rectangle "A" as a');
+      expect(out).toContain('rectangle "B" as b');
+      expect(out).toContain("a -> b : connects");
+    });
+
+    test("exports graph diagram with grouped nodes in packages", () => {
+      const doc = makeDoc({
+        id: "g2",
+        kind: "graph",
+        nodes: [
+          { id: "x", kind: "node", label: "X" },
+          { id: "y", kind: "node", label: "Y" },
+          { id: "z", kind: "node", label: "Z" },
+        ],
+        edges: [],
+        groups: [{ id: "grp", kind: "group", label: "Cluster", childIds: ["x", "y"] }],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain('package "Cluster" {');
+      expect(out).toContain('  rectangle "X" as x');
+      expect(out).toContain('  rectangle "Y" as y');
+      expect(out).toContain("}");
+      expect(out).toContain('rectangle "Z" as z');
+    });
+
+    test("exports graph edges respecting direction", () => {
+      const doc = makeDoc({
+        id: "g3",
+        kind: "graph",
+        nodes: [
+          { id: "a", kind: "node", label: "A" },
+          { id: "b", kind: "node", label: "B" },
+        ],
+        edges: [
+          { id: "e1", kind: "link", sourceId: "a", targetId: "b", direction: "backward" },
+          { id: "e2", kind: "link", sourceId: "b", targetId: "a", direction: "bidirectional" },
+        ],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain("a <- b");
+      expect(out).toContain("b <-> a");
+    });
+
+    test("exports graph diagram with nested groups", () => {
+      const doc = makeDoc({
+        id: "g4",
+        kind: "graph",
+        nodes: [
+          { id: "a", kind: "node", label: "A" },
+          { id: "b", kind: "node", label: "B" },
+          { id: "c", kind: "node", label: "C" },
+        ],
+        edges: [],
+        groups: [
+          { id: "outer", kind: "group", label: "Outer", childIds: ["a"] },
+          { id: "inner", kind: "group", label: "Inner", parentId: "outer", childIds: ["b"] },
+        ],
+      });
+      const out = exportToPlantUML(doc);
+      expect(out).toContain('package "Outer" {');
+      expect(out).toContain('  rectangle "A" as a');
+      expect(out).toContain('  package "Inner" {');
+      expect(out).toContain('    rectangle "B" as b');
+      expect(out).toContain("  }");
+      expect(out).toContain("}");
+      expect(out).toContain('rectangle "C" as c');
+    });
+  });
 });

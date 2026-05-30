@@ -255,12 +255,184 @@ function exportComponent(doc: DiagramDocument): string[] {
   return lines;
 }
 
+function exportArchitecture(doc: DiagramDocument): string[] {
+  const lines: string[] = [
+    "!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml",
+  ];
+  const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
+
+  function c4Macro(kind: string): string {
+    switch (kind) {
+      case "person":
+        return "Person";
+      case "softwareSystem":
+        return "System";
+      case "container":
+        return "Container";
+      case "database":
+        return "ContainerDb";
+      default:
+        return "Rectangle";
+    }
+  }
+
+  const groupedNodeIds = new Set<string>();
+  for (const group of doc.groups) {
+    if (group.kind === "softwareSystem") {
+      const children = (group.childIds ?? [])
+        .map((cid) => nodeMap.get(cid))
+        .filter((n): n is DiagramNode => n !== undefined);
+      if (children.length > 0) {
+        lines.push(`System(${esc(group.id)}, "${esc(group.label ?? group.id)}") {`);
+        for (const child of children) {
+          groupedNodeIds.add(child.id);
+          const macro = c4Macro(child.kind);
+          const desc = child.description ? `, "${esc(child.description)}"` : "";
+          lines.push(`  ${macro}(${esc(child.id)}, "${esc(nodeLabel(child))}"${desc})`);
+        }
+        lines.push("}");
+      }
+    }
+  }
+
+  for (const node of doc.nodes) {
+    if (groupedNodeIds.has(node.id)) continue;
+    const macro = c4Macro(node.kind);
+    const desc = node.description ? `, "${esc(node.description)}"` : "";
+    lines.push(`${macro}(${esc(node.id)}, "${esc(nodeLabel(node))}"${desc})`);
+  }
+
+  for (const edge of doc.edges) {
+    const label = edge.label ? `"${esc(edge.label)}"` : "";
+    lines.push(`Rel(${esc(edge.sourceId)}, ${esc(edge.targetId)}, ${label})`);
+  }
+
+  return lines;
+}
+
+function exportDeployment(doc: DiagramDocument): string[] {
+  const lines: string[] = [];
+
+  function kindKeyword(kind: string): string {
+    switch (kind) {
+      case "deployment-node":
+        return "node";
+      case "artifact":
+        return "artifact";
+      case "infrastructure-node":
+        return "cloud";
+      default:
+        return "node";
+    }
+  }
+
+  const childrenMap = new Map<string, DiagramNode[]>();
+  const topLevelNodes: DiagramNode[] = [];
+  for (const node of doc.nodes) {
+    if (node.parentId) {
+      const siblings = childrenMap.get(node.parentId) ?? [];
+      siblings.push(node);
+      childrenMap.set(node.parentId, siblings);
+    } else {
+      topLevelNodes.push(node);
+    }
+  }
+
+  function emitNode(node: DiagramNode, indent: string): void {
+    const kw = kindKeyword(node.kind);
+    const children = childrenMap.get(node.id);
+    if (children && children.length > 0) {
+      lines.push(`${indent}${kw} "${esc(nodeLabel(node))}" as ${esc(node.id)} {`);
+      for (const child of children) {
+        emitNode(child, `${indent}  `);
+      }
+      lines.push(`${indent}}`);
+    } else {
+      lines.push(`${indent}${kw} "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
+    }
+  }
+
+  for (const node of topLevelNodes) {
+    emitNode(node, "");
+  }
+
+  for (const edge of doc.edges) {
+    const label = edge.label ? ` : ${esc(edge.label)}` : "";
+    lines.push(`${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`);
+  }
+
+  return lines;
+}
+
+function exportGraph(doc: DiagramDocument): string[] {
+  const lines: string[] = [];
+  const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
+  const groupMap = new Map(doc.groups.map((g) => [g.id, g]));
+
+  const groupChildren = new Map<string, string[]>();
+  const topLevelGroups: string[] = [];
+  for (const group of doc.groups) {
+    if (group.parentId && groupMap.has(group.parentId)) {
+      const siblings = groupChildren.get(group.parentId) ?? [];
+      siblings.push(group.id);
+      groupChildren.set(group.parentId, siblings);
+    } else {
+      topLevelGroups.push(group.id);
+    }
+  }
+
+  const groupedNodeIds = new Set<string>();
+
+  function emitGroup(groupId: string, indent: string): void {
+    const group = groupMap.get(groupId);
+    if (!group) return;
+    const childNodes = (group.childIds ?? [])
+      .map((cid) => nodeMap.get(cid))
+      .filter((n): n is DiagramNode => n !== undefined);
+    const childGroupIds = groupChildren.get(groupId) ?? [];
+
+    if (childNodes.length === 0 && childGroupIds.length === 0) return;
+
+    for (const child of childNodes) {
+      groupedNodeIds.add(child.id);
+    }
+
+    lines.push(`${indent}package "${esc(group.label ?? group.id)}" {`);
+    for (const child of childNodes) {
+      lines.push(`${indent}  rectangle "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
+    }
+    for (const childGroupId of childGroupIds) {
+      emitGroup(childGroupId, `${indent}  `);
+    }
+    lines.push(`${indent}}`);
+  }
+
+  for (const groupId of topLevelGroups) {
+    emitGroup(groupId, "");
+  }
+
+  for (const node of doc.nodes) {
+    if (groupedNodeIds.has(node.id)) continue;
+    lines.push(`rectangle "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
+  }
+
+  for (const edge of doc.edges) {
+    const label = edge.label ? ` : ${esc(edge.label)}` : "";
+    lines.push(`${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`);
+  }
+
+  return lines;
+}
+
 const exporterMap: Record<string, (doc: DiagramDocument) => string[]> = {
   sequence: exportSequence,
   class: exportClass,
   state: exportState,
   activity: exportActivity,
   component: exportComponent,
+  architecture: exportArchitecture,
+  deployment: exportDeployment,
+  graph: exportGraph,
 };
 
 export function exportToPlantUML(doc: DiagramDocument): string {
