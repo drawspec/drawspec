@@ -14,6 +14,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@microsoft/tsdoc": "0.16.0",
     "remark": "^15.0.1",
     "remark-gfm": "4.0.1",
     "remark-parse": "^11.0.0",
@@ -21,7 +22,8 @@
     "unified": "^11.0.5"
   },
   "peerDependencies": {
-    "@drawspec/core": "workspace:*"
+    "@drawspec/core": "workspace:*",
+    "typescript": ">=5.0.0"
   },
   "devDependencies": {
     "@drawspec/core": "workspace:*",
