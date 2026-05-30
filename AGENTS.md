@@ -445,74 +445,14 @@ All rendering must be **deterministic**: the same input produces byte-for-byte i
 
 ---
 
-## Documentation Engine
+## Documentation
 
-DrawSpec includes `@drawspec/docs` — a documentation engine that supports both **opinionated structured content** and **freeform markdown**, converging on the same Doc IR.
+`@drawspec/docs` provides the documentation engine. Two authoring modes converge on the same Doc IR:
 
-### Authoring Modes
+- **Structured**: `defineDoc({ content: [DocBlock nodes] })`
+- **Freeform**: `defineDoc({ content: await md\`# markdown here\` })` — `md` is async, always `await` it
 
-**Structured** — Use `defineDoc()` with typed JSON content:
-
-```ts
-import { defineDoc } from "@drawspec/docs";
-
-export default defineDoc({
-  title: "Getting Started",
-  content: [
-    { type: "heading", level: 1, children: [{ type: "text", value: "Hello" }] },
-    { type: "codeBlock", lang: "typescript", value: "const x = 1;" },
-  ],
-});
-```
-
-**Freeform** — Use the `md` tagged template for markdown:
-
-```ts
-import { md, defineDoc } from "@drawspec/docs";
-
-export default defineDoc({
-  title: "Getting Started",
-  content: await md`
-    # Hello
-
-    \`\`\`typescript
-    const x = 1;
-    \`\`\`
-  `,
-});
-```
-
-**Note**: `md` is async (`Promise<DocBlock[]>`). Always `await` it.
-
-### Self-Hosting Philosophy
-
-DrawSpec should document itself using its own tools:
-
-- **Architecture models** in `.arch.ts` files using `@drawspec/architecture`
-- **API docs** generated from TSDoc comments via the docs engine
-- **Guides** written as `.doc.ts` files using `defineDoc()` or `md`
-- **Docs site** built with SvelteKit, rendering DrawSpec diagrams inline
-
-This makes DrawSpec a self-documenting modeling framework — the tool uses itself to explain itself.
-
-### Docs Package API
-
-| Export | Purpose |
-|--------|---------|
-| `defineDoc()` | Validates and constructs a DocDocument |
-| `md` | Tagged template that parses markdown → Doc IR (async) |
-| `initMdParser()` | Pre-initialize the markdown parser |
-| `compileDoc()` | Resolves references, validates links, produces diagnostics |
-| `renderDocHtml()` | Renders compiled Doc IR to HTML with Shiki syntax highlighting |
-
-### Key Design Decisions
-
-- **No `h.xxx` builder pattern** — too verbose for long-form content
-- **Both paths converge on same Doc IR** — structured and markdown produce identical output
-- **Markdown is an export format, not the authoring format** — consistent with DrawSpec's structured philosophy
-- **`md` is async** — uses dynamic imports for ESM portability (no `require()`)
-- **URL sanitization** — all link hrefs are sanitized to block `javascript:` URLs
-- **Accessible tabs** — rendered as `<details>/<summary>` for static HTML accessibility
+DrawSpec is self-documenting: architecture models in `.arch.ts`, API docs from TSDoc, guides in `.doc.ts` files. See Serena memory `docs/engine` for detailed design decisions and API reference.
 
 ---
 
