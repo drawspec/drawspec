@@ -2,26 +2,44 @@
 
 TypeScript-native diagram-as-code platform. Author diagrams as TypeScript, validate in CI, render deterministic SVGs. Every diagram is a TypeScript file compiled through a validation pipeline and rendered to pixel-perfect, deterministic SVG output.
 
-[![CI](https://github.com/drawspec/drawspec/actions/workflows/ci.yml/badge.svg)](https://github.com/drawspec/drawspec/actions) [![Tests](https://img.shields.io/badge/tests-562%20passing-brightgreen)](https://github.com/drawspec/drawspec) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/drawspec/drawspec/actions/workflows/ci.yml/badge.svg)](https://github.com/drawspec/drawspec/actions) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 ## Quick Start
 
-Install the CLI globally and create your first diagram:
+Create a project and install the CLI:
 
 ```bash
-bun add -g drawspec
 mkdir my-diagram && cd my-diagram
-echo "import { diagram } from '@drawspec/core'; diagram('Hello', { autoLayout: true })" > hello.diagram.ts
-bunx drawspec render hello.diagram.ts --output hello.svg
+bun init
+bun add -d @drawspec/cli @drawspec/uml-sequence
 ```
 
-Start the dev server with hot reload:
+Write your first sequence diagram:
+
+```ts
+// hello.seq.ts
+import { sequence } from "@drawspec/uml-sequence";
+
+sequence("Hello", (s) => {
+  s.actor("Alice");
+  s.actor("Bob");
+  s.message("Alice", "Bob", "Hello!");
+});
+```
+
+Render to SVG:
 
 ```bash
-bunx drawspec serve --watch
+bunx drawspec render hello.seq.ts --out .
 ```
 
-## Packages (24 total)
+Start the dev server with live reload:
+
+```bash
+bunx drawspec serve .
+```
+
+## Packages
 
 | Package | Description |
 |---------|-------------|
@@ -48,7 +66,6 @@ bunx drawspec serve --watch
 | [@drawspec/exporter-mermaid](packages/exporter-mermaid) | Mermaid diagram export |
 | [@drawspec/exporter-plantuml](packages/exporter-plantuml) | PlantUML diagram export |
 | [@drawspec/exporter-d2](packages/exporter-d2) | D2 diagram export |
-| [@drawspec/docs](packages/docs) | Documentation engine (Doc IR, defineDoc, md tag, HTML renderer) |
 
 ## Documentation
 
