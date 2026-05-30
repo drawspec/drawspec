@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -74,6 +74,28 @@ async function withServe<T>(callback: (url: string) => Promise<T>): Promise<T> {
   try {
     const output = await readUntil(proc.stdout, "serving DrawSpec preview");
     return await callback(parsePreviewUrl(output));
+  } finally {
+    proc.kill("SIGTERM");
+    await proc.exited;
+  }
+}
+
+function parseWatchUrl(output: string): string {
+  const sanitized = output.replaceAll("\u001b[32m", "").replaceAll("\u001b[0m", "");
+  const match = /ws:\/\/\S+\/ws/.exec(sanitized);
+  if (match === null) throw new Error(`No WebSocket URL in output: ${output}`);
+  return match[0];
+}
+
+async function withWatch<T>(files: string[], callback: (url: string) => Promise<T>): Promise<T> {
+  const proc = Bun.spawn(["bun", cli, "watch", ...files, "--port", "0"], {
+    cwd: repoRoot,
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  try {
+    const output = await readUntil(proc.stdout, "watching");
+    return await callback(parseWatchUrl(output));
   } finally {
     proc.kill("SIGTERM");
     await proc.exited;
@@ -217,5 +239,89 @@ describe("drawspec CLI", () => {
     expect(diagramPage).toContain("<svg");
     expect(diagramPage).toContain("Payment CLI");
     expect(diagramPage).toContain("sequence");
+  });
+
+  test("watch starts WebSocket server and reports initial compilation", async () => {
+    await withWatch([join(fixtures, "payment.sequence.ts")], async (wsUrl) => {
+      const socket = new WebSocket(wsUrl);
+      const message = await new Promise<string>((resolve, reject) => {
+        const timeout = setTimeout(
+          () => reject(new Error("Timed out waiting for WebSocket message")),
+          5000
+        );
+        socket.addEventListener("message", (event) => {
+          clearTimeout(timeout);
+          resolve(String(event.data));
+        });
+        socket.addEventListener("error", () => reject(new Error("WebSocket failed")));
+      });
+      socket.close();
+
+      const payload = JSON.parse(message);
+      expect(payload).toMatchObject({ type: "diagnostics" });
+      expect(payload.items).toBeDefined();
+      expect(Array.isArray(payload.items)).toBe(true);
+    });
+  });
+
+  test("watch detects file changes and broadcasts updates", async () => {
+    const src = join(fixtures, "payment.sequence.ts");
+    const content = await Bun.file(src).text();
+    const modified = content.replace("Payment CLI", "Modified Payment CLI");
+
+    await withWatch([src], async (wsUrl) => {
+      await new Promise<void>((resolve) => {
+        const socket = new WebSocket(wsUrl);
+        socket.addEventListener("message", () => {
+          socket.close();
+          resolve();
+        });
+      });
+
+      await writeFile(src, modified);
+
+      try {
+        const socket = new WebSocket(wsUrl);
+        const message = await new Promise<string>((resolve, reject) => {
+          const timeout = setTimeout(() => reject(new Error("Timed out waiting for update")), 5000);
+          socket.addEventListener("message", (event) => {
+            clearTimeout(timeout);
+            resolve(String(event.data));
+          });
+          socket.addEventListener("error", () => reject(new Error("WebSocket failed")));
+        });
+        socket.close();
+
+        const payload = JSON.parse(message);
+        expect(payload).toMatchObject({ type: "diagnostics" });
+      } finally {
+        await writeFile(src, content);
+      }
+    });
+  });
+
+  test("watch exits cleanly on SIGTERM", async () => {
+    const proc = Bun.spawn(
+      ["bun", cli, "watch", join(fixtures, "payment.sequence.ts"), "--port", "0"],
+      {
+        cwd: repoRoot,
+        stdout: "pipe",
+        stderr: "pipe",
+      }
+    );
+
+    try {
+      await readUntil(proc.stdout, "watching");
+
+      proc.kill("SIGTERM");
+
+      const exitCode = await proc.exited;
+      expect(exitCode).toBe(0);
+    } finally {
+      if (proc.exited === undefined) {
+        proc.kill("SIGTERM");
+        await proc.exited;
+      }
+    }
   });
 });
