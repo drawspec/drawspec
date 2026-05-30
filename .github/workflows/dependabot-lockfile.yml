@@ -1,7 +1,7 @@
 name: dependabot-bun-lockfile
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - "package.json"
       - "**/package.json"
@@ -16,10 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
 
-      - uses: oven-sh/setup-bun@v2
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
 
       - run: bun install
 
