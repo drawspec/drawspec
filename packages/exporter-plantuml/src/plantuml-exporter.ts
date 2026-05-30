@@ -256,21 +256,23 @@ function exportComponent(doc: DiagramDocument): string[] {
 }
 
 function exportArchitecture(doc: DiagramDocument): string[] {
-  const lines: string[] = [];
+  const lines: string[] = [
+    "!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml",
+  ];
   const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
 
-  function kindKeyword(kind: string): string {
+  function c4Macro(kind: string): string {
     switch (kind) {
       case "person":
-        return "person";
+        return "Person";
       case "softwareSystem":
-        return "system";
+        return "System";
       case "container":
-        return "container";
+        return "Container";
       case "database":
-        return "database";
+        return "ContainerDb";
       default:
-        return "rectangle";
+        return "Rectangle";
     }
   }
 
@@ -281,11 +283,12 @@ function exportArchitecture(doc: DiagramDocument): string[] {
         .map((cid) => nodeMap.get(cid))
         .filter((n): n is DiagramNode => n !== undefined);
       if (children.length > 0) {
-        lines.push(`rectangle "${esc(group.label ?? group.id)}" {`);
+        lines.push(`System(${esc(group.id)}, "${esc(group.label ?? group.id)}") {`);
         for (const child of children) {
           groupedNodeIds.add(child.id);
-          const kw = kindKeyword(child.kind);
-          lines.push(`  ${kw} "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
+          const macro = c4Macro(child.kind);
+          const desc = child.description ? `, "${esc(child.description)}"` : "";
+          lines.push(`  ${macro}(${esc(child.id)}, "${esc(nodeLabel(child))}"${desc})`);
         }
         lines.push("}");
       }
@@ -294,13 +297,14 @@ function exportArchitecture(doc: DiagramDocument): string[] {
 
   for (const node of doc.nodes) {
     if (groupedNodeIds.has(node.id)) continue;
-    const kw = kindKeyword(node.kind);
-    lines.push(`${kw} "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
+    const macro = c4Macro(node.kind);
+    const desc = node.description ? `, "${esc(node.description)}"` : "";
+    lines.push(`${macro}(${esc(node.id)}, "${esc(nodeLabel(node))}"${desc})`);
   }
 
   for (const edge of doc.edges) {
-    const label = edge.label ? ` : ${esc(edge.label)}` : "";
-    lines.push(`${esc(edge.sourceId)} --> ${esc(edge.targetId)}${label}`);
+    const label = edge.label ? `"${esc(edge.label)}"` : "";
+    lines.push(`Rel(${esc(edge.sourceId)}, ${esc(edge.targetId)}, ${label})`);
   }
 
   return lines;
@@ -354,7 +358,7 @@ function exportDeployment(doc: DiagramDocument): string[] {
 
   for (const edge of doc.edges) {
     const label = edge.label ? ` : ${esc(edge.label)}` : "";
-    lines.push(`${esc(edge.sourceId)} --> ${esc(edge.targetId)}${label}`);
+    lines.push(`${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`);
   }
 
   return lines;
@@ -363,22 +367,48 @@ function exportDeployment(doc: DiagramDocument): string[] {
 function exportGraph(doc: DiagramDocument): string[] {
   const lines: string[] = [];
   const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
+  const groupMap = new Map(doc.groups.map((g) => [g.id, g]));
+
+  const groupChildren = new Map<string, string[]>();
+  const topLevelGroups: string[] = [];
+  for (const group of doc.groups) {
+    if (group.parentId && groupMap.has(group.parentId)) {
+      const siblings = groupChildren.get(group.parentId) ?? [];
+      siblings.push(group.id);
+      groupChildren.set(group.parentId, siblings);
+    } else {
+      topLevelGroups.push(group.id);
+    }
+  }
 
   const groupedNodeIds = new Set<string>();
-  for (const group of doc.groups) {
-    const children = (group.childIds ?? [])
+
+  function emitGroup(groupId: string, indent: string): void {
+    const group = groupMap.get(groupId);
+    if (!group) return;
+    const childNodes = (group.childIds ?? [])
       .map((cid) => nodeMap.get(cid))
       .filter((n): n is DiagramNode => n !== undefined);
-    if (children.length > 0) {
-      for (const child of children) {
-        groupedNodeIds.add(child.id);
-      }
-      lines.push(`package "${esc(group.label ?? group.id)}" {`);
-      for (const child of children) {
-        lines.push(`  rectangle "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
-      }
-      lines.push("}");
+    const childGroupIds = groupChildren.get(groupId) ?? [];
+
+    if (childNodes.length === 0 && childGroupIds.length === 0) return;
+
+    for (const child of childNodes) {
+      groupedNodeIds.add(child.id);
     }
+
+    lines.push(`${indent}package "${esc(group.label ?? group.id)}" {`);
+    for (const child of childNodes) {
+      lines.push(`${indent}  rectangle "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
+    }
+    for (const childGroupId of childGroupIds) {
+      emitGroup(childGroupId, `${indent}  `);
+    }
+    lines.push(`${indent}}`);
+  }
+
+  for (const groupId of topLevelGroups) {
+    emitGroup(groupId, "");
   }
 
   for (const node of doc.nodes) {
