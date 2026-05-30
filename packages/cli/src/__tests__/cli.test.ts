@@ -143,6 +143,97 @@ describe("drawspec CLI", () => {
     expect(svg).toContain("Payment CLI");
   });
 
+  test("exports to mermaid (.mmd) files", async () => {
+    const outDir = await tempDir();
+    const result = await runDrawspec([
+      "export",
+      join(fixtures, "payment.sequence.ts"),
+      "--format",
+      "mermaid",
+      "--out",
+      outDir,
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    const outputPath = result.stdout.trim();
+    expect(outputPath).toStartWith(outDir);
+    expect(outputPath).toEndWith(".mmd");
+    const content = await Bun.file(outputPath).text();
+    expect(content).toContain("sequenceDiagram");
+    expect(content).toContain("participant");
+  });
+
+  test("exports to plantuml (.puml) files", async () => {
+    const outDir = await tempDir();
+    const result = await runDrawspec([
+      "export",
+      join(fixtures, "payment.sequence.ts"),
+      "--format",
+      "plantuml",
+      "--out",
+      outDir,
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    const outputPath = result.stdout.trim();
+    expect(outputPath).toStartWith(outDir);
+    expect(outputPath).toEndWith(".puml");
+    const content = await Bun.file(outputPath).text();
+    expect(content).toContain("@startuml");
+    expect(content).toContain("@enduml");
+  });
+
+  test("exports to d2 (.d2) files", async () => {
+    const outDir = await tempDir();
+    const result = await runDrawspec([
+      "export",
+      join(fixtures, "payment.sequence.ts"),
+      "--format",
+      "d2",
+      "--out",
+      outDir,
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    const outputPath = result.stdout.trim();
+    expect(outputPath).toStartWith(outDir);
+    expect(outputPath).toEndWith(".d2");
+    const content = await Bun.file(outputPath).text();
+    expect(content.length).toBeGreaterThan(0);
+  });
+
+  test("export --stdout prints to stdout instead of files", async () => {
+    const result = await runDrawspec([
+      "export",
+      join(fixtures, "payment.sequence.ts"),
+      "--format",
+      "mermaid",
+      "--stdout",
+    ]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("sequenceDiagram");
+  });
+
+  test("export rejects unsupported format", async () => {
+    const result = await runDrawspec([
+      "export",
+      join(fixtures, "payment.sequence.ts"),
+      "--format",
+      "xml",
+    ]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("Unsupported export format");
+  });
+
+  test("export requires --format flag", async () => {
+    const result = await runDrawspec(["export", join(fixtures, "payment.sequence.ts")]);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain("Unsupported export format");
+  });
+
   test("inspects IR as JSON", async () => {
     const result = await runDrawspec(["inspect", join(fixtures, "payment.sequence.ts")]);
 
