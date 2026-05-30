@@ -122,7 +122,7 @@ added_modes:
 
 # initial prompt for the project. It will always be given to the LLM upon activating the project
 # (contrary to the memories, which are loaded on demand).
-initial_prompt: "DrawSpec is a TypeScript-native diagram-as-code platform. Read the memories for project overview, conventions, and package dependencies. The project uses Bun (not Node.js), biome (not ESLint), bun test (not Vitest). All rendering must be deterministic."
+initial_prompt: "DrawSpec is a TypeScript-native diagram-as-code platform with 24 packages and 1 SvelteKit app. IMPORTANT: Read memories 'project-overview', 'conventions', and 'package-dependencies' before starting work. Key rules: Bun only (not Node), biome (not ESLint), bun test (not Vitest), strict TS, named exports only, TSDoc on all public API, deterministic rendering."
 
 # time budget (seconds) per tool call for the retrieval of additional symbol information
 # such as docstrings or parameter information.
