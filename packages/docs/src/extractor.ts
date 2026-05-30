@@ -26,7 +26,7 @@ export interface DocExtractor {
 export interface ExtractOptions {
   /** Base directory for resolving relative paths. */
   baseDir?: string;
-  /** Custom file reader (defaults to Bun.file). */
+  /** Custom file reader (defaults to node:fs/promises.readFile). */
   readFile?: (path: string) => Promise<string>;
 }
 

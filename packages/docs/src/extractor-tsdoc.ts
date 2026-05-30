@@ -4,6 +4,7 @@
  * `@microsoft/tsdoc`.
  */
 
+import { join } from "node:path";
 import {
   DocCodeSpan,
   DocNodeContainer,
@@ -35,7 +36,8 @@ class TSDocExtractorInternal implements DocExtractor {
   async extract(files: string[], options?: ExtractOptions): Promise<ExtractedDoc[]> {
     const results: ExtractedDoc[] = [];
     for (const file of files) {
-      const source = await (options?.readFile?.(file) ?? defaultReadFile(file));
+      const resolvedPath = options?.baseDir ? join(options.baseDir, file) : file;
+      const source = await (options?.readFile?.(resolvedPath) ?? defaultReadFile(resolvedPath));
       const docs = extractFromFile(file, source);
       results.push(...docs);
     }
@@ -126,14 +128,6 @@ function collectSymbols(sourceFile: ts.SourceFile, source: string): SymbolInfo[]
 
     const info = extractSymbolInfo(node, sourceFile, source);
     if (info) results.push(info);
-
-    if (
-      ts.isClassDeclaration(node) ||
-      ts.isInterfaceDeclaration(node) ||
-      ts.isEnumDeclaration(node)
-    ) {
-      ts.forEachChild(node, visit);
-    }
 
     ts.forEachChild(node, visit);
   }

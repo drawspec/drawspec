@@ -22,7 +22,8 @@
     "unified": "^11.0.5"
   },
   "peerDependencies": {
-    "@drawspec/core": "workspace:*"
+    "@drawspec/core": "workspace:*",
+    "typescript": ">=5.0.0"
   },
   "devDependencies": {
     "@drawspec/core": "workspace:*",
