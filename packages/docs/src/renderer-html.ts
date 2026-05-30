@@ -210,11 +210,19 @@ function calloutColor(kind: CalloutKind): string {
   }
 }
 
+function sanitizeUrl(href: string): string {
+  if (/^javascript:/i.test(href)) {
+    return "#";
+  }
+  return href;
+}
+
 function renderLinkBlock(node: LinkBlockNode, prefix: string): string {
+  const safeHref = sanitizeUrl(node.href);
   const desc = node.description
     ? `<p class="${cls("link-desc", prefix)}">${escapeHtml(node.description)}</p>`
     : "";
-  return `<a href="${escapeHtml(node.href)}" class="${cls("link-block", prefix)}"><span class="${cls("link-label", prefix)}">${escapeHtml(node.label)}</span>${desc}</a>`;
+  return `<a href="${escapeHtml(safeHref)}" class="${cls("link-block", prefix)}"><span class="${cls("link-label", prefix)}">${escapeHtml(node.label)}</span>${desc}</a>`;
 }
 
 async function renderList(
@@ -249,9 +257,11 @@ async function renderList(
 
 function renderTable(node: TableNode, prefix: string): string {
   const rows = node.children.map((row, ri) => {
-    const cells = row.children.map((cell) => {
+    const cells = row.children.map((cell, ci) => {
       const tag = ri === 0 ? "th" : "td";
-      return `<${tag}>${renderInlineChildren(cell.children)}</${tag}>`;
+      const align = node.align?.[ci];
+      const styleAttr = align ? ` style="text-align: ${align}"` : "";
+      return `<${tag}${styleAttr}>${renderInlineChildren(cell.children)}</${tag}>`;
     });
     return `<tr>${cells.join("")}</tr>`;
   });
@@ -279,21 +289,21 @@ async function renderTabGroup(
   useInlineStyles: boolean
 ): Promise<string> {
   const tabs = node.children;
-  const tabLabels = tabs.map(
-    (tab, i) =>
-      `<button class="${cls("tab-btn", prefix)}${i === 0 ? ` ${cls("tab-btn-active", prefix)}` : ""}" data-tab="${i}">${escapeHtml(tab.label)}</button>`
-  );
 
   const tabPanels = await Promise.all(
     tabs.map(async (tab, i) => {
       const content = (
         await Promise.all(tab.children.map((b) => renderBlock(b, options, prefix, useInlineStyles)))
       ).join("\n");
-      return `<div class="${cls("tab-panel", prefix)}" data-tab="${i}"${i > 0 ? ' style="display:none"' : ""}>${content}</div>`;
+      const tabId = `${prefix}-tab-${i}`;
+      return `<details>
+  <summary class="${cls("tab-btn", prefix)}">${escapeHtml(tab.label)}</summary>
+  <div class="${cls("tab-panel", prefix)}" id="${tabId}">${content}</div>
+</details>`;
     })
   );
 
-  return `<div class="${cls("tab-group", prefix)}"><div class="${cls("tab-nav", prefix)}">${tabLabels.join("")}</div>${tabPanels.join("\n")}</div>`;
+  return `<div class="${cls("tab-group", prefix)}">${tabPanels.join("\n")}</div>`;
 }
 
 function renderBadge(node: BadgeNode, prefix: string): string {
@@ -337,5 +347,6 @@ function renderInline(node: DocInline): string {
 }
 
 function renderLinkInline(node: LinkInlineNode): string {
-  return `<a href="${escapeHtml(node.href)}">${renderInlineChildren(node.children)}</a>`;
+  const safeHref = sanitizeUrl(node.href);
+  return `<a href="${escapeHtml(safeHref)}">${renderInlineChildren(node.children)}</a>`;
 }

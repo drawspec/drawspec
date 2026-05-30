@@ -167,7 +167,8 @@ const CALLOUT_END_RE = /^@endcallout\s*$|^<\/callout>\s*$/;
 /**
  * Tagged template literal that parses markdown into Doc IR nodes.
  */
-export function md(strings: TemplateStringsArray, ...values: unknown[]): DocBlock[] {
+export async function md(strings: TemplateStringsArray, ...values: unknown[]): Promise<DocBlock[]> {
+  await initMdParser();
   const raw = strings.reduce(
     (acc, str, i) => acc + str + (i < values.length ? String(values[i]) : ""),
     ""
@@ -204,19 +205,7 @@ export async function initMdParser(): Promise<void> {
 
 function parseMarkdown(markdown: string): RemarkRoot {
   if (!parser) {
-    const { unified } = require("unified") as typeof import("unified");
-    const remarkParse = require("remark-parse");
-    const remarkGfm = require("remark-gfm");
-    const plugin =
-      typeof remarkParse === "function"
-        ? remarkParse
-        : (remarkParse as { default: unknown }).default;
-    const gfmPlugin =
-      typeof remarkGfm === "function" ? remarkGfm : (remarkGfm as { default: unknown }).default;
-    const processor = unified()
-      .use(plugin as never)
-      .use(gfmPlugin as never);
-    parser = (md: string) => processor.parse(md) as unknown as RemarkRoot;
+    throw new Error("Parser not initialized. Call initMdParser() first.");
   }
   return parser(markdown);
 }

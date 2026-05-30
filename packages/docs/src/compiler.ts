@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import type {
   CodeBlockNode,
   CompileDiagnostic,
@@ -57,7 +58,7 @@ async function resolveBlock(
       return resolveCodeBlock(block, options, diagnostics);
 
     case "diagram":
-      return resolveDiagram(block, options, diagnostics);
+      return await resolveDiagram(block, options, diagnostics);
 
     case "linkBlock":
       if (options.validateReferences && block.href.startsWith("./")) {
@@ -105,8 +106,9 @@ async function resolveCodeBlock(
 ): Promise<CodeBlockNode> {
   // If the code block has a source reference, read the file
   if (block.source && options.readFile) {
+    const sourcePath = options.baseDir ? resolve(options.baseDir, block.source) : block.source;
     try {
-      const content = await options.readFile(block.source);
+      const content = await options.readFile(sourcePath);
       return {
         ...block,
         value: content,
@@ -114,9 +116,9 @@ async function resolveCodeBlock(
     } catch {
       diagnostics.push({
         severity: "error",
-        message: `Failed to read code source file: ${block.source}`,
+        message: `Failed to read code source file: ${sourcePath}`,
         nodeType: "codeBlock",
-        ref: block.source,
+        ref: sourcePath,
       });
     }
   }
@@ -124,14 +126,21 @@ async function resolveCodeBlock(
   return block;
 }
 
-function resolveDiagram(
+async function resolveDiagram(
   block: import("./types").DiagramNode,
   options: CompileOptions,
-  _diagnostics: CompileDiagnostic[]
-): import("./types").DiagramNode {
-  // If a custom resolver is provided, we could validate the diagram ref
-  if (options.validateReferences && !block.ref.startsWith("http")) {
-    // Could check file existence here
+  diagnostics: CompileDiagnostic[]
+): Promise<import("./types").DiagramNode> {
+  if (options.resolveDiagram) {
+    const resolved = await options.resolveDiagram(block.ref);
+    if (!resolved) {
+      diagnostics.push({
+        severity: "error",
+        message: `Failed to resolve diagram reference: ${block.ref}`,
+        nodeType: "diagram",
+        ref: block.ref,
+      });
+    }
   }
 
   return block;

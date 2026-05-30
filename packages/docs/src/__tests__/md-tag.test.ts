@@ -2,8 +2,8 @@ import { describe, expect, test } from "bun:test";
 import { md } from "../md-tag";
 
 describe("md tagged template", () => {
-  test("parses a heading", () => {
-    const nodes = md`## Hello World`;
+  test("parses a heading", async () => {
+    const nodes = await md`## Hello World`;
     expect(nodes).toHaveLength(1);
     expect(nodes[0].type).toBe("heading");
     if (nodes[0].type === "heading") {
@@ -12,8 +12,8 @@ describe("md tagged template", () => {
     }
   });
 
-  test("parses a paragraph", () => {
-    const nodes = md`Hello, world!`;
+  test("parses a paragraph", async () => {
+    const nodes = await md`Hello, world!`;
     expect(nodes).toHaveLength(1);
     expect(nodes[0].type).toBe("paragraph");
     if (nodes[0].type === "paragraph") {
@@ -21,8 +21,8 @@ describe("md tagged template", () => {
     }
   });
 
-  test("parses bold text", () => {
-    const nodes = md`This is **bold** text.`;
+  test("parses bold text", async () => {
+    const nodes = await md`This is **bold** text.`;
     expect(nodes).toHaveLength(1);
     expect(nodes[0].type).toBe("paragraph");
     if (nodes[0].type === "paragraph") {
@@ -34,8 +34,8 @@ describe("md tagged template", () => {
     }
   });
 
-  test("parses italic text", () => {
-    const nodes = md`This is *italic* text.`;
+  test("parses italic text", async () => {
+    const nodes = await md`This is *italic* text.`;
     expect(nodes).toHaveLength(1);
     if (nodes[0].type === "paragraph") {
       const emNode = nodes[0].children.find((c) => c.type === "italic");
@@ -43,8 +43,8 @@ describe("md tagged template", () => {
     }
   });
 
-  test("parses inline code", () => {
-    const nodes = md`Use \`console.log\` to debug.`;
+  test("parses inline code", async () => {
+    const nodes = await md`Use \`console.log\` to debug.`;
     expect(nodes).toHaveLength(1);
     if (nodes[0].type === "paragraph") {
       const codeNode = nodes[0].children.find((c) => c.type === "codeInline");
@@ -55,8 +55,8 @@ describe("md tagged template", () => {
     }
   });
 
-  test("parses a code block", () => {
-    const nodes = md`
+  test("parses a code block", async () => {
+    const nodes = await md`
 \`\`\`typescript
 const x = 1;
 \`\`\`
@@ -69,8 +69,8 @@ const x = 1;
     }
   });
 
-  test("parses a code block without language", () => {
-    const nodes = md`
+  test("parses a code block without language", async () => {
+    const nodes = await md`
 \`\`\`
 plain text
 \`\`\`
@@ -82,8 +82,8 @@ plain text
     }
   });
 
-  test("parses an unordered list", () => {
-    const nodes = md`
+  test("parses an unordered list", async () => {
+    const nodes = await md`
 - Item 1
 - Item 2
 - Item 3
@@ -96,8 +96,8 @@ plain text
     }
   });
 
-  test("parses an ordered list", () => {
-    const nodes = md`
+  test("parses an ordered list", async () => {
+    const nodes = await md`
 1. First
 2. Second
 3. Third
@@ -110,8 +110,8 @@ plain text
     }
   });
 
-  test("parses a checklist", () => {
-    const nodes = md`
+  test("parses a checklist", async () => {
+    const nodes = await md`
 - [x] Done
 - [ ] Todo
 `;
@@ -123,8 +123,8 @@ plain text
     }
   });
 
-  test("parses a table", () => {
-    const nodes = md`
+  test("parses a table", async () => {
+    const nodes = await md`
 | Name  | Value |
 |-------|-------|
 | Alpha | 1     |
@@ -137,8 +137,8 @@ plain text
     }
   });
 
-  test("parses a blockquote", () => {
-    const nodes = md`
+  test("parses a blockquote", async () => {
+    const nodes = await md`
 > This is a quote.
 `;
     const bqNode = nodes.find((n) => n.type === "blockquote");
@@ -148,8 +148,8 @@ plain text
     }
   });
 
-  test("parses a thematic break", () => {
-    const nodes = md`
+  test("parses a thematic break", async () => {
+    const nodes = await md`
 First paragraph.
 
 ---
@@ -160,8 +160,8 @@ Second paragraph.
     expect(hrNode).toBeDefined();
   });
 
-  test("parses an image", () => {
-    const nodes = md`
+  test("parses an image", async () => {
+    const nodes = await md`
 ![Alt text](./image.png "Image title")
 `;
     const imgNode = nodes.find((n) => n.type === "image");
@@ -172,8 +172,8 @@ Second paragraph.
     }
   });
 
-  test("parses a link", () => {
-    const nodes = md`Check out [DrawSpec](https://drawspec.dev).`;
+  test("parses a link", async () => {
+    const nodes = await md`Check out [DrawSpec](https://drawspec.dev).`;
     if (nodes[0].type === "paragraph") {
       const linkNode = nodes[0].children.find((c) => c.type === "link");
       expect(linkNode).toBeDefined();
@@ -183,8 +183,8 @@ Second paragraph.
     }
   });
 
-  test("parses @diagram directive", () => {
-    const nodes = md`
+  test("parses @diagram directive", async () => {
+    const nodes = await md`
 @diagram ./overview.arch.ts
 `;
     const diagramNode = nodes.find((n) => n.type === "diagram");
@@ -194,8 +194,8 @@ Second paragraph.
     }
   });
 
-  test("parses @diagram with caption", () => {
-    const nodes = md`
+  test("parses @diagram with caption", async () => {
+    const nodes = await md`
 @diagram ./overview.arch.ts "System overview"
 `;
     const diagramNode = nodes.find((n) => n.type === "diagram");
@@ -205,8 +205,8 @@ Second paragraph.
     }
   });
 
-  test("parses @badge directive", () => {
-    const nodes = md`
+  test("parses @badge directive", async () => {
+    const nodes = await md`
 @badge stable success
 `;
     const badgeNode = nodes.find((n) => n.type === "badge");
@@ -217,8 +217,8 @@ Second paragraph.
     }
   });
 
-  test("parses @badge without variant", () => {
-    const nodes = md`
+  test("parses @badge without variant", async () => {
+    const nodes = await md`
 @badge new
 `;
     const badgeNode = nodes.find((n) => n.type === "badge");
@@ -229,8 +229,8 @@ Second paragraph.
     }
   });
 
-  test("parses @callout directive", () => {
-    const nodes = md`
+  test("parses @callout directive", async () => {
+    const nodes = await md`
 @callout tip "Pro tip"
 
 This is a tip.
@@ -245,9 +245,9 @@ This is a tip.
     }
   });
 
-  test("handles template interpolation", () => {
+  test("handles template interpolation", async () => {
     const name = "World";
-    const nodes = md`Hello, ${name}!`;
+    const nodes = await md`Hello, ${name}!`;
     expect(nodes).toHaveLength(1);
     if (nodes[0].type === "paragraph") {
       const textContent = nodes[0].children
@@ -258,13 +258,13 @@ This is a tip.
     }
   });
 
-  test("returns empty array for empty string", () => {
-    const nodes = md``;
+  test("returns empty array for empty string", async () => {
+    const nodes = await md``;
     expect(nodes).toEqual([]);
   });
 
-  test("parses multiple blocks", () => {
-    const nodes = md`
+  test("parses multiple blocks", async () => {
+    const nodes = await md`
 # Title
 
 Paragraph text.
@@ -277,8 +277,8 @@ Another paragraph.
     expect(nodes.filter((n) => n.type === "paragraph").length).toBeGreaterThanOrEqual(2);
   });
 
-  test("parses nested list items", () => {
-    const nodes = md`
+  test("parses nested list items", async () => {
+    const nodes = await md`
 - Item 1
   - Nested 1
   - Nested 2

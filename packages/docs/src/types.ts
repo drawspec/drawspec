@@ -182,8 +182,8 @@ export interface DocDefinition {
   metadata?: Record<string, unknown>;
 }
 
-/** Content can be an array of block nodes or a single string (from md tag) */
-export type DocContentInput = DocBlock[] | string;
+/** Content is an array of block nodes */
+export type DocContentInput = DocBlock[];
 
 export interface DocDocument {
   schemaVersion: string;
