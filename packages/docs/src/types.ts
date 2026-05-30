@@ -227,4 +227,6 @@ export interface HtmlRenderOptions {
   inlineStyles?: boolean;
   /** Custom syntax highlighter — overrides Shiki */
   highlightCode?: (code: string, lang: string) => Promise<string>;
+  /** Custom diagram renderer — receives a DiagramNode, returns SVG HTML string */
+  renderDiagram?: (node: DiagramNode) => Promise<string>;
 }

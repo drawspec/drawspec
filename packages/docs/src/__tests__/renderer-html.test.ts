@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { compileDoc } from "../compiler";
 import { defineDoc } from "../define-doc";
 import { renderDocHtml } from "../renderer-html";
+import type { DiagramNode } from "../types";
 
 async function makeCompiledDoc(content: Parameters<typeof defineDoc>[0]["content"]) {
   const doc = defineDoc({ title: "Test", content });
@@ -428,5 +429,31 @@ describe("renderDocHtml", () => {
     // The custom highlighter receives raw code — the fallback escaping happens
     // in the default path. With a custom highlighter we pass through.
     expect(html).toBeDefined();
+  });
+
+  test("renders diagram with custom renderDiagram callback", async () => {
+    const compiled = await makeCompiledDoc([
+      { type: "diagram", ref: "./test.seq.ts", caption: "Test Diagram" } as DiagramNode,
+    ]);
+    const customSvg = "<svg>custom-diagram</svg>";
+    const html = await renderDocHtml(compiled, {
+      renderDiagram: async (node) => {
+        expect(node.ref).toBe("./test.seq.ts");
+        return customSvg;
+      },
+    });
+    expect(html).toContain(customSvg);
+    expect(html).toContain('data-diagram-ref="./test.seq.ts"');
+    expect(html).toContain("ds-diagram-caption");
+    expect(html).toContain("Test Diagram");
+  });
+
+  test("renders diagram with placeholder when no callback", async () => {
+    const compiled = await makeCompiledDoc([
+      { type: "diagram", ref: "./test.seq.ts" } as DiagramNode,
+    ]);
+    const html = await renderDocHtml(compiled);
+    expect(html).toContain("ds-diagram-placeholder");
+    expect(html).toContain("Diagram: ./test.seq.ts");
   });
 });
