@@ -104,7 +104,7 @@ async function renderBlock(
     case "codeBlock":
       return await renderCodeBlock(block, options, prefix);
     case "diagram":
-      return renderDiagram(block, prefix);
+      return await renderDiagram(block, options, prefix);
     case "callout":
       return renderCallout(block, prefix, useInlineStyles);
     case "linkBlock":
@@ -174,10 +174,20 @@ async function renderCodeBlock(
   return `<div class="${cls("code-block", prefix)}">${langLabel}${codeHtml}</div>`;
 }
 
-function renderDiagram(node: DiagramNode, prefix: string): string {
+async function renderDiagram(
+  node: DiagramNode,
+  options: HtmlRenderOptions,
+  prefix: string
+): Promise<string> {
   const caption = node.caption
     ? `<p class="${cls("diagram-caption", prefix)}">${escapeHtml(node.caption)}</p>`
     : "";
+
+  if (options.renderDiagram) {
+    const svgHtml = await options.renderDiagram(node);
+    return `<div class="${cls("diagram", prefix)}" data-diagram-ref="${escapeHtml(node.ref)}">${svgHtml}${caption}</div>`;
+  }
+
   return `<div class="${cls("diagram", prefix)}" data-diagram-ref="${escapeHtml(node.ref)}"><div class="${cls("diagram-placeholder", prefix)}">Diagram: ${escapeHtml(node.ref)}</div>${caption}</div>`;
 }
 
