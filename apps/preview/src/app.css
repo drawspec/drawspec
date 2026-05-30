@@ -1,0 +1,55 @@
+:root {
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #cbd5e1;
+  --color-border-light: #e2e8f0;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #dbeafe;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #f59e0b;
+  --color-error: #dc2626;
+  --color-sidebar-bg: #ffffff;
+  --color-sidebar-active: #eff6ff;
+  --sidebar-width: 16rem;
+  --toolbar-height: 2.75rem;
+  --transition-speed: 150ms;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-border-light: #1e293b;
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-light: #1e3a5f;
+  --color-warning-bg: #292524;
+  --color-warning-border: #d97706;
+  --color-error: #f87171;
+  --color-sidebar-bg: #1e293b;
+  --color-sidebar-active: #1e3a5f;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  transition:
+    background var(--transition-speed),
+    color var(--transition-speed);
+}
