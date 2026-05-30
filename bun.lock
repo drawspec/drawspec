@@ -132,6 +132,7 @@
       },
       "peerDependencies": {
         "@drawspec/core": "workspace:*",
+        "typescript": ">=5.0.0",
       },
     },
     "packages/exporter-d2": {
