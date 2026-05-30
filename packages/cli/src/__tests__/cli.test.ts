@@ -265,39 +265,48 @@ describe("drawspec CLI", () => {
   });
 
   test("watch detects file changes and broadcasts updates", async () => {
-    const src = join(fixtures, "payment.sequence.ts");
-    const content = await Bun.file(src).text();
-    const modified = content.replace("Payment CLI", "Modified Payment CLI");
+    const tmp = await tempDir();
+    const src = join(tmp, "payment.sequence.ts");
+    await Bun.write(src, await (await Bun.file(join(fixtures, "payment.sequence.ts"))).text());
 
-    await withWatch([src], async (wsUrl) => {
-      await new Promise<void>((resolve) => {
-        const socket = new WebSocket(wsUrl);
-        socket.addEventListener("message", () => {
-          socket.close();
-          resolve();
-        });
-      });
-
-      await writeFile(src, modified);
-
-      try {
-        const socket = new WebSocket(wsUrl);
-        const message = await new Promise<string>((resolve, reject) => {
-          const timeout = setTimeout(() => reject(new Error("Timed out waiting for update")), 5000);
-          socket.addEventListener("message", (event) => {
-            clearTimeout(timeout);
-            resolve(String(event.data));
-          });
-          socket.addEventListener("error", () => reject(new Error("WebSocket failed")));
-        });
-        socket.close();
-
-        const payload = JSON.parse(message);
-        expect(payload).toMatchObject({ type: "diagnostics" });
-      } finally {
-        await writeFile(src, content);
-      }
+    const proc = Bun.spawn(["bun", cli, "watch", src, "--port", "0"], {
+      cwd: repoRoot,
+      stdout: "pipe",
+      stderr: "pipe",
     });
+    const wsUrl = parseWatchUrl(await readUntil(proc.stdout, "watching"));
+    const socket = new WebSocket(wsUrl);
+    const messages: string[] = [];
+
+    const waiter = new Promise<string>((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error("Timed out waiting for update")), 5000);
+      socket.addEventListener("message", (event) => {
+        const msg = String(event.data);
+        messages.push(msg);
+        if (messages.length === 2) {
+          clearTimeout(timeout);
+          socket.close();
+          resolve(msg);
+        }
+      });
+      socket.addEventListener("error", () => reject(new Error("WebSocket failed")));
+    });
+
+    await new Promise<void>((resolve) => {
+      socket.addEventListener("message", () => {
+        if (messages.length === 1) resolve();
+      });
+    });
+
+    const originalContent = await Bun.file(src).text();
+    await writeFile(src, originalContent.replace("Payment CLI", "Modified Payment CLI"));
+
+    await waiter;
+    proc.kill("SIGTERM");
+    await proc.exited;
+    const payloads = messages.map((m) => JSON.parse(m));
+    expect(payloads[0]).toMatchObject({ type: "diagnostics" });
+    expect(payloads[1]).toMatchObject({ type: "diagnostics" });
   });
 
   test("watch exits cleanly on SIGTERM", async () => {
@@ -318,10 +327,8 @@ describe("drawspec CLI", () => {
       const exitCode = await proc.exited;
       expect(exitCode).toBe(0);
     } finally {
-      if (proc.exited === undefined) {
-        proc.kill("SIGTERM");
-        await proc.exited;
-      }
+      proc.kill("SIGTERM");
+      await proc.exited;
     }
   });
 });
