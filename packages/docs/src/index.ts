@@ -5,6 +5,9 @@ export { compileDoc } from "./compiler";
 
 // defineDoc
 export { defineDoc } from "./define-doc";
+export type { DocExtractor, ExtractedDoc, ExtractOptions } from "./extractor";
+// Extractor plugin system
+export { createTSDocExtractor } from "./extractor-tsdoc";
 
 // md tagged template
 export { initMdParser, md } from "./md-tag";
