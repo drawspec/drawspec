@@ -42,9 +42,9 @@ export default workspace("Shipping platform", (ws) => {
   shipping.uses(carrier, "Gets tracking updates");
   customer.uses(shipping, "Tracks package");
 
-  ws.views.context(shipping, "shipping-context", (view) => {
+  ws.views.systemContext(shipping, "shipping-context", (view) => {
     view.include(customer, store, carrier);
-    view.autoLayout("lr");
+    view.autoLayout("left-right");
   });
 });
 \`\`\`
@@ -62,7 +62,7 @@ The view uses \`view.include()\` to show only the elements relevant to this cont
 ## Run It
 
 \`\`\`bash
-bunx drawspec render c4-context.doc.ts --out dist
+bunx drawspec render c4-context.arch.ts --out dist
 \`\`\`
 `,
 });

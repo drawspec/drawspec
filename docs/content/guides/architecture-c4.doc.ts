@@ -80,9 +80,9 @@ export default workspace("Shipping system", (ws) => {
 
   customer.uses(shipping, "Tracks packages");
 
-  ws.views.context(shipping, "shipping-context", (view) => {
+  ws.views.systemContext(shipping, "shipping-context", (view) => {
     view.include(customer);
-    view.autoLayout("lr");
+    view.autoLayout("left-right");
   });
 });
 \`\`\`
@@ -109,7 +109,7 @@ export default workspace("Payments platform", (ws) => {
 
   ws.views.container(shop, "payments-containers", (view) => {
     view.include(shop, customer);
-    view.autoLayout("lr");
+    view.autoLayout("left-right");
   });
 });
 \`\`\`
@@ -119,10 +119,10 @@ export default workspace("Payments platform", (ws) => {
 Views can use auto layout to automatically position elements:
 
 \`\`\`typescript
-view.autoLayout("lr"); // left-to-right
-view.autoLayout("rl"); // right-to-left
-view.autoLayout("tb"); // top-to-bottom
-view.autoLayout("bt"); // bottom-to-top
+view.autoLayout("left-right"); // left-to-right
+view.autoLayout("right-left"); // right-to-left
+view.autoLayout("top-down"); // top-to-bottom
+view.autoLayout("bottom-up"); // bottom-to-top
 \`\`\`
 
 ## Complete Example
@@ -152,7 +152,7 @@ export default workspace("Payments platform", (ws) => {
   api.uses(ledger, "Stores authorization", { technology: "SQL" });
 
   ws.views.container(shop, "payments-containers", (view) =>
-    view.include("*").autoLayout("lr")
+    view.include("*").autoLayout("left-right")
   );
 });
 \`\`\`

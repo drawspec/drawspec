@@ -38,9 +38,9 @@ The note on the authorization message indicates that an idempotency key is inclu
 ## Run It
 
 \`\`\`bash
-bunx drawspec render basic-sequence.doc.ts --out dist
+bunx drawspec render basic-sequence.sequence.ts --out dist
 \`\`\`
 
-Then open \`dist/basic-sequence.svg\` in your browser.
+Then open the generated SVG file in the `dist/` directory.
 `,
 });

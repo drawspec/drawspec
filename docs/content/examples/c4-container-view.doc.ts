@@ -47,7 +47,7 @@ export default workspace("Payments platform", (ws) => {
   api.uses(ledger, "Stores authorization", { technology: "SQL" });
 
   ws.views.container(shop, "payments-containers", (view) =>
-    view.include(shop, customer).autoLayout("lr")
+    view.include(shop, customer).autoLayout("left-right")
   );
 });
 \`\`\`
@@ -65,7 +65,7 @@ The relationships show the flow: the customer browses and places orders through 
 ## Run It
 
 \`\`\`bash
-bunx drawspec render c4-container.doc.ts --out dist
+bunx drawspec render c4-container.arch.ts --out dist
 \`\`\`
 `,
 });

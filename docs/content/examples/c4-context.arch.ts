@@ -1,4 +1,4 @@
-import { person, softwareSystem, workspace } from "../../packages/architecture/src/index.js";
+import { person, softwareSystem, workspace } from "../../../packages/architecture/src/index.js";
 
 export default workspace("Shipping platform", (ws) => {
   const customer = ws.model.add(
@@ -21,8 +21,8 @@ export default workspace("Shipping platform", (ws) => {
   shipping.uses(carrier, "Gets tracking updates");
   customer.uses(shipping, "Tracks package");
 
-  ws.views.context(shipping, "shipping-context", (view) => {
+  ws.views.systemContext(shipping, "shipping-context", (view) => {
     view.include(customer, store, carrier);
-    view.autoLayout("lr");
+    view.autoLayout("left-right");
   });
 });

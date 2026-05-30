@@ -1,4 +1,4 @@
-import { container, database, person, softwareSystem, workspace } from "../../packages/architecture/src/index.js";
+import { container, database, person, softwareSystem, workspace } from "../../../packages/architecture/src/index.js";
 
 export default workspace("Payments platform", (ws) => {
   const customer = ws.model.add(
@@ -24,6 +24,6 @@ export default workspace("Payments platform", (ws) => {
   api.uses(ledger, "Stores authorization", { technology: "SQL" });
 
   ws.views.container(shop, "payments-containers", (view) =>
-    view.include(shop, customer).autoLayout("lr")
+    view.include(shop, customer).autoLayout("left-right")
   );
 });

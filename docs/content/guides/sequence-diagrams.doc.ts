@@ -86,53 +86,27 @@ export default sequence("Payment result", (seq) => {
 });
 \`\`\`
 
-### Loop
+### Alternative (alt)
 
-Use \`loop\` to show repeated behavior:
-
-\`\`\`typescript
-export default sequence("Retry logic", (seq) => {
-  const client = seq.actor("Client");
-  const api = seq.participant("API");
-
-  seq.loop("up to 3 attempts", () => {
-    client.to(api, "Request");
-    api.to(client, "Response");
-  });
-});
-\`\`\`
-
-### Optional (opt)
-
-Use \`opt\` for conditional behavior that may or may not happen:
+Use \`alt\` to show if-else branches:
 
 \`\`\`typescript
-export default sequence("With optional", (seq) => {
+export default sequence("Payment result", (seq) => {
   const user = seq.actor("User");
-  const app = seq.participant("App");
+  const shop = seq.participant("Shop");
+  const payments = seq.participant("Payments");
 
-  user.to(app, "Use app");
-  seq.opt("premium feature", () => {
-    app.to(user, "Show upgrade prompt");
-  });
-});
-\`\`\`
-
-### Parallel (par)
-
-Use \`par\` to show concurrent behavior:
-
-\`\`\`typescript
-export default sequence("Parallel tasks", (seq) => {
-  const user = seq.actor("User");
-  const email = seq.participant("Email Service");
-  const sms = seq.participant("SMS Service");
-
-  user.to(email, "Send email").to(sms, "Send SMS");
-  seq.par("notify in parallel", () => {
-    email.to(user, "Email sent");
-    sms.to(user, "SMS delivered");
-  });
+  user.to(shop, "Submit card");
+  shop.to(payments, "Authorize");
+  seq
+    .alt("approved", () => {
+      payments.to(shop, "Approval code");
+      shop.to(user, "Receipt");
+    })
+    .else("declined", () => {
+      payments.to(shop, "Decline reason");
+      shop.to(user, "Request another payment method");
+    });
 });
 \`\`\`
 
@@ -151,10 +125,8 @@ export default sequence("Payment authorization", (seq) => {
 
   user.to(shop, "Place order");
   shop.to(payments, "Authorize payment").note("Idempotency key included");
-  seq.loop("for each transaction", () => {
-    payments.to(ledger, "Record transaction");
-    ledger.to(payments, "Confirmed");
-  });
+  payments.to(ledger, "Record transaction");
+  ledger.to(payments, "Confirmed");
   payments.to(shop, "Authorization approved");
   shop.to(user, "Show confirmation");
 });

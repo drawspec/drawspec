@@ -1,4 +1,4 @@
-import { sequence } from "../../packages/uml-sequence/src/index.js";
+import { sequence } from "../../../packages/uml-sequence/src/index.js";
 
 export default sequence("Order confirmation", (seq) => {
   const user = seq.actor("User");

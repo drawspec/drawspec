@@ -43,7 +43,7 @@ Use the \`render\` command to compile your diagram and output an SVG file:
 bunx drawspec render hello.sequence.ts --out dist
 \`\`\`
 
-This compiles the diagram, runs validation checks, and writes the SVG to \`dist/hello.svg\`.
+This compiles the diagram, runs validation checks, and writes the SVG to the `dist/` directory (the output filename includes a content hash).
 
 ## Preview with Live Reload
 
