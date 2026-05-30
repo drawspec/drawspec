@@ -34,11 +34,24 @@ Default to using Bun instead of Node.js.
 2. CI must pass (check, typecheck, test, build)
 3. **ALL Copilot review comments MUST be addressed before merge** — fix bugs, reply to suggestions, resolve all threads
 4. Squash merge to `main`, delete feature branch
+5. **NEVER push to `main` directly** — all changes go through PRs, no exceptions
+
+### Cross-Package Changes
+Changes that affect multiple packages, apps, or documentation are allowed in a single PR as long as:
+- The PR description explains why the changes are coupled
+- `bun run build && bun run check` passes from root
+- All dependent packages, apps, docs, and Serena memories are updated in the same PR
+
+See Serena memory `package-dependencies` for the dependency graph, and `conventions` for the documentation maintenance checklist.
 
 ### Copilot Review Protocol (CRITICAL)
 - Wait for Copilot review (1-2 min after PR creation) before merging
 - Address every comment: fix, reply with rationale, or resolve thread
 - Copilot catches real bugs (type safety, API design, coupling issues) — never ignore
+
+### Dependency Management
+- Dependabot checks npm packages and GitHub Actions daily (`.github/dependabot.yml`)
+- Dependency PRs should be reviewed and merged promptly
 
 ---
 
@@ -77,6 +90,7 @@ Full details in Serena memory `conventions`. Key points:
 - **Deterministic rendering** — no `Math.random()`, `Date.now()`, unsorted `Map` iteration
 - **Barrel exports** via `src/index.ts`
 - **Testing**: `bun test`, golden test pattern, `@drawspec/testkit` helpers
+- **Testing philosophy**: ~80% coverage, test internal code only, never external dependencies
 - **Linting**: Biome (not ESLint), `bun run check` = biome + typecheck + test
 
 ---
@@ -107,3 +121,9 @@ Enforces conventional commits, generates changelogs. Config in `cog.toml`.
 
 - Validated by lefthook pre-commit + CI `commit-lint` job
 - `cog verify "feat(core): add thing"`, `cog check`, `cog bump --auto`
+
+---
+
+## Keeping Docs Current
+
+Update `AGENTS.md` and Serena memories whenever information changes that a freshly spawned agent with zero context would need to do its job. If it's a rule or constraint → `AGENTS.md`. If it's reference detail (lists, APIs, patterns) → Serena memory. Avoid duplication between the two.
