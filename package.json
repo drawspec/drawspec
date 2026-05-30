@@ -18,6 +18,8 @@
     "bench": "DRAWSPEC_RUN_BENCH=1 bun test --bench packages/core/src/__bench__ packages/layout/src/__bench__",
     "build": "bun run --filter './packages/*' build",
     "preview:dev": "bun run --filter '@drawspec/preview' dev",
+    "docs:dev": "bun run --cwd apps/docs dev",
+    "docs:build": "bun run --cwd apps/docs build",
     "changeset": "changeset",
     "release": "bun run check && changeset version && bun run build"
   },
