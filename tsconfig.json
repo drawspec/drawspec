@@ -27,6 +27,7 @@
     { "path": "./packages/vite-plugin" },
     { "path": "./packages/cache" },
     { "path": "./packages/lsp" },
+    { "path": "./packages/docs" },
     { "path": "./extensions/vscode" }
   ]
 }

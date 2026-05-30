@@ -1,0 +1,31 @@
+{
+  "name": "@drawspec/docs",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "remark": "^15.0.1",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "^11.0.0",
+    "shiki": "^3.4.2",
+    "unified": "^11.0.5"
+  },
+  "peerDependencies": {
+    "@drawspec/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@drawspec/core": "workspace:*",
+    "@types/node": "25.9.1",
+    "typescript": "latest"
+  }
+}
