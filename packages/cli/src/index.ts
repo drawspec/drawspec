@@ -13,6 +13,9 @@ import {
 } from "@drawspec/cache";
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
 import { serializeDocument } from "@drawspec/core";
+import { exportToD2 } from "@drawspec/exporter-d2";
+import { exportToMermaid } from "@drawspec/exporter-mermaid";
+import { exportToPlantUML } from "@drawspec/exporter-plantuml";
 import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
 import {
@@ -81,7 +84,15 @@ interface ServerWebSocket {
   close(): void;
 }
 
-type Command = "check" | "render" | "inspect" | "watch" | "serve" | "build:site" | "build-site";
+type Command =
+  | "check"
+  | "export"
+  | "render"
+  | "inspect"
+  | "watch"
+  | "serve"
+  | "build:site"
+  | "build-site";
 
 interface ParsedArgs {
   command: Command | undefined;
@@ -119,6 +130,7 @@ interface SiteDiagramInternal {
 
 const COMMANDS = new Set<string>([
   "check",
+  "export",
   "render",
   "inspect",
   "watch",
@@ -156,6 +168,9 @@ export async function main(argv: readonly string[] = Bun.argv.slice(2)): Promise
   const config = await loadConfig(asString(parsed.options["config"]));
   if (parsed.command === "check") {
     return runCheck(parsed, config);
+  }
+  if (parsed.command === "export") {
+    return runExport(parsed, config);
   }
   if (parsed.command === "render") {
     return runRender(parsed, config);
@@ -210,6 +225,7 @@ function printHelp(): void {
 
 Usage:
   drawspec check [files...] [--format pretty|json] [--policy name]
+  drawspec export [files...] --format mermaid|plantuml|d2 [--out dir] [--stdout]
   drawspec render [files...] [--out dist] [--format svg] [--theme name] [--no-cache] [--cache-dir path]
   drawspec inspect [file] [--format json|pretty]
   drawspec watch [files...] [--port 4173] [--debounce 80]
@@ -236,6 +252,60 @@ async function runCheck(parsed: ParsedArgs, config: DrawspecConfig): Promise<num
     );
   }
   return diagnostics.some((item) => item.severity === "error") ? 1 : 0;
+}
+
+const EXPORT_FORMATS = new Set(["mermaid", "plantuml", "d2"]);
+const EXPORT_EXTENSIONS: Record<string, string> = {
+  mermaid: ".mmd",
+  plantuml: ".puml",
+  d2: ".d2",
+};
+
+async function runExport(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {
+  const format = asString(parsed.options["format"]);
+  if (format === undefined || !EXPORT_FORMATS.has(format)) {
+    console.error(
+      red(
+        `Unsupported export format '${format ?? ""}'. Must be one of: ${[...EXPORT_FORMATS].join(", ")}`
+      )
+    );
+    return 1;
+  }
+  const useStdout = parsed.options["stdout"] === true;
+  const outDir = asString(parsed.options["out"]) ?? config.outDir ?? "dist";
+  if (!useStdout) {
+    await Bun.$`mkdir -p ${outDir}`.quiet();
+  }
+  const loaded = await loadAll(parsed.files, config);
+  const diagnostics = diagnosticsFor(loaded, config);
+  printDiagnostics(diagnostics);
+  if (diagnostics.some((item) => item.severity === "error")) {
+    return 1;
+  }
+  const exporter =
+    format === "mermaid" ? exportToMermaid : format === "plantuml" ? exportToPlantUML : exportToD2;
+  const ext = EXPORT_EXTENSIONS[format] ?? `.${format}`;
+  const written: string[] = [];
+  for (const item of loaded) {
+    if (item.document === undefined) {
+      continue;
+    }
+    const output = exporter(item.document);
+    if (useStdout) {
+      console.log(output);
+      continue;
+    }
+    const pathHash = hashString(item.file).toString(36).slice(0, 8);
+    const outputPath = `${trimTrailingSlash(outDir)}/${safeFileName(item.document.id)}_${pathHash}${ext}`;
+    await Bun.write(outputPath, output);
+    written.push(outputPath);
+  }
+  if (!useStdout) {
+    for (const path of written.sort()) {
+      console.log(path);
+    }
+  }
+  return 0;
 }
 
 async function runRender(parsed: ParsedArgs, config: DrawspecConfig): Promise<number> {
