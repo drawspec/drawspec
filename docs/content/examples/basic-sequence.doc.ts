@@ -41,6 +41,6 @@ The note on the authorization message indicates that an idempotency key is inclu
 bunx drawspec render basic-sequence.sequence.ts --out dist
 \`\`\`
 
-Then open the generated SVG file in the `dist/` directory.
+Then open the generated SVG file in the \`dist/\` directory.
 `,
 });
