@@ -11,7 +11,7 @@ const placeholders = {
 bun init
 bun add -d @drawspec/cli @drawspec/uml-sequence</code></pre>
         <h2>Your First Diagram</h2>
-        <p>Create a sequence diagram in <code>hello.seq.ts</code>:</p>
+        <p>Create a sequence diagram in <code>hello.sequence.ts</code>:</p>
         <pre><code>import { sequence } from "@drawspec/uml-sequence";
 
 sequence("Hello", (s) => {
@@ -20,8 +20,8 @@ sequence("Hello", (s) => {
   s.message("Alice", "Bob", "Hello!");
 });</code></pre>
         <h2>Render to SVG</h2>
-        <pre><code>bunx drawspec render hello.seq.ts --out .</code></pre>
-        <p>This produces <code>hello.seq.svg</code> in the current directory.</p>
+        <pre><code>bunx drawspec render hello.sequence.ts --out .</code></pre>
+        <p>This produces <code>hello.sequence.svg</code> in the current directory.</p>
       `,
   },
   "cli-reference": {

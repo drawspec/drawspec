@@ -1,4 +1,6 @@
 <script>
+import { base } from "$app/paths";
+
 const quickStart = `import { sequence } from "@drawspec/uml-sequence";
 
 sequence("Hello", (s) => {
@@ -20,8 +22,8 @@ sequence("Hello", (s) => {
     Author. Validate. Render.
   </p>
   <div class="hero-actions">
-    <a href="/docs/getting-started" class="btn btn-primary">Get Started</a>
-    <a href="/docs/cli-reference" class="btn btn-secondary">CLI Reference</a>
+    <a href="{base}/docs/getting-started" class="btn btn-primary">Get Started</a>
+    <a href="{base}/docs/cli-reference" class="btn btn-secondary">CLI Reference</a>
   </div>
 </div>
 
@@ -29,26 +31,26 @@ sequence("Hello", (s) => {
   <h2>Quick Start</h2>
   <pre><code>{quickStart}</code></pre>
   <p class="section-aside">
-    Render with <code>bunx drawspec render hello.seq.ts --out .</code>
+    Render with <code>bunx drawspec render hello.sequence.ts --out .</code>
   </p>
 </section>
 
 <section class="section">
   <h2>Explore the Docs</h2>
   <div class="card-grid">
-    <a href="/docs/getting-started" class="card">
+    <a href="{base}/docs/getting-started" class="card">
       <h3>Getting Started</h3>
       <p>Install, create your first diagram, and render to SVG.</p>
     </a>
-    <a href="/docs/cli-reference" class="card">
+    <a href="{base}/docs/cli-reference" class="card">
       <h3>CLI Reference</h3>
       <p>Complete reference for the <code>drawspec</code> CLI commands.</p>
     </a>
-    <a href="/docs/api/core" class="card">
+    <a href="{base}/docs/api/core" class="card">
       <h3>Core API</h3>
       <p>Diagram IR, compilation pipeline, and type definitions.</p>
     </a>
-    <a href="/docs/api/docs" class="card">
+    <a href="{base}/docs/api/docs" class="card">
       <h3>Docs Engine API</h3>
       <p>Documentation engine for building doc sites like this one.</p>
     </a>

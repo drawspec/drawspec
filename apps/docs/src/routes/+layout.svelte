@@ -1,6 +1,8 @@
 <script>
+import { base } from "$app/paths";
 import { page } from "$app/stores";
 import { getGroupedNav } from "$lib/docs-nav.js";
+import "../app.css";
 
 let { children } = $props();
 let darkMode = $state(false);
@@ -11,6 +13,9 @@ function toggleDark() {
   darkMode = !darkMode;
   if (typeof document !== "undefined") {
     document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+  }
+  if (typeof localStorage !== "undefined") {
+    localStorage.setItem("drawspec-theme", darkMode ? "dark" : "light");
   }
 }
 
@@ -77,8 +82,8 @@ const year = new Date().getFullYear();
               {#each items as item}
                 <li>
                   <a
-                    href="/docs/{item.slug}"
-                    class:active={$page.url.pathname === `/docs/${item.slug}`}
+                    href="{base}/docs/{item.slug}"
+                    class:active={$page.url.pathname === `${base}/docs/${item.slug}`}
                     onclick={closeSidebar}
                   >{item.title}</a>
                 </li>

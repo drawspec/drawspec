@@ -12,8 +12,11 @@ export default {
       precompress: false,
       strict: true,
     }),
+    prerender: {
+      handleHttpError: "warn",
+    },
     paths: {
-      base: "",
+      base: process.env.BASE_PATH ?? "",
     },
   },
 };
