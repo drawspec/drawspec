@@ -255,12 +255,154 @@ function exportComponent(doc: DiagramDocument): string[] {
   return lines;
 }
 
+function exportArchitecture(doc: DiagramDocument): string[] {
+  const lines: string[] = [];
+  const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
+
+  function kindKeyword(kind: string): string {
+    switch (kind) {
+      case "person":
+        return "person";
+      case "softwareSystem":
+        return "system";
+      case "container":
+        return "container";
+      case "database":
+        return "database";
+      default:
+        return "rectangle";
+    }
+  }
+
+  const groupedNodeIds = new Set<string>();
+  for (const group of doc.groups) {
+    if (group.kind === "softwareSystem") {
+      const children = (group.childIds ?? [])
+        .map((cid) => nodeMap.get(cid))
+        .filter((n): n is DiagramNode => n !== undefined);
+      if (children.length > 0) {
+        lines.push(`rectangle "${esc(group.label ?? group.id)}" {`);
+        for (const child of children) {
+          groupedNodeIds.add(child.id);
+          const kw = kindKeyword(child.kind);
+          lines.push(`  ${kw} "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
+        }
+        lines.push("}");
+      }
+    }
+  }
+
+  for (const node of doc.nodes) {
+    if (groupedNodeIds.has(node.id)) continue;
+    const kw = kindKeyword(node.kind);
+    lines.push(`${kw} "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
+  }
+
+  for (const edge of doc.edges) {
+    const label = edge.label ? ` : ${esc(edge.label)}` : "";
+    lines.push(`${esc(edge.sourceId)} --> ${esc(edge.targetId)}${label}`);
+  }
+
+  return lines;
+}
+
+function exportDeployment(doc: DiagramDocument): string[] {
+  const lines: string[] = [];
+
+  function kindKeyword(kind: string): string {
+    switch (kind) {
+      case "deployment-node":
+        return "node";
+      case "artifact":
+        return "artifact";
+      case "infrastructure-node":
+        return "cloud";
+      default:
+        return "node";
+    }
+  }
+
+  const childrenMap = new Map<string, DiagramNode[]>();
+  const topLevelNodes: DiagramNode[] = [];
+  for (const node of doc.nodes) {
+    if (node.parentId) {
+      const siblings = childrenMap.get(node.parentId) ?? [];
+      siblings.push(node);
+      childrenMap.set(node.parentId, siblings);
+    } else {
+      topLevelNodes.push(node);
+    }
+  }
+
+  function emitNode(node: DiagramNode, indent: string): void {
+    const kw = kindKeyword(node.kind);
+    const children = childrenMap.get(node.id);
+    if (children && children.length > 0) {
+      lines.push(`${indent}${kw} "${esc(nodeLabel(node))}" as ${esc(node.id)} {`);
+      for (const child of children) {
+        emitNode(child, `${indent}  `);
+      }
+      lines.push(`${indent}}`);
+    } else {
+      lines.push(`${indent}${kw} "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
+    }
+  }
+
+  for (const node of topLevelNodes) {
+    emitNode(node, "");
+  }
+
+  for (const edge of doc.edges) {
+    const label = edge.label ? ` : ${esc(edge.label)}` : "";
+    lines.push(`${esc(edge.sourceId)} --> ${esc(edge.targetId)}${label}`);
+  }
+
+  return lines;
+}
+
+function exportGraph(doc: DiagramDocument): string[] {
+  const lines: string[] = [];
+  const nodeMap = new Map(doc.nodes.map((n) => [n.id, n]));
+
+  const groupedNodeIds = new Set<string>();
+  for (const group of doc.groups) {
+    const children = (group.childIds ?? [])
+      .map((cid) => nodeMap.get(cid))
+      .filter((n): n is DiagramNode => n !== undefined);
+    if (children.length > 0) {
+      for (const child of children) {
+        groupedNodeIds.add(child.id);
+      }
+      lines.push(`package "${esc(group.label ?? group.id)}" {`);
+      for (const child of children) {
+        lines.push(`  rectangle "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
+      }
+      lines.push("}");
+    }
+  }
+
+  for (const node of doc.nodes) {
+    if (groupedNodeIds.has(node.id)) continue;
+    lines.push(`rectangle "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
+  }
+
+  for (const edge of doc.edges) {
+    const label = edge.label ? ` : ${esc(edge.label)}` : "";
+    lines.push(`${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`);
+  }
+
+  return lines;
+}
+
 const exporterMap: Record<string, (doc: DiagramDocument) => string[]> = {
   sequence: exportSequence,
   class: exportClass,
   state: exportState,
   activity: exportActivity,
   component: exportComponent,
+  architecture: exportArchitecture,
+  deployment: exportDeployment,
+  graph: exportGraph,
 };
 
 export function exportToPlantUML(doc: DiagramDocument): string {
