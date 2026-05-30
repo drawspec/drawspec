@@ -377,15 +377,32 @@ Each issue has a **stage label** and one or more **category labels**:
 
 ```
 packages/
-  core/           # @drawspec/core — IR, diagnostics, builders
-  architecture/   # @drawspec/architecture — C4 model
-  uml-sequence/   # @drawspec/uml-sequence — Sequence diagrams
-  validation/     # @drawspec/validation — Rule engine
-  layout/         # @drawspec/layout — Layout interfaces
-  renderer-svg/   # @drawspec/renderer-svg — SVG rendering
-  cli/            # @drawspec/cli — CLI binary
-  viewer/         # @drawspec/viewer — Web Component viewer
-  testkit/        # @drawspec/testkit — Test utilities
+  core/               # @drawspec/core — IR, diagnostics, builders
+  architecture/       # @drawspec/architecture — C4 model
+  uml-sequence/       # @drawspec/uml-sequence — Sequence diagrams
+  uml-class/          # @drawspec/uml-class — Class diagrams
+  uml-state/          # @drawspec/uml-state — State diagrams
+  uml-component/      # @drawspec/uml-component — Component diagrams
+  uml-deployment/     # @drawspec/uml-deployment — Deployment diagrams
+  uml-activity/       # @drawspec/uml-activity — Activity diagrams
+  validation/         # @drawspec/validation — Rule engine
+  layout/             # @drawspec/layout — Layout interfaces
+  layout-dagre/       # @drawspec/layout-dagre — Dagre graph layout
+  layout-elk/         # @drawspec/layout-elk — ELK graph layout
+  layout-wasm/        # @drawspec/layout-wasm — WASM layout adapter
+  renderer-svg/       # @drawspec/renderer-svg — SVG rendering
+  cache/              # @drawspec/cache — Persistent cache (fs + SQLite)
+  cli/                # @drawspec/cli — CLI binary
+  viewer/             # @drawspec/viewer — Web Component viewer
+  testkit/            # @drawspec/testkit — Test utilities
+  lsp/                # @drawspec/lsp — Language Server Protocol
+  vite-plugin/        # @drawspec/vite-plugin — Vite plugin
+  exporter-mermaid/   # @drawspec/exporter-mermaid — Mermaid export
+  exporter-plantuml/  # @drawspec/exporter-plantuml — PlantUML export
+  exporter-d2/        # @drawspec/exporter-d2 — D2 export
+  docs/               # @drawspec/docs — Documentation engine
+apps/
+  preview/            # @drawspec/preview — SvelteKit preview app
 ```
 
 ### TypeScript
@@ -396,12 +413,106 @@ packages/
 - Use `export` (not `export default`) for all public API
 - Barrel exports via `src/index.ts`
 
+### TSDoc
+
+All **public API** (exported functions, classes, interfaces, types) MUST have TSDoc comments:
+
+```ts
+/** Compiles a sequence diagram document into IR. */
+export function compileSequenceDocument(source: string): SequenceDocument { ... }
+
+/**
+ * Layout engine interface for computing node positions.
+ * @example
+ * ```ts
+ * const result = await layoutEngine.compute(graph);
+ * ```
+ */
+export interface LayoutEngine { ... }
+```
+
+- Every exported function/method → `/** description */`
+- Complex APIs → include `@param`, `@returns`, `@example`
+- Types and interfaces → describe purpose and usage
+- This enables the docs engine to generate API reference from TSDoc
+
 ### Determinism
 
 All rendering must be **deterministic**: the same input produces byte-for-byte identical output across runs. Never use:
 - `Math.random()` or `Date.now()` in rendering code
 - `Map` iteration order (use sorted entries)
 - Unordered collections in serialization
+
+---
+
+## Documentation Engine
+
+DrawSpec includes `@drawspec/docs` — a documentation engine that supports both **opinionated structured content** and **freeform markdown**, converging on the same Doc IR.
+
+### Authoring Modes
+
+**Structured** — Use `defineDoc()` with typed JSON content:
+
+```ts
+import { defineDoc } from "@drawspec/docs";
+
+export default defineDoc({
+  title: "Getting Started",
+  content: [
+    { type: "heading", level: 1, children: [{ type: "text", value: "Hello" }] },
+    { type: "codeBlock", lang: "typescript", value: "const x = 1;" },
+  ],
+});
+```
+
+**Freeform** — Use the `md` tagged template for markdown:
+
+```ts
+import { md, defineDoc } from "@drawspec/docs";
+
+export default defineDoc({
+  title: "Getting Started",
+  content: await md`
+    # Hello
+
+    \`\`\`typescript
+    const x = 1;
+    \`\`\`
+  `,
+});
+```
+
+**Note**: `md` is async (`Promise<DocBlock[]>`). Always `await` it.
+
+### Self-Hosting Philosophy
+
+DrawSpec should document itself using its own tools:
+
+- **Architecture models** in `.arch.ts` files using `@drawspec/architecture`
+- **API docs** generated from TSDoc comments via the docs engine
+- **Guides** written as `.doc.ts` files using `defineDoc()` or `md`
+- **Docs site** built with SvelteKit, rendering DrawSpec diagrams inline
+
+This makes DrawSpec a self-documenting modeling framework — the tool uses itself to explain itself.
+
+### Docs Package API
+
+| Export | Purpose |
+|--------|---------|
+| `defineDoc()` | Validates and constructs a DocDocument |
+| `md` | Tagged template that parses markdown → Doc IR (async) |
+| `initMdParser()` | Pre-initialize the markdown parser |
+| `compileDoc()` | Resolves references, validates links, produces diagnostics |
+| `renderDocHtml()` | Renders compiled Doc IR to HTML with Shiki syntax highlighting |
+
+### Key Design Decisions
+
+- **No `h.xxx` builder pattern** — too verbose for long-form content
+- **Both paths converge on same Doc IR** — structured and markdown produce identical output
+- **Markdown is an export format, not the authoring format** — consistent with DrawSpec's structured philosophy
+- **`md` is async** — uses dynamic imports for ESM portability (no `require()`)
+- **URL sanitization** — all link hrefs are sanitized to block `javascript:` URLs
+- **Accessible tabs** — rendered as `<details>/<summary>` for static HTML accessibility
 
 ---
 
@@ -436,8 +547,8 @@ Serena has persistent memories stored in `.serena/memories/`. These are project 
 
 ### Configuration
 
-- **Languages**: TypeScript (primary), Svelte (for viewer package)
-- **Workspace folders**: All 9 packages registered for cross-package symbol resolution
+- **Languages**: TypeScript (primary), Svelte (for viewer and preview packages)
+- **Workspace folders**: All packages registered for cross-package symbol resolution
 - **Gitignore**: `.serena/.gitignore` excludes `cache/` and `project.local.yml` (local overrides)
 - **Memories are tracked in git** so all agents share the same knowledge base
 
@@ -451,7 +562,7 @@ Serena has persistent memories stored in `.serena/memories/`. These are project 
 
 - **Tool**: `cocogitto` in `mise.toml`
 - **Config**: `cog.toml` at repo root
-- **Monorepo**: All 16 packages registered in `[packages]` section
+- **Monorepo**: All packages registered in `[packages]` section
 
 ### Commit Message Validation
 
