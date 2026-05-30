@@ -5,7 +5,7 @@ DrawSpec is a TypeScript-native diagram-as-code platform. Packages under `packag
 **Read Serena memories before starting work:** `project-overview`, `conventions`, `package-dependencies`, `docs/engine`.
 
 - **Repo**: [github.com/drawspec/drawspec](https://github.com/drawspec/drawspec)
-- **Project Board**: [github.com/orgs/drawspec/projects/1](https://github.com/drawspec/projects/1)
+- **Project Board**: [github.com/orgs/drawspec/projects/1](https://github.com/orgs/drawspec/projects/1)
 - **Full Plan**: `.omo/plans/drawspec-platform.md`
 
 ---
