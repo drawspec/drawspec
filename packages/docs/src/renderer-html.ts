@@ -37,17 +37,21 @@ function cls(base: string, prefix: string): string {
 
 // ─── Shiki lazy loader ────────────────────────────────────────────────
 
-let highlighterPromise: ReturnType<typeof import("shiki").createHighlighter> | null = null;
+type ShikiHighlighter = Awaited<ReturnType<typeof import("shiki").createHighlighter>>;
 
-async function getHighlighter() {
+let highlighterPromise: Promise<ShikiHighlighter> | null = null;
+
+async function getHighlighter(): Promise<ShikiHighlighter> {
   if (!highlighterPromise) {
-    const shiki = await import("shiki");
-    highlighterPromise = shiki.createHighlighter({
-      themes: ["github-light", "github-dark"],
-      langs: ["typescript", "javascript", "json", "bash", "html", "css", "markdown"],
-    });
+    highlighterPromise = (async () => {
+      const shiki = await import("shiki");
+      return await shiki.createHighlighter({
+        themes: ["github-light", "github-dark"],
+        langs: ["typescript", "javascript", "json", "bash", "html", "css", "markdown"],
+      });
+    })();
   }
-  return highlighterPromise;
+  return highlighterPromise as Promise<ShikiHighlighter>;
 }
 
 // ─── renderDocHtml() ──────────────────────────────────────────────────
