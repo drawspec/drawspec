@@ -53,6 +53,7 @@ export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsMan
       readFile: (path) => Bun.file(path).text(),
       validateReferences: true,
     });
+    resolveDiagramRefs(compiled.content, dirname(file), contentDir);
     const html = await renderDocHtml(compiled, {
       renderHeader: false,
       ...(options.renderDiagram !== undefined ? { renderDiagram: options.renderDiagram } : {}),
@@ -253,4 +254,17 @@ function toFileUrl(path: string): string {
 
 function isMissingFileError(error: unknown): boolean {
   return typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT";
+}
+
+function resolveDiagramRefs(
+  blocks: import("./types").DocBlock[],
+  docDir: string,
+  contentDir: string
+): void {
+  for (const block of blocks) {
+    if (block.type === "diagram" && !block.ref.startsWith("/")) {
+      const absolute = resolve(docDir, block.ref);
+      block.ref = relative(contentDir, absolute).split(sep).join("/");
+    }
+  }
 }

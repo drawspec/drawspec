@@ -3,6 +3,8 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildDocs } from "../build";
+import { compileDoc } from "../compiler";
+import { defineDoc, md } from "../index";
 
 const tempDirs: string[] = [];
 
@@ -68,6 +70,36 @@ describe("buildDocs", () => {
       },
     ]);
     expect(await readFile(join(outputDir, "api", "fixture.html"), "utf8")).toContain("greet");
+  });
+
+  test("resolves @diagram refs relative to the doc file, not content root", async () => {
+    const root = await tempDir();
+    const contentDir = join(root, "content");
+    const outputDir = join(root, "dist");
+    const subDir = join(contentDir, "examples");
+    await mkdir(subDir, { recursive: true });
+
+    const docFile = join(subDir, "basic-sequence.doc.ts");
+    await writeFile(
+      docFile,
+      `export default { schemaVersion: "0.1.0", title: "Basic Sequence", content: [{ type: "diagram", ref: "./basic-sequence.sequence.ts", caption: "Example" }] };`
+    );
+
+    const diagramFile = join(subDir, "basic-sequence.sequence.ts");
+    await writeFile(diagramFile, "export default {};");
+
+    const capturedRefs: string[] = [];
+    const manifest = await buildDocs({
+      contentDir,
+      outputDir,
+      renderDiagram: async (node) => {
+        capturedRefs.push(node.ref);
+        return "<svg>diagram</svg>";
+      },
+    });
+
+    expect(manifest.pages).toHaveLength(1);
+    expect(capturedRefs).toEqual(["examples/basic-sequence.sequence.ts"]);
   });
 });
 
