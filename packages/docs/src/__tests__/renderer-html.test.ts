@@ -456,4 +456,50 @@ describe("renderDocHtml", () => {
     expect(html).toContain("ds-diagram-placeholder");
     expect(html).toContain("Diagram: ./test.seq.ts");
   });
+
+  test("renders title and description by default", async () => {
+    const doc = defineDoc({
+      title: "My Page",
+      description: "My description",
+      content: [{ type: "paragraph", children: [{ type: "text", value: "Body" }] }],
+    });
+    const compiled = await compileDoc(doc);
+    const html = await renderDocHtml(compiled);
+    expect(html).toContain('<h1 class="ds-title">My Page</h1>');
+    expect(html).toContain("My description");
+  });
+
+  test("skips title and strips leading h1 when renderHeader is false", async () => {
+    const doc = defineDoc({
+      title: "My Page",
+      description: "My description",
+      content: [
+        { type: "heading", level: 1, children: [{ type: "text", value: "My Page" }] },
+        { type: "heading", level: 2, children: [{ type: "text", value: "Section" }] },
+        { type: "paragraph", children: [{ type: "text", value: "Body" }] },
+      ],
+    });
+    const compiled = await compileDoc(doc);
+    const html = await renderDocHtml(compiled, { renderHeader: false });
+    expect(html).not.toContain("ds-title");
+    expect(html).not.toContain("My description");
+    expect(html).not.toContain("<h1");
+    expect(html).toContain("<h2");
+    expect(html).toContain("Section");
+    expect(html).toContain("Body");
+  });
+
+  test("renderHeader false does not strip non-leading h1", async () => {
+    const doc = defineDoc({
+      title: "Test",
+      content: [
+        { type: "paragraph", children: [{ type: "text", value: "Intro" }] },
+        { type: "heading", level: 1, children: [{ type: "text", value: "Later H1" }] },
+      ],
+    });
+    const compiled = await compileDoc(doc);
+    const html = await renderDocHtml(compiled, { renderHeader: false });
+    expect(html).toContain("<h1");
+    expect(html).toContain("Later H1");
+  });
 });
