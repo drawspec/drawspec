@@ -23,6 +23,7 @@ describe("extractPackageApi", () => {
 
     expect(api.name).toBe("@drawspec/fixture");
     expect(api.groups.function.map((symbol) => symbol.name)).toContain("add");
+    expect(api.groups.function.map((symbol) => symbol.name)).toContain("direct");
     expect(api.groups.interface.map((symbol) => symbol.name)).toContain("AddOptions");
     const add = api.symbols.find((symbol) => symbol.name === "add");
     expect(add?.tsdoc.summary).toBe("Adds two numbers.");
@@ -49,6 +50,25 @@ describe("extractPackageApi", () => {
       level: 3,
       id: "empty-value",
       children: [{ type: "text", value: "EMPTY_VALUE" }],
+    });
+  });
+
+  test("renders declaration-shaped snippets for types and constants", async () => {
+    const packageDir = await fixturePackage();
+
+    const api = await extractPackageApi(packageDir);
+    const page = generateApiPage(api.name, api);
+    const codeBlocks = page.content.filter((block) => block.type === "codeBlock");
+
+    expect(codeBlocks).toContainEqual({
+      type: "codeBlock",
+      lang: "ts",
+      value: "type Result = string",
+    });
+    expect(codeBlocks).toContainEqual({
+      type: "codeBlock",
+      lang: "ts",
+      value: "const EMPTY_VALUE: number",
     });
   });
 });
@@ -140,12 +160,12 @@ async function fixturePackage(options: { withoutComment?: boolean } = {}): Promi
   );
   await writeFile(
     join(packageDir, "src", "index.ts"),
-    `export { add, EMPTY_VALUE } from "./math";\nexport type { AddOptions } from "./types";\n`
+    `export { add, EMPTY_VALUE } from "./math";\nexport type { AddOptions, Result } from "./types";\n/** Direct barrel export. */\nexport function direct(): void {}\n`
   );
   await writeFile(join(packageDir, "src", "math.ts"), mathSource(options.withoutComment));
   await writeFile(
     join(packageDir, "src", "types.ts"),
-    `/** Options for addition. */\nexport interface AddOptions {\n  /** Whether to clamp the result. */\n  clamp: boolean;\n}\n`
+    `/** Options for addition. */\nexport interface AddOptions {\n  /** Whether to clamp the result. */\n  clamp: boolean;\n}\n/** Addition result. */\nexport type Result = string;\n`
   );
   return packageDir;
 }

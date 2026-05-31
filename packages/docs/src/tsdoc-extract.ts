@@ -247,6 +247,10 @@ async function collectBarrelExports(indexPath: string): Promise<BarrelExport[]> 
     }
   }
 
+  for (const name of collectDeclarations(sourceFile, source).keys()) {
+    exports.push({ name, exportedName: name, sourceFile: indexPath });
+  }
+
   return exports;
 }
 
@@ -312,6 +316,7 @@ function collectDeclarations(
         kind: "type",
         node: statement,
         members: [],
+        signature: `type ${statement.name.text} = ${statement.type.getText(sourceFile)}`,
         type: statement.type.getText(sourceFile),
       });
     } else if (ts.isEnumDeclaration(statement) && isExported(statement)) {
@@ -320,6 +325,7 @@ function collectDeclarations(
         kind: "constant",
         node: statement,
         members: [],
+        signature: `enum ${statement.name.text}`,
         type: "enum",
       });
     } else if (ts.isVariableStatement(statement) && isExported(statement)) {
@@ -335,6 +341,7 @@ function collectDeclarations(
             declaration.type?.getText(sourceFile) ??
             inferredInitializerType(declaration, sourceFile);
           if (declarationType !== undefined) info.type = declarationType;
+          info.signature = constantSignature(declaration.name.text, declarationType);
           declarations.set(declaration.name.text, info);
         }
       }
@@ -605,9 +612,12 @@ function appendObjectSymbol(content: DocBlock[], symbol: ApiSymbol): void {
 
 function appendSimpleSymbol(content: DocBlock[], symbol: ApiSymbol): void {
   content.push(heading(3, symbol.name));
-  if (symbol.type)
-    content.push({ type: "codeBlock", lang: "ts", value: `${symbol.name}: ${symbol.type}` });
+  if (symbol.signature) content.push({ type: "codeBlock", lang: "ts", value: symbol.signature });
   content.push(...tsDocToDocBlocks(symbol.tsdoc));
+}
+
+function constantSignature(name: string, type: string | undefined): string {
+  return type === undefined ? `const ${name}` : `const ${name}: ${type}`;
 }
 
 function parametersTable(params: ApiParameter[]): TableNode {
