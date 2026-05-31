@@ -8,12 +8,21 @@ export default defineDoc({
 
 The \`drawspec\` CLI provides commands for validating, rendering, inspecting, and serving DrawSpec diagrams.
 
+## Global Options
+
+These options apply to all commands:
+
+| Option | Description |
+|--------|-------------|
+| \`--config\` | Path to config file |
+| \`--verbose\` | Enable verbose output |
+
 ## check
 
 Validates diagram files without rendering. Runs all validation rules and reports diagnostics.
 
 \`\`\`bash
-drawspec check [files...] [--format pretty|json] [--policy name]
+drawspec check <files> [--format pretty|json] [--policy name]
 \`\`\`
 
 **Flags:**
@@ -41,7 +50,7 @@ bunx drawspec check . --policy recommended
 Compiles diagram files and renders them to SVG output.
 
 \`\`\`bash
-drawspec render [files...] [--out dist] [--format svg] [--theme name] [--no-cache] [--cache-dir path]
+drawspec render <files> --out <dir> [--format svg] [--theme name] [--no-cache] [--cache-dir path]
 \`\`\`
 
 **Flags:**
@@ -67,12 +76,41 @@ bunx drawspec render . --theme dark --out dist
 bunx drawspec render . --no-cache
 \`\`\`
 
+## export
+
+Exports diagrams to third-party formats: Mermaid, PlantUML, or D2.
+
+\`\`\`bash
+drawspec export <files> --format <mermaid|plantuml|d2> [--out dir] [--stdout]
+\`\`\`
+
+**Flags:**
+
+| Flag | Description |
+|------|-------------|
+| \`--format\` | Export format: \`mermaid\`, \`plantuml\`, or \`d2\` (required) |
+| \`--out\` | Output directory (default: \`dist\`) |
+| \`--stdout\` | Print output to stdout instead of writing files |
+
+**Example:**
+
+\`\`\`bash
+# Export all diagrams to Mermaid format
+bunx drawspec export . --format mermaid --out dist/mmd
+
+# Export to PlantUML and print to stdout
+bunx drawspec export hello.sequence.ts --format plantuml --stdout
+
+# Export to D2 format
+bunx drawspec export . --format d2 --out dist/d2
+\`\`\`
+
 ## inspect
 
 Loads a single diagram file and outputs its internal representation for debugging.
 
 \`\`\`bash
-drawspec inspect [file] [--format json|pretty]
+drawspec inspect <files> [--format json|pretty]
 \`\`\`
 
 **Flags:**
@@ -89,6 +127,127 @@ bunx drawspec inspect hello.sequence.ts
 
 # Pretty-print the output
 bunx drawspec inspect hello.sequence.ts --format pretty
+\`\`\`
+
+## serve
+
+Starts a local HTTP server that renders diagrams on demand with live reload support.
+
+\`\`\`bash
+drawspec serve <dir> [--host localhost] [--port 4173] [--debounce 80] [--open]
+\`\`\`
+
+**Flags:**
+
+| Flag | Description |
+|------|-------------|
+| \`--host\` | Hostname to bind to (default: \`localhost\`) |
+| \`--port\` | HTTP port (default: 4173) |
+| \`--debounce\` | Debounce delay in milliseconds (default: 80) |
+| \`--open\` | Open browser automatically |
+
+**Example:**
+
+\`\`\`bash
+# Start dev server with all diagrams
+bunx drawspec serve .
+
+# Start and auto-open browser
+bunx drawspec serve . --open
+
+# Serve specific files
+bunx drawspec serve auth.sequence.ts payments.arch.ts --port 3000
+\`\`\`
+
+## build docs
+
+Builds the documentation site from \`.doc.ts\` source files.
+
+\`\`\`bash
+drawspec build docs [--out dir]
+\`\`\`
+
+**Flags:**
+
+| Flag | Description |
+|------|-------------|
+| \`--out\` | Output directory (default: \`dist/docs\`) |
+
+**Example:**
+
+\`\`\`bash
+# Build docs to dist/docs
+bunx drawspec build docs
+
+# Build to custom directory
+bunx drawspec build docs --out custom-docs
+\`\`\`
+
+## serve docs
+
+Serves the documentation site locally with live rebuild on file changes.
+
+\`\`\`bash
+drawspec serve docs [--host localhost] [--port 4173] [--open]
+\`\`\`
+
+**Flags:**
+
+| Flag | Description |
+|------|-------------|
+| \`--host\` | Hostname to bind to (default: \`localhost\`) |
+| \`--port\` | HTTP port (default: 4173) |
+| \`--open\` | Open browser automatically |
+
+**Example:**
+
+\`\`\`bash
+# Serve docs with live reload
+bunx drawspec serve docs
+
+# Serve and auto-open browser
+bunx drawspec serve docs --open
+\`\`\`
+
+## gallery
+
+Generates a static HTML gallery page with all diagrams rendered as SVGs.
+
+\`\`\`bash
+drawspec gallery [--out site] [--theme name]
+\`\`\`
+
+**Flags:**
+
+| Flag | Description |
+|------|-------------|
+| \`--out\` | Output directory (default: \`site\`) |
+| \`--theme\` | Theme name: \`light\` or \`dark\` |
+
+**Example:**
+
+\`\`\`bash
+# Generate gallery to site/
+bunx drawspec gallery --out site
+
+# Generate with dark theme
+bunx drawspec gallery --theme dark --out site
+\`\`\`
+
+## build:site
+
+Alias for \`gallery\`. Provided for backward compatibility.
+
+\`\`\`bash
+drawspec build:site [--out site] [--theme name]
+\`\`\`
+
+## build-site
+
+Alias for \`gallery\`. Provided for backward compatibility.
+
+\`\`\`bash
+drawspec build-site [--out site] [--theme name]
 \`\`\`
 
 ## watch
@@ -116,90 +275,6 @@ bunx drawspec watch .
 bunx drawspec watch auth.sequence.ts payments.arch.ts --debounce 150
 \`\`\`
 
-## serve
-
-Starts a local HTTP server that renders diagrams on demand with live reload support.
-
-\`\`\`bash
-drawspec serve [files...] [--host localhost] [--port 4173] [--debounce 80] [--open]
-\`\`\`
-
-**Flags:**
-
-| Flag | Description |
-|------|-------------|
-| \`--host\` | Hostname to bind to (default: \`localhost\`) |
-| \`--port\` | HTTP port (default: 4173) |
-| \`--debounce\` | Debounce delay in milliseconds (default: 80) |
-| \`--open\` | Open browser automatically |
-
-**Example:**
-
-\`\`\`bash
-# Start dev server with all diagrams
-bunx drawspec serve .
-
-# Start and auto-open browser
-bunx drawspec serve . --open
-
-# Serve specific files
-bunx drawspec serve auth.sequence.ts payments.arch.ts --port 3000
-\`\`\`
-
-## export
-
-Exports diagrams to third-party formats: Mermaid, PlantUML, or D2.
-
-\`\`\`bash
-drawspec export [files...] --format mermaid|plantuml|d2 [--out dir] [--stdout]
-\`\`\`
-
-**Flags:**
-
-| Flag | Description |
-|------|-------------|
-| \`--format\` | Export format: \`mermaid\`, \`plantuml\`, or \`d2\` (required) |
-| \`--out\` | Output directory (default: \`dist\`) |
-| \`--stdout\` | Print output to stdout instead of writing files |
-
-**Example:**
-
-\`\`\`bash
-# Export all diagrams to Mermaid format
-bunx drawspec export . --format mermaid --out dist/mmd
-
-# Export to PlantUML and print to stdout
-bunx drawspec export hello.sequence.ts --format plantuml --stdout
-
-# Export to D2 format
-bunx drawspec export . --format d2 --out dist/d2
-\`\`\`
-
-## build:site
-
-Generates a static site with all diagrams rendered as individual HTML pages.
-
-\`\`\`bash
-drawspec build:site [files...] [--out site] [--theme name]
-\`\`\`
-
-**Flags:**
-
-| Flag | Description |
-|------|-------------|
-| \`--out\` | Output directory (default: \`site\`) |
-| \`--theme\` | Theme name: \`light\` or \`dark\` |
-
-**Example:**
-
-\`\`\`bash
-# Build static site
-bunx drawspec build:site . --out site
-
-# Build with dark theme
-bunx drawspec build:site . --theme dark --out site
-\`\`\`
-
 ## File Discovery
 
 DrawSpec automatically discovers diagram files using these patterns:
@@ -213,5 +288,15 @@ When given a directory or no arguments, DrawSpec scans for files matching:
 \`\`\`
 **/*.sequence.ts **/*.arch.ts **/*.diagram.ts
 \`\`\`
+
+## Extensibility
+
+DrawSpec packages can register additional commands with the CLI. Packages that provide commands export a \`registerCommands\` function that the CLI calls at startup. To add a custom command:
+
+1. Create a package that exports \`registerCommands(cli: Command)\`
+2. The package should be listed as a dependency in \`drawspec\`s package.json
+3. The CLI will automatically load and register the commands
+
+This allows teams to add project-specific commands without forking the CLI.
 `,
 });
