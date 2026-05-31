@@ -69,6 +69,66 @@ describe("buildDocs", () => {
     ]);
     expect(await readFile(join(outputDir, "api", "fixture.html"), "utf8")).toContain("greet");
   });
+
+  test("resolves @diagram refs relative to the doc file, not content root", async () => {
+    const root = await tempDir();
+    const contentDir = join(root, "content");
+    const outputDir = join(root, "dist");
+    const subDir = join(contentDir, "examples");
+    await mkdir(subDir, { recursive: true });
+
+    const docFile = join(subDir, "basic-sequence.doc.ts");
+    await writeFile(
+      docFile,
+      `export default { schemaVersion: "0.1.0", title: "Basic Sequence", content: [{ type: "diagram", ref: "./basic-sequence.sequence.ts", caption: "Example" }] };`
+    );
+
+    const diagramFile = join(subDir, "basic-sequence.sequence.ts");
+    await writeFile(diagramFile, "export default {};");
+
+    const capturedRefs: string[] = [];
+    const manifest = await buildDocs({
+      contentDir,
+      outputDir,
+      renderDiagram: async (node) => {
+        capturedRefs.push(node.ref);
+        return "<svg>diagram</svg>";
+      },
+    });
+
+    expect(manifest.pages).toHaveLength(1);
+    expect(capturedRefs).toEqual(["examples/basic-sequence.sequence.ts"]);
+  });
+
+  test("resolves @diagram refs nested inside list items", async () => {
+    const root = await tempDir();
+    const contentDir = join(root, "content");
+    const outputDir = join(root, "dist");
+    const subDir = join(contentDir, "guides");
+    await mkdir(subDir, { recursive: true });
+
+    const docFile = join(subDir, "diagrams.doc.ts");
+    await writeFile(
+      docFile,
+      `export default { schemaVersion: "0.1.0", title: "Diagrams", content: [{ type: "list", kind: "unordered", children: [{ checked: undefined, children: [{ type: "diagram", ref: "../shared/demo.sequence.ts" }] }] }] };`
+    );
+
+    const sharedDir = join(contentDir, "shared");
+    await mkdir(sharedDir, { recursive: true });
+    await writeFile(join(sharedDir, "demo.sequence.ts"), "export default {};");
+
+    const capturedRefs: string[] = [];
+    await buildDocs({
+      contentDir,
+      outputDir,
+      renderDiagram: async (node) => {
+        capturedRefs.push(node.ref);
+        return "<svg>diagram</svg>";
+      },
+    });
+
+    expect(capturedRefs).toEqual(["shared/demo.sequence.ts"]);
+  });
 });
 
 async function tempDir(): Promise<string> {
