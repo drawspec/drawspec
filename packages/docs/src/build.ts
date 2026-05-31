@@ -266,5 +266,12 @@ function resolveDiagramRefs(
       const absolute = resolve(docDir, block.ref);
       block.ref = relative(contentDir, absolute).split(sep).join("/");
     }
+    const children =
+      "children" in block
+        ? (block as { children?: import("./types").DocBlock[] }).children
+        : undefined;
+    if (children) {
+      resolveDiagramRefs(children, docDir, contentDir);
+    }
   }
 }

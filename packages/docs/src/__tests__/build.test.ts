@@ -3,8 +3,6 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildDocs } from "../build";
-import { compileDoc } from "../compiler";
-import { defineDoc, md } from "../index";
 
 const tempDirs: string[] = [];
 
@@ -100,6 +98,36 @@ describe("buildDocs", () => {
 
     expect(manifest.pages).toHaveLength(1);
     expect(capturedRefs).toEqual(["examples/basic-sequence.sequence.ts"]);
+  });
+
+  test("resolves @diagram refs nested inside list items", async () => {
+    const root = await tempDir();
+    const contentDir = join(root, "content");
+    const outputDir = join(root, "dist");
+    const subDir = join(contentDir, "guides");
+    await mkdir(subDir, { recursive: true });
+
+    const docFile = join(subDir, "diagrams.doc.ts");
+    await writeFile(
+      docFile,
+      `export default { schemaVersion: "0.1.0", title: "Diagrams", content: [{ type: "list", kind: "unordered", children: [{ checked: undefined, children: [{ type: "diagram", ref: "../shared/demo.sequence.ts" }] }] }] };`
+    );
+
+    const sharedDir = join(contentDir, "shared");
+    await mkdir(sharedDir, { recursive: true });
+    await writeFile(join(sharedDir, "demo.sequence.ts"), "export default {};");
+
+    const capturedRefs: string[] = [];
+    await buildDocs({
+      contentDir,
+      outputDir,
+      renderDiagram: async (node) => {
+        capturedRefs.push(node.ref);
+        return "<svg>diagram</svg>";
+      },
+    });
+
+    expect(capturedRefs).toEqual(["shared/demo.sequence.ts"]);
   });
 });
 
