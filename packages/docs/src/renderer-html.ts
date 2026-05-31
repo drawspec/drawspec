@@ -37,11 +37,7 @@ function cls(base: string, prefix: string): string {
 
 // ─── Shiki lazy loader ────────────────────────────────────────────────
 
-interface ShikiHighlighter {
-  codeToHtml: (code: string, options: { lang: string; theme: string }) => string;
-  getLoadedLanguages: () => string[];
-  getLoadedThemes: () => string[];
-}
+type ShikiHighlighter = Awaited<ReturnType<typeof import("shiki").createHighlighter>>;
 
 let highlighterPromise: Promise<ShikiHighlighter> | null = null;
 
@@ -55,7 +51,7 @@ async function getHighlighter(): Promise<ShikiHighlighter> {
       });
     })();
   }
-  return highlighterPromise;
+  return highlighterPromise as Promise<ShikiHighlighter>;
 }
 
 // ─── renderDocHtml() ──────────────────────────────────────────────────
@@ -169,11 +165,22 @@ async function renderCodeBlock(
       const supportedLangs = highlighter.getLoadedLanguages();
       const effectiveLang = supportedLangs.includes(lang) ? lang : "text";
       const supportedThemes = highlighter.getLoadedThemes();
-      const theme = supportedThemes.includes("github-light") ? "github-light" : supportedThemes[0];
-      if (!theme) {
-        codeHtml = `<pre><code>${escapeHtml(node.value)}</code></pre>`;
+      const hasDualThemes =
+        supportedThemes.includes("github-light") && supportedThemes.includes("github-dark");
+      if (!hasDualThemes) {
+        const theme = supportedThemes.includes("github-light")
+          ? "github-light"
+          : supportedThemes[0];
+        if (!theme) {
+          codeHtml = `<pre><code>${escapeHtml(node.value)}</code></pre>`;
+        } else {
+          codeHtml = highlighter.codeToHtml(node.value, { lang: effectiveLang, theme });
+        }
       } else {
-        codeHtml = highlighter.codeToHtml(node.value, { lang: effectiveLang, theme });
+        codeHtml = highlighter.codeToHtml(node.value, {
+          lang: effectiveLang,
+          themes: { light: "github-light", dark: "github-dark" },
+        });
       }
     } catch {
       codeHtml = `<pre class="${cls("code", prefix)}"><code>${escapeHtml(node.value)}</code></pre>`;

@@ -122,6 +122,20 @@ describe("renderDocHtml", () => {
     expect(html).toContain("typescript");
   });
 
+  test("renders code block with dual theme CSS variables", async () => {
+    const compiled = await makeCompiledDoc([
+      {
+        type: "codeBlock",
+        lang: "typescript",
+        value: "const x = 1;",
+      },
+    ]);
+    const html = await renderDocHtml(compiled);
+    expect(html).toContain("--shiki-dark");
+    expect(html).toContain("--shiki-dark-bg");
+    expect(html).toContain("shiki-themes");
+  });
+
   test("renders a code block with custom highlighter", async () => {
     const compiled = await makeCompiledDoc([
       {
