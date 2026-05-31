@@ -95,6 +95,7 @@
         "@drawspec/architecture": "workspace:*",
         "@drawspec/cache": "workspace:*",
         "@drawspec/core": "workspace:*",
+        "@drawspec/docs": "workspace:*",
         "@drawspec/exporter-d2": "workspace:*",
         "@drawspec/exporter-mermaid": "workspace:*",
         "@drawspec/exporter-plantuml": "workspace:*",
