@@ -132,6 +132,8 @@ describe("renderDocHtml", () => {
     ]);
     const html = await renderDocHtml(compiled);
     expect(html).toContain("--shiki-dark");
+    expect(html).toContain("--shiki-dark-bg");
+    expect(html).toContain("shiki-themes");
   });
 
   test("renders a code block with custom highlighter", async () => {
