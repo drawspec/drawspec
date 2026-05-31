@@ -54,6 +54,7 @@ export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsMan
       validateReferences: true,
     });
     const html = await renderDocHtml(compiled, {
+      renderHeader: false,
       ...(options.renderDiagram !== undefined ? { renderDiagram: options.renderDiagram } : {}),
     });
     const page: BuildDocsPage = {
@@ -108,6 +109,7 @@ async function buildApiPages(options: ApiBuildOptions): Promise<BuildDocsPage[]>
       validateReferences: true,
     });
     const html = await renderDocHtml(compiled, {
+      renderHeader: false,
       ...(options.renderDiagram !== undefined ? { renderDiagram: options.renderDiagram } : {}),
     });
     const page: BuildDocsPage = {

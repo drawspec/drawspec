@@ -229,4 +229,7 @@ export interface HtmlRenderOptions {
   highlightCode?: (code: string, lang: string) => Promise<string>;
   /** Custom diagram renderer — receives a DiagramNode, returns SVG HTML string */
   renderDiagram?: (node: DiagramNode) => Promise<string>;
+  /** Whether to render the title and description header (default: true).
+   *  Set to false when the consuming page renders its own header. */
+  renderHeader?: boolean;
 }
