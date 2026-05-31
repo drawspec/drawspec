@@ -60,14 +60,14 @@ See Serena memory `package-dependencies` for the dependency graph, and `conventi
 Sub-agents MUST work in git worktrees, NOT the main repo:
 
 ```bash
-WORKTREE="/tmp/drawspec-issue-${N}"
-git worktree add "$WORKTREE" -b "feat/issue-${N}/slug" main
+WORKTREE="/tmp/drawspec-fix-dark-mode"
+git worktree add "$WORKTREE" -b fix/dark-mode main
 # All work in $WORKTREE
 git worktree remove "$WORKTREE"  # After PR merged
 ```
 
-- Always `/tmp/drawspec-issue-{N}/`, always branch from `main`
-- Branch names: `feat/issue-{N}/{slug}`, `fix/issue-{N}/{slug}`, `docs/issue-{N}/{slug}`
+- Always `/tmp/drawspec-{slug}/`, always branch from `main`
+- Branch names: `feat/{slug}`, `fix/{slug}`, `docs/{slug}`
 - Never commit to `main` directly
 
 ---
@@ -76,7 +76,7 @@ git worktree remove "$WORKTREE"  # After PR merged
 
 All work tracked via the [project board](https://github.com/orgs/drawspec/projects/1) — **not** standalone GitHub Issues.
 
-- Create project items directly on the board (use `gh project item-add` or the GitHub UI)
+- Create project items directly on the board via the GitHub UI
 - Do **not** create standalone GH issues — the board is the single source of truth
 - Branch names: `feat/{slug}`, `fix/{slug}`, `docs/{slug}` — no issue number prefix
 - Use GitHub MCP tools (`github_*`) for all GitHub interactions, not `gh` CLI
