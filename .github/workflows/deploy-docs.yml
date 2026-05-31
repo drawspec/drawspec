@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "apps/docs/**"
+      - "docs/content/**"
       - "packages/docs/**"
       - "packages/core/**"
       - "package.json"
@@ -33,6 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install --frozen-lockfile
+      - run: bun run build
       - run: bun run docs:build
       - uses: actions/upload-pages-artifact@v3
         with:
