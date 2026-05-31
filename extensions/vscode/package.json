@@ -18,7 +18,7 @@
     "onCommand:drawspec.preview",
     "onCommand:drawspec.inspect"
   ],
-  "main": "./src/extension.ts",
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
