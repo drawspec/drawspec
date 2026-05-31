@@ -42,9 +42,9 @@ describe("buildDocs", () => {
       pages: Array<{ slug: string; title: string; html: string }>;
     };
     expect(manifestJson).toEqual(manifest);
-    expect(await readFile(join(outputDir, "guides", "architecture.html"), "utf8")).toContain(
-      "Architecture"
-    );
+    const pageHtml = await readFile(join(outputDir, "guides", "architecture.html"), "utf8");
+    expect(pageHtml).toContain("Body");
+    expect(pageHtml).not.toContain("<h1");
     expect(await readFile(join(outputDir, "index.html"), "utf8")).toContain(
       'href="./guides/architecture.html"'
     );
