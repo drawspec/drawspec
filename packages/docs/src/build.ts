@@ -110,7 +110,7 @@ function isDocDocument(value: unknown): value is DocDocument {
 function renderIndex(manifest: BuildDocsManifest): string {
   const links = manifest.pages
     .map(
-      (page) => `<li><a href="/${escapeHtml(page.slug)}.html">${escapeHtml(page.title)}</a></li>`
+      (page) => `<li><a href="./${escapeHtml(page.slug)}.html">${escapeHtml(page.title)}</a></li>`
     )
     .join("\n");
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DrawSpec Docs</title></head><body><main><h1>DrawSpec Docs</h1><ul>${links}</ul></main></body></html>`;

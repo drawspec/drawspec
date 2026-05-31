@@ -6,14 +6,19 @@ import { checkCommand } from "./commands/check";
 import { exportCommand } from "./commands/export";
 import { galleryCommand } from "./commands/gallery";
 import { inspectCommand } from "./commands/inspect";
-import { getCommand, listCommands, registerCommand } from "./commands/registry";
+import {
+  getCommand,
+  listCommands,
+  registerCommand,
+  registerPackageCommands,
+} from "./commands/registry";
 import { renderCommand } from "./commands/render";
 import { serveCommand } from "./commands/serve";
 import { serveDocsCommand } from "./commands/serve-docs";
 import { asString, loadConfig, red } from "./commands/shared";
 import type { DrawspecCommand, ParsedArgs } from "./commands/types";
 
-declare const process: { exit(code?: number): never };
+declare const process: { cwd(): string; exit(code?: number): never };
 declare const console: { log(message?: unknown): void; error(message?: unknown): void };
 declare const Bun: { argv: string[]; file(path: string): { exists(): Promise<boolean> } };
 
@@ -32,6 +37,7 @@ const builtInCommands: DrawspecCommand[] = [
 for (const command of builtInCommands) registerCommand(command);
 
 export async function main(argv: readonly string[] = Bun.argv.slice(2)): Promise<number> {
+  await registerPackageCommands();
   const parsed = parseArgs(argv);
   if (parsed.options["help"] === true) {
     printHelp();
@@ -124,13 +130,16 @@ async function findUnknownToken(argv: readonly string[]): Promise<string | undef
   return undefined;
 }
 
-if (import.meta.url === toFileUrl(Bun.argv[1] ?? "")) {
+if (import.meta.url === toFileUrl(absolutePath(Bun.argv[1] ?? ""))) {
   process.exit(await main());
 }
 
+function absolutePath(path: string): string {
+  return path.startsWith("/") ? path : `${process.cwd()}/${path}`;
+}
+
 function toFileUrl(path: string): string {
-  const absolute = path.startsWith("/") ? path : `${path}`;
-  return `file://${absolute.split("/").map(encodeURIComponent).join("/").replaceAll("%2F", "/")}`;
+  return `file://${path.split("/").map(encodeURIComponent).join("/").replaceAll("%2F", "/")}`;
 }
 
 export { serializeDocument };

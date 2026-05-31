@@ -6,7 +6,6 @@ import {
   DEFAULT_DEBOUNCE_MS,
   DEFAULT_PREVIEW_PORT,
   debounceArg,
-  discoverDocFiles,
   green,
   loadModule,
   red,
@@ -43,7 +42,6 @@ export const serveDocsCommand: DrawspecCommand = {
       });
     try {
       let manifest = await rebuild();
-      const files = await discoverDocFiles([contentDir]);
       const server = Bun.serve({
         hostname: host,
         port,
@@ -60,7 +58,7 @@ export const serveDocsCommand: DrawspecCommand = {
         },
       });
       const watcher = watchFiles(
-        files,
+        [contentDir],
         debounceArg(() => {
           void (async () => {
             manifest = await rebuild();
