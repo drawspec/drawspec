@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import type { DiagramDocument } from "@drawspec/core";
-import type { SiteDiagram } from "../build-site";
+import type { SiteDiagram } from "../commands/gallery";
 import {
   generateDiagramHtml,
   generateIndexHtml,
   generateStyleCss,
   toSiteDiagram,
-} from "../build-site";
+} from "../commands/gallery";
 
 const sampleDoc: DiagramDocument = {
   schemaVersion: "1",

@@ -10,11 +10,15 @@
   "exclude": ["src/**/__tests__/**/*.ts"],
   "references": [
     { "path": "../cache" },
+    { "path": "../docs" },
     { "path": "../core" },
     { "path": "../architecture" },
     { "path": "../uml-sequence" },
     { "path": "../validation" },
     { "path": "../layout" },
-    { "path": "../renderer-svg" }
+    { "path": "../renderer-svg" },
+    { "path": "../exporter-mermaid" },
+    { "path": "../exporter-plantuml" },
+    { "path": "../exporter-d2" }
   ]
 }

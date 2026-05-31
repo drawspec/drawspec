@@ -1,6 +1,8 @@
 // @drawspec/docs — Documentation engine for DrawSpec
 
+export type { BuildDocsManifest, BuildDocsOptions, BuildDocsPage } from "./build";
 // Compiler
+export { buildDocs } from "./build";
 export { compileDoc } from "./compiler";
 
 // defineDoc
