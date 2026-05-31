@@ -1,13 +1,10 @@
-<script>
+<script lang="ts">
 import { base } from "$app/paths";
-import { page } from "$app/stores";
-import { getGroupedNav } from "$lib/docs-nav.js";
+import { page } from "$app/state";
 import "../app.css";
 
-let { children } = $props();
+let { children, data } = $props();
 let darkMode = $state(false);
-
-const navGroups = getGroupedNav();
 
 function toggleDark() {
   darkMode = !darkMode;
@@ -32,6 +29,14 @@ let sidebarOpen = $state(false);
 
 function closeSidebar() {
   sidebarOpen = false;
+}
+
+function docHref(slug: string): string {
+  return `${base}/docs/${slug}`;
+}
+
+function isActiveDoc(slug: string): boolean {
+  return page.url.pathname === docHref(slug);
 }
 
 const year = new Date().getFullYear();
@@ -75,15 +80,15 @@ const year = new Date().getFullYear();
     {/if}
     <aside class="sidebar" class:open={sidebarOpen}>
       <nav>
-        {#each navGroups as [section, items]}
+        {#each data.navGroups as [section, items]}
           <div class="nav-section">
             <h3 class="nav-section-title">{section}</h3>
             <ul class="nav-list">
               {#each items as item}
                 <li>
                   <a
-                    href="{base}/docs/{item.slug}"
-                    class:active={$page.url.pathname === `${base}/docs/${item.slug}`}
+                    href={docHref(item.slug)}
+                    class:active={isActiveDoc(item.slug)}
                     onclick={closeSidebar}
                   >{item.title}</a>
                 </li>

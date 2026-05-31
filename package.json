@@ -18,8 +18,8 @@
     "bench": "DRAWSPEC_RUN_BENCH=1 bun test --bench packages/core/src/__bench__ packages/layout/src/__bench__",
     "build": "bun run --filter './packages/*' build",
     "preview:dev": "bun run --filter '@drawspec/preview' dev",
-    "docs:dev": "bun run --cwd apps/docs dev",
-    "docs:build": "bun run --cwd apps/docs build",
+    "docs:dev": "bun packages/cli/src/index.ts build docs --content-dir docs/content --output-dir docs/dist && cd apps/docs && bunx vite dev",
+    "docs:build": "bun packages/cli/src/index.ts build docs --content-dir docs/content --output-dir docs/dist && cd apps/docs && bunx vite build",
     "changeset": "changeset",
     "release": "bun run check && changeset version && bun run build"
   },

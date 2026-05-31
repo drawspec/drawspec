@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { base } from "$app/paths";
 
 const quickStart = `import { sequence } from "@drawspec/uml-sequence";
@@ -8,6 +8,10 @@ sequence("Hello", (s) => {
   s.actor("Bob");
   s.message("Alice", "Bob", "Hello!");
 });`;
+
+function docHref(slug: string): string {
+  return `${base}/docs/${slug}`;
+}
 </script>
 
 <svelte:head>
@@ -22,8 +26,8 @@ sequence("Hello", (s) => {
     Author. Validate. Render.
   </p>
   <div class="hero-actions">
-    <a href="{base}/docs/getting-started" class="btn btn-primary">Get Started</a>
-    <a href="{base}/docs/cli-reference" class="btn btn-secondary">CLI Reference</a>
+    <a href={docHref("getting-started")} class="btn btn-primary">Get Started</a>
+    <a href={docHref("cli-reference")} class="btn btn-secondary">CLI Reference</a>
   </div>
 </div>
 
@@ -38,21 +42,21 @@ sequence("Hello", (s) => {
 <section class="section">
   <h2>Explore the Docs</h2>
   <div class="card-grid">
-    <a href="{base}/docs/getting-started" class="card">
+    <a href={docHref("getting-started")} class="card">
       <h3>Getting Started</h3>
       <p>Install, create your first diagram, and render to SVG.</p>
     </a>
-    <a href="{base}/docs/cli-reference" class="card">
+    <a href={docHref("cli-reference")} class="card">
       <h3>CLI Reference</h3>
       <p>Complete reference for the <code>drawspec</code> CLI commands.</p>
     </a>
-    <a href="{base}/docs/api/core" class="card">
-      <h3>Core API</h3>
-      <p>Diagram IR, compilation pipeline, and type definitions.</p>
+    <a href={docHref("guides/architecture-c4")} class="card">
+      <h3>C4 Architecture</h3>
+      <p>Model systems, containers, relationships, and C4 views.</p>
     </a>
-    <a href="{base}/docs/api/docs" class="card">
-      <h3>Docs Engine API</h3>
-      <p>Documentation engine for building doc sites like this one.</p>
+    <a href={docHref("examples/basic-sequence")} class="card">
+      <h3>Sequence Example</h3>
+      <p>See DrawSpec render a sequence diagram inline.</p>
     </a>
   </div>
 </section>
