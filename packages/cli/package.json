@@ -11,12 +11,14 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "bun": "./src/index.ts",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./config": {
-      "types": "./dist/config.d.ts",
-      "import": "./dist/config.js"
+      "bun": "./src/config.ts",
+      "default": "./dist/config.js",
+      "types": "./dist/config.d.ts"
     }
   },
   "dependencies": {
