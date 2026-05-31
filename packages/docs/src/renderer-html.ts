@@ -73,13 +73,23 @@ export async function renderDocHtml(
   const parts: string[] = [];
 
   parts.push(`<article class="${cls("doc", prefix)}">`);
-  parts.push(`<h1 class="${cls("title", prefix)}">${escapeHtml(doc.title)}</h1>`);
 
-  if (doc.description) {
-    parts.push(`<p class="${cls("description", prefix)}">${escapeHtml(doc.description)}</p>`);
+  if (options.renderHeader !== false) {
+    parts.push(`<h1 class="${cls("title", prefix)}">${escapeHtml(doc.title)}</h1>`);
+
+    if (doc.description) {
+      parts.push(`<p class="${cls("description", prefix)}">${escapeHtml(doc.description)}</p>`);
+    }
   }
 
-  for (const block of doc.content) {
+  const content =
+    options.renderHeader !== false
+      ? doc.content
+      : doc.content.filter(
+          (block, i) => !(i === 0 && block.type === "heading" && block.level === 1)
+        );
+
+  for (const block of content) {
     parts.push(await renderBlock(block, options, prefix, useInlineStyles));
   }
 
