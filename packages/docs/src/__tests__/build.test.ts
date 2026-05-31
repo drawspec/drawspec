@@ -49,6 +49,26 @@ describe("buildDocs", () => {
       'href="./guides/architecture.html"'
     );
   });
+
+  test("adds API reference pages when a workspace root is present", async () => {
+    const root = await tempDir();
+    const contentDir = join(root, "docs", "content");
+    const outputDir = join(root, "docs", "dist");
+    await writeFile(join(root, "package.json"), JSON.stringify({ workspaces: ["packages/*"] }));
+    await writeDoc(join(contentDir, "intro.doc.ts"), "Intro");
+    await writePackage(join(root, "packages", "fixture"));
+
+    const manifest = await buildDocs({ contentDir, outputDir });
+
+    expect(manifest.pages.map((page) => page.slug)).toContain("api/fixture");
+    expect(manifest.navigation).toEqual([
+      {
+        title: "API Reference",
+        children: [{ slug: "api/fixture", title: "@drawspec/fixture", category: "Tooling" }],
+      },
+    ]);
+    expect(await readFile(join(outputDir, "api", "fixture.html"), "utf8")).toContain("greet");
+  });
 });
 
 async function tempDir(): Promise<string> {
@@ -62,5 +82,18 @@ async function writeDoc(path: string, title: string): Promise<void> {
   await writeFile(
     path,
     `export default { schemaVersion: "0.1.0", title: ${JSON.stringify(title)}, description: "Description", content: [{ type: "paragraph", children: [{ type: "text", value: "Body" }] }] };`
+  );
+}
+
+async function writePackage(packageDir: string): Promise<void> {
+  await mkdir(join(packageDir, "src"), { recursive: true });
+  await writeFile(
+    join(packageDir, "package.json"),
+    JSON.stringify({ name: "@drawspec/fixture", description: "Fixture package" })
+  );
+  await writeFile(join(packageDir, "src", "index.ts"), 'export { greet } from "./greet";\n');
+  await writeFile(
+    join(packageDir, "src", "greet.ts"),
+    `/** Greets a person. */\nexport function greet(name: string): string {\n  return name;\n}\n`
   );
 }

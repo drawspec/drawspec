@@ -1,6 +1,11 @@
 // @drawspec/docs — Documentation engine for DrawSpec
 
-export type { BuildDocsManifest, BuildDocsOptions, BuildDocsPage } from "./build";
+export type {
+  BuildDocsManifest,
+  BuildDocsNavigationSection,
+  BuildDocsOptions,
+  BuildDocsPage,
+} from "./build";
 // Compiler
 export { buildDocs } from "./build";
 export { compileDoc } from "./compiler";
@@ -15,6 +20,15 @@ export { createTSDocExtractor } from "./extractor-tsdoc";
 export { initMdParser, md } from "./md-tag";
 // HTML Renderer
 export { renderDocHtml } from "./renderer-html";
+export type {
+  ApiMember,
+  ApiPackage,
+  ApiParameter,
+  ApiSymbol,
+  ApiSymbolKind,
+  TsDocInfo,
+} from "./tsdoc-extract";
+export { extractPackageApi, generateApiPage, tsDocToDocBlocks } from "./tsdoc-extract";
 // Types
 export type {
   BadgeNode,
