@@ -3,6 +3,7 @@ import { getNavItems, getPageData } from "$lib/doc-content";
 
 export function entries() {
   const slugs = new Set<string>();
+  slugs.add("");
   for (const item of getNavItems()) {
     slugs.add(item.slug);
     const [section] = item.slug.split("/");
@@ -12,10 +13,7 @@ export function entries() {
 }
 
 export function load({ params }) {
-  const slug = params.slug;
-  if (slug === undefined) {
-    error(404, "Documentation page not found");
-  }
+  const slug = params.slug ?? "";
 
   const page = getPageData(slug);
   if (page === undefined) {
@@ -24,7 +22,7 @@ export function load({ params }) {
 
   return {
     title: page.title,
-    description: page.description ?? "",
+    description: page.description,
     html: page.html,
   };
 }

@@ -21,7 +21,7 @@ interface DocsManifest {
 
 const fallbackHtml = `
 <p>The documentation manifest was not found.</p>
-<p>Run <code>bunx drawspec build docs --content-dir docs/content --output-dir docs/dist</code> from the repository root, then refresh this page.</p>
+<p>Run <code>bun packages/cli/src/index.ts build docs --content-dir docs/content --output-dir docs/dist</code> from the repository root, then refresh this page.</p>
 `;
 
 const fallbackPage: DocPageData = {
@@ -104,25 +104,38 @@ function sectionFromSlug(slug: string): string {
 }
 
 function sectionPage(manifest: DocsManifest, slug: string): DocPageData | undefined {
-  const pages = manifest.pages.filter((page) => sectionFromSlug(page.slug) === slug);
+  const pages =
+    slug === ""
+      ? manifest.pages
+      : manifest.pages.filter((page) => sectionFromSlug(page.slug) === slug);
   if (pages.length === 0) return undefined;
 
-  const title = titleCase(slug);
+  const title = slug === "" ? "Documentation" : titleCase(slug);
   const links = pages
     .map((page) => {
       const description = page.description
         ? `<p class="ds-paragraph">${escapeHtml(page.description)}</p>`
         : "";
-      return `<li><a href="/docs/${escapeHtml(page.slug)}">${escapeHtml(page.title)}</a>${description}</li>`;
+      return `<li><a href="${relativeDocHref(slug, page.slug)}">${escapeHtml(page.title)}</a>${description}</li>`;
     })
     .join("\n");
 
   return {
     slug,
     title,
-    description: `Documentation pages in ${title}.`,
+    description:
+      slug === ""
+        ? "All available DrawSpec documentation pages."
+        : `Documentation pages in ${title}.`,
     html: `<ul>${links}</ul>`,
   };
+}
+
+function relativeDocHref(currentSlug: string, targetSlug: string): string {
+  if (currentSlug === "") return `docs/${escapeHtml(targetSlug)}`;
+  const currentDepth = currentSlug.split("/").length;
+  const prefix = currentDepth === 1 ? "" : "../".repeat(currentDepth - 1);
+  return `${prefix}${escapeHtml(targetSlug)}`;
 }
 
 function titleCase(value: string): string {
