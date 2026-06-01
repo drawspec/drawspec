@@ -49,24 +49,38 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       ? metadataDescription
       : `${document.kind} diagram ${document.id}`);
   const markerId = stableSvgId(idPrefix, "marker", "arrow");
+  const labels: SvgElementSpec[] = [];
   const children: SvgElementSpec[] = [
     { name: "title", attrs: { id: stableSvgId(idPrefix, "title") }, children: [title] },
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
     renderBackground(width, height, theme.background),
     renderDefs(markerId, theme.edgeStroke),
-    ...sortById(positionedDiagram.groups).map((group) =>
-      renderGroup(document, group, options, idPrefix)
-    ),
-    ...sortById(positionedDiagram.edges).map((edge) =>
-      renderEdge(document, edge, options, idPrefix, markerId)
-    ),
-    ...sortById(positionedDiagram.nodes).map((node) =>
-      renderNode(document, node, options, idPrefix)
-    ),
+    ...sortById(positionedDiagram.groups).map((group) => {
+      const result = renderGroup(document, group, options, idPrefix);
+      labels.push(...result.labels);
+      return result.element;
+    }),
+    ...sortById(positionedDiagram.edges).map((edge) => {
+      const result = renderEdge(document, edge, options, idPrefix, markerId);
+      labels.push(...result.labels);
+      return result.element;
+    }),
+    ...sortById(positionedDiagram.nodes).map((node) => {
+      const result = renderNode(document, node, options, idPrefix);
+      labels.push(...result.labels);
+      return result.element;
+    }),
     ...sortById(positionedDiagram.activations).map((bar) =>
       renderActivation(document, bar, options, idPrefix)
     ),
   ];
+  if (labels.length > 0) {
+    children.push({
+      name: "g",
+      attrs: { id: stableSvgId(idPrefix, "text-layer") },
+      children: labels,
+    });
+  }
   const svg = renderElement({
     name: "svg",
     attrs: {
@@ -128,13 +142,19 @@ function renderBackground(width: number, height: number, fill: string): SvgEleme
   };
 }
 
+interface RenderedElement {
+  element: SvgElementSpec;
+  labels: SvgElementSpec[];
+}
+
 function renderGroup(
   document: DiagramDocument,
   group: PositionedGroup,
   options: SvgRenderOptions,
   idPrefix: string
-): SvgElementSpec {
+): RenderedElement {
   const style = resolveStyle(document, group, options.theme, "group");
+  const labels: SvgElementSpec[] = [];
   const children: SvgElementSpec[] = [
     {
       name: "rect",
@@ -154,7 +174,7 @@ function renderGroup(
     },
   ];
   if (group.label !== undefined) {
-    children.push(textElement(group.label, group.x + 12, group.y + 20, style, "start"));
+    labels.push(textElement(group.label, group.x + 12, group.y + 20, style, "start"));
   }
   for (const lane of sortById(group.lanes ?? [])) {
     children.push({
@@ -170,13 +190,16 @@ function renderGroup(
       selfClosing: true,
     });
     if (lane.label !== undefined) {
-      children.push(textElement(lane.label, lane.x + 8, lane.y + 18, style, "start"));
+      labels.push(textElement(lane.label, lane.x + 8, lane.y + 18, style, "start"));
     }
   }
   return {
-    name: "g",
-    attrs: { id: stableSvgId(idPrefix, "group", group.id), ...sourceDataAttrs(group.source) },
-    children,
+    element: {
+      name: "g",
+      attrs: { id: stableSvgId(idPrefix, "group", group.id), ...sourceDataAttrs(group.source) },
+      children,
+    },
+    labels,
   };
 }
 
@@ -185,23 +208,26 @@ function renderNode(
   node: PositionedNode,
   options: SvgRenderOptions,
   idPrefix: string
-): SvgElementSpec {
+): RenderedElement {
   const style = resolveStyle(document, node, options.theme, "node");
   const children = shapeForNode(node, style);
   const label = node.label ?? node.id;
-  children.push(
+  const labels: SvgElementSpec[] = [
     textElement(
       label,
       node.x + node.width / 2,
       node.y + node.height / 2 + style.fontSize / 3,
       style,
       "middle"
-    )
-  );
+    ),
+  ];
   return {
-    name: "g",
-    attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
-    children,
+    element: {
+      name: "g",
+      attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
+      children,
+    },
+    labels,
   };
 }
 
@@ -268,7 +294,7 @@ function renderEdge(
   options: SvgRenderOptions,
   idPrefix: string,
   markerId: string
-): SvgElementSpec {
+): RenderedElement {
   const style = resolveStyle(document, edge, options.theme, "edge");
   const direction = edge.direction ?? "forward";
   const children: SvgElementSpec[] = [
@@ -291,14 +317,18 @@ function renderEdge(
       selfClosing: true,
     },
   ];
+  const labels: SvgElementSpec[] = [];
   if (edge.label !== undefined) {
     const mid = midpoint(edge.waypoints);
-    children.push(textElement(edge.label, mid.x, mid.y - 6, style, "middle"));
+    labels.push(textElement(edge.label, mid.x, mid.y - 6, style, "middle"));
   }
   return {
-    name: "g",
-    attrs: { id: stableSvgId(idPrefix, "edge", edge.id), ...sourceDataAttrs(edge.source) },
-    children,
+    element: {
+      name: "g",
+      attrs: { id: stableSvgId(idPrefix, "edge", edge.id), ...sourceDataAttrs(edge.source) },
+      children,
+    },
+    labels,
   };
 }
 function edgePath(points: Point[]): string {
