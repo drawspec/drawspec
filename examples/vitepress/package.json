@@ -1,0 +1,20 @@
+{
+  "name": "drawspec-vitepress-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "dependencies": {
+    "@drawspec/layout": "workspace:*",
+    "@drawspec/renderer-svg": "workspace:*",
+    "@drawspec/uml-sequence": "workspace:*",
+    "@drawspec/uml-class": "workspace:*"
+  },
+  "devDependencies": {
+    "@drawspec/vite-plugin": "workspace:*",
+    "vitepress": "^1.6.3"
+  }
+}
