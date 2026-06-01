@@ -10,15 +10,15 @@ Sequence diagrams model how actors and participants exchange messages over time.
 
 ## Participants
 
-Participants represent the entities that send and receive messages. Use \`seq.actor()\` for external users and \`seq.participant()\` for systems or services:
+Participants represent the entities that send and receive messages. Use \`sequence()\` and call \`actor()\` for external users or \`participant()\` for systems or services:
 
 \`\`\`typescript
 import { sequence } from "@drawspec/uml-sequence";
 
-export default sequence("Order flow", (seq) => {
-  const customer = seq.actor("Customer");
-  const shop = seq.participant("Shop");
-  const payments = seq.participant("Payments");
+export default sequence("Order flow", (ctx) => {
+  const customer = ctx.actor("Customer");
+  const shop = ctx.participant("Shop");
+  const payments = ctx.participant("Payments");
 
   // ... messages go here
 });
@@ -31,9 +31,9 @@ Actors appear with a stick-figure icon. Participants appear as rectangles with a
 Messages are the arrows connecting participants. Use \`.to()\` to send a message from one participant to another:
 
 \`\`\`typescript
-export default sequence("Simple message", (seq) => {
-  const alice = seq.actor("Alice");
-  const bob = seq.participant("Bob");
+export default sequence("Simple message", (ctx) => {
+  const alice = ctx.actor("Alice");
+  const bob = ctx.participant("Bob");
 
   alice.to(bob, "Hello!");
   bob.to(alice, "Hi there!");
@@ -47,9 +47,9 @@ The first argument is the sender, second is the receiver, and the third is the m
 Add notes to any participant or message to provide additional context:
 
 \`\`\`typescript
-export default sequence("With notes", (seq) => {
-  const user = seq.actor("User");
-  const api = seq.participant("API");
+export default sequence("With notes", (ctx) => {
+  const user = ctx.actor("User");
+  const api = ctx.participant("API");
 
   user.to(api, "Request data").note("Include auth token");
   api.to(user, "Response").note("JSON payload");
@@ -60,21 +60,21 @@ Notes attach to the element that precedes them in the chain.
 
 ## Fragments
 
-Fragments group messages into conditional or looping behavior.
+Fragments group messages into conditional behavior.
 
 ### Alternative (alt)
 
 Use \`alt\` to show if-else branches:
 
 \`\`\`typescript
-export default sequence("Payment result", (seq) => {
-  const user = seq.actor("User");
-  const shop = seq.participant("Shop");
-  const payments = seq.participant("Payments");
+export default sequence("Payment result", (ctx) => {
+  const user = ctx.actor("User");
+  const shop = ctx.participant("Shop");
+  const payments = ctx.participant("Payments");
 
   user.to(shop, "Submit card");
   shop.to(payments, "Authorize");
-  seq
+  ctx
     .alt("approved", () => {
       payments.to(shop, "Approval code");
       shop.to(user, "Receipt");
@@ -86,27 +86,42 @@ export default sequence("Payment result", (seq) => {
 });
 \`\`\`
 
-### Alternative (alt)
+### Conditional retries
 
-Use \`alt\` to show if-else branches:
+Use additional \`alt\` branches to show retry outcomes:
 
 \`\`\`typescript
-export default sequence("Payment result", (seq) => {
-  const user = seq.actor("User");
-  const shop = seq.participant("Shop");
-  const payments = seq.participant("Payments");
+export default sequence("Retry loop", (ctx) => {
+  const client = ctx.actor("Client");
+  const server = ctx.participant("Server");
 
-  user.to(shop, "Submit card");
-  shop.to(payments, "Authorize");
-  seq
-    .alt("approved", () => {
-      payments.to(shop, "Approval code");
-      shop.to(user, "Receipt");
+  ctx
+    .alt("first attempt succeeds", () => {
+      client.to(server, "Send request");
+      server.to(client, "Response");
     })
-    .else("declined", () => {
-      payments.to(shop, "Decline reason");
-      shop.to(user, "Request another payment method");
+    .else("retry required", () => {
+      client.to(server, "Send request");
+      server.to(client, "Retry later");
     });
+});
+\`\`\`
+
+### Independent message groups
+
+Use adjacent messages to document independent exchanges in the same interaction:
+
+\`\`\`typescript
+export default sequence("Parallel fetch", (ctx) => {
+  const user = ctx.actor("User");
+  const catalog = ctx.participant("Catalog");
+  const inventory = ctx.participant("Inventory");
+  const pricing = ctx.participant("Pricing");
+
+  user.to(catalog, "Load product page");
+  catalog.to(inventory, "Check stock");
+  catalog.to(pricing, "Get price");
+  catalog.to(user, "Display product");
 });
 \`\`\`
 
@@ -117,11 +132,11 @@ Here is a full sequence diagram showing a payment authorization flow:
 \`\`\`typescript
 import { sequence } from "@drawspec/uml-sequence";
 
-export default sequence("Payment authorization", (seq) => {
-  const user = seq.actor("User");
-  const shop = seq.participant("Shop");
-  const payments = seq.participant("Payments");
-  const ledger = seq.participant("Ledger");
+export default sequence("Payment authorization", (ctx) => {
+  const user = ctx.actor("User");
+  const shop = ctx.participant("Shop");
+  const payments = ctx.participant("Payments");
+  const ledger = ctx.participant("Ledger");
 
   user.to(shop, "Place order");
   shop.to(payments, "Authorize payment").note("Idempotency key included");
