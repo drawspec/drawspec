@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-actdoc_82f445ff-1mt87vt-desc-0yn2wgh" aria-labelledby="drawspec-actdoc_82f445ff-1mt87vt-title-1c2abkm" height="1544" id="drawspec-actdoc_82f445ff-1mt87vt" role="img" viewBox="0 0 400 1544" width="400" xmlns="http://www.w3.org/2000/svg">
+  <title id="drawspec-actdoc_82f445ff-1mt87vt-title-1c2abkm">
+    Order processing workflow
+  </title>
+  <desc id="drawspec-actdoc_82f445ff-1mt87vt-desc-0yn2wgh">
+    activity diagram actdoc_82f445ff
+  </desc>
+  <rect fill="#ffffff" height="1544" width="400" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_08074612-025pge5">
+    <path d="M 100 772 L 300 948" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="100.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="854">
+      stock branch
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_0b055956-15u2wwh">
+    <path d="M 100 68 L 100 244" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_133a2f91-0ksjh1b">
+    <path d="M 100 596 L 100 772" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="678">
+      Yes
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_1ab17e06-15mntpw">
+    <path d="M 100 1300 L 100 1476" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_26dad16a-1xqm5rw">
+    <path d="M 300 948 L 100 1124" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_66b8ad36-1f2cwcv">
+    <path d="M 100 772 L 100 948" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="117.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="854">
+      billing branch
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_ad187334-0vtvf30">
+    <path d="M 100 948 L 100 1124" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_bb6cf7e6-1u9ruoy">
+    <path d="M 100 596 L 300 772" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="16.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="678">
+      No
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_c3143ba5-1dspw71">
+    <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_da4ad530-0ltd67l">
+    <path d="M 100 420 L 100 596" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_e59f77d7-0fmrotj">
+    <path d="M 100 1124 L 100 1300" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-edge-flow_effcb5c9-144qp80">
+    <path d="M 300 772 L 100 1476" fill="none" marker-end="url(#drawspec-actdoc_82f445ff-1mt87vt-marker-arrow-1d554fq)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_00df9ea6-06g8q3t">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="568" />
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="600.667">
+      Payment approved?
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_2b198005-1mqd89n">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      start
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_46da180c-08kmvnb">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="1096" />
+    <text data-width="176.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="1128.667">
+      Join fulfillment work
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_55d5a232-09a3d71">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="1448" />
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="1480.667">
+      complete
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_5b96eeb4-04bmu2i">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="920" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="952.667">
+      Issue invoice
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_613ba680-0uhqjnh">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="216" />
+    <text data-width="100.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
+      Submit order
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_7e353611-00isgl1">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="744" />
+    <text data-width="176.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="776.667">
+      Fork fulfillment work
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_8d116489-07f3add">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="920" />
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="952.667">
+      Reserve inventory
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_9bf0904e-1y4h34p">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="1272" />
+    <text data-width="84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="1304.667">
+      Ship order
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_d94bcd38-1h0avtv">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="392" />
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
+      Authorize payment
+    </text>
+  </g>
+  <g id="drawspec-actdoc_82f445ff-1mt87vt-node-act_f9a5a4c8-1lglhsr">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="744" />
+    <text data-width="184.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="776.667">
+      Notify payment failure
+    </text>
+  </g>
+</svg>

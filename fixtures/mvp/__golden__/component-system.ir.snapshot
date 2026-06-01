@@ -1,0 +1,149 @@
+{
+  "annotations": [],
+  "edges": [
+    {
+      "direction": "forward",
+      "id": "dep_4c457b48",
+      "kind": "dependency",
+      "label": "HTTP commands",
+      "sourceId": "cmp_3611b529",
+      "targetId": "cmp_301fa988"
+    },
+    {
+      "direction": "forward",
+      "id": "dep_466a8b5c",
+      "kind": "dependency",
+      "label": "Authorize payment",
+      "sourceId": "cmp_301fa988",
+      "targetId": "cmp_3b1de8f3"
+    },
+    {
+      "direction": "forward",
+      "id": "dep_f4db1c54",
+      "kind": "dependency",
+      "label": "Reserve stock",
+      "sourceId": "cmp_301fa988",
+      "targetId": "cmp_ff803cd6"
+    },
+    {
+      "direction": "forward",
+      "id": "cmp_3611b529_requires_ifc_6725ba7f",
+      "kind": "requires",
+      "sourceId": "cmp_3611b529",
+      "targetId": "ifc_6725ba7f"
+    },
+    {
+      "direction": "forward",
+      "id": "cmp_301fa988_provides_ifc_6725ba7f",
+      "kind": "provides",
+      "sourceId": "cmp_301fa988",
+      "targetId": "ifc_6725ba7f"
+    },
+    {
+      "direction": "forward",
+      "id": "cmp_301fa988_requires_ifc_66670299",
+      "kind": "requires",
+      "sourceId": "cmp_301fa988",
+      "targetId": "ifc_66670299"
+    },
+    {
+      "direction": "forward",
+      "id": "cmp_301fa988_requires_ifc_487bdfd7",
+      "kind": "requires",
+      "sourceId": "cmp_301fa988",
+      "targetId": "ifc_487bdfd7"
+    },
+    {
+      "direction": "forward",
+      "id": "cmp_3b1de8f3_provides_ifc_66670299",
+      "kind": "provides",
+      "sourceId": "cmp_3b1de8f3",
+      "targetId": "ifc_66670299"
+    },
+    {
+      "direction": "forward",
+      "id": "cmp_ff803cd6_provides_ifc_487bdfd7",
+      "kind": "provides",
+      "sourceId": "cmp_ff803cd6",
+      "targetId": "ifc_487bdfd7"
+    }
+  ],
+  "groups": [],
+  "id": "cmpdoc_d1ebcbaa",
+  "kind": "component",
+  "nodes": [
+    {
+      "id": "cmp_3611b529",
+      "kind": "component",
+      "label": "Web App",
+      "metadata": {
+        "provides": [],
+        "requires": [
+          "Order API"
+        ]
+      }
+    },
+    {
+      "id": "cmp_301fa988",
+      "kind": "component",
+      "label": "Order Service",
+      "metadata": {
+        "provides": [
+          "Order API"
+        ],
+        "requires": [
+          "Payment API",
+          "Inventory API"
+        ]
+      }
+    },
+    {
+      "id": "cmp_3b1de8f3",
+      "kind": "component",
+      "label": "Payment Service",
+      "metadata": {
+        "provides": [
+          "Payment API"
+        ],
+        "requires": []
+      }
+    },
+    {
+      "id": "cmp_ff803cd6",
+      "kind": "component",
+      "label": "Inventory Service",
+      "metadata": {
+        "provides": [
+          "Inventory API"
+        ],
+        "requires": []
+      }
+    },
+    {
+      "id": "ifc_6725ba7f",
+      "kind": "interface",
+      "label": "Order API",
+      "metadata": {
+        "notation": "lollipop"
+      }
+    },
+    {
+      "id": "ifc_66670299",
+      "kind": "interface",
+      "label": "Payment API",
+      "metadata": {
+        "notation": "lollipop"
+      }
+    },
+    {
+      "id": "ifc_487bdfd7",
+      "kind": "interface",
+      "label": "Inventory API",
+      "metadata": {
+        "notation": "lollipop"
+      }
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "title": "Commerce microservices"
+}

@@ -1,0 +1,88 @@
+{
+  "annotations": [],
+  "edges": [
+    {
+      "direction": "forward",
+      "id": "transition_313666f593",
+      "kind": "transition",
+      "label": "pay [payment authorized]",
+      "sourceId": "state_1e9d063f9f",
+      "targetId": "state_ec47ea95a0"
+    },
+    {
+      "direction": "forward",
+      "id": "transition_3adf0d4c24",
+      "kind": "transition",
+      "label": "close order",
+      "sourceId": "state_d41f43ca4e",
+      "targetId": "state_02d7e8ebbb"
+    },
+    {
+      "direction": "forward",
+      "id": "transition_4770e7bf61",
+      "kind": "transition",
+      "label": "ship [inventory allocated]",
+      "sourceId": "state_ec47ea95a0",
+      "targetId": "state_7f315c4e59"
+    },
+    {
+      "direction": "forward",
+      "id": "transition_48d29b6076",
+      "kind": "transition",
+      "label": "deliver [signature captured]",
+      "sourceId": "state_7f315c4e59",
+      "targetId": "state_d41f43ca4e"
+    },
+    {
+      "direction": "forward",
+      "id": "transition_d42861f3ed",
+      "kind": "transition",
+      "label": "create order",
+      "sourceId": "state_64f5330b4a",
+      "targetId": "state_1e9d063f9f"
+    }
+  ],
+  "groups": [],
+  "id": "statedoc_fd39935e9e",
+  "kind": "state",
+  "nodes": [
+    {
+      "id": "state_02d7e8ebbb",
+      "kind": "pseudostate",
+      "label": "end",
+      "metadata": {
+        "pseudostate": "final"
+      }
+    },
+    {
+      "id": "state_1e9d063f9f",
+      "kind": "state",
+      "label": "Created"
+    },
+    {
+      "id": "state_64f5330b4a",
+      "kind": "pseudostate",
+      "label": "start",
+      "metadata": {
+        "pseudostate": "initial"
+      }
+    },
+    {
+      "id": "state_7f315c4e59",
+      "kind": "state",
+      "label": "Shipped"
+    },
+    {
+      "id": "state_d41f43ca4e",
+      "kind": "state",
+      "label": "Delivered"
+    },
+    {
+      "id": "state_ec47ea95a0",
+      "kind": "state",
+      "label": "Paid"
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "title": "Order lifecycle"
+}

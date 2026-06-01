@@ -1,0 +1,183 @@
+{
+  "annotations": [],
+  "diagnostics": [],
+  "edges": [
+    {
+      "direction": "forward",
+      "id": "rel_3fadb85a",
+      "kind": "uses",
+      "sourceId": "class_b43d4440",
+      "targetId": "class_218a0a80"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_6e640145",
+      "kind": "uses",
+      "sourceId": "class_8dfe10a2",
+      "targetId": "class_b43d4440"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_9b7d9d88",
+      "kind": "uses",
+      "sourceId": "class_8dfe10a2",
+      "targetId": "iface_79d2fd14"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_b9b438e0",
+      "kind": "extends",
+      "sourceId": "class_39413e10",
+      "targetId": "class_218a0a80"
+    },
+    {
+      "direction": "forward",
+      "id": "rel_c46f18b6",
+      "kind": "implements",
+      "sourceId": "class_b43d4440",
+      "targetId": "iface_79d2fd14"
+    }
+  ],
+  "groups": [],
+  "id": "classdoc_5f8ebd7c",
+  "kind": "class",
+  "nodes": [
+    {
+      "id": "class_218a0a80",
+      "kind": "class",
+      "label": "User",
+      "metadata": {
+        "abstract": false,
+        "fields": [
+          {
+            "id": "field_e57e91d6",
+            "name": "id",
+            "readonly": true,
+            "type": "string",
+            "visibility": "private"
+          },
+          {
+            "id": "field_35c26e68",
+            "name": "email",
+            "type": "string",
+            "visibility": "private"
+          }
+        ],
+        "methods": [
+          {
+            "id": "method_5ee22c6a",
+            "name": "changeEmail",
+            "parameters": [
+              {
+                "name": "email",
+                "type": "string"
+              }
+            ],
+            "returnType": "void",
+            "visibility": "public"
+          }
+        ]
+      }
+    },
+    {
+      "id": "class_39413e10",
+      "kind": "class",
+      "label": "Admin",
+      "metadata": {
+        "abstract": false,
+        "fields": [
+          {
+            "id": "field_92336801",
+            "name": "permissions",
+            "type": "string",
+            "visibility": "private"
+          }
+        ],
+        "methods": [
+          {
+            "id": "method_e2860cb1",
+            "name": "disableUser",
+            "parameters": [
+              {
+                "name": "user",
+                "type": "User"
+              }
+            ],
+            "returnType": "void",
+            "visibility": "public"
+          }
+        ]
+      }
+    },
+    {
+      "id": "class_8dfe10a2",
+      "kind": "class",
+      "label": "AuthService",
+      "metadata": {
+        "abstract": false,
+        "fields": [],
+        "methods": [
+          {
+            "id": "method_b0c2a51d",
+            "name": "authenticate",
+            "parameters": [
+              {
+                "name": "token",
+                "type": "string"
+              }
+            ],
+            "returnType": "User",
+            "visibility": "public"
+          }
+        ]
+      }
+    },
+    {
+      "id": "class_b43d4440",
+      "kind": "class",
+      "label": "UserRepository",
+      "metadata": {
+        "abstract": false,
+        "fields": [],
+        "methods": [
+          {
+            "id": "method_c3e50572",
+            "name": "findById",
+            "parameters": [
+              {
+                "name": "id",
+                "type": "string"
+              }
+            ],
+            "returnType": "User",
+            "visibility": "public"
+          }
+        ]
+      }
+    },
+    {
+      "id": "iface_79d2fd14",
+      "kind": "interface",
+      "label": "Repository",
+      "metadata": {
+        "methods": [
+          {
+            "id": "method_c037a51d",
+            "name": "findById",
+            "parameters": [
+              {
+                "name": "id",
+                "type": "string"
+              }
+            ],
+            "returnType": "User",
+            "visibility": "public"
+          }
+        ],
+        "stereotype": "interface"
+      }
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "title": "User domain model"
+}

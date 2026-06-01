@@ -1,0 +1,156 @@
+{
+  "annotations": [],
+  "diagnostics": [],
+  "edges": [
+    {
+      "direction": "forward",
+      "id": "flow_0b055956",
+      "kind": "flow",
+      "sourceId": "act_2b198005",
+      "targetId": "act_613ba680"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_c3143ba5",
+      "kind": "flow",
+      "sourceId": "act_613ba680",
+      "targetId": "act_d94bcd38"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_da4ad530",
+      "kind": "flow",
+      "sourceId": "act_d94bcd38",
+      "targetId": "act_00df9ea6"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_133a2f91",
+      "kind": "flow",
+      "label": "Yes",
+      "sourceId": "act_00df9ea6",
+      "targetId": "act_7e353611"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_bb6cf7e6",
+      "kind": "flow",
+      "label": "No",
+      "sourceId": "act_00df9ea6",
+      "targetId": "act_f9a5a4c8"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_effcb5c9",
+      "kind": "flow",
+      "sourceId": "act_f9a5a4c8",
+      "targetId": "act_55d5a232"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_08074612",
+      "kind": "flow",
+      "label": "stock branch",
+      "sourceId": "act_7e353611",
+      "targetId": "act_8d116489"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_66b8ad36",
+      "kind": "flow",
+      "label": "billing branch",
+      "sourceId": "act_7e353611",
+      "targetId": "act_5b96eeb4"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_26dad16a",
+      "kind": "flow",
+      "sourceId": "act_8d116489",
+      "targetId": "act_46da180c"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_ad187334",
+      "kind": "flow",
+      "sourceId": "act_5b96eeb4",
+      "targetId": "act_46da180c"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_e59f77d7",
+      "kind": "flow",
+      "sourceId": "act_46da180c",
+      "targetId": "act_9bf0904e"
+    },
+    {
+      "direction": "forward",
+      "id": "flow_1ab17e06",
+      "kind": "flow",
+      "sourceId": "act_9bf0904e",
+      "targetId": "act_55d5a232"
+    }
+  ],
+  "groups": [],
+  "id": "actdoc_82f445ff",
+  "kind": "activity",
+  "nodes": [
+    {
+      "id": "act_613ba680",
+      "kind": "action",
+      "label": "Submit order"
+    },
+    {
+      "id": "act_d94bcd38",
+      "kind": "action",
+      "label": "Authorize payment"
+    },
+    {
+      "id": "act_00df9ea6",
+      "kind": "decision",
+      "label": "Payment approved?"
+    },
+    {
+      "id": "act_f9a5a4c8",
+      "kind": "action",
+      "label": "Notify payment failure"
+    },
+    {
+      "id": "act_7e353611",
+      "kind": "action",
+      "label": "Fork fulfillment work"
+    },
+    {
+      "id": "act_8d116489",
+      "kind": "action",
+      "label": "Reserve inventory"
+    },
+    {
+      "id": "act_5b96eeb4",
+      "kind": "action",
+      "label": "Issue invoice"
+    },
+    {
+      "id": "act_46da180c",
+      "kind": "action",
+      "label": "Join fulfillment work"
+    },
+    {
+      "id": "act_9bf0904e",
+      "kind": "action",
+      "label": "Ship order"
+    },
+    {
+      "id": "act_55d5a232",
+      "kind": "final",
+      "label": "complete"
+    },
+    {
+      "id": "act_2b198005",
+      "kind": "initial",
+      "label": "start"
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "title": "Order processing workflow"
+}

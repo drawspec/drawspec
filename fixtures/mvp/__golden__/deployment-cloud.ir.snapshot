@@ -1,0 +1,142 @@
+{
+  "annotations": [],
+  "edges": [
+    {
+      "direction": "none",
+      "id": "cp_00a0dfc55cca58d1",
+      "kind": "communication",
+      "label": "HTTPS",
+      "sourceId": "dn_ed947a100831258e",
+      "targetId": "in_3df758453a713335"
+    },
+    {
+      "direction": "none",
+      "id": "cp_41bc03ecce28756a",
+      "kind": "communication",
+      "label": "TLS",
+      "sourceId": "dn_e7b3f06185a8639c",
+      "targetId": "in_8980d18d222a454a"
+    },
+    {
+      "direction": "none",
+      "id": "cp_6538027809983808",
+      "kind": "communication",
+      "label": "TLS",
+      "sourceId": "dn_ed947a100831258e",
+      "targetId": "in_8980d18d222a454a"
+    },
+    {
+      "direction": "none",
+      "id": "cp_83fbea01a9641f7f",
+      "kind": "communication",
+      "label": "HTTPS",
+      "sourceId": "dn_2983a74f2170307a",
+      "targetId": "dn_e7b3f06185a8639c"
+    },
+    {
+      "direction": "none",
+      "id": "cp_a9b924760b6d296b",
+      "kind": "communication",
+      "label": "HTTPS",
+      "sourceId": "dn_e7b3f06185a8639c",
+      "targetId": "in_3df758453a713335"
+    }
+  ],
+  "groups": [
+    {
+      "childIds": [
+        "art_0d327c3221e87ae4"
+      ],
+      "id": "grp_0f35e56b72a15698",
+      "kind": "deployment-node",
+      "label": "CDN Edge"
+    },
+    {
+      "childIds": [
+        "art_655eb4eb95fd5677",
+        "art_f6a66885afb27708"
+      ],
+      "id": "grp_3bf5ce32e9c67fa2",
+      "kind": "deployment-node",
+      "label": "App Cluster"
+    },
+    {
+      "childIds": [
+        "art_a87e9d0792858505"
+      ],
+      "id": "grp_a46c2b5c67ed5914",
+      "kind": "deployment-node",
+      "label": "Worker Pool"
+    }
+  ],
+  "id": "dep_ed17095a9bc0fb10",
+  "kind": "deployment",
+  "nodes": [
+    {
+      "id": "art_0d327c3221e87ae4",
+      "kind": "artifact",
+      "label": "Static Assets",
+      "parentId": "dn_2983a74f2170307a"
+    },
+    {
+      "id": "art_655eb4eb95fd5677",
+      "kind": "artifact",
+      "label": "API Service",
+      "parentId": "dn_e7b3f06185a8639c"
+    },
+    {
+      "id": "art_a87e9d0792858505",
+      "kind": "artifact",
+      "label": "Order Worker",
+      "parentId": "dn_ed947a100831258e"
+    },
+    {
+      "id": "art_f6a66885afb27708",
+      "kind": "artifact",
+      "label": "Web App",
+      "parentId": "dn_e7b3f06185a8639c"
+    },
+    {
+      "id": "dn_2983a74f2170307a",
+      "kind": "deployment-node",
+      "label": "CDN Edge",
+      "metadata": {
+        "provider": "CloudFront"
+      }
+    },
+    {
+      "id": "dn_e7b3f06185a8639c",
+      "kind": "deployment-node",
+      "label": "App Cluster",
+      "metadata": {
+        "runtime": "Bun"
+      }
+    },
+    {
+      "id": "dn_ed947a100831258e",
+      "kind": "deployment-node",
+      "label": "Worker Pool",
+      "metadata": {
+        "runtime": "Bun"
+      }
+    },
+    {
+      "id": "in_3df758453a713335",
+      "kind": "infrastructure-node",
+      "label": "Message Queue",
+      "metadata": {
+        "service": "SQS"
+      }
+    },
+    {
+      "id": "in_8980d18d222a454a",
+      "kind": "infrastructure-node",
+      "label": "Managed Postgres",
+      "metadata": {
+        "engine": "postgresql"
+      }
+    }
+  ],
+  "schemaVersion": "1.0.0",
+  "title": "Cloud deployment"
+}

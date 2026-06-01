@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-statedoc_fd39935e9e-18zqhd5-desc-1qn7q5r" aria-labelledby="drawspec-statedoc_fd39935e9e-18zqhd5-title-11uvhhk" height="1016" id="drawspec-statedoc_fd39935e9e-18zqhd5" role="img" viewBox="0 0 200 1016" width="200" xmlns="http://www.w3.org/2000/svg">
+  <title id="drawspec-statedoc_fd39935e9e-18zqhd5-title-11uvhhk">
+    Order lifecycle
+  </title>
+  <desc id="drawspec-statedoc_fd39935e9e-18zqhd5-desc-1qn7q5r">
+    state diagram statedoc_fd39935e9e
+  </desc>
+  <rect fill="#ffffff" height="1016" width="200" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-statedoc_fd39935e9e-18zqhd5-marker-arrow-1fpmmgg" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-edge-transition_313666f593-1ds68s6">
+    <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-statedoc_fd39935e9e-18zqhd5-marker-arrow-1fpmmgg)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="201.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="326">
+      pay [payment authorized]
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-edge-transition_3adf0d4c24-0f5ra8b">
+    <path d="M 100 772 L 100 948" fill="none" marker-end="url(#drawspec-statedoc_fd39935e9e-18zqhd5-marker-arrow-1fpmmgg)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="854">
+      close order
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-edge-transition_4770e7bf61-1kzac9p">
+    <path d="M 100 420 L 100 596" fill="none" marker-end="url(#drawspec-statedoc_fd39935e9e-18zqhd5-marker-arrow-1fpmmgg)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="218.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="502">
+      ship [inventory allocated]
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-edge-transition_48d29b6076-0vzepr4">
+    <path d="M 100 596 L 100 772" fill="none" marker-end="url(#drawspec-statedoc_fd39935e9e-18zqhd5-marker-arrow-1fpmmgg)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="235.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="678">
+      deliver [signature captured]
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-edge-transition_d42861f3ed-09qewnj">
+    <path d="M 100 68 L 100 244" fill="none" marker-end="url(#drawspec-statedoc_fd39935e9e-18zqhd5-marker-arrow-1fpmmgg)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="100.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="150">
+      create order
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-node-state_02d7e8ebbb-1q4b7mi">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="920" />
+    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="952.667">
+      end
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-node-state_1e9d063f9f-12on1fc">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="216" />
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
+      Created
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-node-state_64f5330b4a-0qqydsn">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      start
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-node-state_7f315c4e59-04h9037">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="568" />
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="600.667">
+      Shipped
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-node-state_d41f43ca4e-1hjmukm">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="744" />
+    <text data-width="75.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="776.667">
+      Delivered
+    </text>
+  </g>
+  <g id="drawspec-statedoc_fd39935e9e-18zqhd5-node-state_ec47ea95a0-0ioir1v">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="392" />
+    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
+      Paid
+    </text>
+  </g>
+</svg>

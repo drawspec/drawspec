@@ -12,10 +12,15 @@ import {
 import { recommendedRules, validate } from "../../packages/validation/src";
 import invalidSequence from "../edge-cases/invalid-empty-title.sequence";
 import invalidWorkspace from "../edge-cases/invalid-missing-technology.arch";
+import activityFlow from "./activity-flow.activity";
 import nestedWorkspace from "./architecture-nested.arch";
 import paymentsWorkspace from "./architecture-payments.arch";
+import classDomain from "./class-domain.class";
+import componentSystem from "./component-system.component";
+import deploymentCloud from "./deployment-cloud.deployment";
 import sequenceAlt from "./sequence-alt.sequence";
 import sequenceBasic from "./sequence-basic.sequence";
+import stateLifecycle from "./state-lifecycle.state";
 
 const goldenDir = "fixtures/mvp/__golden__";
 
@@ -42,6 +47,37 @@ const validFixtures = [
     edge: "Persists settings",
     group: "Commerce",
   },
+  {
+    name: "class-domain",
+    input: classDomain,
+    node: "AuthService",
+    edgeKind: "implements",
+  },
+  {
+    name: "state-lifecycle",
+    input: stateLifecycle,
+    node: "Delivered",
+    edge: "deliver [signature captured]",
+  },
+  {
+    name: "component-system",
+    input: componentSystem,
+    node: "Order Service",
+    edge: "Authorize payment",
+  },
+  {
+    name: "deployment-cloud",
+    input: deploymentCloud,
+    node: "App Cluster",
+    edge: "HTTPS",
+    group: "App Cluster",
+  },
+  {
+    name: "activity-flow",
+    input: activityFlow,
+    node: "Ship order",
+    edge: "Yes",
+  },
 ] as const;
 
 describe("MVP fixture suite", () => {
@@ -50,7 +86,18 @@ describe("MVP fixture suite", () => {
       const document = await compileDiagram(fixture.input);
 
       expectValid(validate({ diagram: document, rules: recommendedRules }));
-      const assertion = expectDiagram(document).toHaveNode(fixture.node).toHaveEdge(fixture.edge);
+      const assertion = expectDiagram(document).toHaveNode(fixture.node);
+      if ("edge" in fixture) {
+        assertion.toHaveEdge(fixture.edge);
+      }
+      if ("edgeKind" in fixture) {
+        const hasEdgeKind = document.edges.some((edge) => edge.kind === fixture.edgeKind);
+        if (!hasEdgeKind) {
+          throw new Error(
+            `Expected diagram '${document.id}' to contain edge kind '${fixture.edgeKind}'.`
+          );
+        }
+      }
       if ("group" in fixture) {
         assertion.toHaveGroup(fixture.group);
       }

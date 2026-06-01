@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-cmpdoc_d1ebcbaa-1ajois9-desc-1g9qwmu" aria-labelledby="drawspec-cmpdoc_d1ebcbaa-1ajois9-title-01h32cb" height="664" id="drawspec-cmpdoc_d1ebcbaa-1ajois9" role="img" viewBox="0 0 600 664" width="600" xmlns="http://www.w3.org/2000/svg">
+  <title id="drawspec-cmpdoc_d1ebcbaa-1ajois9-title-01h32cb">
+    Commerce microservices
+  </title>
+  <desc id="drawspec-cmpdoc_d1ebcbaa-1ajois9-desc-1g9qwmu">
+    component diagram cmpdoc_d1ebcbaa
+  </desc>
+  <rect fill="#ffffff" height="664" width="600" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_301fa988_provides_ifc_6725ba7f-164trrh">
+    <path d="M 100 244 L 500 420" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_301fa988_requires_ifc_487bdfd7-0hj0lcj">
+    <path d="M 100 244 L 100 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_301fa988_requires_ifc_66670299-1ibstka">
+    <path d="M 100 244 L 300 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_3611b529_requires_ifc_6725ba7f-07l9pgy">
+    <path d="M 100 68 L 500 420" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_3b1de8f3_provides_ifc_66670299-1kpgmpw">
+    <path d="M 100 420 L 300 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_ff803cd6_provides_ifc_487bdfd7-0zm1h2f">
+    <path d="M 300 420 L 100 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-dep_466a8b5c-024xzhq">
+    <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="326">
+      Authorize payment
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-dep_4c457b48-0vo0u5w">
+    <path d="M 100 68 L 100 244" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="150">
+      HTTP commands
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-dep_f4db1c54-0ls0d92">
+    <path d="M 100 244 L 300 420" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="326">
+      Reserve stock
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-cmp_301fa988-1xc3ohd">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="216" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
+      Order Service
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-cmp_3611b529-0zxoe6o">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      Web App
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-cmp_3b1de8f3-0bst8hd">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="392" />
+    <text data-width="126" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
+      Payment Service
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-cmp_ff803cd6-0nz5xqz">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="392" />
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="424.667">
+      Inventory Service
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_487bdfd7-1382yxh">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="568" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="600.667">
+      Inventory API
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_66670299-1si6i0w">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="568" />
+    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="600.667">
+      Payment API
+    </text>
+  </g>
+  <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_6725ba7f-14avwv1">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="392" />
+    <text data-width="75.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="424.667">
+      Order API
+    </text>
+  </g>
+</svg>
