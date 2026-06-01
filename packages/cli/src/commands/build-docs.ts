@@ -1,6 +1,6 @@
 import type { DiagramNode } from "@drawspec/docs";
 import { buildDocs } from "@drawspec/docs";
-import { asString, green, loadModule, red, renderDocumentSvg } from "./shared";
+import { asString, green, loadModule, red, renderDocumentSvgLink } from "./shared";
 import type { DrawspecCommand } from "./types";
 
 declare const process: { cwd(): string };
@@ -33,7 +33,7 @@ export const buildDocsCommand: DrawspecCommand = {
 async function renderDocsDiagram(
   node: DiagramNode,
   contentDir: string,
-  config: Parameters<typeof renderDocumentSvg>[1]
+  config: Parameters<typeof renderDocumentSvgLink>[1]
 ): Promise<string> {
   const file = node.ref.startsWith("/") ? node.ref : joinPath(process.cwd(), contentDir, node.ref);
   const [loaded] = await loadModule(file);
@@ -43,7 +43,7 @@ async function renderDocsDiagram(
       `No diagram found at ${node.ref}`;
     return `<pre>${escapeHtml(message)}</pre>`;
   }
-  return await renderDocumentSvg(loaded.document, config, config.render?.theme ?? config.theme);
+  return await renderDocumentSvgLink(loaded.document, config);
 }
 
 function escapeHtml(value: string): string {

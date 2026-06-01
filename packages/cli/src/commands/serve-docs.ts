@@ -9,7 +9,7 @@ import {
   green,
   loadModule,
   red,
-  renderDocumentSvg,
+  renderDocumentSvgLink,
   waitForShutdown,
   watchFiles,
 } from "./shared";
@@ -86,13 +86,13 @@ export const serveDocsCommand: DrawspecCommand = {
 async function renderDocsDiagram(
   node: DiagramNode,
   contentDir: string,
-  config: Parameters<typeof renderDocumentSvg>[1]
+  config: Parameters<typeof renderDocumentSvgLink>[1]
 ): Promise<string> {
   const file = node.ref.startsWith("/") ? node.ref : joinPath(process.cwd(), contentDir, node.ref);
   const [loaded] = await loadModule(file);
   if (loaded?.document === undefined)
     return `<pre>${escapeHtml(loaded?.diagnostics.map((item) => item.message).join("; ") ?? `No diagram found at ${node.ref}`)}</pre>`;
-  return await renderDocumentSvg(loaded.document, config, config.render?.theme ?? config.theme);
+  return await renderDocumentSvgLink(loaded.document, config);
 }
 
 function contentType(path: string): string {
