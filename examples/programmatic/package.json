@@ -1,0 +1,19 @@
+{
+  "name": "drawspec-programmatic-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "bun run src/compile-and-render.ts",
+    "validate": "bun run src/validate.ts",
+    "export:mermaid": "bun run src/export-mermaid.ts"
+  },
+  "dependencies": {
+    "@drawspec/uml-sequence": "workspace:*",
+    "@drawspec/uml-class": "workspace:*",
+    "@drawspec/architecture": "workspace:*",
+    "@drawspec/layout": "workspace:*",
+    "@drawspec/renderer-svg": "workspace:*",
+    "@drawspec/validation": "workspace:*",
+    "@drawspec/exporter-mermaid": "workspace:*"
+  }
+}
