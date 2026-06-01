@@ -8,7 +8,10 @@ import {
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 import { type CompilerOptions, compileDocument, evaluateSource } from "./compiler";
+import { provideCompletionList } from "./completion";
+import { provideDefinition } from "./definition";
 import { toLspDiagnostics } from "./diagnostics";
+import { provideHover } from "./hover";
 import { extractDocumentSymbols } from "./symbols";
 
 interface DocumentState {
@@ -19,17 +22,21 @@ interface DocumentState {
 export interface LspServerOptions {
   connection?: Connection;
   compilerOptions?: CompilerOptions;
+  /** Root path of the DrawSpec monorepo, used for go-to-definition resolution */
+  rootPath?: string;
 }
 
 export class LspServer {
   private readonly connection: Connection;
   private readonly documents: TextDocuments<TextDocument>;
   private readonly compilerOptions: CompilerOptions;
+  private readonly rootPath: string | undefined;
   private readonly state = new Map<string, DocumentState>();
 
   constructor(options: LspServerOptions = {}) {
     this.connection = options.connection ?? createConnection();
     this.compilerOptions = options.compilerOptions ?? {};
+    this.rootPath = options.rootPath;
     this.documents = new TextDocuments(TextDocument);
 
     this.connection.onInitialize(() => ({
@@ -38,7 +45,12 @@ export class LspServer {
           openClose: true,
           change: TextDocumentSyncKind.Full,
         },
+        completionProvider: {
+          triggerCharacters: [".", "'", '"', "/"],
+        },
+        hoverProvider: true,
         documentSymbolProvider: true,
+        definitionProvider: true,
       },
     }));
 
@@ -52,6 +64,24 @@ export class LspServer {
     });
 
     this.connection.onDocumentSymbol((params) => this.onDocumentSymbol(params.textDocument.uri));
+
+    this.connection.onCompletion((params) => {
+      const textDocument = this.documents.get(params.textDocument.uri);
+      if (textDocument === undefined) return { isIncomplete: false, items: [] };
+      return this.onCompletion(textDocument, params.position);
+    });
+
+    this.connection.onHover((params) => {
+      const textDocument = this.documents.get(params.textDocument.uri);
+      if (textDocument === undefined) return undefined;
+      return this.onHover(textDocument, params.position);
+    });
+
+    this.connection.onDefinition((params) => {
+      const textDocument = this.documents.get(params.textDocument.uri);
+      if (textDocument === undefined) return undefined;
+      return this.onDefinition(textDocument, params.position, params.textDocument.uri);
+    });
 
     this.documents.listen(this.connection);
   }
@@ -81,6 +111,22 @@ export class LspServer {
 
   start(): void {
     this.connection.listen();
+  }
+
+  private onCompletion(textDocument: TextDocument, position: { line: number; character: number }) {
+    return provideCompletionList(textDocument.getText(), position);
+  }
+
+  private onHover(textDocument: TextDocument, position: { line: number; character: number }) {
+    return provideHover(textDocument.getText(), position);
+  }
+
+  private onDefinition(
+    textDocument: TextDocument,
+    position: { line: number; character: number },
+    uri: string
+  ) {
+    return provideDefinition(uri, textDocument.getText(), position, this.rootPath);
   }
 
   private async onDocumentChange(textDocument: TextDocument): Promise<void> {
