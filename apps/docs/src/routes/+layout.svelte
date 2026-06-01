@@ -1,10 +1,12 @@
 <script lang="ts">
 import { base } from "$app/paths";
 import { page } from "$app/state";
+import DocsSearch from "$lib/DocsSearch.svelte";
 import "../app.css";
 
 let { children, data } = $props();
 let darkMode = $state(false);
+const SearchComponent = DocsSearch;
 
 function toggleDark() {
   darkMode = !darkMode;
@@ -60,6 +62,7 @@ const year = new Date().getFullYear();
       </svg>
     </button>
     <a href="/" class="logo">DrawSpec</a>
+    <SearchComponent />
     <button class="theme-toggle" onclick={toggleDark} aria-label="Toggle dark mode">
       {#if darkMode}
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -128,6 +131,7 @@ const year = new Date().getFullYear();
     background: var(--color-surface);
     border-bottom: 1px solid var(--color-border);
     gap: 0.75rem;
+    flex-wrap: wrap;
   }
 
   .menu-toggle {
@@ -152,7 +156,6 @@ const year = new Date().getFullYear();
   }
 
   .theme-toggle {
-    margin-left: auto;
     background: none;
     border: 1px solid var(--color-border);
     color: var(--color-text-muted);
@@ -267,6 +270,12 @@ const year = new Date().getFullYear();
   }
 
   @media (max-width: 768px) {
+    .header {
+      height: auto;
+      min-height: var(--header-height);
+      padding-block: 0.625rem;
+    }
+
     .menu-toggle {
       display: flex;
     }
