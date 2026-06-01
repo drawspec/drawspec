@@ -15,7 +15,7 @@ Define a simple class diagram with two classes and an inheritance relationship:
 \`\`\`typescript
 import { classDiagram } from "@drawspec/uml-class";
 
-export default classDiagram("Animal hierarchy", ({ class_, extends_ }) => [
+export default classDiagram("Animal hierarchy", ({ class_ }) => [
   class_("Animal", (c) => {
     c.field("name", "string");
     c.field("age", "number");
@@ -87,17 +87,14 @@ enum_("OrderStatus", (e) => {
 
 ### Relationships
 
-Draw connections between types using the relationship helpers passed to the callback:
+Draw connections between types using the class builder methods:
 
 \`\`\`typescript
-classDiagram("Relationships", ({ class_, interface_, implements_, uses_ }) => [
+classDiagram("Relationships", ({ class_, interface_ }) => [
   class_("Vehicle"),
-  class_("Car"),
+  class_("Car", (c) => c.implements("Drivable")),
   interface_("Drivable"),
-  class_("Driver"),
-
-  implements_("Car", "Drivable"),
-  uses_("Driver", "Vehicle"),
+  class_("Driver", (c) => c.uses("Vehicle")),
 ]);
 \`\`\`
 
@@ -164,7 +161,7 @@ Here is a complete class diagram modeling a payment processing system:
 \`\`\`typescript
 import { classDiagram } from "@drawspec/uml-class";
 
-export default classDiagram("Payment system", ({ class_, interface_, enum_, implements_, uses_ }) => [
+export default classDiagram("Payment system", ({ class_, interface_, enum_ }) => [
   interface_("PaymentMethod", (i) => {
     i.method("process", { parameters: [{ name: "amount", type: "number" }], returnType: "boolean" });
     i.method("refund", { parameters: [{ name: "transactionId", type: "string" }], returnType: "boolean" });

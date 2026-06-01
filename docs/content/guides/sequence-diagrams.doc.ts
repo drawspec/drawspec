@@ -60,7 +60,7 @@ Notes attach to the element that precedes them in the chain.
 
 ## Fragments
 
-Fragments group messages into conditional or looping behavior.
+Fragments group messages into conditional behavior.
 
 ### Alternative (alt)
 
@@ -86,25 +86,30 @@ export default sequence("Payment result", (ctx) => {
 });
 \`\`\`
 
-### Loop
+### Conditional retries
 
-Use \`loop\` to repeat a sequence of messages:
+Use additional \`alt\` branches to show retry outcomes:
 
 \`\`\`typescript
 export default sequence("Retry loop", (ctx) => {
   const client = ctx.actor("Client");
   const server = ctx.participant("Server");
 
-  ctx.loop("max 3 attempts", () => {
-    client.to(server, "Send request");
-    server.to(client, "Response");
-  });
+  ctx
+    .alt("first attempt succeeds", () => {
+      client.to(server, "Send request");
+      server.to(client, "Response");
+    })
+    .else("retry required", () => {
+      client.to(server, "Send request");
+      server.to(client, "Retry later");
+    });
 });
 \`\`\`
 
-### Parallel (par)
+### Independent message groups
 
-Use \`par\` to show concurrent message exchanges:
+Use adjacent messages to document independent exchanges in the same interaction:
 
 \`\`\`typescript
 export default sequence("Parallel fetch", (ctx) => {
@@ -114,10 +119,8 @@ export default sequence("Parallel fetch", (ctx) => {
   const pricing = ctx.participant("Pricing");
 
   user.to(catalog, "Load product page");
-  ctx.par(() => {
-    catalog.to(inventory, "Check stock");
-    catalog.to(pricing, "Get price");
-  });
+  catalog.to(inventory, "Check stock");
+  catalog.to(pricing, "Get price");
   catalog.to(user, "Display product");
 });
 \`\`\`

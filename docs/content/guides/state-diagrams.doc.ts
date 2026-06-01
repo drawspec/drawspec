@@ -72,11 +72,11 @@ state("Paused", (s) => {
 });
 \`\`\`
 
-Chain \`.label()\` on the transition for more detailed annotations:
+Call \`.label()\` once on the transition for a detailed annotation:
 
 \`\`\`typescript
 state("Ready", (s) =>
-  s.to("Running").label("dispatch").label("process started")
+  s.to("Running").label("dispatch / process started")
 );
 \`\`\`
 
@@ -141,8 +141,8 @@ export default stateDiagram("Order processing", ({ state, initial, final }) => [
   }),
   state("Processing", (s) => s.to("Shipped").label("dispatch")),
   state("Shipped", (s) => s.to("Delivered").label("deliver")),
-  state("Rejected", (s) => s.to(final()).label("cancel")),
-  state("Delivered", (s) => s.to(final()).label("complete")),
+  state("Rejected", (s) => s.to("end").label("cancel")),
+  state("Delivered", (s) => s.to("end").label("complete")),
   final("end"),
 ]);
 \`\`\`
