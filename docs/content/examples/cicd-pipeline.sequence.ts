@@ -10,16 +10,15 @@ export default sequence("Rollback Flow", (seq) => {
   healthCheck.to(ciSystem, "Health check failed");
   ciSystem.to(alertMgr, "Send alert");
   alertMgr.to(ciSystem, "Alert sent");
-  seq.alt("Manual approval?", (alt) => {
-    alt.if("Approved", () => {
+  seq
+    .alt("Approved", () => {
       ciSystem.to(k8s, "Rollback deployment");
       k8s.to(registry, "Pull previous image");
       k8s.to(k8s, "Deploy previous version");
       k8s.to(ciSystem, "Rollback complete");
-    });
-    alt.else("Rejected", () => {
+    })
+    .else("Rejected", () => {
       ciSystem.to(ciSystem, "Escalate incident");
     });
-  });
   ciSystem.to(healthCheck, "Verify recovery");
 });

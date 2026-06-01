@@ -18,5 +18,5 @@ export default sequence("Order Placement", (seq) => {
   orderSvc.to(client, "Order confirmed");
 
   // Compensating transactions (saga pattern)
-  seq.note("If payment fails: PaymentFailed event triggers OrderCancelled and InventoryReleased");
+  eventBus.note("If payment fails: PaymentFailed triggers OrderCancelled and InventoryReleased");
 });
