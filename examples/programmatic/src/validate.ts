@@ -1,6 +1,6 @@
 import { sequence } from "@drawspec/uml-sequence";
 import { classDiagram } from "@drawspec/uml-class";
-import { recommendedRules, RuleEngine, loadPolicyPack } from "@drawspec/validation";
+import { listPolicyPacks, loadPolicyPack, recommendedRules, RuleEngine } from "@drawspec/validation";
 import type { DiagramDocument } from "@drawspec/core";
 
 /**
@@ -56,7 +56,7 @@ async function validateDiagrams() {
   const strictPack = loadPolicyPack("strict");
   console.log(`\nPolicy pack "${strictPack.name}": ${Object.keys(strictPack.rules).length} rule configs`);
 
-  const available = ["recommended", "strict", "relaxed"];
+  const available = listPolicyPacks().map((p) => p.name);
   console.log(`Available policy packs: ${available.join(", ")}`);
 }
 

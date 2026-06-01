@@ -1,8 +1,6 @@
 import { sequence } from "@drawspec/uml-sequence";
 import { sequenceLayout } from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
-import { Bun } from "bun";
-
 /**
  * Demonstrates the full pipeline: define -> layout -> render -> write SVG file.
  *
