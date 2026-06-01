@@ -14,6 +14,7 @@ describe("IR type construction", () => {
   test("constructs all diagram kinds", () => {
     const kinds: DiagramKind[] = [
       "architecture",
+      "dynamic",
       "sequence",
       "class",
       "component",
@@ -27,7 +28,7 @@ describe("IR type construction", () => {
       "graph",
     ];
 
-    expect(kinds).toHaveLength(12);
+    expect(kinds).toHaveLength(13);
   });
 
   test("constructs node, edge, group, and annotation interfaces", () => {

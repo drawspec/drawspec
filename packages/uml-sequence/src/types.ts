@@ -37,7 +37,7 @@ export interface SequenceElement extends NoteTarget {
   readonly id: string;
   readonly name: string;
   readonly role: SequenceRole;
-  readonly modelRef: string | undefined;
+  readonly modelRef?: string;
   readonly notes: readonly SequenceNote[];
   to(other: SequenceElement, label: string): SequenceMessage;
 }

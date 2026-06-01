@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { sequence } from "../../../uml-sequence/src";
+import { sequence } from "@drawspec/uml-sequence";
 import { container, generateDynamicView, person, softwareSystem, workspace } from "../index";
 
 describe("dynamic architecture views", () => {
@@ -10,7 +10,7 @@ describe("dynamic architecture views", () => {
       const web = platform.add(container("Web", { id: "container:web" }));
       const api = platform.add(container("API", { id: "container:api" }));
 
-      customer.uses(web, "Uses checkout");
+      customer.uses(web, "Uses checkout", { tags: ["sync"] });
       web.uses(api, "Submits payment");
     });
     const doc = sequence("Checkout payment", (s) => {
@@ -34,6 +34,7 @@ describe("dynamic architecture views", () => {
     expect(dynamic.edges.map((edge) => edge.label)).toEqual(["Open checkout", "Create payment"]);
     expect(dynamic.edges[0]?.metadata?.["sequenceMessageId"]).toBe(doc.edges[0]?.id);
     expect(dynamic.edges[0]?.metadata?.["relationshipId"]).toBe(ws.model.relationships[0]?.id);
+    expect(dynamic.edges[0]?.tags).toEqual(["relationship", "sync"]);
     expect(dynamic.diagnostics).toBeUndefined();
   });
 

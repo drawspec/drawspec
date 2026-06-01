@@ -184,6 +184,7 @@ export function generateDynamicView(
       targetId: target.element.id,
       ...(sequenceEdge.label === undefined ? {} : { label: sequenceEdge.label }),
       direction: "forward",
+      ...(relationship === undefined ? {} : { tags: [...relationship.tags].sort() }),
       metadata: {
         sequenceMessageId: sequenceEdge.id,
         sequenceSourceId: sequenceEdge.sourceId,

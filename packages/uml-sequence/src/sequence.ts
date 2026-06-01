@@ -35,7 +35,7 @@ class MutableSequenceElement implements SequenceElement {
   readonly id: string;
   readonly name: string;
   readonly role: SequenceRole;
-  readonly modelRef: string | undefined;
+  readonly modelRef?: string;
   readonly notes: SequenceNote[] = [];
   readonly #builder: MutableSequenceBuilder;
 
@@ -48,7 +48,9 @@ class MutableSequenceElement implements SequenceElement {
   ) {
     this.role = role;
     this.name = name;
-    this.modelRef = options.modelRef;
+    if (options.modelRef !== undefined) {
+      this.modelRef = options.modelRef;
+    }
     this.#builder = builder;
     this.id = deterministicId("seq", ["element", role, name, index.toString()]);
   }
