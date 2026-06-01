@@ -1,6 +1,6 @@
 import { container, person, softwareSystem, workspace } from "../../../packages/architecture/src/index.js";
 
-export default workspace("Order processing dynamic", (ws) => {
+export default workspace("Order processing scoped container view", (ws) => {
   const customer = ws.model.add(
     person("Customer", { description: "Places orders" })
   );
@@ -23,7 +23,7 @@ export default workspace("Order processing dynamic", (ws) => {
   web.uses(api, "POST /orders");
   api.uses(fulfillment, "publishes order.created");
 
-  ws.views.container(shop, "order-processing-dynamic", (view) =>
+  ws.views.container(shop, "order-processing-scoped-container", (view) =>
     view.include(shop, customer).autoLayout("left-right")
   );
 });

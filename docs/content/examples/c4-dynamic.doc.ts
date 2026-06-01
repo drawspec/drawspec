@@ -1,16 +1,16 @@
 import { defineDoc, md } from "../../../packages/docs/src/index.js";
 
 export default defineDoc({
-  title: "C4 Dynamic View",
-  description: "Dynamic view showing how elements interact over time for a specific scenario",
+  title: "C4 Scoped Container View",
+  description: "Container view scoped to the elements involved in a specific scenario",
   content: await md`
-# C4 Dynamic View
+# C4 Scoped Container View
 
-Dynamic views model how elements in a container diagram interact to fulfill a specific user goal. Unlike static container views, dynamic views show the sequence of interactions and can include arbitrary elements from your model.
+Scoped container views focus a container diagram on the elements involved in a specific user goal. This example highlights the order submission path without claiming to use a separate dynamic-view API.
 
 ## Diagram
 
-@diagram ./c4-dynamic.arch.ts "Order processing dynamic"
+@diagram ./c4-dynamic.arch.ts "Order processing scoped container view"
 
 ## Code
 
@@ -22,7 +22,7 @@ import {
   workspace,
 } from "@drawspec/architecture";
 
-export default workspace("Order processing dynamic", (ws) => {
+export default workspace("Order processing scoped container view", (ws) => {
   const customer = ws.model.add(
     person("Customer", { description: "Places orders" })
   );
@@ -45,7 +45,7 @@ export default workspace("Order processing dynamic", (ws) => {
   web.uses(api, "POST /orders");
   api.uses(fulfillment, "publishes order.created");
 
-  ws.views.container(shop, "order-processing-dynamic", (view) =>
+  ws.views.container(shop, "order-processing-scoped-container", (view) =>
     view.include(shop, customer).autoLayout("left-right")
   );
 });
@@ -53,7 +53,7 @@ export default workspace("Order processing dynamic", (ws) => {
 
 ## How It Works
 
-The dynamic view shows the order submission flow from the customer's perspective. The customer submits an order form through the Web App, which calls the Order API's POST endpoint. The API publishes an \`order.created\` event to the Fulfillment Service for asynchronous processing.
+The scoped container view shows the order submission flow from the customer's perspective. The customer submits an order form through the Web App, which calls the Order API's POST endpoint. The API publishes an \`order.created\` event to the Fulfillment Service for asynchronous processing.
 
 This view uses the same \`ws.views.container()\` API as the container view but can be customized to show specific relationships and a particular user journey rather than all possible interactions.
 
