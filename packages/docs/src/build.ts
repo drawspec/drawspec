@@ -1,10 +1,11 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, relative, resolve, sep } from "node:path";
+import MiniSearch from "minisearch";
 import { compileDoc } from "./compiler";
 import { defineDoc } from "./define-doc";
 import { renderDocHtml } from "./renderer-html";
 import { discoverDrawSpecPackages, extractPackageApi, generateApiPage } from "./tsdoc-extract";
-import type { DiagramNode, DocDocument } from "./types";
+import type { DiagramNode, DocBlock, DocDocument, DocInline } from "./types";
 
 declare const Bun: {
   Glob: new (
@@ -40,11 +41,44 @@ export interface BuildDocsManifest {
   navigation?: BuildDocsNavigationSection[];
 }
 
+export interface BuildDocsSearchDocument {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  text: string;
+}
+
+export interface BuildDocsSearchIndex {
+  version: 1;
+  options: {
+    fields: string[];
+    storeFields: string[];
+    searchOptions: {
+      boost: Record<string, number>;
+      fuzzy: number;
+      prefix: boolean;
+    };
+  };
+  index: unknown;
+}
+
+const searchIndexOptions = {
+  fields: ["title", "description", "text"],
+  storeFields: ["slug", "title", "description", "text"],
+  searchOptions: {
+    boost: { title: 3, description: 2, text: 1 },
+    fuzzy: 0.2,
+    prefix: true,
+  },
+} as const;
+
 export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsManifest> {
   const contentDir = resolve(options.contentDir);
   const outputDir = resolve(options.outputDir);
   const files = await discoverDocFiles(contentDir);
   const pages: BuildDocsPage[] = [];
+  const searchDocuments: BuildDocsSearchDocument[] = [];
   await mkdir(outputDir, { recursive: true });
   for (const file of files) {
     const doc = await loadDoc(file);
@@ -65,17 +99,18 @@ export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsMan
       html,
     };
     pages.push(page);
+    searchDocuments.push(searchDocumentFromDoc(page, compiled.content));
     await writePage(outputDir, page);
   }
 
   if (options.includeApiDocs !== false) {
-    pages.push(
-      ...(await buildApiPages({
-        contentDir,
-        outputDir,
-        ...(options.renderDiagram !== undefined ? { renderDiagram: options.renderDiagram } : {}),
-      }))
-    );
+    const apiResult = await buildApiPages({
+      contentDir,
+      outputDir,
+      ...(options.renderDiagram !== undefined ? { renderDiagram: options.renderDiagram } : {}),
+    });
+    pages.push(...apiResult.pages);
+    searchDocuments.push(...apiResult.searchDocuments);
   }
 
   const sortedPages = pages.sort((left, right) => left.slug.localeCompare(right.slug));
@@ -86,6 +121,10 @@ export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsMan
   };
   await writeFile(resolve(outputDir, "index.html"), renderIndex(manifest));
   await writeFile(resolve(outputDir, "manifest.json"), JSON.stringify(manifest, null, 2));
+  await writeFile(
+    resolve(outputDir, "search-index.json"),
+    JSON.stringify(buildSearchIndex(searchDocuments))
+  );
   return manifest;
 }
 
@@ -95,12 +134,18 @@ interface ApiBuildOptions {
   renderDiagram?: (node: DiagramNode) => Promise<string>;
 }
 
-async function buildApiPages(options: ApiBuildOptions): Promise<BuildDocsPage[]> {
+interface ApiBuildResult {
+  pages: BuildDocsPage[];
+  searchDocuments: BuildDocsSearchDocument[];
+}
+
+async function buildApiPages(options: ApiBuildOptions): Promise<ApiBuildResult> {
   const workspaceRoot = await findWorkspaceRoot(options.contentDir);
-  if (workspaceRoot === undefined) return [];
+  if (workspaceRoot === undefined) return { pages: [], searchDocuments: [] };
 
   const packageDirs = await discoverDrawSpecPackages(workspaceRoot);
   const pages: BuildDocsPage[] = [];
+  const searchDocuments: BuildDocsSearchDocument[] = [];
   for (const packageDir of packageDirs) {
     const api = await extractPackageApi(packageDir);
     const doc = generateApiPage(api.name, api);
@@ -126,9 +171,10 @@ async function buildApiPages(options: ApiBuildOptions): Promise<BuildDocsPage[]>
       },
     };
     pages.push(page);
+    searchDocuments.push(searchDocumentFromDoc(page, compiled.content));
     await writePage(options.outputDir, page);
   }
-  return pages;
+  return { pages, searchDocuments };
 }
 
 async function discoverDocFiles(contentDir: string): Promise<string[]> {
@@ -229,6 +275,93 @@ function apiCategory(packageName: string): string {
   if (["exporter-mermaid", "exporter-plantuml", "exporter-d2"].includes(shortName))
     return "Exporters";
   return "Tooling";
+}
+
+function searchDocumentFromDoc(page: BuildDocsPage, blocks: DocBlock[]): BuildDocsSearchDocument {
+  return {
+    id: page.slug,
+    slug: page.slug,
+    title: page.title,
+    description: page.description ?? "",
+    text: normalizeSearchText(extractBlockText(blocks)),
+  };
+}
+
+function buildSearchIndex(documents: BuildDocsSearchDocument[]): BuildDocsSearchIndex {
+  const search = new MiniSearch<BuildDocsSearchDocument>({
+    fields: [...searchIndexOptions.fields],
+    storeFields: [...searchIndexOptions.storeFields],
+    searchOptions: searchIndexOptions.searchOptions,
+  });
+  search.addAll(documents);
+
+  return {
+    version: 1,
+    options: {
+      fields: [...searchIndexOptions.fields],
+      storeFields: [...searchIndexOptions.storeFields],
+      searchOptions: searchIndexOptions.searchOptions,
+    },
+    index: search.toJSON(),
+  };
+}
+
+function extractBlockText(blocks: DocBlock[]): string {
+  return blocks.map(extractSingleBlockText).filter(Boolean).join("\n");
+}
+
+function extractSingleBlockText(block: DocBlock): string {
+  switch (block.type) {
+    case "heading":
+    case "paragraph":
+      return extractInlineText(block.children);
+    case "callout":
+      return [block.title, extractInlineText(block.children)].filter(Boolean).join(" ");
+    case "linkBlock":
+      return [block.label, block.description].filter(Boolean).join(" ");
+    case "list":
+      return block.children.map((item) => extractBlockText(item.children)).join("\n");
+    case "table":
+      return block.children
+        .map((row) => row.children.map((cell) => extractInlineText(cell.children)).join(" "))
+        .join("\n");
+    case "image":
+      return [block.alt, block.title].filter(Boolean).join(" ");
+    case "diagram":
+      return block.caption ?? "";
+    case "tabGroup":
+      return block.children
+        .map((tab) => [tab.label, extractBlockText(tab.children)].filter(Boolean).join(" "))
+        .join("\n");
+    case "badge":
+      return block.label;
+    case "blockquote":
+      return extractBlockText(block.children);
+    case "codeBlock":
+    case "divider":
+    case "thematicBreak":
+      return "";
+  }
+}
+
+function extractInlineText(inlines: DocInline[]): string {
+  return inlines.map(extractSingleInlineText).filter(Boolean).join(" ");
+}
+
+function extractSingleInlineText(inline: DocInline): string {
+  switch (inline.type) {
+    case "text":
+    case "codeInline":
+      return inline.value;
+    case "bold":
+    case "italic":
+    case "link":
+      return extractInlineText(inline.children);
+  }
+}
+
+function normalizeSearchText(value: string): string {
+  return value.replace(/\s+/g, " ").trim();
 }
 
 function renderIndex(manifest: BuildDocsManifest): string {
