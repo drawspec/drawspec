@@ -14,6 +14,8 @@ import type {
   ArchitectureView,
   ArchitectureViewKind,
   AutoLayoutDirection,
+  DynamicView,
+  DynamicViewInteraction,
   Workspace,
 } from "./types";
 import { generateViews } from "./view-generator";
@@ -95,6 +97,13 @@ function visibleElementIds(
     }
   }
 
+  if (isDynamicView(view)) {
+    for (const interaction of view.interactions) {
+      ids.add(interaction.sourceId);
+      ids.add(interaction.targetId);
+    }
+  }
+
   if (view.includeAll) {
     for (const element of allElements) {
       ids.add(element.id);
@@ -142,6 +151,27 @@ function toEdge(
   };
 }
 
+function isDynamicView(view: ArchitectureView): view is DynamicView {
+  return view.kind === "dynamic" && "interactions" in view;
+}
+
+function toDynamicEdge(interaction: DynamicViewInteraction): DiagramEdge {
+  return {
+    id: interaction.id,
+    kind: "dynamic-message",
+    sourceId: interaction.sourceId,
+    targetId: interaction.targetId,
+    label: interaction.label,
+    direction: "forward",
+    metadata: {
+      sequenceMessageId: interaction.sequenceMessageId,
+      ...(interaction.relationshipId === undefined
+        ? {}
+        : { relationshipId: interaction.relationshipId }),
+    },
+  };
+}
+
 function toGroups(
   elements: readonly ArchitectureElement[],
   visibleIds: ReadonlySet<string>
@@ -181,23 +211,28 @@ function compileView(
   const visibleIds = visibleElementIds(view, allElements);
   const visibleElements = allElements.filter((element) => visibleIds.has(element.id));
   const relationshipIds = view.relationships ? new Set(view.relationships) : undefined;
-  const visibleRelationships = collected.relationships.filter((relationship) => {
-    if (relationshipIds !== undefined) return relationshipIds.has(relationship.id);
-    return visibleIds.has(relationship.source.id) && visibleIds.has(relationship.target.id);
-  });
+  const visibleRelationships = isDynamicView(view)
+    ? []
+    : collected.relationships.filter((relationship) => {
+        if (relationshipIds !== undefined) return relationshipIds.has(relationship.id);
+        return visibleIds.has(relationship.source.id) && visibleIds.has(relationship.target.id);
+      });
+  const edges = isDynamicView(view)
+    ? view.interactions.map(toDynamicEdge)
+    : visibleRelationships
+        .map((relationship) => toEdge(relationship, workspace.styles.stylesheet))
+        .sort((left, right) => left.id.localeCompare(right.id));
 
   const layout = layoutDirection(view.layoutDirection);
   return {
     schemaVersion: "1.0",
     id: view.id,
     title: view.title,
-    kind: "architecture",
+    kind: view.kind === "dynamic" ? "dynamic" : "architecture",
     nodes: visibleElements
       .map((element) => toNode(element, workspace.styles.stylesheet))
       .sort((left, right) => left.id.localeCompare(right.id)),
-    edges: visibleRelationships
-      .map((relationship) => toEdge(relationship, workspace.styles.stylesheet))
-      .sort((left, right) => left.id.localeCompare(right.id)),
+    edges,
     groups: toGroups(visibleElements, visibleIds),
     annotations: [],
     ...(layout === undefined ? {} : { layout }),
@@ -207,6 +242,7 @@ function compileView(
       workspaceName: workspace.name,
       viewKind,
       subjectId: view.subject.id,
+      ...(isDynamicView(view) ? { interactions: view.interactions } : {}),
     },
   };
 }

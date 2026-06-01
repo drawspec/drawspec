@@ -5,6 +5,7 @@ import type {
   SequenceDocument,
   SequenceDomainModel,
   SequenceElement,
+  SequenceElementOptions,
   SequenceFragment,
   SequenceFragmentBuilder,
   SequenceFragmentChild,
@@ -34,12 +35,22 @@ class MutableSequenceElement implements SequenceElement {
   readonly id: string;
   readonly name: string;
   readonly role: SequenceRole;
+  readonly modelRef?: string;
   readonly notes: SequenceNote[] = [];
   readonly #builder: MutableSequenceBuilder;
 
-  constructor(role: SequenceRole, name: string, index: number, builder: MutableSequenceBuilder) {
+  constructor(
+    role: SequenceRole,
+    name: string,
+    index: number,
+    builder: MutableSequenceBuilder,
+    options: SequenceElementOptions = {}
+  ) {
     this.role = role;
     this.name = name;
+    if (options.modelRef !== undefined) {
+      this.modelRef = options.modelRef;
+    }
     this.#builder = builder;
     this.id = deterministicId("seq", ["element", role, name, index.toString()]);
   }
@@ -124,12 +135,12 @@ class MutableSequenceBuilder implements SequenceBuilder {
     this.title = title;
   }
 
-  actor(name: string): SequenceActor {
-    return this.element("actor", name) as SequenceActor;
+  actor(name: string, options?: SequenceElementOptions): SequenceActor {
+    return this.element("actor", name, options) as SequenceActor;
   }
 
-  participant(name: string): SequenceParticipant {
-    return this.element("participant", name) as SequenceParticipant;
+  participant(name: string, options?: SequenceElementOptions): SequenceParticipant {
+    return this.element("participant", name, options) as SequenceParticipant;
   }
 
   alt(condition: string, callback: (sequence: SequenceBuilder) => void): SequenceFragmentBuilder {
@@ -181,8 +192,12 @@ class MutableSequenceBuilder implements SequenceBuilder {
     };
   }
 
-  private element(role: SequenceRole, name: string): SequenceElement {
-    const element = new MutableSequenceElement(role, name, this.#elementCount, this);
+  private element(
+    role: SequenceRole,
+    name: string,
+    options?: SequenceElementOptions
+  ): SequenceElement {
+    const element = new MutableSequenceElement(role, name, this.#elementCount, this, options);
     this.#elementCount += 1;
     this.elements.push(element);
     return element;

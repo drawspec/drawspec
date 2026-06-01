@@ -24,6 +24,18 @@ describe("sequence", () => {
     ]);
   });
 
+  test("stores architecture model references on actors and participants", () => {
+    const doc = sequence("Model refs", (s) => {
+      s.actor("User", { modelRef: "person:user" });
+      s.participant("API", { modelRef: "container:api" });
+    });
+
+    expect(doc.nodes.map((node) => node.metadata?.["modelRef"])).toEqual([
+      "person:user",
+      "container:api",
+    ]);
+  });
+
   test("participant.to creates an edge with source, target, label, and direction", () => {
     const doc = sequence("Message", (s) => {
       const api = s.participant("API");

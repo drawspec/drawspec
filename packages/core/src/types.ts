@@ -2,6 +2,7 @@ import type { Diagnostic } from "./diagnostic";
 
 export type DiagramKind =
   | "architecture"
+  | "dynamic"
   | "sequence"
   | "class"
   | "component"

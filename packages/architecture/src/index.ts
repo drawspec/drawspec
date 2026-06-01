@@ -21,6 +21,8 @@ export type {
   SnapshotRelationship,
 } from "./drift";
 export { compareSnapshots, detectDrift, generateDriftReport, snapshotModel } from "./drift";
+export type { SequenceDiagramDocument } from "./dynamic-view";
+export { generateDynamicView } from "./dynamic-view";
 export { container, database, person, softwareSystem } from "./elements";
 export type {
   LikeC4Element,
@@ -87,6 +89,8 @@ export type {
   ArchitectureViews,
   AutoLayoutDirection,
   C4ElementKind,
+  DynamicView,
+  DynamicViewInteraction,
   OwnerMetadata,
   Workspace,
   WorkspaceContext,

@@ -2,7 +2,7 @@ import type { DiagramDocument, DiagramEdge, DiagramNode, StyleSheet } from "@dra
 
 export type C4ElementKind = "person" | "softwareSystem" | "container" | "database";
 export type ArchitectureRelationshipKind = "uses";
-export type ArchitectureViewKind = "systemContext" | "container";
+export type ArchitectureViewKind = "systemContext" | "container" | "dynamic";
 export type AutoLayoutDirection = "left-right" | "right-left" | "top-down" | "bottom-up";
 
 export interface OwnerMetadata {
@@ -100,6 +100,23 @@ export interface ArchitectureView {
   autoLayout(direction: AutoLayoutDirection): this;
 }
 
+/** Runtime interaction between two architecture model elements. */
+export interface DynamicViewInteraction {
+  readonly id: string;
+  readonly sequenceMessageId: string;
+  readonly sourceId: string;
+  readonly targetId: string;
+  readonly label: string;
+  readonly relationshipId?: string;
+}
+
+/** Architecture view that represents a runtime interaction path. */
+export interface DynamicView extends ArchitectureView {
+  readonly kind: "dynamic";
+  readonly interactions: readonly DynamicViewInteraction[];
+  addInteraction(interaction: DynamicViewInteraction): this;
+}
+
 export interface ArchitectureModel {
   readonly elements: readonly ArchitectureElement[];
   readonly relationships: readonly ArchitectureRelationship[];
@@ -119,6 +136,11 @@ export interface ArchitectureViews {
     key?: string,
     configure?: (view: ArchitectureView) => void
   ): ArchitectureView;
+  dynamic(
+    subject: ArchitectureElement,
+    key?: string,
+    configure?: (view: DynamicView) => void
+  ): DynamicView;
 }
 export interface ArchitectureStyles {
   readonly stylesheet: StyleSheet;

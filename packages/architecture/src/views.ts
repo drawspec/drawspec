@@ -5,6 +5,8 @@ import type {
   ArchitectureViewKind,
   ArchitectureViews,
   AutoLayoutDirection,
+  DynamicView,
+  DynamicViewInteraction,
 } from "./types";
 
 export class ArchitectureViewImpl implements ArchitectureView {
@@ -50,6 +52,22 @@ export class ArchitectureViewImpl implements ArchitectureView {
   }
 }
 
+export class DynamicViewImpl extends ArchitectureViewImpl implements DynamicView {
+  declare readonly kind: "dynamic";
+  readonly interactions: DynamicViewInteraction[] = [];
+
+  constructor(subject: ArchitectureElement, key: string) {
+    super("dynamic", subject, key);
+  }
+
+  addInteraction(interaction: DynamicViewInteraction): this {
+    if (!this.interactions.some((candidate) => candidate.id === interaction.id)) {
+      this.interactions.push(interaction);
+    }
+    return this;
+  }
+}
+
 export class ArchitectureViewsImpl implements ArchitectureViews {
   readonly items: ArchitectureView[] = [];
 
@@ -70,6 +88,17 @@ export class ArchitectureViewsImpl implements ArchitectureViews {
     configure?: (view: ArchitectureView) => void
   ): ArchitectureView {
     const view = new ArchitectureViewImpl("container", subject, key);
+    configure?.(view);
+    this.items.push(view);
+    return view;
+  }
+
+  dynamic(
+    subject: ArchitectureElement,
+    key = `${subject.id}-dynamic`,
+    configure?: (view: DynamicView) => void
+  ): DynamicView {
+    const view = new DynamicViewImpl(subject, key);
     configure?.(view);
     this.items.push(view);
     return view;

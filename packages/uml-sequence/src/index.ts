@@ -5,6 +5,7 @@ export type {
   SequenceActor,
   SequenceBuilder,
   SequenceElement,
+  SequenceElementOptions,
   SequenceFragment,
   SequenceFragmentBuilder,
   SequenceFragmentKind,
