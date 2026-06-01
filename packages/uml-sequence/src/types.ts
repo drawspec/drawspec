@@ -16,6 +16,12 @@ export type SequenceFragmentKind =
   | "assert"
   | "region";
 
+/** Options for linking a sequence lifeline to external model data. */
+export interface SequenceElementOptions {
+  /** Architecture model element ID referenced by this actor or participant. */
+  modelRef?: string;
+}
+
 export interface SequenceNote {
   id: string;
   text: string;
@@ -31,6 +37,7 @@ export interface SequenceElement extends NoteTarget {
   readonly id: string;
   readonly name: string;
   readonly role: SequenceRole;
+  readonly modelRef: string | undefined;
   readonly notes: readonly SequenceNote[];
   to(other: SequenceElement, label: string): SequenceMessage;
 }
@@ -69,8 +76,8 @@ export interface SequenceFragmentBuilder {
 }
 
 export interface SequenceBuilder {
-  actor(name: string): SequenceActor;
-  participant(name: string): SequenceParticipant;
+  actor(name: string, options?: SequenceElementOptions): SequenceActor;
+  participant(name: string, options?: SequenceElementOptions): SequenceParticipant;
   alt(condition: string, callback: (sequence: SequenceBuilder) => void): SequenceFragmentBuilder;
 }
 

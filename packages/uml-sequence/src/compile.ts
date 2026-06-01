@@ -102,6 +102,7 @@ export function compileSequenceDocument(model: SequenceDomainModel): SequenceDoc
     id: element.id,
     kind: element.role,
     label: element.name,
+    ...(element.modelRef === undefined ? {} : { metadata: { modelRef: element.modelRef } }),
   }));
   const edges: DiagramEdge[] = [];
   const groups: DiagramGroup[] = [];
