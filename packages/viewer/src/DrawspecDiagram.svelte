@@ -15,6 +15,7 @@
 <script lang="ts">
 import type { ArchitectureRelationshipKind } from "@drawspec/architecture";
 import type { Diagnostic } from "@drawspec/core";
+import ElementList from "./explorer/ElementList.svelte";
 import { createExplorerState, type ExplorerState } from "./explorer/state";
 import { normalizeViewerPayload, renderDiagramSvg } from "./render";
 import type {
@@ -66,7 +67,24 @@ let availableRelKinds = $state<ArchitectureRelationshipKind[]>([]);
 let activeRelKinds = $state<Set<ArchitectureRelationshipKind>>(new Set());
 let showExplorerBar = $state(false);
 let showRelFilter = $state(false);
+let showElementList = $state(false);
 let canvasEl: HTMLDivElement | undefined = $state();
+
+let visibleElements = $state<readonly SerializedElement[]>([]);
+
+$effect(() => {
+  if (!explorer) {
+    visibleElements = [];
+    return;
+  }
+  const searchResults = explorer.searchResults;
+  const hiddenIds = explorer.hiddenElementIds;
+  if (searchResults.length > 0) {
+    visibleElements = searchResults.filter((el) => !hiddenIds.has(el.id));
+  } else {
+    visibleElements = explorer.data.elements.filter((el) => !hiddenIds.has(el.id));
+  }
+});
 
 let frameCount = 0;
 let lastFpsTime = 0;
@@ -372,6 +390,9 @@ function resetAllFilters(): void {
           <button type="button" class:active={showRelFilter} on:click={() => (showRelFilter = !showRelFilter)}>
             Filter
           </button>
+          <button type="button" class:active={showElementList} on:click={() => (showElementList = !showElementList)}>
+            List
+          </button>
           <button type="button" on:click={expandAll}>Expand</button>
           <button type="button" on:click={collapseAll}>Collapse</button>
           <button type="button" class:active={showPerfOverlay} on:click={() => (showPerfOverlay = !showPerfOverlay)}>
@@ -398,18 +419,32 @@ function resetAllFilters(): void {
     </div>
   {/if}
 
-  <div
-    class="canvas"
-    bind:this={canvasEl}
-    on:pointerdown={startPan}
-    on:pointermove={movePan}
-    on:pointerup={() => (isPanning = false)}
-    on:pointerleave={() => (isPanning = false)}
-    on:wheel={onWheel}
-    on:click={onCanvasClick}
-  >
-    <div class="surface" style={`transform: translate(${translateX}px, ${translateY}px) scale(${scale});`}>
-      {@html renderedSvg}
+  <div class="main-content">
+    {#if showElementList && explorer}
+      <aside class="element-list-panel" aria-label="Element list">
+        <ElementList
+          elements={visibleElements}
+          highlightedIds={explorer.highlightedElementIds}
+          hiddenIds={explorer.hiddenElementIds}
+          selectedId={explorer.selectedElement?.id}
+          onSelect={selectElementById}
+        />
+      </aside>
+    {/if}
+
+    <div
+      class="canvas"
+      bind:this={canvasEl}
+      on:pointerdown={startPan}
+      on:pointermove={movePan}
+      on:pointerup={() => (isPanning = false)}
+      on:pointerleave={() => (isPanning = false)}
+      on:wheel={onWheel}
+      on:click={onCanvasClick}
+    >
+      <div class="surface" style={`transform: translate(${translateX}px, ${translateY}px) scale(${scale});`}>
+        {@html renderedSvg}
+      </div>
     </div>
   </div>
 
@@ -511,7 +546,10 @@ function resetAllFilters(): void {
   .filter-chip { display: flex; align-items: center; gap: .35rem; cursor: pointer; font-size: .8rem; }
   .filter-chip input { margin: 0; }
 
-  .canvas { overflow: hidden; border: 1px solid #cbd5e1; border-radius: .75rem; background: #f8fafc; min-height: 24rem; touch-action: none; }
+  .main-content { display: flex; flex: 1; min-height: 0; gap: 0; }
+  .element-list-panel { width: 16rem; min-width: 12rem; border: 1px solid #cbd5e1; border-radius: .75rem; background: #fff; overflow: hidden; flex-shrink: 0; }
+  .dark .element-list-panel { background: #0f172a; border-color: #334155; }
+  .canvas { overflow: hidden; border: 1px solid #cbd5e1; border-radius: .75rem; background: #f8fafc; min-height: 24rem; touch-action: none; flex: 1; }
   .dark .canvas { background: #020617; border-color: #334155; }
   .surface { transform-origin: 0 0; width: max-content; min-width: 100%; transition: transform 80ms ease; }
 

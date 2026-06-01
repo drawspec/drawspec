@@ -16,4 +16,5 @@ export type {
   SvgOutput,
   SvgRenderOptions,
   SvgTheme,
+  SvgViewport,
 } from "./types";

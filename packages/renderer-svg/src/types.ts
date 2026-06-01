@@ -28,12 +28,25 @@ export interface SvgTheme {
   activationStroke: string;
 }
 
+export interface SvgViewport {
+  /** X coordinate of the viewport origin. */
+  x: number;
+  /** Y coordinate of the viewport origin. */
+  y: number;
+  /** Width of the viewport. */
+  width: number;
+  /** Height of the viewport. */
+  height: number;
+}
+
 export interface SvgRenderOptions {
   positionedDiagram: PositionedDiagram;
   width?: number;
   height?: number;
   accessibility?: SvgAccessibilityOptions;
   theme?: Partial<SvgTheme>;
+  /** Optional viewport for culling off-screen elements. Elements entirely outside this rectangle are skipped. */
+  viewport?: SvgViewport;
 }
 
 export interface ResolvedStyle {
