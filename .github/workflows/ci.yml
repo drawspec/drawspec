@@ -86,3 +86,29 @@ jobs:
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install --frozen-lockfile
       - run: bun run build
+
+  perf-check:
+    name: perf-check
+    runs-on: ubuntu-latest
+    # Only run on pull requests, not on push to main
+    if: github.event_name == 'pull_request'
+    needs: [check]
+    env:
+      DRAWSPEC_RUN_BENCH: "1"
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - name: Run benchmarks and compare against baseline
+        run: |
+          CORE_OUTPUT=$(bun test --bench ./packages/core/src/__bench__/compile.bench.ts 2>&1)
+          LAYOUT_OUTPUT=$(bun test --bench ./packages/layout/src/__bench__/layout.bench.ts 2>&1)
+          echo "$CORE_OUTPUT" | node scripts/bench-compare.mjs
+          echo "$LAYOUT_OUTPUT" | node scripts/bench-compare.mjs
