@@ -15,6 +15,8 @@
   --color-sidebar-active: #eff6ff;
   --color-hero-gradient-start: #2563eb;
   --color-hero-gradient-end: #7c3aed;
+  --color-scrollbar-thumb: #cbd5e1;
+  --color-scrollbar-thumb-hover: #94a3b8;
   --sidebar-width: 15rem;
   --header-height: 3.5rem;
   --transition-speed: 150ms;
@@ -38,6 +40,8 @@
   --color-sidebar-active: #1e3a5f;
   --color-hero-gradient-start: #3b82f6;
   --color-hero-gradient-end: #8b5cf6;
+  --color-scrollbar-thumb: #475569;
+  --color-scrollbar-thumb-hover: #64748b;
 }
 
 *,
@@ -123,4 +127,35 @@ h3 {
 
 p {
   margin: 0 0 1rem;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-thumb-hover);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-thumb-hover);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb) transparent;
 }
