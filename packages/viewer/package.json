@@ -6,11 +6,12 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "bun": "./src/index.ts",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./drawspec-viewer.js": {
-      "import": "./dist/drawspec-viewer.js"
+      "default": "./dist/drawspec-viewer.js"
     }
   },
   "scripts": {
