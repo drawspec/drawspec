@@ -2,11 +2,11 @@ import { defineDoc, md } from "../../../packages/docs/src/index.js";
 
 export default defineDoc({
   title: "Advanced Sequence Diagram",
-  description: "Notes, self-calls, and optional fragments for realistic API monitoring",
+  description: "Notes, self-calls, and alternative fragments for realistic API monitoring",
   content: await md`
 # Advanced Sequence Diagram
 
-This example demonstrates several advanced sequence diagram features: notes attached to participants and messages, self-calls where an element calls itself, and optional fragments that execute only under certain conditions.
+This example demonstrates several advanced sequence diagram features: notes attached to participants and messages, self-calls where an element calls itself, and alternative fragments for branching behavior.
 
 ## Diagram
 
@@ -31,8 +31,10 @@ export default sequence("Service health check", (seq) => {
   api.to(cache, "GET status");
   cache.to(api, "Cached: OK");
 
-  seq.opt("cache miss", (s) => {
-    s.message(api, db, "SELECT health FROM status");
+  seq.alt("cache hit", () => {
+    cache.to(api, "Cached metrics available");
+  }).else("cache miss", () => {
+    api.to(db, "SELECT health FROM status");
     db.to(api, "{ status: healthy }");
   });
 
@@ -48,7 +50,7 @@ Notes attach metadata to participants or messages to provide context that does n
 
 Self-calls represent operations that an element performs on itself. The API aggregates metrics locally before returning a response, shown as a message from the API participant back to itself.
 
-The \`seq.opt()\` fragment shows a cache miss scenario. When the cache returns "Cached: OK", the optional block is skipped. If the cache had returned a miss, the block would execute a database query to retrieve fresh health status.
+The \`seq.alt().else()\` fragment shows cache-hit and cache-miss scenarios. Cache hits reuse cached metrics, while cache misses query the database for fresh health status.
 
 ## Run It
 

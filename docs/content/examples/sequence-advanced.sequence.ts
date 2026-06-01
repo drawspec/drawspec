@@ -14,8 +14,10 @@ export default sequence("Service health check", (seq) => {
   api.to(cache, "GET status");
   cache.to(api, "Cached: OK");
 
-  seq.opt("cache miss", (s) => {
-    s.message(api, db, "SELECT health FROM status");
+  seq.alt("cache hit", () => {
+    cache.to(api, "Cached metrics available");
+  }).else("cache miss", () => {
+    api.to(db, "SELECT health FROM status");
     db.to(api, "{ status: healthy }");
   });
 
