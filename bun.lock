@@ -25,6 +25,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@drawspec/docs": "workspace:*",
+        "minisearch": "7.2.0",
       },
       "devDependencies": {
         "@sveltejs/adapter-static": "^3.0.0",
@@ -120,6 +121,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@microsoft/tsdoc": "0.16.0",
+        "minisearch": "7.2.0",
         "remark": "^15.0.1",
         "remark-gfm": "4.0.1",
         "remark-parse": "^11.0.0",
@@ -924,6 +926,8 @@
     "micromark-util-types": ["micromark-util-types@2.0.2", "", {}, "sha512-Yw0ECSpJoViF1qTU4DC6NwtC4aWGt1EkzaQB8KPPyCRR8z9TWeV0HbEFGTO+ZY1wB22zmxnJqhPyTpOVCpeHTA=="],
 
     "micromatch": ["micromatch@4.0.8", "", { "dependencies": { "braces": "^3.0.3", "picomatch": "^2.3.1" } }, "sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA=="],
+
+    "minisearch": ["minisearch@7.2.0", "", {}, "sha512-dqT2XBYUOZOiC5t2HRnwADjhNS2cecp9u+TJRiJ1Qp/f5qjkeT5APcGPjHw+bz89Ms8Jp+cG4AlE+QZ/QnDglg=="],
 
     "mri": ["mri@1.2.0", "", {}, "sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA=="],
 
