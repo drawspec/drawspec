@@ -1,5 +1,5 @@
 import { sequence } from "@drawspec/uml-sequence";
-import { classDiagram, class_, interface_ } from "@drawspec/uml-class";
+import { classDiagram } from "@drawspec/uml-class";
 import { exportToMermaid } from "@drawspec/exporter-mermaid";
 
 /**

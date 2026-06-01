@@ -1,5 +1,5 @@
 import { sequence } from "@drawspec/uml-sequence";
-import { classDiagram, class_, interface_ } from "@drawspec/uml-class";
+import { classDiagram } from "@drawspec/uml-class";
 import { recommendedRules, RuleEngine, loadPolicyPack } from "@drawspec/validation";
 import type { DiagramDocument } from "@drawspec/core";
 
