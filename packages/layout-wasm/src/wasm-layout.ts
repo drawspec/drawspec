@@ -11,7 +11,7 @@
  *
  * Performance characteristics of the TypeScript fallback:
  * - Suitable for diagrams up to ~500 nodes
- * - Deterministic O(n * log(n)) Sugiyama-style layout
+ * - Deterministic layered (Sugiyama-style) layout
  * - No external WASM dependencies
  */
 

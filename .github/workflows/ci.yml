@@ -108,7 +108,5 @@ jobs:
       - run: bun run build
       - name: Run benchmarks and compare against baseline
         run: |
-          CORE_OUTPUT=$(bun test --bench ./packages/core/src/__bench__/compile.bench.ts 2>&1)
-          LAYOUT_OUTPUT=$(bun test --bench ./packages/layout/src/__bench__/layout.bench.ts 2>&1)
-          echo "$CORE_OUTPUT" | node scripts/bench-compare.mjs
-          echo "$LAYOUT_OUTPUT" | node scripts/bench-compare.mjs
+          bun test --bench ./packages/core/src/__bench__/compile.bench.ts 2>&1 | node scripts/bench-compare.mjs
+          bun test --bench ./packages/layout/src/__bench__/layout.bench.ts 2>&1 | node scripts/bench-compare.mjs

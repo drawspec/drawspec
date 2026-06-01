@@ -34,13 +34,25 @@ const NAME_MAP = {
   "cache: filesystem miss": "filesystemCacheMiss",
 };
 
+// Strip ANSI escape codes (color, cursor movement, etc.)
+function stripAnsi(str) {
+  return str.replace(/\x1B\[[0-9;]*[a-zA-Z]/g, "");
+}
+
 function parseBenchmarks(stdout) {
   const results = {};
-  const lines = stdout.split("\n");
+  const lines = stripAnsi(stdout).split("\n");
   for (const line of lines) {
-    const match = line.match(/^\[([\d.]+)ms\]\s+(.+)$/);
-    if (match) {
-      results[match[2]] = parseFloat(match[1]);
+    // Format 1: [12.3ms] name (Bun test --bench output)
+    const match1 = line.match(/^\[([\d.]+)ms\]\s+(.+)$/);
+    if (match1) {
+      results[match1[2]] = parseFloat(match1[1]);
+      continue;
+    }
+    // Format 2: name: 12.3ms (console.timeEnd output)
+    const match2 = line.match(/^(.+):\s*([\d.]+)ms$/);
+    if (match2) {
+      results[match2[1]] = parseFloat(match2[2]);
     }
   }
   return results;
@@ -72,6 +84,12 @@ let input = "";
 process.stdin.on("data", (chunk) => (input += chunk));
 process.stdin.on("end", () => {
   const results = parseBenchmarks(input);
+
+  if (Object.keys(results).length === 0) {
+    console.error("No benchmark results parsed — benchmark output format may have changed.");
+    process.exit(1);
+  }
+
   const regressions = checkRegressions(results);
 
   if (regressions.length > 0) {
