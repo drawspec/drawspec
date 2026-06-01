@@ -29,7 +29,24 @@ onMount(() => {
       }
     });
   });
+
+  document.addEventListener("click", handleSourceClick);
+  return () => document.removeEventListener("click", handleSourceClick);
 });
+
+function handleSourceClick(event: MouseEvent): void {
+  const target = event.target as HTMLElement;
+  const sourceEl = target.closest("[data-source-file]") as HTMLElement | null;
+  if (sourceEl === null) return;
+
+  const file = sourceEl.dataset.sourceFile;
+  const line = sourceEl.dataset.sourceLine;
+  if (file === undefined || line === undefined) return;
+
+  const location = `vscode://file/${file}:${line}`;
+  console.log(`[DrawSpec] Source: ${file}:${line}`);
+  console.log(`[DrawSpec] Open in editor: ${location}`);
+}
 </script>
 
 <svelte:head>

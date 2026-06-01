@@ -11,6 +11,7 @@ import { renderSvgSync } from "@drawspec/renderer-svg";
 export class PreviewManager {
   readonly #outputChannel: vscode.OutputChannel;
   readonly #panels = new Map<string, vscode.WebviewPanel>();
+  readonly #documentUris = new Map<string, vscode.Uri>();
 
   constructor(
     _context: vscode.ExtensionContext,
@@ -31,10 +32,15 @@ export class PreviewManager {
       "drawspec-preview",
       `Preview: ${document.uri.path.split("/").pop() ?? "diagram"}`,
       vscode.ViewColumn.Beside,
-      { enableScripts: false, retainContextWhenHidden: true }
+      { enableScripts: true, retainContextWhenHidden: true }
     );
 
     this.#panels.set(uri, panel);
+    this.#documentUris.set(uri, document.uri);
+
+    panel.webview.onDidReceiveMessage((message: unknown) => {
+      this.#handleWebviewMessage(uri, message);
+    });
 
     const saveSubscription = vscode.workspace.onDidSaveTextDocument(
       async (saved) => {
@@ -46,6 +52,7 @@ export class PreviewManager {
 
     panel.onDidDispose(() => {
       this.#panels.delete(uri);
+      this.#documentUris.delete(uri);
       saveSubscription.dispose();
     });
 
@@ -155,6 +162,45 @@ export class PreviewManager {
     const positioned = await engine.layout(doc);
     return renderSvgSync(doc, { positionedDiagram: positioned });
   }
+
+  #handleWebviewMessage(panelUri: string, message: unknown): void {
+    if (
+      typeof message !== "object" ||
+      message === null ||
+      (message as Record<string, unknown>)["command"] !== "openSource"
+    ) {
+      return;
+    }
+
+    const msg = message as Record<string, unknown>;
+    const rawFile = msg["file"];
+    const rawLine = msg["line"];
+    if (typeof rawFile !== "string" || typeof rawLine !== "number") return;
+
+    const file = rawFile;
+    const line = Math.max(0, Math.trunc(rawLine) - 1);
+    const column = Math.max(0, Math.trunc((msg["column"] as number | undefined) ?? 1) - 1);
+
+    const docUri = this.#documentUris.get(panelUri);
+    if (docUri === undefined) return;
+
+    const targetPath = path.isAbsolute(file)
+      ? file
+      : path.resolve(path.dirname(docUri.fsPath), file);
+
+    const targetUri = vscode.Uri.file(targetPath);
+    vscode.workspace.openTextDocument(targetUri).then(
+      (doc) => {
+        void vscode.window.showTextDocument(doc, {
+          selection: new vscode.Range(line, column, line, column),
+        });
+      },
+      (err: unknown) => {
+        const detail = err instanceof Error ? err.message : String(err);
+        this.#outputChannel.appendLine(`[DrawSpec] Failed to open source: ${detail}`);
+      }
+    );
+  }
 }
 
 function isDiagramDocument(value: unknown): value is DiagramDocument {
@@ -172,27 +218,50 @@ function isDiagramDocument(value: unknown): value is DiagramDocument {
 }
 
 function sanitizeSvg(svg: string): string {
-  const stripped = svg.replace(/<script[\s\S]*?<\/script>/gi, "");
-  return stripped;
+  const noXmlDecl = svg.replace(/<\?xml[^?]*\?>\s*/g, "");
+  const noScripts = noXmlDecl.replace(/<script[\s\S]*?<\/script>/gi, "");
+  const noEventHandlers = noScripts.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, "");
+  return noEventHandlers;
 }
 
 function previewHtml(svgContent: string): string {
   const sanitized = sanitizeSvg(svgContent);
-  const encoded = encodeURIComponent(sanitized);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline';">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DrawSpec Preview</title>
 <style>
   body { margin: 0; padding: 16px; background: #1e1e1e; color: #ccc; display: flex; justify-content: center; }
   .container { max-width: 100%; overflow: auto; }
-  img { max-width: 100%; height: auto; }
+  svg { max-width: 100%; height: auto; cursor: default; }
+  [data-source-file] { cursor: pointer; }
+  [data-source-file]:hover { filter: brightness(1.2); }
 </style>
 </head>
 <body>
-<div class="container"><img src="data:image/svg+xml,${encoded}" alt="DrawSpec Diagram" /></div>
+<div class="container">${sanitized}</div>
+<script>
+  const vscode = acquireVsCodeApi();
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-source-file]");
+    if (!el) return;
+    const file = el.getAttribute("data-source-file");
+    const line = el.getAttribute("data-source-line");
+    if (file && line) {
+      vscode.postMessage({
+        command: "openSource",
+        file,
+        line: Number(line),
+        column: el.hasAttribute("data-source-column")
+          ? Number(el.getAttribute("data-source-column"))
+          : undefined,
+      });
+    }
+  });
+</script>
 </body>
 </html>`;
 }
