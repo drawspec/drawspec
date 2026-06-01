@@ -1,29 +1,31 @@
 import { componentDiagram } from "../../../packages/uml-component/src/index.js";
 
 export default componentDiagram("Chat Components", (d) => {
-  const wsGateway = d.component("WebSocket Gateway", (c) => {
+  d.component("WebSocket Gateway", (c) => {
     c.provides("WSS Endpoint");
-    c.uses("Message Broker", "Route messages");
+    c.requires("Message Broker");
+    c.requires("Media Service");
+    c.requires("Notification Dispatcher");
   });
-  const broker = d.component("Message Broker", (c) => {
+  d.component("Message Broker", (c) => {
     c.provides("Pub/Sub");
-    c.uses("Presence Service", "Update status");
+    c.requires("Presence Service");
   });
-  const presenceSvc = d.component("Presence Service", (c) => {
+  d.component("Presence Service", (c) => {
     c.provides("Online status");
-    c.uses("Redis", "Cache presence");
+    c.requires("Redis");
   });
-  const mediaSvc = d.component("Media Service", (c) => {
+  d.component("Media Service", (c) => {
     c.provides("File upload/download");
-    c.uses("S3", "Store files");
+    c.requires("S3");
   });
-  const notifDispatcher = d.component("Notification Dispatcher", (c) => {
+  d.component("Notification Dispatcher", (c) => {
     c.provides("Push notifications");
-    c.uses("APNs/FCM", "Deliver notifications");
+    c.requires("APNs/FCM");
   });
 
-  wsGateway.uses(broker, "Subscribe to messages");
-  broker.uses(presenceSvc, "Notify presence changes");
-  wsGateway.uses(mediaSvc, "Upload media");
-  wsGateway.uses(notifDispatcher, "Send push");
+  d.dependency("WebSocket Gateway", "Message Broker", "Subscribe to messages");
+  d.dependency("Message Broker", "Presence Service", "Notify presence changes");
+  d.dependency("WebSocket Gateway", "Media Service", "Upload media");
+  d.dependency("WebSocket Gateway", "Notification Dispatcher", "Send push");
 });
