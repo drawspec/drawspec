@@ -29,20 +29,15 @@ This guide will be updated when these features become available.
 
 ### VS Code
 
-Create or update \`.vscode/settings.json\` in your project:
+Create or update \`.vscode/settings.json\` in your project to configure the file patterns the DrawSpec VS Code extension treats as diagram files:
 
 \`\`\`json
 {
-  "languageServerProtocol": {
-    "drawspec": {
-      "enabled": true
-    }
-  },
-  "files.associations": {
-    "*.diagram.ts": "drawspec",
-    "*.arch.ts": "drawspec",
-    "*.sequence.ts": "drawspec"
-  }
+  "drawspec.diagramFilePatterns": [
+    "**/*.diagram.ts",
+    "**/*.arch.ts",
+    "**/*.sequence.ts"
+  ]
 }
 \`\`\`
 
@@ -50,29 +45,16 @@ The DrawSpec extension for VS Code is available in the marketplace and will auto
 
 ### Neovim
 
-Configure the LSP using \`lspconfig\`:
+The \`@drawspec/lsp\` package is currently a library package and does not ship a standalone executable. Neovim users can still map diagram filenames to a \`drawspec\` filetype now, then wire that filetype to a project-specific Bun wrapper when one is available.
 
-\`\`\`lua
--- Require lspconfig
-local lspconfig = require("lspconfig");
-
--- Register the DrawSpec LSP
-lspconfig.drawspec.setup({
-  filetypes = { "drawspec" },
-  root_dir = function(fname)
-    return lspconfig.util.root_pattern("package.json", "tsconfig.json")(fname)
- end,
-});
-\`\`\`
-
-Add the DrawSpec filetype to your \`init.lua\` or equivalent:
+Add the DrawSpec filetype to your \`init.lua\` or equivalent with pattern mappings. Do not use \`extension\` mappings for \`*.diagram.ts\` or \`*.arch.ts\`, because the final extension segment is \`.ts\`:
 
 \`\`\`lua
 vim.filetype.add({
-  extension = {
-    diagram = "drawspec",
-    arch = "drawspec",
-    sequence = "drawspec",
+  pattern = {
+    [".*%.diagram%.ts"] = "drawspec",
+    [".*%.arch%.ts"] = "drawspec",
+    [".*%.sequence%.ts"] = "drawspec",
   },
 });
 \`\`\`
@@ -98,6 +80,6 @@ This means diagnostics reflect the same validation that \`drawspec check\` perfo
 
 ## Requirements
 
-The LSP server requires Bun to be installed and available in your \`PATH\`. The server invokes \`bun\` directly to evaluate diagram files.
+The LSP implementation uses Bun APIs such as \`Bun.write\` and dynamic \`import()\`, so it must run under the Bun runtime. It does not spawn the \`bun\` executable from \`PATH\` itself.
 `,
 });

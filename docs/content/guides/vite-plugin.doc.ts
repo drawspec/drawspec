@@ -2,11 +2,11 @@ import { defineDoc, md } from "../../../packages/docs/src/index.js";
 
 export default defineDoc({
   title: "Vite Plugin",
-  description: "Integrate DrawSpec into your Vite-powered projects for automatic diagram validation and HMR",
+  description: "Integrate DrawSpec diagram modules into Vite-powered projects with compile-time loading and HMR",
   content: await md`
 # Vite Plugin
 
-The \`@drawspec/vite-plugin\` package integrates DrawSpec diagram validation and hot module replacement into Vite-based projects. Diagrams rebuild automatically when source files change, with full HMR support for live development.
+The \`@drawspec/vite-plugin\` package lets Vite import DrawSpec diagram modules as serialized \`DiagramDocument\` objects. Diagram modules rebuild automatically when source files change, with Vite HMR support for live development.
 
 ## Installation
 
@@ -35,12 +35,12 @@ The plugin accepts an options object with these properties:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| \`include\` | \`string[]\` | \`["*.diagram.ts", "*.arch.ts", "*.sequence.ts"]\` | Substring filters for files to process |
+| \`include\` | \`string[]\` | \`undefined\` | Optional substring filters for files to process; when omitted, all diagram files are included |
 | \`exclude\` | \`string[]\` | \`[]\` | Substring filters for files to skip |
 
 ### Include and Exclude Filters
 
-Filters match if the file path contains any of the specified substrings:
+Filters use \`String.includes\`, not glob matching. A file is included when its path contains one of the \`include\` substrings, and excluded when its path contains one of the \`exclude\` substrings:
 
 \`\`\`typescript
 // Only process files in a diagrams/ directory
@@ -62,9 +62,9 @@ Files not matching these patterns pass through unchanged, which keeps build perf
 
 ## Hot Module Replacement
 
-When a diagram file changes, the plugin broadcasts an HMR update to the DrawSpec viewer if you are running \`drawspec serve\`. The viewer reloads the diagram without a full page refresh, preserving scroll position and interaction state.
+When a diagram file changes, the plugin invalidates the corresponding virtual module in Vite's module graph. Apps that import the diagram receive a normal Vite HMR update for that module.
 
-HMR works automatically once the plugin is configured. No additional setup is required.
+The plugin does not broadcast updates to \`drawspec serve\`; it only participates in Vite's own HMR pipeline.
 
 ## Framework Integrations
 
@@ -84,16 +84,20 @@ export default defineConfig({
 
 ### Next.js
 
-Next.js uses a custom webpack config, but you can still use the Vite plugin for diagram validation in development. Add it to a \`vite.config.ts\` at the project root and run \`vite\` alongside Next.js:
+Next.js uses a custom webpack config, but you can still use the Vite plugin for diagram module compilation in development. Add it to a \`vite.config.ts\` at the project root and run \`vite\` alongside Next.js:
 
 \`\`\`typescript
 import { defineConfig } from "vite";
 import { drawspecVitePlugin } from "@drawspec/vite-plugin";
 
 export default defineConfig({
-  plugins: [drawspecVitePlugin()],
-  // Only run the plugin in dev mode
-  apply: "serve",
+  plugins: [
+    {
+      ...drawspecVitePlugin(),
+      // Only run the plugin in dev mode
+      apply: "serve",
+    },
+  ],
 });
 \`\`\`
 
@@ -112,7 +116,7 @@ import { drawspecVitePlugin } from "@drawspec/vite-plugin";
 export default defineConfig({
   plugins: [
     drawspecVitePlugin({
-      include: ["*.diagram.ts", "*.arch.ts", "*.sequence.ts"],
+      include: ["/diagrams/", "/docs/content/"],
       exclude: ["node_modules/", ".git/", "dist/"],
     }),
   ],
@@ -122,8 +126,10 @@ export default defineConfig({
 });
 \`\`\`
 
-## Validation in Dev
+## Compile Errors in Dev
 
-The plugin runs validation on diagram files during the Vite dev server startup and on each file change. Diagnostics appear in the terminal where \`vite\` is running and in the browser console. For CI validation, use \`drawspec check\` instead.
+The plugin compiles diagram modules and returns a serialized \`DiagramDocument\` from the virtual module. Import or compile errors are surfaced through Vite's normal error handling.
+
+The plugin does not run validation and does not emit diagnostics to the browser console. Use \`drawspec check\` for validation in local workflows and CI.
 `,
 });

@@ -14,15 +14,15 @@ These options apply to all commands:
 
 | Option | Description |
 |--------|-------------|
+| \`--help\`, \`-h\` | Show help output |
 | \`--config\` | Path to config file |
-| \`--verbose\` | Enable verbose output |
 
 ## check
 
 Validates diagram files without rendering. Runs all validation rules and reports diagnostics.
 
 \`\`\`bash
-drawspec check <files> [--format pretty|json] [--policy name]
+drawspec check [files...] [--format pretty|json] [--policy name]
 \`\`\`
 
 **Flags:**
@@ -50,7 +50,7 @@ bunx drawspec check . --policy recommended
 Compiles diagram files and renders them to SVG output.
 
 \`\`\`bash
-drawspec render <files> --out <dir> [--format svg] [--theme name] [--no-cache] [--cache-dir path]
+drawspec render [files...] [--out dir] [--format svg] [--theme name] [--no-cache] [--cache-dir path]
 \`\`\`
 
 **Flags:**
@@ -110,7 +110,7 @@ bunx drawspec export . --format d2 --out dist/d2
 Loads a single diagram file and outputs its internal representation for debugging.
 
 \`\`\`bash
-drawspec inspect <files> [--format json|pretty]
+drawspec inspect <file> [--format json|pretty]
 \`\`\`
 
 **Flags:**
@@ -134,7 +134,7 @@ bunx drawspec inspect hello.sequence.ts --format pretty
 Starts a local HTTP server that renders diagrams on demand with live reload support.
 
 \`\`\`bash
-drawspec serve <dir> [--host localhost] [--port 4173] [--debounce 80] [--open]
+drawspec serve [files...] [--host localhost] [--port 4173] [--debounce 80] [--open]
 \`\`\`
 
 **Flags:**
@@ -164,23 +164,24 @@ bunx drawspec serve auth.sequence.ts payments.arch.ts --port 3000
 Builds the documentation site from \`.doc.ts\` source files.
 
 \`\`\`bash
-drawspec build docs [--out dir]
+drawspec build docs [--content-dir docs/content] [--output-dir docs/dist]
 \`\`\`
 
 **Flags:**
 
 | Flag | Description |
 |------|-------------|
-| \`--out\` | Output directory (default: \`dist/docs\`) |
+| \`--content-dir\` | Documentation source directory (default: \`docs/content\`) |
+| \`--output-dir\` | Output directory (default: \`docs/dist\`) |
 
 **Example:**
 
 \`\`\`bash
-# Build docs to dist/docs
+# Build docs to docs/dist
 bunx drawspec build docs
 
 # Build to custom directory
-bunx drawspec build docs --out custom-docs
+bunx drawspec build docs --output-dir custom-docs
 \`\`\`
 
 ## serve docs
@@ -188,7 +189,7 @@ bunx drawspec build docs --out custom-docs
 Serves the documentation site locally with live rebuild on file changes.
 
 \`\`\`bash
-drawspec serve docs [--host localhost] [--port 4173] [--open]
+drawspec serve docs [--content-dir docs/content] [--output-dir docs/dist] [--host localhost] [--port 4173] [--debounce 80]
 \`\`\`
 
 **Flags:**
@@ -197,7 +198,9 @@ drawspec serve docs [--host localhost] [--port 4173] [--open]
 |------|-------------|
 | \`--host\` | Hostname to bind to (default: \`localhost\`) |
 | \`--port\` | HTTP port (default: 4173) |
-| \`--open\` | Open browser automatically |
+| \`--content-dir\` | Documentation source directory (default: \`docs/content\`) |
+| \`--output-dir\` | Output directory (default: \`docs/dist\`) |
+| \`--debounce\` | Rebuild debounce delay in milliseconds (default: 80) |
 
 **Example:**
 
@@ -205,8 +208,8 @@ drawspec serve docs [--host localhost] [--port 4173] [--open]
 # Serve docs with live reload
 bunx drawspec serve docs
 
-# Serve and auto-open browser
-bunx drawspec serve docs --open
+# Serve a custom docs source directory
+bunx drawspec serve docs --content-dir docs/content --output-dir docs/dist
 \`\`\`
 
 ## gallery
@@ -291,11 +294,12 @@ When given a directory or no arguments, DrawSpec scans for files matching:
 
 ## Extensibility
 
-DrawSpec packages can register additional commands with the CLI. Packages that provide commands export a \`registerCommands\` function that the CLI calls at startup. To add a custom command:
+DrawSpec packages can register additional commands with the CLI. At startup, the CLI scans \`packages/*/package.json\` in the current workspace, imports each package entrypoint, and reads commands from a \`drawspec.commands\` export array. To add a custom command:
 
-1. Create a package that exports \`registerCommands(cli: Command)\`
-2. The package should be listed as a dependency in \`drawspec\`s package.json
-3. The CLI will automatically load and register the commands
+1. Create a workspace package under \`packages/\` with a package entrypoint
+2. Export \`drawspec = { commands: [command] }\` from that entrypoint
+3. Ensure each command has \`name\`, \`description\`, and \`run(parsed, config)\`
+4. The CLI will automatically load and register the commands
 
 This allows teams to add project-specific commands without forking the CLI.
 `,

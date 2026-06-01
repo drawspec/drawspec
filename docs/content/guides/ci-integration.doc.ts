@@ -38,7 +38,7 @@ jobs:
       - name: Validate diagrams
         run: bunx drawspec check .
 
- render:
+  render:
     name: Render diagrams
     runs-on: ubuntu-latest
     needs: check
@@ -115,7 +115,7 @@ jobs:
 
       - name: Validate changed diagrams
         if: steps.changed.outputs.files != ''
-        run: bunx drawspec check ${{ steps.changed.outputs.files }}
+        run: bunx drawspec check \${{ steps.changed.outputs.files }}
 \`\`\`
 
 ## PR Validation with Conventional Commits
@@ -124,8 +124,10 @@ DrawSpec uses \`cocogitto\` to enforce conventional commit messages. Add this st
 
 \`\`\`yaml
 - name: Check commit messages
-  run: bunx cog verify "${{ github.event.head_commit.message }}"
+  run: cog check \${{ github.event.pull_request.base.sha }}..\${{ github.event.pull_request.head.sha }}
 \`\`\`
+
+Install \`cog\` with your system toolchain before running the check; it is the Cocogitto binary, not an npm package. For example, this repository installs Cocogitto through \`mise install\` and then runs \`cog check\` against the pull request commit range.
 
 ## Caching Dependencies
 
@@ -140,9 +142,9 @@ Speed up CI runs by caching Bun dependencies:
   uses: actions/cache@v4
   with:
     path: node_modules
-    key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+    key: \${{ runner.os }}-bun-\${{ hashFiles('bun.lock') }}
     restore-keys: |
-      ${{ runner.os }}-bun-
+      \${{ runner.os }}-bun-
 \`\`\`
 
 ## Gallery Generation
