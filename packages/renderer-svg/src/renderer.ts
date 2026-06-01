@@ -15,9 +15,41 @@ import {
   type SvgElementSpec,
   stableSvgId,
 } from "./svg";
-import type { Renderer, SvgOutput, SvgRenderOptions } from "./types";
+import type { Renderer, SvgOutput, SvgRenderOptions, SvgViewport } from "./types";
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
+
+/** Check if a rectangle overlaps with the viewport. Returns true if there is overlap. */
+function rectInViewport(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  viewport: SvgViewport
+): boolean {
+  return (
+    x + width >= viewport.x &&
+    x <= viewport.x + viewport.width &&
+    y + height >= viewport.y &&
+    y <= viewport.y + viewport.height
+  );
+}
+
+/** Check if the axis-aligned bounding box of an edge's waypoints overlaps with the viewport. */
+function edgeInViewport(waypoints: readonly Point[], viewport: SvgViewport): boolean {
+  if (waypoints.length === 0) return true;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const point of waypoints) {
+    if (point.x < minX) minX = point.x;
+    if (point.y < minY) minY = point.y;
+    if (point.x > maxX) maxX = point.x;
+    if (point.y > maxY) maxY = point.y;
+  }
+  return rectInViewport(minX, minY, maxX - minX, maxY - minY, viewport);
+}
 
 export class SvgRenderer implements Renderer<SvgOutput, SvgRenderOptions> {
   readonly name = "svg";
@@ -35,7 +67,7 @@ export async function renderSvg(
 }
 
 export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptions): SvgOutput {
-  const { positionedDiagram } = options;
+  const { positionedDiagram, viewport } = options;
   const theme = { ...defaultTheme, ...options.theme };
   const width = options.width ?? positionedDiagram.width;
   const height = options.height ?? positionedDiagram.height;
@@ -55,24 +87,35 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
     renderBackground(width, height, theme.background),
     renderDefs(markerId, theme.edgeStroke),
-    ...sortById(positionedDiagram.groups).map((group) => {
-      const result = renderGroup(document, group, options, idPrefix);
-      labels.push(...result.labels);
-      return result.element;
-    }),
-    ...sortById(positionedDiagram.edges).map((edge) => {
-      const result = renderEdge(document, edge, options, idPrefix, markerId);
-      labels.push(...result.labels);
-      return result.element;
-    }),
-    ...sortById(positionedDiagram.nodes).map((node) => {
-      const result = renderNode(document, node, options, idPrefix);
-      labels.push(...result.labels);
-      return result.element;
-    }),
-    ...sortById(positionedDiagram.activations).map((bar) =>
-      renderActivation(document, bar, options, idPrefix)
-    ),
+    ...sortById(positionedDiagram.groups)
+      .filter(
+        (group) =>
+          !viewport || rectInViewport(group.x, group.y, group.width, group.height, viewport)
+      )
+      .map((group) => {
+        const result = renderGroup(document, group, options, idPrefix);
+        labels.push(...result.labels);
+        return result.element;
+      }),
+    ...sortById(positionedDiagram.edges)
+      .filter((edge) => !viewport || edgeInViewport(edge.waypoints, viewport))
+      .map((edge) => {
+        const result = renderEdge(document, edge, options, idPrefix, markerId);
+        labels.push(...result.labels);
+        return result.element;
+      }),
+    ...sortById(positionedDiagram.nodes)
+      .filter(
+        (node) => !viewport || rectInViewport(node.x, node.y, node.width, node.height, viewport)
+      )
+      .map((node) => {
+        const result = renderNode(document, node, options, idPrefix);
+        labels.push(...result.labels);
+        return result.element;
+      }),
+    ...sortById(positionedDiagram.activations)
+      .filter((bar) => !viewport || rectInViewport(bar.x, bar.y, bar.width, bar.height, viewport))
+      .map((bar) => renderActivation(document, bar, options, idPrefix)),
   ];
   if (labels.length > 0) {
     children.push({

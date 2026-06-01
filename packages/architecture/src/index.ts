@@ -42,9 +42,14 @@ export type {
 export { createQuery } from "./query";
 export type {
   CatalogEntry,
+  CatalogModel,
+  CatalogSyncAdapter,
+  CatalogSyncService,
   ClassifiedElements,
   DependencyMatrix,
   ElementClassifier,
+  SyncEntityResult,
+  SyncResult,
 } from "./service-catalog";
 export {
   classifyElements,
@@ -52,6 +57,8 @@ export {
   exportCatalogYaml,
   extractServices,
   generateDependencyMatrix,
+  MockSyncAdapter,
+  toCatalogModel,
 } from "./service-catalog";
 export type {
   StructurizrContainer,
