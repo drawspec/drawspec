@@ -30,7 +30,7 @@ Default to using Bun instead of Node.js.
 - **No emojis** in commit messages
 
 ### PR Workflow
-1. Feature branch → PR (one feature/fix per PR, references issue: `Closes #N`)
+1. Feature branch → PR (one feature/fix per PR, link to project board item)
 2. CI must pass (check, typecheck, test, build)
 3. **ALL Copilot review comments MUST be addressed before merge** — fix bugs, reply to suggestions, resolve all threads
 4. Squash merge to `main`, delete feature branch
@@ -60,24 +60,27 @@ See Serena memory `package-dependencies` for the dependency graph, and `conventi
 Sub-agents MUST work in git worktrees, NOT the main repo:
 
 ```bash
-WORKTREE="/tmp/drawspec-issue-${N}"
-git worktree add "$WORKTREE" -b "feat/issue-${N}/slug" main
+WORKTREE="/tmp/drawspec-fix-dark-mode"
+git worktree add "$WORKTREE" -b fix/dark-mode main
 # All work in $WORKTREE
 git worktree remove "$WORKTREE"  # After PR merged
 ```
 
-- Always `/tmp/drawspec-issue-{N}/`, always branch from `main`
-- Branch names: `feat/issue-{N}/{slug}`, `fix/issue-{N}/{slug}`, `docs/issue-{N}/{slug}`
+- Always `/tmp/drawspec-{slug}/`, always branch from `main`
+- Branch names: `feat/{slug}`, `fix/{slug}`, `docs/{slug}`
 - Never commit to `main` directly
 
 ---
 
 ## Task Tracking
 
-All work tracked via GitHub Issues on the [project board](https://github.com/orgs/drawspec/projects/1).
+All work tracked via the [project board](https://github.com/orgs/drawspec/projects/1) — **not** standalone GitHub Issues.
 
+- Create project items directly on the board via the GitHub UI
+- Do **not** create standalone GH issues — the board is the single source of truth
+- Branch names: `feat/{slug}`, `fix/{slug}`, `docs/{slug}` — no issue number prefix
 - Use GitHub MCP tools (`github_*`) for all GitHub interactions, not `gh` CLI
-- Post progress comments on issues, update board status (Ready → In progress → In review → Done)
+- Post progress comments on PRs, update board status (Ready → In progress → In review → Done)
 
 ---
 
