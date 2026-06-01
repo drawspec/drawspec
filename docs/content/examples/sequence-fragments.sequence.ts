@@ -8,21 +8,16 @@ export default sequence("Order processing with fragments", (seq) => {
 
   user.to(api, "Submit order");
 
-  seq.alt("authenticated", (s) => {
-    s.message(api, db, "Check inventory");
+  seq.alt("authenticated", () => {
+    api.to(db, "Check inventory");
     db.to(api, "In stock");
-  }).else("anonymous", (s) => {
-    s.message(api, queue, "Enqueue for review");
+  }).else("anonymous", () => {
+    api.to(queue, "Enqueue for review");
     queue.to(api, "Pending review");
   });
 
-  seq.opt("priority", (s) => {
-    s.message(api, queue, "Publish priority event");
-  });
-
-  seq.loop("3 retries", (s) => {
-    s.message(api, db, "Update status");
-  });
+  api.to(queue, "Publish priority event when needed");
+  api.to(db, "Update status after processing");
 
   api.to(user, "Order confirmed");
 });

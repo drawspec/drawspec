@@ -2,11 +2,11 @@ import { defineDoc, md } from "../../../packages/docs/src/index.js";
 
 export default defineDoc({
   title: "Sequence Diagram with Fragments",
-  description: "Using alt, opt, loop, and par fragments to model complex control flow",
+  description: "Using alt/else fragments to model supported sequence control flow",
   content: await md`
 # Sequence Diagram with Fragments
 
-Fragments let you group messages into structured control flows like alternatives, optional steps, loops, and parallel execution.
+Fragments let you group messages into structured control flows. DrawSpec currently exposes alternative fragments through \`seq.alt().else()\`.
 
 ## Diagram
 
@@ -25,21 +25,16 @@ export default sequence("Order processing with fragments", (seq) => {
 
   user.to(api, "Submit order");
 
-  seq.alt("authenticated", (s) => {
-    s.message(api, db, "Check inventory");
+  seq.alt("authenticated", () => {
+    api.to(db, "Check inventory");
     db.to(api, "In stock");
-  }).else("anonymous", (s) => {
-    s.message(api, queue, "Enqueue for review");
+  }).else("anonymous", () => {
+    api.to(queue, "Enqueue for review");
     queue.to(api, "Pending review");
   });
 
-  seq.opt("priority", (s) => {
-    s.message(api, queue, "Publish priority event");
-  });
-
-  seq.loop("3 retries", (s) => {
-    s.message(api, db, "Update status");
-  });
+  api.to(queue, "Publish priority event when needed");
+  api.to(db, "Update status after processing");
 
   api.to(user, "Order confirmed");
 });
@@ -49,9 +44,7 @@ export default sequence("Order processing with fragments", (seq) => {
 
 The \`seq.alt()\` fragment models an if/else branch. When the condition is "authenticated", the API checks inventory directly in the database. Otherwise, it enqueues the order for manual review. Both paths eventually converge before the order is confirmed.
 
-The \`seq.opt()\` fragment wraps a message that only executes under a specific condition. Here, priority orders are published to a queue for expedited handling.
-
-The \`seq.loop()\` fragment repeats a set of messages. In this example, the status update is retried up to three times before giving up.
+Additional messages continue after the alternative fragment. Here, priority handling and status updates are modeled with the supported participant \`.to()\` API.
 
 ## Run It
 
