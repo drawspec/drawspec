@@ -226,6 +226,9 @@ function createMockConnection() {
   const connection = {
     onInitialize: noop,
     onDocumentSymbol: noop,
+    onCompletion: noop,
+    onHover: noop,
+    onDefinition: noop,
     sendDiagnostics: (params: { uri: string; diagnostics: unknown[] }) => {
       sentDiagnostics.push(params);
     },
