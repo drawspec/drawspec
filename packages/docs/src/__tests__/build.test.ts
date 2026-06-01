@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import MiniSearch from "minisearch";
 import { buildDocs } from "../build";
 
 const tempDirs: string[] = [];
@@ -48,6 +49,29 @@ describe("buildDocs", () => {
     expect(await readFile(join(outputDir, "index.html"), "utf8")).toContain(
       'href="./guides/architecture.html"'
     );
+  });
+
+  test("writes a client-side search index from doc title, description, and body text", async () => {
+    const root = await tempDir();
+    const contentDir = join(root, "content");
+    const outputDir = join(root, "dist");
+    await writeDoc(join(contentDir, "guides", "architecture.doc.ts"), "Architecture");
+
+    await buildDocs({ contentDir, outputDir });
+
+    const searchIndex = JSON.parse(
+      await readFile(join(outputDir, "search-index.json"), "utf8")
+    ) as {
+      version: 1;
+      options: { fields: string[]; storeFields: string[] };
+      index: unknown;
+    };
+    const search = MiniSearch.loadJSON(JSON.stringify(searchIndex.index), searchIndex.options);
+
+    expect(searchIndex.version).toBe(1);
+    expect(search.search("Architecture")[0]?.title).toBe("Architecture");
+    expect(search.search("Description")[0]?.slug).toBe("guides/architecture");
+    expect(search.search("Body")[0]?.slug).toBe("guides/architecture");
   });
 
   test("adds API reference pages when a workspace root is present", async () => {
