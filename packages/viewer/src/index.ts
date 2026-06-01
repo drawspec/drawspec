@@ -20,6 +20,11 @@ export {
   serializeRelationship,
 } from "./explorer";
 export { normalizeViewerPayload, renderDiagramSvg } from "./render";
-export type { DrawspecDiagramElement, DrawspecTheme, ViewerPayload } from "./types";
+export type {
+  DrawspecDiagramElement,
+  DrawspecTheme,
+  SourceSelectDetail,
+  ViewerPayload,
+} from "./types";
 
 export const drawspecDiagramTagName = "drawspec-diagram";

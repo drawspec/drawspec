@@ -22,6 +22,7 @@ import type {
   DrawspecTheme,
   SerializedElement,
   SerializedRelationship,
+  SourceSelectDetail,
 } from "./types";
 
 let {
@@ -187,6 +188,7 @@ function movePan(event: PointerEvent): void {
 }
 
 function onCanvasClick(event: MouseEvent): void {
+  dispatchSourceSelect(event);
   if (!explorer) return;
   const target = event.target as HTMLElement;
   const svgElement = target.closest("[data-element-id]") as HTMLElement | null;
@@ -207,6 +209,42 @@ function onCanvasClick(event: MouseEvent): void {
     }
   }
   deselectElement();
+}
+
+/**
+ * Walk up from the click target to find the closest `<g>` element with
+ * `data-source-file` and `data-source-line` attributes. If found, dispatch
+ * a `sourceselect` custom event that bubbles up from the
+ * `<drawspec-diagram>` element.
+ */
+function dispatchSourceSelect(event: MouseEvent): void {
+  const target = event.target as HTMLElement;
+  const sourceEl = target.closest("[data-source-file]") as HTMLElement | null;
+  if (sourceEl === null) return;
+
+  const file = sourceEl.dataset.sourceFile;
+  const lineAttr = sourceEl.dataset.sourceLine;
+  if (file === undefined || lineAttr === undefined) return;
+
+  const line = Number(lineAttr);
+  if (!Number.isFinite(line)) return;
+
+  const detail: SourceSelectDetail = { file, line };
+  const columnAttr = sourceEl.dataset.sourceColumn;
+  if (columnAttr !== undefined) {
+    const column = Number(columnAttr);
+    if (Number.isFinite(column)) {
+      detail.column = column;
+    }
+  }
+
+  const host = canvasEl?.closest("drawspec-diagram") ?? canvasEl;
+  host?.dispatchEvent(
+    new CustomEvent<SourceSelectDetail>("sourceselect", {
+      bubbles: true,
+      detail,
+    })
+  );
 }
 
 function applySearchFilter(): void {
