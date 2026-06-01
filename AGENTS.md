@@ -127,6 +127,25 @@ Enforces conventional commits, generates changelogs. Config in `cog.toml`.
 
 ---
 
+## Autonomous Work Mode
+
+Agents work autonomously by default. Do not ask the user for input unless:
+
+1. **Genuine ambiguity** — the task has 2+ valid interpretations with 2x+ effort difference, AND no agent or codebase search can resolve it
+2. **Breaking decision** — the user explicitly needs to approve a design choice that can't be reversed (e.g., changing a public API, adding a dependency)
+3. **Blocked by external dependency** — waiting on the user for credentials, access, or a manual step outside agent control
+
+**When in doubt, consult another agent first.** Use explore/librarian for codebase questions, oracle for architecture, metis for scope clarification. Only escalate to the user if no agent can answer.
+
+**Do NOT ask about:**
+- Which file to edit (search the codebase)
+- Whether to proceed with an obvious fix (just fix it)
+- Priority of tasks (check the project board, pick the next ready item)
+- Style or convention questions (read `conventions` memory + existing code)
+- API usage questions (read the actual source code)
+
+---
+
 ## Keeping Docs Current
 
 Update `AGENTS.md` and Serena memories whenever information changes that a freshly spawned agent with zero context would need to do its job. If it's a rule or constraint → `AGENTS.md`. If it's reference detail (lists, APIs, patterns) → Serena memory. Avoid duplication between the two.
