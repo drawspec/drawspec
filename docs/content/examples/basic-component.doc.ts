@@ -15,42 +15,35 @@ Component diagrams show the organization of components in a system, their interf
 ## Code
 
 \`\`\`typescript
-import {
-  componentDiagram,
-  component,
-  dependency,
-  interface_ as iface,
-  provides,
-  requires,
-} from "@drawspec/uml-component";
+import { componentDiagram } from "@drawspec/uml-component";
 
 export default componentDiagram("E-commerce microservices", (d) => {
-  const api = d.component("API Gateway", (c) => {
+  d.component("API Gateway", (c) => {
     c.provides("IRest");
     c.requires("IProductService");
     c.requires("IOrderService");
     c.requires("IPaymentService");
   });
 
-  const product = d.component("Product Service", (c) => {
+  d.component("Product Service", (c) => {
     c.provides("IProductService");
     c.requires("IProductRepo");
   });
 
-  const order = d.component("Order Service", (c) => {
+  d.component("Order Service", (c) => {
     c.provides("IOrderService");
     c.requires("IInventoryService");
   });
 
-  const payment = d.component("Payment Service", (c) => {
+  d.component("Payment Service", (c) => {
     c.provides("IPaymentService");
   });
 
-  const inventory = d.component("Inventory Service", (c) => {
+  d.component("Inventory Service", (c) => {
     c.provides("IInventoryService");
   });
 
-  const productRepo = d.component("Product Repository", (c) => {
+  d.component("Product Repository", (c) => {
     c.provides("IProductRepo");
   });
 
