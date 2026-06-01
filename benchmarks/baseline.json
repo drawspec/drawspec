@@ -10,7 +10,7 @@
   "capturedBaselineMs": {
     "compileSmall1x10Elements": 0.23,
     "coldCompile10x100Elements": 13.14,
-    "warmCompile10x100Elements": 2.0,
+    "warmCompile10x100Elements": 7.29,
     "compile100Diagrams100ElementsEach": 36.66,
     "compile1000TinyDiagrams": 35.96,
     "compileSingle1000ElementDiagram": 2.06,
