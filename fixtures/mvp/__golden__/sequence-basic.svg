@@ -14,48 +14,50 @@
   </defs>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_488bd19a-0v2gx3z">
     <path d="M 260 320 L 100 320" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="314">
-      Show confirmation
-    </text>
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_9e381ab3-05543ck">
     <path d="M 420 264 L 260 264" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
-    <text data-width="184.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="258">
-      Authorization approved
-    </text>
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_ce4428e1-10u1y98">
     <path d="M 260 208 L 420 208" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="202">
-      Authorize payment
-    </text>
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_e787e49c-1jdyv9s">
     <path d="M 100 152 L 260 152" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
-    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="146">
-      Place order
-    </text>
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-node-seq_6d48fc82-12xzx7y">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="200" y="40" />
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="260" y="72.667">
-      Shop
-    </text>
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-node-seq_75aa37ac-12yz0w9">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="360" y="40" />
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="420" y="72.667">
-      Payments
-    </text>
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-node-seq_f0d7723a-0msd0k7">
     <rect fill="#eef2ff" height="56" rx="3" ry="3" stroke="#4338ca" stroke-width="1.5" width="120" x="40" y="40" />
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
-      User
-    </text>
   </g>
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_488bd19a-activation-06lo2hu" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="95" y="324" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_9e381ab3-activation-1iivrpr" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="268" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_ce4428e1-activation-0y40rq3" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="415" y="212" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_e787e49c-activation-1esj5rv" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="156" />
+  <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-text-layer-1o78ybx">
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="314">
+      Show confirmation
+    </text>
+    <text data-width="184.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="258">
+      Authorization approved
+    </text>
+    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="202">
+      Authorize payment
+    </text>
+    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="146">
+      Place order
+    </text>
+    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="260" y="72.667">
+      Shop
+    </text>
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="420" y="72.667">
+      Payments
+    </text>
+    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      User
+    </text>
+  </g>
 </svg>
