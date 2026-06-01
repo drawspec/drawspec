@@ -46,20 +46,19 @@ describe("provideHover", () => {
     expect(hover).toBeUndefined();
   });
 
-  test("returns hover for message method in sequence", () => {
+  test("returns hover for alt method in sequence", () => {
     const text = [
       SEQUENCE_IMPORT,
       "",
       'sequence("Test", (s) => {',
       "  const a = s.actor('A');",
-      "  const b = s.actor('B');",
-      "  s.message(a, b, 'hi');",
+      "  s.alt('cond', (s2) => {});",
       "});",
     ].join("\n");
-    const hover = provideHover(text, pos(5, 4));
+    const hover = provideHover(text, pos(4, 4));
     expect(hover).toBeDefined();
     const contents = hover?.contents as { kind: string; value: string };
-    expect(contents.value).toContain("message");
-    expect(contents.value).toContain("source to target");
+    expect(contents.value).toContain("alt");
+    expect(contents.value).toContain("alt fragment");
   });
 });

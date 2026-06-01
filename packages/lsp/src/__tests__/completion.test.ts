@@ -62,8 +62,8 @@ describe("provideCompletions", () => {
     const labels = items.map((i) => i.label);
     expect(labels).toContain("actor");
     expect(labels).toContain("participant");
-    expect(labels).toContain("message");
     expect(labels).toContain("alt");
+    expect(labels).not.toContain("message");
   });
 
   test("provides builder method completions for class diagram", () => {

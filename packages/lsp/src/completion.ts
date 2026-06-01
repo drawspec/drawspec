@@ -9,7 +9,7 @@ import {
 /**
  * Diagram package metadata used for completion, hover, and definition providers.
  */
-interface PackageInfo {
+export interface PackageInfo {
   /** The npm package name without scope prefix, e.g. "uml-sequence" */
   readonly shortName: string;
   /** Full scoped package name, e.g. "@drawspec/uml-sequence" */
@@ -46,39 +46,10 @@ export const PACKAGES: readonly PackageInfo[] = [
         documentation: "Add a participant (non-actor) to the sequence diagram.",
       },
       {
-        name: "message",
-        signature:
-          "message(source: SequenceElement, target: SequenceElement, label: string): SequenceMessage",
-        documentation: "Add a message from source to target with a label.",
-      },
-      {
         name: "alt",
         signature:
           "alt(condition: string, callback: (s: SequenceBuilder) => void): SequenceFragmentBuilder",
         documentation: "Start an alt fragment with the given condition.",
-      },
-      {
-        name: "loop",
-        signature:
-          "loop(condition: string, callback: (s: SequenceBuilder) => void): SequenceFragmentBuilder",
-        documentation: "Start a loop fragment.",
-      },
-      {
-        name: "opt",
-        signature:
-          "opt(condition: string, callback: (s: SequenceBuilder) => void): SequenceFragmentBuilder",
-        documentation: "Start an optional fragment.",
-      },
-      {
-        name: "par",
-        signature:
-          "par(condition: string, callback: (s: SequenceBuilder) => void): SequenceFragmentBuilder",
-        documentation: "Start a parallel fragment.",
-      },
-      {
-        name: "note",
-        signature: "note(targetId: string, text: string): SequenceNote",
-        documentation: "Add a note attached to an element.",
       },
     ],
   },
@@ -229,28 +200,19 @@ export const PACKAGES: readonly PackageInfo[] = [
     diagramKind: "architecture",
     builderMethods: [
       {
-        name: "person",
-        signature:
-          "person(name: string, description?: string, options?: ArchitectureElementOptions): ArchitectureElement",
-        documentation: "Define a person element in the C4 model.",
+        name: "model",
+        signature: "model: ArchitectureModel",
+        documentation: "Access the architecture model to add elements and relationships.",
       },
       {
-        name: "softwareSystem",
-        signature:
-          "softwareSystem(name: string, description?: string, options?: ArchitectureElementOptions): ArchitectureElement",
-        documentation: "Define a software system element.",
+        name: "views",
+        signature: "views: ArchitectureViews",
+        documentation: "Access the views configuration for the workspace.",
       },
       {
-        name: "container",
-        signature:
-          "container(name: string, description?: string, technology?: string, options?: ArchitectureElementOptions): ArchitectureElement",
-        documentation: "Define a container element.",
-      },
-      {
-        name: "database",
-        signature:
-          "database(name: string, description?: string, technology?: string, options?: ArchitectureElementOptions): ArchitectureElement",
-        documentation: "Define a database element.",
+        name: "styles",
+        signature: "styles: ArchitectureStyles",
+        documentation: "Access the styles configuration for the workspace.",
       },
     ],
   },
@@ -326,7 +288,7 @@ export function detectCompletionContext(
   }
 
   // Check if we're inside a builder callback by looking for the factory function call
-  // pattern: factoryFunction("...", (param) => { or factoryFunction("...", (param) =>
+  // pattern: factoryFunction("...", (param) => { or factoryFunction("...", ({ a, b }) =>
   let inBuilderCallback = false;
   let detectedPackage: PackageInfo | undefined;
   let builderParamName: string | undefined;
@@ -345,17 +307,43 @@ export function detectCompletionContext(
           // Found opening brace — check if it's a factory callback
           const beforeBrace = currentLine.slice(0, j);
           // Match: factoryFunction("...", (param) =>
-          const callbackMatch = beforeBrace.match(
+          const simpleCallbackMatch = beforeBrace.match(
             /(\w+)\s*\(\s*["'][^"']*["']\s*,\s*\(\s*(\w+)\s*\)\s*=>\s*$/
           );
-          if (callbackMatch) {
-            const funcName = callbackMatch[1];
-            const paramName = callbackMatch[2];
-            const found = importedFactoryFunctions.get(funcName) ?? FACTORY_FUNCTIONS.get(funcName);
-            if (found !== undefined) {
+          if (simpleCallbackMatch) {
+            const funcName = simpleCallbackMatch[1];
+            const paramName = simpleCallbackMatch[2];
+            const fromImport = importedFactoryFunctions.get(funcName);
+            const fromRegistry = FACTORY_FUNCTIONS.get(funcName);
+            if (fromImport !== undefined) {
               inBuilderCallback = true;
-              detectedPackage = found.pkg ?? found;
+              detectedPackage = fromImport.pkg;
               builderParamName = paramName;
+            } else if (fromRegistry !== undefined) {
+              inBuilderCallback = true;
+              detectedPackage = fromRegistry;
+              builderParamName = paramName;
+            }
+          }
+          // Match: factoryFunction("...", ({ a, b }) =>  (destructured form)
+          const destructuredMatch = beforeBrace.match(
+            /(\w+)\s*\(\s*["'][^"']*["']\s*,\s*\(\s*\{([^}]+)\}\s*\)\s*=>\s*$/
+          );
+          if (destructuredMatch) {
+            const funcName = destructuredMatch[1];
+            const propsStr = destructuredMatch[2];
+            const fromImport = importedFactoryFunctions.get(funcName);
+            const fromRegistry = FACTORY_FUNCTIONS.get(funcName);
+            const pkg = fromImport?.pkg ?? fromRegistry;
+            if (pkg !== undefined) {
+              inBuilderCallback = true;
+              detectedPackage = pkg;
+              // Track all destructured property names as potential builder method prefixes
+              const propNames = propsStr
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean);
+              builderParamName = propNames[0];
             }
           }
         }
@@ -372,7 +360,6 @@ export function detectCompletionContext(
     // Check if this matches a builder parameter we detected
     if (builderParamName !== undefined && objName === builderParamName) {
       inBuilderCallback = true;
-      // detectedPackage already set from brace scanning
     }
   }
 
