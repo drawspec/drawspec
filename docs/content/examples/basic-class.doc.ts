@@ -15,14 +15,7 @@ Class diagrams show the structure of a system by modeling classes, their attribu
 ## Code
 
 \`\`\`typescript
-import {
-  classDiagram,
-  class_,
-  interface_,
-  enum_,
-  implements as implements_,
-  uses,
-} from "@drawspec/uml-class";
+import { classDiagram } from "@drawspec/uml-class";
 
 export default classDiagram("User management", ({ class_, interface_, enum_, implements, uses }) => [
   class_("User", (c) => {
@@ -65,7 +58,7 @@ export default classDiagram("User management", ({ class_, interface_, enum_, imp
 
 ## How It Works
 
-The \`User\` class is the base entity with email and timestamp fields. The \`Admin\` class extends \`User\` to inherit those fields and adds role-based permissions like \`banUser\`. Both classes implement the \`Repository\` interface, which defines the contract for data access operations.
+The \`User\` class is the base entity with email and timestamp fields. The \`Admin\` class extends \`User\` to inherit those fields, adds role-based permissions like \`banUser\`, and implements the \`Repository\` interface, which defines the contract for data access operations.
 
 The \`Session\` class models user sessions with token management. It uses the \`Repository\` interface for storing session data but does not implement it directly, indicating a dependency rather than an implementation relationship.
 

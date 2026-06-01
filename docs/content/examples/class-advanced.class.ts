@@ -1,4 +1,4 @@
-import { classDiagram, class_, interface_, enum_, implements as implements_, uses } from "../../../packages/uml-class/src/index.js";
+import { classDiagram } from "../../../packages/uml-class/src/index.js";
 
 export default classDiagram("Vehicle system", ({ class_, interface_, enum_, implements, uses }) => [
   interface_("IDriveable", (i) => {
@@ -61,6 +61,4 @@ export default classDiagram("Vehicle system", ({ class_, interface_, enum_, impl
   }),
 
   uses("Vehicle", "Engine"),
-  uses("Car", "Vehicle"),
-  uses("Truck", "Vehicle"),
 ]);

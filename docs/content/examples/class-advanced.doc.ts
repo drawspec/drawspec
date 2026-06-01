@@ -15,14 +15,7 @@ This example shows a vehicle domain model with interfaces, enums, composition, a
 ## Code
 
 \`\`\`typescript
-import {
-  classDiagram,
-  class_,
-  interface_,
-  enum_,
-  implements as implements_,
-  uses,
-} from "@drawspec/uml-class";
+import { classDiagram } from "@drawspec/uml-class";
 
 export default classDiagram("Vehicle system", ({ class_, interface_, enum_, implements, uses }) => [
   interface_("IDriveable", (i) => {
@@ -85,8 +78,6 @@ export default classDiagram("Vehicle system", ({ class_, interface_, enum_, impl
   }),
 
   uses("Vehicle", "Engine"),
-  uses("Car", "Vehicle"),
-  uses("Truck", "Vehicle"),
 ]);
 \`\`\`
 
