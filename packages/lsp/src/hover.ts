@@ -128,6 +128,7 @@ function findImportedPackageForWord(documentText: string, word: string): Package
     if (match) {
       const imports = match[1];
       const pkgName = match[2];
+      if (imports === undefined || pkgName === undefined) continue;
       const bindings = imports.split(",").map((s) => s.trim());
       for (const binding of bindings) {
         const parts = binding.split(/\s+as\s+/);

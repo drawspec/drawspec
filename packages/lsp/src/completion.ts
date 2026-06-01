@@ -271,6 +271,7 @@ export function detectCompletionContext(
     if (namedImportMatch) {
       const imports = namedImportMatch[1];
       const pkgName = namedImportMatch[2];
+      if (imports === undefined || pkgName === undefined) continue;
       const pkg = PACKAGES.find((p) => p.fullName === pkgName);
       if (pkg !== undefined) {
         importedPackages.set(pkgName, pkg);
@@ -313,6 +314,7 @@ export function detectCompletionContext(
           if (simpleCallbackMatch) {
             const funcName = simpleCallbackMatch[1];
             const paramName = simpleCallbackMatch[2];
+            if (funcName === undefined || paramName === undefined) continue;
             const fromImport = importedFactoryFunctions.get(funcName);
             const fromRegistry = FACTORY_FUNCTIONS.get(funcName);
             if (fromImport !== undefined) {
@@ -332,6 +334,7 @@ export function detectCompletionContext(
           if (destructuredMatch) {
             const funcName = destructuredMatch[1];
             const propsStr = destructuredMatch[2];
+            if (funcName === undefined || propsStr === undefined) continue;
             const fromImport = importedFactoryFunctions.get(funcName);
             const fromRegistry = FACTORY_FUNCTIONS.get(funcName);
             const pkg = fromImport?.pkg ?? fromRegistry;
@@ -386,7 +389,6 @@ function packageCompletionItems(): CompletionItem[] {
     detail: `DrawSpec ${pkg.diagramKind} diagrams`,
     documentation: `Import ${pkg.factoryFunction} from this package to create ${pkg.diagramKind} diagrams.`,
     sortText: String(index).padStart(3, "0"),
-    textEdit: undefined,
   }));
 }
 

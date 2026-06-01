@@ -58,6 +58,7 @@ function resolveImportDefinition(
   const importRegex = /(?:from|import)\s+.*["'](@drawspec\/([^"']*))["']/g;
   for (const importMatch of line.matchAll(importRegex)) {
     const fullImport = importMatch[1];
+    if (fullImport === undefined) continue;
     const matchStart = importMatch.index + importMatch[0].indexOf(fullImport);
     const matchEnd = matchStart + fullImport.length;
 
@@ -86,6 +87,7 @@ function resolveDiagramReference(
   const diagramRegex = /@diagram\s+(\S+)/g;
   for (const diagramMatch of line.matchAll(diagramRegex)) {
     const refPath = diagramMatch[1];
+    if (refPath === undefined) continue;
     const atDiagramLiteral = "@diagram ";
     const matchStart = diagramMatch.index + atDiagramLiteral.length;
     const matchEnd = matchStart + refPath.length;
@@ -114,6 +116,7 @@ function resolveFactoryDefinition(
       const match = line.match(/import\s*\{([^}]+)\}\s*from\s*["'](@drawspec\/[^"']+)["']/);
       if (match) {
         const imports = match[1];
+        if (imports === undefined) continue;
         const bindings = imports.split(",").map((s) => s.trim());
         for (const binding of bindings) {
           const parts = binding.split(/\s+as\s+/);
@@ -152,6 +155,7 @@ function resolveBuilderTypeDefinition(
     if (match) {
       const imports = match[1];
       const pkgName = match[2];
+      if (imports === undefined || pkgName === undefined) continue;
       const pkg = PACKAGES.find((p) => p.fullName === pkgName);
       if (pkg !== undefined) {
         const bindings = imports.split(",").map((s) => s.trim());
