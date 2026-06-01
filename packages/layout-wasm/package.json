@@ -1,6 +1,7 @@
 {
   "name": "@drawspec/layout-wasm",
   "version": "0.0.1",
+  "description": "TypeScript layout fallback adapter (WASM planned)",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

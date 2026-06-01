@@ -1,3 +1,20 @@
+/**
+ * NOTE: This package does not currently include a WASM binary.
+ *
+ * The `WasmLayoutEngine` is a layout adapter that CAN delegate to a WASM
+ * module via the `WasmBridge` interface. However, no WASM binary is shipped
+ * yet — the engine uses `TypeScriptFallbackBridge` for all layout operations.
+ *
+ * WASM acceleration is planned: once a WASM graph layout binary is available,
+ * pass it as `new WasmLayoutEngine(wasmBridge)` to use it instead of the
+ * TypeScript fallback.
+ *
+ * Performance characteristics of the TypeScript fallback:
+ * - Suitable for diagrams up to ~500 nodes
+ * - Deterministic layered (Sugiyama-style) layout
+ * - No external WASM dependencies
+ */
+
 import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
 import type {
   LayoutEngine,
