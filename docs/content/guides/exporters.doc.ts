@@ -16,8 +16,6 @@ The Mermaid exporter produces Mermaid diagram definitions from DrawSpec document
 
 \`\`\`typescript
 import { classDiagram } from "@drawspec/uml-class";
-import { simpleGraphLayout } from "@drawspec/layout";
-import { compileLayout } from "@drawspec/layout";
 import { exportToMermaid } from "@drawspec/exporter-mermaid";
 
 const doc = classDiagram("Example", ({ class_ }) => [
@@ -25,11 +23,7 @@ const doc = classDiagram("Example", ({ class_ }) => [
   class_("Dog"),
 ]);
 
-const layoutEngine = simpleGraphLayout();
-const positioned = await layoutEngine.layout(doc);
-const compiled = compileLayout(doc, positioned);
-
-const mermaid = exportToMermaid(compiled);
+const mermaid = exportToMermaid(doc);
 console.log(mermaid);
 \`\`\`
 
@@ -164,10 +158,10 @@ Save to a file or output to stdout:
 
 \`\`\`bash
 # Save to file
-drawspec export diagram.ts --format mermaid --output diagram.mmd
+drawspec export diagram.ts --format mermaid --out ./output/
 
 # Output to stdout
-drawspec export diagram.ts --format d2
+drawspec export diagram.ts --format d2 --stdout
 \`\`\`
 
 ### Batch Export
@@ -175,7 +169,7 @@ drawspec export diagram.ts --format d2
 Export multiple diagrams to different formats:
 
 \`\`\`bash
-drawspec export ./diagrams/**/*.ts --format mermaid --output ./output/
+drawspec export ./diagrams/**/*.ts --format mermaid --out ./output/
 \`\`\`
 
 ## Complete Example
@@ -184,12 +178,11 @@ Export a class diagram to all three formats:
 
 \`\`\`typescript
 import { classDiagram } from "@drawspec/uml-class";
-import { simpleGraphLayout } from "@drawspec/layout";
 import { exportToMermaid } from "@drawspec/exporter-mermaid";
 import { exportToPlantUML } from "@drawspec/exporter-plantuml";
 import { exportToD2 } from "@drawspec/exporter-d2";
 
-const doc = classDiagram("Animal hierarchy", ({ class_, extends_ }) => [
+const doc = classDiagram("Animal hierarchy", ({ class_ }) => [
   class_("Animal", (c) => {
     c.field("name", "string");
     c.method("speak", { returnType: "string" });
@@ -200,13 +193,9 @@ const doc = classDiagram("Animal hierarchy", ({ class_, extends_ }) => [
   }),
 ]);
 
-const engine = simpleGraphLayout();
-const positioned = await engine.layout(doc);
-const compiled = compileLayout(doc, positioned);
-
-const mermaid = exportToMermaid(compiled);
-const plantuml = exportToPlantUML(compiled);
-const d2 = exportToD2(compiled);
+const mermaid = exportToMermaid(doc);
+const plantuml = exportToPlantUML(doc);
+const d2 = exportToD2(doc);
 
 console.log("Mermaid:");
 console.log(mermaid);

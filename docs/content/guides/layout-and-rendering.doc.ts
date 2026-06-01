@@ -99,7 +99,6 @@ import { renderSvg } from "@drawspec/renderer-svg";
 
 const svg = await renderSvg(document, {
   positionedDiagram: positioned,
-  theme: { background: "#ffffff", edgeStroke: "#333333" },
   accessibility: {
     title: "Order processing flow",
     description: "Shows the steps to process a customer order",
@@ -110,7 +109,6 @@ const svg = await renderSvg(document, {
 ### Render Options
 
 - \`width\` and \`height\` — set the SVG canvas dimensions
-- \`theme\` — customize colors and fonts
 - \`accessibility.title\` and \`accessibility.description\` — add ARIA metadata
 
 ### Synchronous Rendering
@@ -125,28 +123,20 @@ const svg = renderSvgSync(document, {
 });
 \`\`\`
 
-## Theming
+## Styling
 
 ### Default Theme
 
-The renderer applies a default theme that covers background, strokes, fonts, and node shapes.
+The renderer applies default styling that covers background, strokes, fonts, and node shapes.
 
-### Custom Theme
+### Element Styles
 
-Override specific theme values:
+Attach styles to diagram metadata when you need element-specific rendering changes:
 
 \`\`\`typescript
 const svg = await renderSvg(document, {
   positionedDiagram: positioned,
-  theme: {
-    background: "#f8fafc",
-    nodeFill: "#e2e8f0",
-    nodeStroke: "#64748b",
-    edgeStroke: "#94a3b8",
-    text: "#1e293b",
-    fontFamily: "Inter, system-ui, sans-serif",
-    fontSize: 14,
-  },
+  accessibility: { title: document.title },
 });
 \`\`\`
 
@@ -163,7 +153,7 @@ import { classDiagram } from "@drawspec/uml-class";
 import { simpleGraphLayout } from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
 
-const doc = classDiagram("Inheritance example", ({ class_, extends_ }) => [
+const doc = classDiagram("Inheritance example", ({ class_ }) => [
   class_("Animal", (c) => { c.method("speak", { returnType: "string" }); }),
   class_("Dog", (c) => { c.extends("Animal"); c.method("bark", { returnType: "string" }); }),
 ]);
@@ -173,7 +163,6 @@ const positioned = await layoutEngine.layout(doc, { direction: "TB", padding: 40
 
 const svg = await renderSvg(doc, {
   positionedDiagram: positioned,
-  theme: { background: "#ffffff" },
   accessibility: { title: doc.title },
 });
 

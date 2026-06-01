@@ -29,7 +29,15 @@ const result = validate({
 The strict preset enforces additional constraints for production diagrams:
 
 \`\`\`typescript
-import { validate, strict, strictRules } from "@drawspec/validation";
+import { loadPolicyPack, recommendedRules, validate } from "@drawspec/validation";
+
+const strict = loadPolicyPack("strict");
+
+const result = validate({
+  diagram: compiledDiagram,
+  rules: recommendedRules,
+  config: strict,
+});
 \`\`\`
 
 ### Relaxed
@@ -37,7 +45,15 @@ import { validate, strict, strictRules } from "@drawspec/validation";
 The relaxed preset enables only the most critical rules for quick iteration:
 
 \`\`\`typescript
-import { validate, relaxed, relaxedRules } from "@drawspec/validation";
+import { loadPolicyPack, recommendedRules, validate } from "@drawspec/validation";
+
+const relaxed = loadPolicyPack("relaxed");
+
+const result = validate({
+  diagram: compiledDiagram,
+  rules: recommendedRules,
+  config: relaxed,
+});
 \`\`\`
 
 ## Validation Function
@@ -46,11 +62,11 @@ The \`validate()\` function accepts a \`ValidationInput\` and returns a \`Valida
 
 \`\`\`typescript
 import { validate } from "@drawspec/validation";
-import { classRules } from "@drawspec/validation/rules";
+import { classRules } from "@drawspec/validation";
 
 const result = validate({
   rules: classRules,
-  config: { rules: { noCircularInheritanceRule: "error" } },
+  config: { rules: { "class/no-circular-inheritance": "error" } },
   diagram: compiledDiagram,
 });
 
@@ -162,7 +178,7 @@ async function validateInCI() {
 
   const result = validate({
     rules: recommendedRules,
-    config: { rules: { requireTitleRule: "error" } },
+    config: { rules: { "diagram/require-title": "error" } },
     diagram: doc,
   });
 
@@ -183,13 +199,13 @@ Group rules into policy packs for organizational standards:
 \`\`\`typescript
 import { registerPolicyPack, loadPolicyPack } from "@drawspec/validation";
 
-const myOrgRules = registerPolicyPack({
+registerPolicyPack({
   name: "my-org",
   description: "My organization diagram standards",
   rules: {
-    requireTitleRule: "error",
-    noEmptyLabelRule: "warn",
-    noFloatingNodeRule: "error",
+    "diagram/require-title": "error",
+    "diagram/no-empty-label": "warn",
+    "diagram/no-floating-node": "error",
   },
 });
 
