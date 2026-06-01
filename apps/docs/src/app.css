@@ -92,6 +92,12 @@ pre code {
   padding: 0;
 }
 
+[data-theme="dark"] .shiki,
+[data-theme="dark"] .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
 h1,
 h2,
 h3,

@@ -59,10 +59,11 @@ export interface LayoutEngine { ... }
 
 ## PR Workflow
 - Feature branch from main → PR → CI must pass → squash merge
-- Branch naming: `feat/issue-{N}/{slug}`, `fix/issue-{N}/{slug}`
+- Branch naming: `feat/{slug}`, `fix/{slug}`, `docs/{slug}` — no issue number prefix
 - ALL Copilot review comments must be addressed before merge
 - NEVER push to main directly — all changes go through PRs, no exceptions
-- Sub-agents use git worktrees at `/tmp/drawspec-issue-{N}/`
+- Sub-agents use git worktrees at `/tmp/drawspec-{slug}/`
+- Track work via [project board](https://github.com/orgs/drawspec/projects/1), NOT standalone GH issues
 
 ## Cross-Package Changes
 When a change affects multiple packages/apps/docs, all updates go in the same PR.
