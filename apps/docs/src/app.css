@@ -98,8 +98,8 @@ pre code {
 
 [data-theme="dark"] .shiki,
 [data-theme="dark"] .shiki span {
-  color: var(--shiki-dark);
-  background-color: var(--shiki-dark-bg);
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }
 
 h1,
