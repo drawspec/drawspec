@@ -35,7 +35,7 @@ function rectInViewport(
   );
 }
 
-/** Check if any waypoint of an edge falls within (or near) the viewport. */
+/** Check if the axis-aligned bounding box of an edge's waypoints overlaps with the viewport. */
 function edgeInViewport(waypoints: readonly Point[], viewport: SvgViewport): boolean {
   if (waypoints.length === 0) return true;
   let minX = Infinity;

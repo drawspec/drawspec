@@ -1,4 +1,3 @@
-export { default as ElementList } from "./ElementList.svelte";
 export {
   type BrowserElementFilter,
   type BrowserPathOptions,
@@ -17,4 +16,3 @@ export type {
   SerializedRelationship,
 } from "./types";
 export { DEFAULT_EXPLORER_CONFIG, serializeElement, serializeRelationship } from "./types";
-export { default as VirtualList } from "./VirtualList.svelte";

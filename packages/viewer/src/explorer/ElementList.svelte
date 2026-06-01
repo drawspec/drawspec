@@ -32,7 +32,7 @@ function handleClick(elementId: string): void {
 
 {#if elements.length > 0}
   <div class="element-list">
-    <VirtualList {items} itemHeight={ITEM_HEIGHT} overscan={8}>
+    <VirtualList items={elements} itemHeight={ITEM_HEIGHT} overscan={8}>
       {#snippet children(item, index, style)}
         {@const el = item as SerializedElement}
         {@const isHidden = hiddenIds.has(el.id)}
@@ -87,6 +87,7 @@ function handleClick(elementId: string): void {
     border-bottom: 1px solid #e2e8f0;
     white-space: nowrap;
     overflow: hidden;
+    box-sizing: border-box;
   }
   .element-item:hover {
     background: #f1f5f9;
