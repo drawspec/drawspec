@@ -187,3 +187,230 @@ function toBackstageType(type: string): string {
 function yamlString(value: string): string {
   return JSON.stringify(value);
 }
+
+/**
+ * Normalized service representation for catalog synchronization.
+ *
+ * This is a catalog-agnostic intermediate format used when pushing or pulling
+ * architecture data to/from external service catalogs (Backstage, OpsLevel, etc.).
+ * Each service includes identity, classification, ownership, and dependency
+ * information needed by most catalog backends.
+ */
+export interface CatalogSyncService {
+  /** Unique identifier for the service within the architecture model */
+  readonly id: string;
+  /** Human-readable service name */
+  readonly name: string;
+  /** Service type (e.g. "container", "softwareSystem", "service") */
+  readonly type: string;
+  /** Optional description of the service */
+  readonly description?: string;
+  /** Team or individual responsible for the service */
+  readonly owner?: string;
+  /** Technology stack used by the service */
+  readonly technology?: string;
+  /** Sorted list of tags for categorization */
+  readonly tags: readonly string[];
+  /** Sorted list of service IDs this service depends on */
+  readonly dependencies: readonly string[];
+}
+
+/**
+ * Normalized architecture model representation for catalog synchronization.
+ *
+ * Contains all services extracted from an architecture workspace, ready to be
+ * pushed to an external catalog or merged with catalog state pulled from one.
+ */
+export interface CatalogModel {
+  /** Workspace name the model was derived from */
+  readonly source: string;
+  /** Timestamp of when the model was generated (ISO 8601) */
+  readonly generatedAt: string;
+  /** Services included in the sync payload */
+  readonly services: readonly CatalogSyncService[];
+}
+
+/**
+ * Details about an individual entity that was created, updated, or failed
+ * during a catalog sync push operation.
+ */
+export interface SyncEntityResult {
+  /** Identifier of the synced entity */
+  readonly id: string;
+  /** Whether this entity was synced successfully */
+  readonly success: boolean;
+  /** Human-readable description of what changed (e.g. "created", "updated tags") */
+  readonly message?: string;
+}
+
+/**
+ * Result of a catalog sync push or pull operation.
+ *
+ * Provides an overall success/failure status along with per-entity details
+ * so callers can determine exactly what succeeded and what needs attention.
+ */
+export interface SyncResult {
+  /** Whether the overall sync operation succeeded */
+  readonly success: boolean;
+  /** Number of entities successfully synced */
+  readonly syncedCount: number;
+  /** Number of entities that failed to sync */
+  readonly failedCount: number;
+  /** Per-entity results for granular inspection */
+  readonly entities: readonly SyncEntityResult[];
+  /** Error message when the overall operation failed */
+  readonly error?: string;
+}
+
+/**
+ * Adapter interface for synchronizing architecture model data with an external
+ * service catalog.
+ *
+ * Implementations target specific catalog backends (Backstage, OpsLevel, etc.)
+ * and handle the details of authentication, API calls, and data mapping. The
+ * interface is designed around a push/pull model:
+ *
+ * - **push** — send a normalized {@link CatalogModel} to the external catalog
+ * - **pull** — retrieve the current catalog state as a {@link CatalogModel}
+ * - **validate** — verify that the adapter can connect to its backend
+ *
+ * All methods are async to accommodate network I/O. Implementations should
+ * Throw for unexpected/unrecoverable errors (network failures, authentication
+ * errors). Return `{ success: false, error }` for recoverable or partial
+ * failures where some entities failed but others succeeded.
+ */
+export interface CatalogSyncAdapter {
+  /** Human-readable name identifying the catalog backend (e.g. "Backstage", "OpsLevel") */
+  readonly name: string;
+
+  /**
+   * Push a normalized architecture model to the external catalog.
+   *
+   * The adapter should create or update entities in the catalog to match the
+   * provided model. Entities that exist in the catalog but not in the model
+   * should be left untouched (this is additive, not destructive).
+   *
+   * @param model - The normalized catalog model to push.
+   * @returns A {@link SyncResult} detailing what was created or updated.
+   */
+  push(model: CatalogModel): Promise<SyncResult>;
+
+  /**
+   * Pull the current state of the external catalog into a normalized model.
+   *
+   * The returned {@link CatalogModel} uses the same format as the push input,
+   * enabling diff-based workflows: pull, compare with a local model, then push
+   * only the differences.
+   *
+   * @returns A normalized catalog model reflecting the current catalog state.
+   */
+  pull(): Promise<CatalogModel>;
+
+  /**
+   * Validate that the adapter can connect to its catalog backend.
+   *
+   * Should verify credentials and network reachability without performing
+   * any write operations. Returns `true` if the adapter is ready to push/pull.
+   *
+   * @returns `true` if the connection is valid, `false` otherwise.
+   */
+  validate(): Promise<boolean>;
+}
+
+/**
+ * A {@link CatalogSyncAdapter} implementation that stores data in memory.
+ *
+ * Intended for testing and development. Supports configurable validation
+ * behavior and tracks all pushed models for inspection.
+ */
+export class MockSyncAdapter implements CatalogSyncAdapter {
+  readonly name = "Mock";
+  private readonly models: CatalogModel[] = [];
+  private readonly isValid: boolean;
+
+  /**
+   * @param options - Configuration for the mock adapter.
+   * @param options.valid - Whether {@link validate} should return `true`. Defaults to `true`.
+   */
+  constructor(options?: { readonly valid?: boolean }) {
+    this.isValid = options?.valid ?? true;
+  }
+
+  /** Returns all models that have been pushed to this adapter. */
+  get pushedModels(): readonly CatalogModel[] {
+    return [...this.models];
+  }
+
+  async push(model: CatalogModel): Promise<SyncResult> {
+    this.models.push(cloneModel(model));
+    const entities: SyncEntityResult[] = model.services.map((service) => ({
+      id: service.id,
+      success: true,
+      message: "created",
+    }));
+    return {
+      success: true,
+      syncedCount: entities.length,
+      failedCount: 0,
+      entities,
+    };
+  }
+
+  async pull(): Promise<CatalogModel> {
+    const latest = this.models.at(-1);
+    if (latest !== undefined) {
+      return cloneModel(latest);
+    }
+    return {
+      source: "mock",
+      generatedAt: new Date().toISOString(),
+      services: [],
+    };
+  }
+
+  async validate(): Promise<boolean> {
+    return this.isValid;
+  }
+}
+
+/**
+ * Convert extracted catalog entries into a normalized {@link CatalogModel}
+ * suitable for pushing to a {@link CatalogSyncAdapter}.
+ *
+ * @param workspace - The architecture workspace to convert.
+ * @returns A normalized catalog model with deterministic ordering.
+ */
+function optionalField<K extends string, V>(
+  key: K,
+  value: V | undefined
+): Record<K, V> | Record<string, never> {
+  return value !== undefined ? ({ [key]: value } as Record<K, V>) : {};
+}
+
+export function toCatalogModel(workspace: Workspace): CatalogModel {
+  const services = extractServices(workspace).map(
+    (entry): CatalogSyncService => ({
+      id: entry.id,
+      name: entry.name,
+      type: entry.type,
+      ...optionalField("description", entry.metadata.description),
+      ...optionalField("owner", entry.metadata.owner),
+      ...optionalField("technology", entry.metadata.technology),
+      tags: entry.tags,
+      dependencies: entry.dependencies,
+    })
+  );
+  return {
+    source: workspace.name,
+    generatedAt: new Date().toISOString(),
+    services,
+  };
+}
+
+function cloneModel(model: CatalogModel): CatalogModel {
+  return {
+    source: model.source,
+    generatedAt: model.generatedAt,
+    services: model.services.map((service) => ({ ...service })),
+  };
+}
