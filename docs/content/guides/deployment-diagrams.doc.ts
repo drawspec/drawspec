@@ -148,7 +148,7 @@ export default deploymentDiagram("Three-tier application", (builder) => {
 
   builder.communicationPath("Load Balancer", "Application Server", { protocol: "AJP/1.3" });
   builder.communicationPath("Application Server", "Database Server", { protocol: "PostgreSQL Wire" });
-  builder.communicationPath("Application Server", "CDN", { protocol: "HTTPS" });
+  builder.communicationPath("Application Server", "Content Delivery Network", { protocol: "HTTPS" });
 });
 \`\`\`
 `,
