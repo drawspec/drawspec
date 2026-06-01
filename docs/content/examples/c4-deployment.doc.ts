@@ -18,7 +18,6 @@ Deployment views show the physical infrastructure where containers run. Each dep
 import {
   container,
   database,
-  deploymentNode,
   person,
   softwareSystem,
   workspace,
@@ -34,21 +33,21 @@ export default workspace("E-commerce deployment", (ws) => {
   );
 
   const webTier = shop.add(
-    deploymentNode("Web Tier", { technology: "AWS EC2" })
+    container("Web Tier", { technology: "AWS EC2" })
   );
   const web = webTier.add(
     container("Web App", { technology: "Bun + React" })
   );
 
   const appTier = shop.add(
-    deploymentNode("App Tier", { technology: "AWS ECS" })
+    container("App Tier", { technology: "AWS ECS" })
   );
   const api = appTier.add(
     container("API", { technology: "Bun + Hono" })
   );
 
   const dataTier = shop.add(
-    deploymentNode("Data Tier", { technology: "AWS RDS" })
+    container("Data Tier", { technology: "AWS RDS" })
   );
   const db = dataTier.add(
     database("PostgreSQL", { technology: "PostgreSQL 15" })
@@ -66,9 +65,9 @@ export default workspace("E-commerce deployment", (ws) => {
 
 ## How It Works
 
-Deployment nodes nest inside software systems to represent distinct tiers or infrastructure layers. The \`Shop\` system contains three deployment nodes: Web Tier running on AWS EC2, App Tier on AWS ECS, and Data Tier on AWS RDS.
+Container nodes nest inside software systems to represent distinct tiers or infrastructure layers. The \`Shop\` system contains three tier containers: Web Tier running on AWS EC2, App Tier on AWS ECS, and Data Tier on AWS RDS.
 
-Each deployment node holds one or more containers. The Web Tier hosts the React frontend, the App Tier hosts the Hono API, and the Data Tier holds the PostgreSQL database.
+Each tier container holds one or more deployable containers. The Web Tier hosts the React frontend, the App Tier hosts the Hono API, and the Data Tier holds the PostgreSQL database.
 
 Relationships between containers traverse deployment boundaries. The Web App communicates with the API over HTTPS, and the API reads and writes to the PostgreSQL database over TCP/IP.
 
