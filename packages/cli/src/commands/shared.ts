@@ -274,8 +274,55 @@ export async function renderDocumentSvg(
   return await renderSvg(document, {
     positionedDiagram,
     accessibility: { title: document.title ?? document.id },
-    ...(renderTheme === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
+    ...(renderTheme === "dark"
+      ? {
+          theme: {
+            activationFill: "#0c4a6e",
+            activationStroke: "#38bdf8",
+            background: "#0f172a",
+            edgeStroke: "#94a3b8",
+            groupFill: "#111827",
+            groupStroke: "#475569",
+            nodeFill: "#1e293b",
+            nodeStroke: "#64748b",
+            text: "#f8fafc",
+          },
+        }
+      : {}),
   });
+}
+
+export async function renderDocumentSvgLink(
+  document: DiagramDocument,
+  config: DrawspecConfig
+): Promise<string> {
+  const lightSvg = inlineSvg(await renderDocumentSvg(document, config, "light"));
+  const darkSvg = namespaceSvgIds(
+    inlineSvg(await renderDocumentSvg(document, config, "dark")),
+    "dark"
+  );
+  const fullSizeHref = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(lightSvg)}`;
+  const label = document.title ?? document.id;
+  return `<a class="ds-diagram-link" href="${escapeHtml(fullSizeHref)}" target="_blank" rel="noopener noreferrer" aria-label="Open full-size diagram: ${escapeHtml(label)}"><span class="ds-diagram-open-label">Open full-size</span><span class="ds-diagram-svg ds-diagram-svg-light">${lightSvg}</span><span class="ds-diagram-svg ds-diagram-svg-dark">${darkSvg}</span></a>`;
+}
+
+function inlineSvg(svg: string): string {
+  return svg.replace(/^<\?xml[^>]*>\s*/u, "").trim();
+}
+
+function namespaceSvgIds(svg: string, namespace: string): string {
+  const suffix = (id: string) => `${id}-${namespace}`;
+  return svg
+    .replace(/\bid="([^"]+)"/gu, (_match, id: string) => `id="${suffix(id)}"`)
+    .replace(
+      /\baria-labelledby="([^"]+)"/gu,
+      (_match, ids: string) => `aria-labelledby="${ids.split(" ").map(suffix).join(" ")}"`
+    )
+    .replace(
+      /\baria-describedby="([^"]+)"/gu,
+      (_match, ids: string) => `aria-describedby="${ids.split(" ").map(suffix).join(" ")}"`
+    )
+    .replace(/url\(#([^)]+)\)/gu, (_match, id: string) => `url(#${suffix(id)})`);
 }
 
 export async function runPreviewServer(options: {
