@@ -19,7 +19,7 @@ export default activityDiagram("Order processing", ({ start, action, decision, e
   checkStock.when("yes").to(confirm).to(charge).to(checkPayment);
   checkStock.when("no").to(notify);
 
-  checkPayment.when("yes").to(ship).to(sendTracking).to(notify);
+  checkPayment.when("yes").to(ship).to(updateInv).to(sendTracking).to(notify);
   checkPayment.when("no").to(cancel);
 
   notify.to(finalNode);

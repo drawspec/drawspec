@@ -36,7 +36,7 @@ export default activityDiagram("Order processing", ({ start, action, decision, e
   checkStock.when("yes").to(confirm).to(charge).to(checkPayment);
   checkStock.when("no").to(notify);
 
-  checkPayment.when("yes").to(ship).to(sendTracking).to(notify);
+  checkPayment.when("yes").to(ship).to(updateInv).to(sendTracking).to(notify);
   checkPayment.when("no").to(cancel);
 
   notify.to(finalNode);
@@ -48,7 +48,7 @@ export default activityDiagram("Order processing", ({ start, action, decision, e
 
 The flow starts when an order is received. The first decision checks whether the item is in stock. If yes, the order proceeds to confirmation and payment charging. If no, the customer is notified and the process ends.
 
-After payment is charged, a second decision verifies whether the payment succeeded. Successful payments proceed to shipping, where tracking information is sent to the customer. Failed payments cancel the order.
+After payment is charged, a second decision verifies whether the payment succeeded. Successful payments proceed to shipping, inventory is updated, and tracking information is sent to the customer. Failed payments cancel the order.
 
 Both the out-of-stock and payment-failure paths lead to notification before terminating at the final node, ensuring the customer is always informed of the outcome.
 

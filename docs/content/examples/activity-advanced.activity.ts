@@ -14,32 +14,32 @@ export default activityDiagram("Data processing pipeline", ({ start, action, dec
 
   const successEnd = end("Success");
   const errorEnd = end("Error");
+  const schemaValid = decision("Schema Valid?");
+  const enrichmentSuccess = decision("Enrichment Success?");
+  const retrySuccess = decision("Retry Success?");
+  const storeSuccess = decision("Store Success?");
 
   start().to(ingest);
 
-  ingest.to(validate);
+  ingest.to(validate).to(schemaValid);
 
-  decision("Schema Valid?")
-    .when("valid").to(transform)
-    .when("invalid").to(notify);
+  schemaValid.when("valid").to(transform);
+  schemaValid.when("invalid").to(notify);
 
-  transform.to(enrich);
+  transform.to(enrich).to(enrichmentSuccess);
 
-  decision("Enrichment Success?")
-    .when("yes").to(analyze)
-    .when("no").to(retry);
+  enrichmentSuccess.when("yes").to(analyze);
+  enrichmentSuccess.when("no").to(retry).to(retrySuccess);
 
-  retry.to(decision("Retry Success?"))
-    .when("yes").to(analyze)
-    .when("no").to(logError).to(notify);
+  retrySuccess.when("yes").to(analyze);
+  retrySuccess.when("no").to(logError);
 
-  analyze.to(store);
+  analyze.to(store).to(storeSuccess);
 
-  decision("Store Success?")
-    .when("yes").to(alert)
-    .when("no").to(logError).to(notify);
+  storeSuccess.when("yes").to(alert);
+  storeSuccess.when("no").to(logError);
 
   alert.to(successEnd);
+  logError.to(notify);
   notify.to(errorEnd);
-  logError.to(errorEnd);
 });
