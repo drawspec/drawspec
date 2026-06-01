@@ -275,8 +275,9 @@ export interface SyncResult {
  * - **validate** — verify that the adapter can connect to its backend
  *
  * All methods are async to accommodate network I/O. Implementations should
- * throw descriptive errors on unrecoverable failures rather than returning
- * partial results with `success: false`.
+ * Throw for unexpected/unrecoverable errors (network failures, authentication
+ * errors). Return `{ success: false, error }` for recoverable or partial
+ * failures where some entities failed but others succeeded.
  */
 export interface CatalogSyncAdapter {
   /** Human-readable name identifying the catalog backend (e.g. "Backstage", "OpsLevel") */
@@ -337,11 +338,11 @@ export class MockSyncAdapter implements CatalogSyncAdapter {
 
   /** Returns all models that have been pushed to this adapter. */
   get pushedModels(): readonly CatalogModel[] {
-    return this.models;
+    return [...this.models];
   }
 
   async push(model: CatalogModel): Promise<SyncResult> {
-    this.models.push(model);
+    this.models.push(cloneModel(model));
     const entities: SyncEntityResult[] = model.services.map((service) => ({
       id: service.id,
       success: true,
@@ -356,9 +357,9 @@ export class MockSyncAdapter implements CatalogSyncAdapter {
   }
 
   async pull(): Promise<CatalogModel> {
-    const latest = this.models[this.models.length - 1];
+    const latest = this.models.at(-1);
     if (latest !== undefined) {
-      return latest;
+      return cloneModel(latest);
     }
     return {
       source: "mock",
@@ -403,5 +404,13 @@ export function toCatalogModel(workspace: Workspace): CatalogModel {
     source: workspace.name,
     generatedAt: new Date().toISOString(),
     services,
+  };
+}
+
+function cloneModel(model: CatalogModel): CatalogModel {
+  return {
+    source: model.source,
+    generatedAt: model.generatedAt,
+    services: model.services.map((service) => ({ ...service })),
   };
 }
