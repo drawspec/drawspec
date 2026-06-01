@@ -172,23 +172,34 @@ export class PreviewManager {
       return;
     }
 
-    const msg = message as { file: string; line: number; column?: number };
+    const msg = message as Record<string, unknown>;
+    const rawFile = msg["file"];
+    const rawLine = msg["line"];
+    if (typeof rawFile !== "string" || typeof rawLine !== "number") return;
+
+    const file = rawFile;
+    const line = Math.max(0, Math.trunc(rawLine) - 1);
+    const column = Math.max(0, Math.trunc((msg["column"] as number | undefined) ?? 1) - 1);
+
     const docUri = this.#documentUris.get(panelUri);
     if (docUri === undefined) return;
 
-    const targetPath = path.isAbsolute(msg.file)
-      ? msg.file
-      : path.resolve(path.dirname(docUri.fsPath), msg.file);
+    const targetPath = path.isAbsolute(file)
+      ? file
+      : path.resolve(path.dirname(docUri.fsPath), file);
 
     const targetUri = vscode.Uri.file(targetPath);
-    const line = msg.line - 1;
-    const column = (msg.column ?? 1) - 1;
-
-    void vscode.workspace.openTextDocument(targetUri).then((doc) => {
-      void vscode.window.showTextDocument(doc, {
-        selection: new vscode.Range(line, column, line, column),
-      });
-    });
+    vscode.workspace.openTextDocument(targetUri).then(
+      (doc) => {
+        void vscode.window.showTextDocument(doc, {
+          selection: new vscode.Range(line, column, line, column),
+        });
+      },
+      (err: unknown) => {
+        const detail = err instanceof Error ? err.message : String(err);
+        this.#outputChannel.appendLine(`[DrawSpec] Failed to open source: ${detail}`);
+      }
+    );
   }
 }
 
@@ -207,8 +218,10 @@ function isDiagramDocument(value: unknown): value is DiagramDocument {
 }
 
 function sanitizeSvg(svg: string): string {
-  const stripped = svg.replace(/<script[\s\S]*?<\/script>/gi, "");
-  return stripped;
+  const noXmlDecl = svg.replace(/<\?xml[^?]*\?>\s*/g, "");
+  const noScripts = noXmlDecl.replace(/<script[\s\S]*?<\/script>/gi, "");
+  const noEventHandlers = noScripts.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, "");
+  return noEventHandlers;
 }
 
 function previewHtml(svgContent: string): string {
@@ -217,6 +230,7 @@ function previewHtml(svgContent: string): string {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline';">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DrawSpec Preview</title>
 <style>

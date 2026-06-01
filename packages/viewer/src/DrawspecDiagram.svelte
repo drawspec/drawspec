@@ -212,10 +212,10 @@ function onCanvasClick(event: MouseEvent): void {
 }
 
 /**
- * Walk up from the click target to find the closest `<g>` element with
+ * Walk up from the click target to find the closest element with
  * `data-source-file` and `data-source-line` attributes. If found, dispatch
- * a `sourceselect` custom event that bubbles up from the
- * `<drawspec-diagram>` element.
+ * a `sourceselect` custom event that crosses the shadow DOM boundary from
+ * the `<drawspec-diagram>` element.
  */
 function dispatchSourceSelect(event: MouseEvent): void {
   const target = event.target as HTMLElement;
@@ -226,22 +226,23 @@ function dispatchSourceSelect(event: MouseEvent): void {
   const lineAttr = sourceEl.dataset.sourceLine;
   if (file === undefined || lineAttr === undefined) return;
 
-  const line = Number(lineAttr);
+  const line = Math.max(1, Math.trunc(Number(lineAttr)));
   if (!Number.isFinite(line)) return;
 
   const detail: SourceSelectDetail = { file, line };
   const columnAttr = sourceEl.dataset.sourceColumn;
   if (columnAttr !== undefined) {
-    const column = Number(columnAttr);
+    const column = Math.max(1, Math.trunc(Number(columnAttr)));
     if (Number.isFinite(column)) {
       detail.column = column;
     }
   }
 
-  const host = canvasEl?.closest("drawspec-diagram") ?? canvasEl;
+  const host = (canvasEl?.getRootNode() as ShadowRoot)?.host ?? canvasEl;
   host?.dispatchEvent(
     new CustomEvent<SourceSelectDetail>("sourceselect", {
       bubbles: true,
+      composed: true,
       detail,
     })
   );
