@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-desc-1xqpemg" aria-labelledby="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-title-1983kox" height="488" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw" role="img" viewBox="0 0 1200 488" width="1200" xmlns="http://www.w3.org/2000/svg">
+  <title id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-title-1983kox">
+    Cloud deployment
+  </title>
+  <desc id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-desc-1xqpemg">
+    deployment diagram dep_ed17095a9bc0fb10
+  </desc>
+  <rect fill="#ffffff" height="488" width="1200" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-marker-arrow-1czbf97" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-edge-cp_00a0dfc55cca58d1-1iyyol0">
+    <path d="M 1100 68 L 100 420" fill="none" stroke="#475569" stroke-width="1.5" />
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="600" y="238">
+      HTTPS
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-edge-cp_41bc03ecce28756a-0tzlunr">
+    <path d="M 100 244 L 300 420" fill="none" stroke="#475569" stroke-width="1.5" />
+    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="326">
+      TLS
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-edge-cp_6538027809983808-0czasyf">
+    <path d="M 1100 68 L 300 420" fill="none" stroke="#475569" stroke-width="1.5" />
+    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="700" y="238">
+      TLS
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-edge-cp_83fbea01a9641f7f-0u1h4y3">
+    <path d="M 900 68 L 100 244" fill="none" stroke="#475569" stroke-width="1.5" />
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="150">
+      HTTPS
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-edge-cp_a9b924760b6d296b-172arkk">
+    <path d="M 100 244 L 100 420" fill="none" stroke="#475569" stroke-width="1.5" />
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="326">
+      HTTPS
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-art_0d327c3221e87ae4-13r2nrx">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      Static Assets
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-art_655eb4eb95fd5677-0940gb1">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="40" />
+    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="72.667">
+      API Service
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-art_a87e9d0792858505-0ktntz7">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="40" />
+    <text data-width="100.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="72.667">
+      Order Worker
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-art_f6a66885afb27708-1w3a909">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="640" y="40" />
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="700" y="72.667">
+      Web App
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-dn_2983a74f2170307a-0oo44ts">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="840" y="40" />
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="900" y="72.667">
+      CDN Edge
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-dn_e7b3f06185a8639c-1t87vpy">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="216" />
+    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
+      App Cluster
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-dn_ed947a100831258e-12905n8">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="1040" y="40" />
+    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="1100" y="72.667">
+      Worker Pool
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-in_3df758453a713335-1q7c4j0">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="392" />
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
+      Message Queue
+    </text>
+  </g>
+  <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-node-in_8980d18d222a454a-18zyskd">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="392" />
+    <text data-width="134.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="424.667">
+      Managed Postgres
+    </text>
+  </g>
+</svg>

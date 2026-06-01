@@ -4,7 +4,7 @@ export default classDiagram("User domain model", ({ uses }) => [
   interface_("Repository", (i) =>
     i.method("findById", {
       visibility: "public",
-      returnType: "User | undefined",
+      returnType: "User",
       parameters: [{ name: "id", type: "string" }],
     })
   ),
@@ -20,7 +20,7 @@ export default classDiagram("User domain model", ({ uses }) => [
   ),
   class_("Admin", (c) =>
     c
-      .field("permissions", "string[]", { visibility: "private" })
+      .field("permissions", "string", { visibility: "private" })
       .method("disableUser", {
         visibility: "public",
         returnType: "void",
@@ -32,7 +32,7 @@ export default classDiagram("User domain model", ({ uses }) => [
     c
       .method("findById", {
         visibility: "public",
-        returnType: "User | undefined",
+        returnType: "User",
         parameters: [{ name: "id", type: "string" }],
       })
       .implements("Repository")

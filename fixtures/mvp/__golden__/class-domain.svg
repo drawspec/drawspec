@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-classdoc_5f8ebd7c-0zw98uq-desc-1h5f75j" aria-labelledby="drawspec-classdoc_5f8ebd7c-0zw98uq-title-0g8n4yo" height="488" id="drawspec-classdoc_5f8ebd7c-0zw98uq" role="img" viewBox="0 0 400 488" width="400" xmlns="http://www.w3.org/2000/svg">
+  <title id="drawspec-classdoc_5f8ebd7c-0zw98uq-title-0g8n4yo">
+    User domain model
+  </title>
+  <desc id="drawspec-classdoc_5f8ebd7c-0zw98uq-desc-1h5f75j">
+    class diagram classdoc_5f8ebd7c
+  </desc>
+  <rect fill="#ffffff" height="488" width="400" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-classdoc_5f8ebd7c-0zw98uq-marker-arrow-0dxhnzs" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_3fadb85a-1cmn0xq">
+    <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-arrow-0dxhnzs)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_6e640145-01jfq59">
+    <path d="M 300 68 L 100 244" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-arrow-0dxhnzs)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_9b7d9d88-0mz6jv7">
+    <path d="M 300 68 L 300 420" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-arrow-0dxhnzs)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_b9b438e0-072b35j">
+    <path d="M 100 68 L 100 420" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-arrow-0dxhnzs)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_c46f18b6-0m084uw">
+    <path d="M 100 244 L 300 420" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-arrow-0dxhnzs)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-class_218a0a80-18byy0d">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="392" />
+    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
+      User
+    </text>
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-class_39413e10-1io802a">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      Admin
+    </text>
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-class_8dfe10a2-1rry55f">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="40" />
+    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="72.667">
+      AuthService
+    </text>
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-class_b43d4440-1thzd5x">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="216" />
+    <text data-width="117.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
+      UserRepository
+    </text>
+  </g>
+  <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-iface_79d2fd14-09k1rpf">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="392" />
+    <text data-width="84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="424.667">
+      Repository
+    </text>
+  </g>
+</svg>
