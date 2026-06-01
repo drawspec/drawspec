@@ -23,24 +23,26 @@
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-class_412c2b79-1p5yoan">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="40" />
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="72.667">
-      AggregateRoot
-    </text>
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-class_9fb30820-1crwmvp">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
-    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
-      Payment
-    </text>
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-enum_a36c23b8-0kp7rqa">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="240" />
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="272.667">
-      PaymentStatus
-    </text>
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-iface_bc02efc2-09toevq">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="440" />
+  </g>
+  <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-text-layer-1vwxgww">
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="72.667">
+      AggregateRoot
+    </text>
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+      Payment
+    </text>
+    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="272.667">
+      PaymentStatus
+    </text>
     <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="472.667">
       Payable
     </text>
