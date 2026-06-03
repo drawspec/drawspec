@@ -1,16 +1,11 @@
 <script lang="ts">
 import { base } from "$app/paths";
+import CodeBlock from "$lib/components/CodeBlock.svelte";
 
-const quickStart = `import { sequence } from "@drawspec/uml-sequence";
-
-sequence("Hello", (s) => {
-  s.actor("Alice");
-  s.actor("Bob");
-  s.message("Alice", "Bob", "Hello!");
-});`;
+let { data } = $props();
 
 function docHref(slug: string): string {
-  return `${base}/docs/${slug}`;
+  return `${base}/${slug}`;
 }
 </script>
 
@@ -33,7 +28,7 @@ function docHref(slug: string): string {
 
 <section class="section">
   <h2>Quick Start</h2>
-  <pre><code>{quickStart}</code></pre>
+  <CodeBlock lang="typescript" code={data.quickStartCode} html={data.quickStartHtml} />
   <p class="section-aside">
     Render with <code>bunx drawspec render hello.sequence.ts --out .</code>
   </p>
@@ -57,6 +52,14 @@ function docHref(slug: string): string {
     <a href={docHref("examples/basic-sequence")} class="card">
       <h3>Sequence Example</h3>
       <p>See DrawSpec render a sequence diagram inline.</p>
+    </a>
+    <a href={docHref("guides/sequence-diagrams")} class="card">
+      <h3>Sequence Diagrams</h3>
+      <p>Full guide to participants, messages, fragments, and notes.</p>
+    </a>
+    <a href={docHref("guides/validation")} class="card">
+      <h3>Validation</h3>
+      <p>Enforce rules and catch diagram errors in CI.</p>
     </a>
   </div>
 </section>
@@ -116,15 +119,15 @@ function docHref(slug: string): string {
     text-decoration: none;
   }
 
-  .btn-primary {
-    background: var(--color-primary);
-    color: #ffffff;
-  }
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
 
-  .btn-primary:hover {
-    background: var(--color-primary-hover);
-    color: #ffffff;
-  }
+.btn-primary:hover {
+  opacity: 0.85;
+  color: var(--color-primary-foreground);
+}
 
   .btn-secondary {
     background: transparent;
