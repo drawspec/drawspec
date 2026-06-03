@@ -6,6 +6,11 @@ export interface GroupedNavItem {
   description?: string;
 }
 
+export interface GroupedNavSubSection {
+  title: string;
+  items: GroupedNavItem[];
+}
+
 const sectionLabels: Record<string, string> = {
   "cli-reference": "Reference",
   examples: "Examples",
@@ -16,10 +21,53 @@ const sectionLabels: Record<string, string> = {
 
 const sectionOrder = ["Guides", "Reference", "Examples"];
 
+const subSectionMap: Record<string, Record<string, string>> = {
+  guides: {
+    "getting-started": "Getting Started",
+    "architecture-c4": "Diagram Types",
+    "sequence-diagrams": "Diagram Types",
+    "class-diagrams": "Diagram Types",
+    "state-diagrams": "Diagram Types",
+    "activity-diagrams": "Diagram Types",
+    "component-diagrams": "Diagram Types",
+    "deployment-diagrams": "Diagram Types",
+    "vite-plugin": "Integration",
+    "ci-integration": "Integration",
+    lsp: "Integration",
+    "layout-and-rendering": "Advanced",
+    validation: "Advanced",
+    exporters: "Advanced",
+    "programmatic-usage": "Advanced",
+  },
+  examples: {
+    "basic-sequence": "Sequence Diagrams",
+    "sequence-advanced": "Sequence Diagrams",
+    "sequence-fragments": "Sequence Diagrams",
+    "chat-system": "Sequence Diagrams",
+    "basic-class": "Class Diagrams",
+    "class-advanced": "Class Diagrams",
+    "basic-state": "State Diagrams",
+    "state-advanced": "State Diagrams",
+    "basic-activity": "Activity Diagrams",
+    "activity-advanced": "Activity Diagrams",
+    "basic-component": "Component Diagrams",
+    "component-advanced": "Component Diagrams",
+    "basic-deployment": "Deployment Diagrams",
+    "deployment-advanced": "Deployment Diagrams",
+    "c4-context-view": "Architecture",
+    "c4-container-view": "Architecture",
+    "c4-dynamic": "Architecture",
+    "c4-deployment": "Architecture",
+    "aws-serverless": "Use Cases",
+    "microservices-orders": "Use Cases",
+    "cicd-pipeline": "Use Cases",
+  },
+};
+
 /**
  * Group doc nav items by section.
  */
-export function getGroupedNav() {
+export function getGroupedNav(): [string, GroupedNavItem[]][] {
   const groups = new Map<string, GroupedNavItem[]>();
   for (const item of getNavItems()) {
     const label = sectionLabel(item);
@@ -36,6 +84,46 @@ export function getGroupedNav() {
   return [...groups.entries()].sort(
     ([left], [right]) => sectionRank(left) - sectionRank(right) || left.localeCompare(right)
   );
+}
+
+/**
+ * Group doc nav items by section with nested sub-sections.
+ */
+export function getGroupedNavWithSubSections(): [string, GroupedNavSubSection[]][] {
+  const groups = getGroupedNav();
+
+  return groups.map(([section, items]) => {
+    const sectionKey =
+      Object.entries(sectionLabels).find(([, label]) => label === section)?.[0] ??
+      section.toLowerCase();
+
+    const sectionMap = subSectionMap[sectionKey];
+    const subGroups = new Map<string, GroupedNavItem[]>();
+
+    for (const item of items) {
+      const leafSlug = item.slug.split("/").pop() ?? item.slug;
+      const subTitle = sectionMap?.[leafSlug] ?? "General";
+      if (!subGroups.has(subTitle)) {
+        subGroups.set(subTitle, []);
+      }
+      subGroups.get(subTitle)?.push(item);
+    }
+
+    const subSections: GroupedNavSubSection[] = [...subGroups.entries()].map(
+      ([title, subItems]) => ({ title, items: subItems })
+    );
+
+    // Flatten if only one sub-section
+    if (subSections.length === 1) {
+      const only = subSections[0];
+      return [section, [{ title: only.title, items: only.items }]] as [
+        string,
+        GroupedNavSubSection[],
+      ];
+    }
+
+    return [section, subSections] as [string, GroupedNavSubSection[]];
+  });
 }
 
 /**
