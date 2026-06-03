@@ -205,6 +205,38 @@ Second paragraph.
     }
   });
 
+  test("parses @source directive", async () => {
+    const nodes = await md`
+@source typescript ./example.ts
+`;
+    const codeNode = nodes.find((n) => n.type === "codeBlock");
+    expect(codeNode).toBeDefined();
+    if (codeNode?.type === "codeBlock") {
+      expect(codeNode.lang).toBe("typescript");
+      expect(codeNode.source).toBe("./example.ts");
+      expect(codeNode.value).toBe("");
+    }
+  });
+
+  test("@source and @diagram can reference the same file", async () => {
+    const nodes = await md`
+@diagram ./overview.sequence.ts "Overview"
+
+@source typescript ./overview.sequence.ts
+`;
+    const diagramNode = nodes.find((n) => n.type === "diagram");
+    const codeNode = nodes.find((n) => n.type === "codeBlock");
+    expect(diagramNode).toBeDefined();
+    expect(codeNode).toBeDefined();
+    if (diagramNode?.type === "diagram") {
+      expect(diagramNode.ref).toBe("./overview.sequence.ts");
+    }
+    if (codeNode?.type === "codeBlock") {
+      expect(codeNode.source).toBe("./overview.sequence.ts");
+      expect(codeNode.lang).toBe("typescript");
+    }
+  });
+
   test("parses @badge directive", async () => {
     const nodes = await md`
 @badge stable success

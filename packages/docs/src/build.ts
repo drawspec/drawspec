@@ -88,6 +88,7 @@ export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsMan
       validateReferences: true,
     });
     resolveDiagramRefs(compiled.content, dirname(file), contentDir);
+    resolveCodeBlockSources(compiled.content, dirname(file), contentDir);
     const html = await renderDocHtml(compiled, {
       renderHeader: false,
       ...(options.renderDiagram !== undefined ? { renderDiagram: options.renderDiagram } : {}),
@@ -239,6 +240,31 @@ async function findWorkspaceRoot(startDir: string): Promise<string | undefined> 
     const parent = dirname(current);
     if (parent === current) return undefined;
     current = parent;
+  }
+}
+
+function resolveCodeBlockSources(
+  blocks: import("./types").DocBlock[],
+  docDir: string,
+  contentDir: string
+): void {
+  for (const block of blocks) {
+    if (
+      block.type === "codeBlock" &&
+      "source" in block &&
+      block.source &&
+      !block.source.startsWith("/")
+    ) {
+      const absolute = resolve(docDir, block.source);
+      (block as { source: string }).source = relative(contentDir, absolute).split(sep).join("/");
+    }
+    const children =
+      "children" in block
+        ? (block as { children?: import("./types").DocBlock[] }).children
+        : undefined;
+    if (children) {
+      resolveCodeBlockSources(children, docDir, contentDir);
+    }
   }
 }
 
