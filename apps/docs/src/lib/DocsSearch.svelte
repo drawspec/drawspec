@@ -102,7 +102,7 @@ function handleKeydown(event: KeyboardEvent) {
 function navigateTo(result: SearchResultItem) {
   query = "";
   open = false;
-  void goto(`${base}/docs/${result.slug}`);
+  void goto(`${base}/${result.slug}`);
 }
 
 function resultSnippet(result: SearchResultItem): string {
