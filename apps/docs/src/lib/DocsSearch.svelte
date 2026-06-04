@@ -201,9 +201,7 @@ function escapeRegExp(value: string): string {
 <style>
   .docs-search {
     position: relative;
-    flex: 1;
-    max-width: 28rem;
-    margin-left: auto;
+    width: 100%;
   }
 
   .visually-hidden {
@@ -255,11 +253,13 @@ function escapeRegExp(value: string): string {
     padding: 0.375rem;
     border: 1px solid var(--color-border);
     border-radius: 12px;
-    background: var(--color-surface);
+    background: color-mix(in oklch, var(--color-surface) 96%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
   }
 
-  :global([data-theme="dark"]) .results {
+  :global(.dark) .results {
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
   }
 
@@ -309,17 +309,10 @@ function escapeRegExp(value: string): string {
     font-size: 0.875rem;
   }
 
-  @media (max-width: 768px) {
-    .docs-search {
-      max-width: none;
-      margin-left: 0;
-    }
-  }
-
   @media (max-width: 520px) {
     .docs-search {
       order: 3;
-      flex-basis: 100%;
+      grid-column: 1 / -1;
     }
   }
 </style>
