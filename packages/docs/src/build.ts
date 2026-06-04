@@ -82,13 +82,13 @@ export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsMan
   await mkdir(outputDir, { recursive: true });
   for (const file of files) {
     const doc = await loadDoc(file);
+    resolveCodeBlockSources(doc.content, dirname(file), contentDir);
     const compiled = await compileDoc(doc, {
       baseDir: contentDir,
       readFile: (path) => Bun.file(path).text(),
       validateReferences: true,
     });
     resolveDiagramRefs(compiled.content, dirname(file), contentDir);
-    resolveCodeBlockSources(compiled.content, dirname(file), contentDir);
     const html = await renderDocHtml(compiled, {
       renderHeader: false,
       ...(options.renderDiagram !== undefined ? { renderDiagram: options.renderDiagram } : {}),
