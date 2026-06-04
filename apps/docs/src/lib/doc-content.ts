@@ -94,7 +94,7 @@ function parsePage(value: unknown): DocPageData {
     slug,
     title,
     ...(description !== undefined ? { description } : {}),
-    html,
+    html: stripDocsPrefix(html, slug),
   };
 }
 
@@ -132,10 +132,18 @@ function sectionPage(manifest: DocsManifest, slug: string): DocPageData | undefi
 }
 
 function relativeDocHref(currentSlug: string, targetSlug: string): string {
-  if (currentSlug === "") return `docs/${escapeHtml(targetSlug)}`;
+  if (currentSlug === "") return `${escapeHtml(targetSlug)}`;
   const currentDepth = currentSlug.split("/").length;
   const prefix = currentDepth === 1 ? "" : "../".repeat(currentDepth - 1);
   return `${prefix}${escapeHtml(targetSlug)}`;
+}
+
+function stripDocsPrefix(html: string, currentSlug: string): string {
+  return html.replace(/href="\/docs\/?([^"#?]*)([?#][^"]*)?"/g, (_match, target, suffix) => {
+    const targetSlug = typeof target === "string" ? target : "";
+    const href = relativeDocHref(currentSlug, targetSlug);
+    return `href="${href}${typeof suffix === "string" ? suffix : ""}"`;
+  });
 }
 
 function titleCase(value: string): string {
