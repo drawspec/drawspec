@@ -18,7 +18,7 @@ let { data } = $props();
       <p class="doc-description">{data.description}</p>
     {/if}
   </header>
-  <div class="doc-rendered" use:enhanceCodeBlocks>
+  <div class="doc-rendered" use:enhanceCodeBlocks={data.html}>
     {@html data.html}
   </div>
 </article>

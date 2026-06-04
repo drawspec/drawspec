@@ -2,60 +2,75 @@
  * Svelte action that enhances `.ds-code-block` elements from the docs engine HTML:
  * - Wraps the existing `.ds-code-lang` + `<pre>` in a structured layout
  * - Adds a copy-to-clipboard button
- * - Overrides shiki's hardcoded background with theme CSS variable
  */
-export function enhanceCodeBlocks(node: HTMLElement): { destroy: () => void } {
-  const blocks = node.querySelectorAll(".ds-code-block");
+export function enhanceCodeBlocks(
+  node: HTMLElement,
+  html?: string
+): { update: (html?: string) => void; destroy: () => void } {
+  let currentHtml = html;
 
-  blocks.forEach((block) => {
-    const langSpan = block.querySelector(".ds-code-lang");
-    const pre = block.querySelector("pre");
-    if (!pre) return;
+  function enhance() {
+    const blocks = node.querySelectorAll(".ds-code-block");
 
-    const lang = langSpan?.textContent ?? "text";
+    blocks.forEach((block) => {
+      if (block.querySelector(":scope > .ds-code-header")) return;
 
-    // Create header
-    const header = document.createElement("div");
-    header.className = "ds-code-header";
+      const langSpan = block.querySelector(".ds-code-lang");
+      const pre = block.querySelector("pre");
+      if (!pre) return;
 
-    // Move/reuse the lang span
-    if (langSpan) {
-      langSpan.className = "ds-code-lang";
-      header.appendChild(langSpan);
-    } else {
-      const span = document.createElement("span");
-      span.className = "ds-code-lang";
-      span.textContent = lang;
-      header.appendChild(span);
-    }
+      const lang = langSpan?.textContent ?? "text";
 
-    // Create copy button
-    const copyBtn = document.createElement("button");
-    copyBtn.className = "ds-copy-btn";
-    copyBtn.setAttribute("type", "button");
-    copyBtn.setAttribute("aria-label", "Copy code");
-    copyBtn.innerHTML = COPY_ICON;
-    header.appendChild(copyBtn);
+      // Create header
+      const header = document.createElement("div");
+      header.className = "ds-code-header";
 
-    copyBtn.addEventListener("click", async () => {
-      const code = block.querySelector("code");
-      const text = code?.textContent ?? "";
-      try {
-        await navigator.clipboard.writeText(text);
-        copyBtn.innerHTML = CHECK_ICON;
-        setTimeout(() => {
-          copyBtn.innerHTML = COPY_ICON;
-        }, 1500);
-      } catch {
-        // clipboard unavailable
+      // Move/reuse the lang span
+      if (langSpan) {
+        langSpan.className = "ds-code-lang";
+        header.appendChild(langSpan);
+      } else {
+        const span = document.createElement("span");
+        span.className = "ds-code-lang";
+        span.textContent = lang;
+        header.appendChild(span);
       }
-    });
 
-    // Insert header before <pre>
-    block.insertBefore(header, pre);
-  });
+      // Create copy button
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "ds-copy-btn";
+      copyBtn.setAttribute("type", "button");
+      copyBtn.setAttribute("aria-label", "Copy code");
+      copyBtn.innerHTML = COPY_ICON;
+      header.appendChild(copyBtn);
+
+      copyBtn.addEventListener("click", async () => {
+        const code = block.querySelector("code");
+        const text = code?.textContent ?? "";
+        try {
+          await navigator.clipboard.writeText(text);
+          copyBtn.innerHTML = CHECK_ICON;
+          setTimeout(() => {
+            copyBtn.innerHTML = COPY_ICON;
+          }, 1500);
+        } catch {
+          // clipboard unavailable
+        }
+      });
+
+      // Insert header before <pre>
+      block.insertBefore(header, pre);
+    });
+  }
+
+  enhance();
 
   return {
+    update(nextHtml?: string) {
+      if (nextHtml === currentHtml) return;
+      currentHtml = nextHtml;
+      enhance();
+    },
     destroy() {
       // No cleanup needed — element is removed with the page
     },
