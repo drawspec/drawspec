@@ -11,7 +11,7 @@ const SearchComponent = DocsSearch;
 function toggleDark() {
   darkMode = !darkMode;
   if (typeof document !== "undefined") {
-    document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", darkMode);
   }
   if (typeof localStorage !== "undefined") {
     localStorage.setItem("drawspec-theme", darkMode ? "dark" : "light");
@@ -23,7 +23,7 @@ $effect(() => {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const stored = localStorage.getItem("drawspec-theme");
     darkMode = stored ? stored === "dark" : prefersDark;
-    document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", darkMode);
   }
 });
 
@@ -34,7 +34,7 @@ function closeSidebar() {
 }
 
 function docHref(slug: string): string {
-  return `${base}/docs/${slug}`;
+  return `${base}/${slug}`;
 }
 
 function isActiveDoc(slug: string): boolean {
@@ -50,20 +50,23 @@ const year = new Date().getFullYear();
 
 <div class="app-layout">
   <header class="header">
-    <button
-      class="menu-toggle"
-      onclick={() => (sidebarOpen = !sidebarOpen)}
-      aria-label="Toggle navigation"
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="3" y1="6" x2="21" y2="6" />
-        <line x1="3" y1="12" x2="21" y2="12" />
-        <line x1="3" y1="18" x2="21" y2="18" />
-      </svg>
-    </button>
-    <a href="/" class="logo">DrawSpec</a>
+    <div class="header-left">
+      <button
+        class="menu-toggle"
+        onclick={() => (sidebarOpen = !sidebarOpen)}
+        aria-label="Toggle navigation"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+      <a href={base || "/"} class="logo">DrawSpec</a>
+    </div>
     <SearchComponent />
-    <button class="theme-toggle" onclick={toggleDark} aria-label="Toggle dark mode">
+    <div class="header-right">
+      <button class="theme-toggle" onclick={toggleDark} aria-label="Toggle dark mode">
       {#if darkMode}
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <circle cx="12" cy="12" r="5" />
@@ -74,7 +77,8 @@ const year = new Date().getFullYear();
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
       {/if}
-    </button>
+      </button>
+    </div>
   </header>
 
   <div class="body-row">
@@ -83,20 +87,31 @@ const year = new Date().getFullYear();
     {/if}
     <aside class="sidebar" class:open={sidebarOpen}>
       <nav>
-        {#each data.navGroups as [section, items]}
+        {#each data.navGroupsWithSubSections as [section, subSections]}
           <div class="nav-section">
             <h3 class="nav-section-title">{section}</h3>
-            <ul class="nav-list">
-              {#each items as item}
-                <li>
-                  <a
-                    href={docHref(item.slug)}
-                    class:active={isActiveDoc(item.slug)}
-                    onclick={closeSidebar}
-                  >{item.title}</a>
-                </li>
-              {/each}
-            </ul>
+            {#each subSections as subSection}
+              {#if subSections.length > 1}
+                <div class="nav-sub-section">
+                  <h4 class="nav-sub-section-title">{subSection.title}</h4>
+                  <ul class="nav-list">
+                    {#each subSection.items as item}
+                      <li>
+                        <a href={docHref(item.slug)} class:active={isActiveDoc(item.slug)} onclick={closeSidebar}>{item.title}</a>
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              {:else}
+                <ul class="nav-list">
+                  {#each subSection.items as item}
+                    <li>
+                      <a href={docHref(item.slug)} class:active={isActiveDoc(item.slug)} onclick={closeSidebar}>{item.title}</a>
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
+            {/each}
           </div>
         {/each}
       </nav>
@@ -124,14 +139,29 @@ const year = new Date().getFullYear();
     position: sticky;
     top: 0;
     z-index: 100;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr minmax(16rem, 36rem) 1fr;
     align-items: center;
     height: var(--header-height);
     padding: 0 1.5rem;
-    background: var(--color-surface);
+    background: color-mix(in oklch, var(--color-surface) 85%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-border);
     gap: 0.75rem;
-    flex-wrap: wrap;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
   }
 
   .menu-toggle {
@@ -210,6 +240,21 @@ const year = new Date().getFullYear();
     padding: 0 0.5rem;
   }
 
+  .nav-sub-section {
+    margin-bottom: 0.75rem;
+  }
+
+  .nav-sub-section-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-subtle);
+    margin: 0.75rem 0 0.25rem;
+    padding: 0 0.5rem;
+    opacity: 0.8;
+  }
+
   .nav-list {
     list-style: none;
     margin: 0;
@@ -250,6 +295,7 @@ const year = new Date().getFullYear();
   .content {
     flex: 1;
     max-width: var(--max-content-width);
+    margin: 0 auto;
     padding: 2rem 2.5rem;
     width: 100%;
   }
@@ -274,6 +320,7 @@ const year = new Date().getFullYear();
       height: auto;
       min-height: var(--header-height);
       padding-block: 0.625rem;
+      grid-template-columns: auto 1fr auto;
     }
 
     .menu-toggle {
