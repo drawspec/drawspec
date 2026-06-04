@@ -94,7 +94,7 @@ export function getGroupedNavWithSubSections(): [string, GroupedNavSubSection[]]
 
   return groups.map(([section, items]) => {
     const sectionKey =
-      Object.entries(sectionLabels).find(([, label]) => label === section)?.[0] ??
+      [...Object.entries(sectionLabels)].reverse().find(([, label]) => label === section)?.[0] ??
       section.toLowerCase();
 
     const sectionMap = subSectionMap[sectionKey];
