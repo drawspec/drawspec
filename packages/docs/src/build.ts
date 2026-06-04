@@ -82,6 +82,7 @@ export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsMan
   await mkdir(outputDir, { recursive: true });
   for (const file of files) {
     const doc = await loadDoc(file);
+    resolveCodeBlockSources(doc.content, dirname(file), contentDir);
     const compiled = await compileDoc(doc, {
       baseDir: contentDir,
       readFile: (path) => Bun.file(path).text(),
@@ -239,6 +240,31 @@ async function findWorkspaceRoot(startDir: string): Promise<string | undefined> 
     const parent = dirname(current);
     if (parent === current) return undefined;
     current = parent;
+  }
+}
+
+function resolveCodeBlockSources(
+  blocks: import("./types").DocBlock[],
+  docDir: string,
+  contentDir: string
+): void {
+  for (const block of blocks) {
+    if (
+      block.type === "codeBlock" &&
+      "source" in block &&
+      block.source &&
+      !block.source.startsWith("/")
+    ) {
+      const absolute = resolve(docDir, block.source);
+      (block as { source: string }).source = relative(contentDir, absolute).split(sep).join("/");
+    }
+    const children =
+      "children" in block
+        ? (block as { children?: import("./types").DocBlock[] }).children
+        : undefined;
+    if (children) {
+      resolveCodeBlockSources(children, docDir, contentDir);
+    }
   }
 }
 
