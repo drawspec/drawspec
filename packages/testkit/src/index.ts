@@ -3,7 +3,12 @@ import {
   type Workspace,
 } from "@drawspec/architecture";
 import { type DiagramDocument, serializeDocument } from "@drawspec/core";
-import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
+import {
+  type LayoutEngine,
+  type LayoutOptions,
+  sequenceLayout,
+  simpleGraphLayout,
+} from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
 import type { ValidationResult } from "@drawspec/validation";
 
@@ -56,7 +61,7 @@ export async function renderFixture(
   document: DiagramDocument,
   layoutOptions: LayoutOptions = {}
 ): Promise<string> {
-  const engine = document.kind === "sequence" ? sequenceLayout() : simpleGraphLayout();
+  const engine = await selectLayoutEngine(document);
   const positionedDiagram = await engine.layout(
     document,
     normalizedLayoutOptions(document, layoutOptions)
@@ -65,6 +70,53 @@ export async function renderFixture(
     positionedDiagram,
     accessibility: { title: document.title ?? document.id },
   });
+}
+
+async function selectLayoutEngine(document: DiagramDocument): Promise<LayoutEngine> {
+  const engine = document.layout?.engine;
+  if (engine === "sequence" || document.kind === "sequence") {
+    return sequenceLayout();
+  }
+  if (engine === "simple" || engine === undefined) {
+    return simpleGraphLayout();
+  }
+  if (engine === "dagre") {
+    return tryLoadDagreLayout();
+  }
+  if (engine === "elk") {
+    return tryLoadElkLayout();
+  }
+  if (engine === "wasm") {
+    return tryLoadWasmLayout();
+  }
+  return simpleGraphLayout();
+}
+
+async function tryLoadDagreLayout(): Promise<LayoutEngine> {
+  try {
+    const { dagreLayout } = await import("@drawspec/layout-dagre");
+    return dagreLayout();
+  } catch {
+    return simpleGraphLayout();
+  }
+}
+
+async function tryLoadElkLayout(): Promise<LayoutEngine> {
+  try {
+    const { elkLayout } = await import("@drawspec/layout-elk");
+    return elkLayout();
+  } catch {
+    return simpleGraphLayout();
+  }
+}
+
+async function tryLoadWasmLayout(): Promise<LayoutEngine> {
+  try {
+    const { wasmLayout } = await import("@drawspec/layout-wasm");
+    return wasmLayout();
+  } catch {
+    return simpleGraphLayout();
+  }
 }
 
 export function expectDiagram(document: DiagramDocument) {

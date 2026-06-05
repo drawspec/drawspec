@@ -69,43 +69,43 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="216" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-text-layer-1fsjk54">
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="150">
+    <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_18acfa6794477135-12xtnl1" text-anchor="middle" x="300" y="148">
       Manages store
     </text>
-    <text data-width="134.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="238">
+    <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-1ln6x9p" text-anchor="middle" x="100" y="236">
       Validates tokens
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="400" y="150">
+    <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-01dj40p" text-anchor="middle" transform="translate(0 16)" x="400" y="148">
       Authenticates via
     </text>
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="326">
+    <text data-width="99.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_730a18c6ea565480-1wmia97" text-anchor="middle" x="100" y="324">
       Saves changes
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="502">
+    <text data-width="108.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_828cd01b042fca7e-1dor4wu" text-anchor="middle" x="100" y="500">
       Persists settings
     </text>
-    <text data-width="201.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="150">
+    <text data-width="169.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-0o8o97b" text-anchor="middle" transform="translate(0 16)" x="200" y="148">
       Configures payment rules
     </text>
-    <text data-width="75.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
+    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_0fac53dae12bb9fe-0b9iuve" text-anchor="middle" x="100" y="424.9">
       Admin API
     </text>
-    <text data-width="126" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
-      Admin Dashboard
+    <text data-width="101.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_3015d7cc580484e2-02svfph" text-anchor="middle" transform="translate(0 3.1)" x="100" y="248.9">
+      Admin Dashb…
     </text>
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="96.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_ea612b28b0b1fefd-0hmdj40" text-anchor="middle" x="100" y="72.9">
       OIDC Provider
     </text>
-    <text data-width="159.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="600.667">
-      Configuration Store
+    <text data-width="105.98" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-database_03ab52d399de1e70-0rf9zmd" text-anchor="middle" x="100" y="600.9">
+      Configuration …
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="72.667">
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-person_494a4f7dfd392f13-1o5de92" text-anchor="middle" x="300" y="72.9">
       Operator
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="248.667">
+    <text data-width="71.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_e27ada29a9783f1d-0hex6tq" text-anchor="middle" x="300" y="248.9">
       Commerce
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="248.667">
+    <text data-width="49.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_f31d789af8a06024-1m3t7hy" text-anchor="middle" x="500" y="248.9">
       Identity
     </text>
   </g>

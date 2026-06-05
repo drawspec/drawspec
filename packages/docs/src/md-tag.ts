@@ -246,7 +246,7 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
       }
 
       const sourceMatch = SOURCE_RE.exec(line);
-      if (sourceMatch && sourceMatch[1] && sourceMatch[2]) {
+      if (sourceMatch?.[1] && sourceMatch[2]) {
         result.push({
           type: "codeBlock",
           lang: sourceMatch[1],

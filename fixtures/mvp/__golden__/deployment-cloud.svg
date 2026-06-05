@@ -70,47 +70,47 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="392" />
   </g>
   <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-text-layer-0ba9ryy">
-    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="600" y="238">
+    <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-0qaxbel" text-anchor="middle" x="600" y="236">
       HTTPS
     </text>
-    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="326">
+    <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-046hrxi" text-anchor="middle" x="200" y="324">
       TLS
     </text>
-    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="700" y="238">
+    <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-16h1v22" text-anchor="middle" x="700" y="236">
       TLS
     </text>
-    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="150">
+    <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-0318s1e" text-anchor="middle" x="500" y="148">
       HTTPS
     </text>
-    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="326">
+    <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-1h5kuj1" text-anchor="middle" x="100" y="324">
       HTTPS
     </text>
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="86.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_0d327c3221e87ae4-1542hfm" text-anchor="middle" x="100" y="72.9">
       Static Assets
     </text>
-    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="72.667">
+    <text data-width="77.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_655eb4eb95fd5677-1h3ch9e" text-anchor="middle" x="300" y="72.9">
       API Service
     </text>
-    <text data-width="100.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="72.667">
+    <text data-width="90.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_a87e9d0792858505-0psbuv4" text-anchor="middle" x="500" y="72.9">
       Order Worker
     </text>
-    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="700" y="72.667">
+    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_f6a66885afb27708-08jdkli" text-anchor="middle" x="700" y="72.9">
       Web App
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="900" y="72.667">
+    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_2983a74f2170307a-1jwac2x" text-anchor="middle" x="900" y="72.9">
       CDN Edge
     </text>
-    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
+    <text data-width="78.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_e7b3f06185a8639c-1sitjrb" text-anchor="middle" x="100" y="248.9">
       App Cluster
     </text>
-    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="1100" y="72.667">
+    <text data-width="81.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_ed947a100831258e-0qtl3hh" text-anchor="middle" x="1100" y="72.9">
       Worker Pool
     </text>
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
-      Message Queue
+    <text data-width="103.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_3df758453a713335-1pyetb5" text-anchor="middle" x="100" y="424.9">
+      Message Que…
     </text>
-    <text data-width="134.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="424.667">
-      Managed Postgres
+    <text data-width="102.9" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_8980d18d222a454a-1mq3jqg" text-anchor="middle" x="300" y="424.9">
+      Managed Pos…
     </text>
   </g>
 </svg>

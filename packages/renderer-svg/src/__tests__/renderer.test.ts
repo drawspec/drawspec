@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { DiagramDocument } from "@drawspec/core";
 import { sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
-import { renderSvg, renderSvgSync, stableSvgId } from "../index";
+import { measureText, renderSvg, renderSvgSync, stableSvgId } from "../index";
 
 const edgeMarkerPrefix = stableSvgId("drawspec", "edge-marker-test");
 
@@ -194,6 +194,158 @@ describe("SvgRenderer", () => {
     const svg = await edgeSvg({ direction: "bidirectional", tags: ["async"] });
     expect(svg).toContain(`marker-start="url(#${edgeMarkerPrefix}-marker-diamond)"`);
     expect(svg).toContain(`marker-end="url(#${edgeMarkerPrefix}-marker-open-arrow)"`);
+  });
+
+  test("truncates long node labels with an ellipsis", () => {
+    const doc = document({
+      id: "truncate-test",
+      nodes: [
+        {
+          id: "service",
+          kind: "component",
+          label: "Extremely long service label that cannot fit",
+        },
+      ],
+    });
+    const positionedDiagram = {
+      document: doc,
+      nodes: [
+        {
+          id: "service",
+          kind: "component",
+          label: "Extremely long service label that cannot fit",
+          x: 10,
+          y: 10,
+          width: 80,
+          height: 40,
+        },
+      ],
+      edges: [],
+      groups: [],
+      activations: [],
+      width: 120,
+      height: 80,
+    };
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).toContain("…");
+    expect(svg).not.toContain("Extremely long service label that cannot fit");
+  });
+
+  test("keeps measured node text width within the node width", () => {
+    const doc = document({
+      id: "node-width-test",
+      nodes: [{ id: "node", kind: "component", label: "WWWWWWWWWWWWWWWW" }],
+    });
+    const positionedDiagram = {
+      document: doc,
+      nodes: [
+        {
+          id: "node",
+          kind: "component",
+          label: "WWWWWWWWWWWWWWWW",
+          x: 0,
+          y: 0,
+          width: 84,
+          height: 40,
+        },
+      ],
+      edges: [],
+      groups: [],
+      activations: [],
+      width: 100,
+      height: 60,
+    };
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    const widthMatch = svg.match(/data-width="([0-9.]+)"/);
+    expect(widthMatch).not.toBeNull();
+    expect(Number(widthMatch?.[1])).toBeLessThanOrEqual(84);
+  });
+
+  test("clips labels when even an ellipsis exceeds the text bounds", () => {
+    const doc = document({
+      id: "clip-test",
+      nodes: [{ id: "tiny", kind: "component", label: "Too long" }],
+    });
+    const positionedDiagram = {
+      document: doc,
+      nodes: [
+        { id: "tiny", kind: "component", label: "Too long", x: 4, y: 4, width: 8, height: 24 },
+      ],
+      edges: [],
+      groups: [],
+      activations: [],
+      width: 40,
+      height: 40,
+    };
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).toContain("<clipPath ");
+    expect(svg).toContain('clip-path="url(#');
+    expect(svg).toContain('width="8"');
+  });
+
+  test("shifts overlapping labels apart deterministically", () => {
+    const doc = document({
+      id: "overlap-test",
+      nodes: [
+        { id: "a", kind: "component", label: "Same" },
+        { id: "b", kind: "component", label: "Same" },
+      ],
+    });
+    const positionedDiagram = {
+      document: doc,
+      nodes: [
+        { id: "a", kind: "component", label: "Same", x: 10, y: 10, width: 90, height: 40 },
+        { id: "b", kind: "component", label: "Same", x: 10, y: 10, width: 90, height: 40 },
+      ],
+      edges: [],
+      groups: [],
+      activations: [],
+      width: 120,
+      height: 80,
+    };
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).toContain('transform="translate(0 16)"');
+  });
+
+  test("measures narrow and wide text differently", () => {
+    expect(measureText("iiii", 10)).toBeLessThan(measureText("mmmm", 10));
+    expect(measureText("WWWW", 10)).toBeGreaterThan(measureText("iiii", 10) * 3);
+  });
+
+  test("positions edge labels above paths with available width", () => {
+    const doc = document({
+      id: "edge-label-test",
+      nodes: [
+        { id: "a", kind: "component", label: "A" },
+        { id: "b", kind: "component", label: "B" },
+      ],
+      edges: [{ id: "a-to-b", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+    });
+    const positionedDiagram = {
+      document: doc,
+      nodes: [],
+      edges: [
+        {
+          id: "a-to-b",
+          kind: "calls",
+          sourceId: "a",
+          targetId: "b",
+          label: "calls",
+          waypoints: [
+            { x: 20, y: 70 },
+            { x: 180, y: 70 },
+          ],
+        },
+      ],
+      groups: [],
+      activations: [],
+      width: 200,
+      height: 100,
+    };
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).toContain('x="100"');
+    expect(svg).toContain('y="62"');
+    expect(svg).toContain('data-width="29.4"');
   });
 
   test("renders groups and sequence fragment lanes", async () => {

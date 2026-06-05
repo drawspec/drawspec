@@ -97,50 +97,50 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="744" />
   </g>
   <g id="drawspec-actdoc_82f445ff-1mt87vt-text-layer-1jl0137">
-    <text data-width="100.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="854">
+    <text data-width="85.26" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-0fhp7r0" text-anchor="middle" x="200" y="852">
       stock branch
     </text>
-    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="678">
+    <text data-width="24.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_133a2f91-15cg4fm" text-anchor="middle" x="100" y="676">
       Yes
     </text>
-    <text data-width="117.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="854">
+    <text data-width="88.34" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_66b8ad36-0khgcfq" text-anchor="middle" x="100" y="852">
       billing branch
     </text>
-    <text data-width="16.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="678">
+    <text data-width="19.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-0jlvs8z" text-anchor="middle" x="200" y="676">
       No
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="600.667">
-      Payment approved?
+    <text data-width="104.58" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_00df9ea6-0csxtta" text-anchor="middle" x="100" y="600.9">
+      Payment appr…
     </text>
-    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="29.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_2b198005-10ug968" text-anchor="middle" x="100" y="72.9">
       start
     </text>
-    <text data-width="176.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="1128.667">
-      Join fulfillment work
+    <text data-width="102.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_46da180c-15t14zc" text-anchor="middle" x="100" y="1128.9">
+      Join fulfillmen…
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="1480.667">
+    <text data-width="59.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_55d5a232-06s6vyi" text-anchor="middle" x="100" y="1480.9">
       complete
     </text>
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="952.667">
+    <text data-width="85.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_5b96eeb4-0yk8sth" text-anchor="middle" x="100" y="952.9">
       Issue invoice
     </text>
-    <text data-width="100.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
+    <text data-width="85.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_613ba680-0hqwxe2" text-anchor="middle" x="100" y="248.9">
       Submit order
     </text>
-    <text data-width="176.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="776.667">
-      Fork fulfillment work
+    <text data-width="105.98" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_7e353611-0e7u4tq" text-anchor="middle" x="100" y="776.9">
+      Fork fulfillmen…
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="952.667">
-      Reserve inventory
+    <text data-width="105.98" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_8d116489-05aldp2" text-anchor="middle" x="300" y="952.9">
+      Reserve inven…
     </text>
-    <text data-width="84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="1304.667">
+    <text data-width="68.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_9bf0904e-0jzlwoa" text-anchor="middle" x="100" y="1304.9">
       Ship order
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
-      Authorize payment
+    <text data-width="104.02" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_d94bcd38-1lo174g" text-anchor="middle" x="100" y="424.9">
+      Authorize pay…
     </text>
-    <text data-width="184.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="776.667">
-      Notify payment failure
+    <text data-width="100.38" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_f9a5a4c8-0njl4hg" text-anchor="middle" x="300" y="776.9">
+      Notify payme…
     </text>
   </g>
 </svg>

@@ -53,25 +53,25 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_ce4428e1-activation-0y40rq3" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="415" y="212" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_e787e49c-activation-1esj5rv" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="156" />
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-text-layer-1o78ybx">
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="314">
+    <text data-width="122.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_488bd19a-01ed16k" text-anchor="middle" x="180" y="312">
       Show confirmation
     </text>
-    <text data-width="184.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="258">
-      Authorization approved
+    <text data-width="129.22" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-0j98vcv" text-anchor="middle" x="340" y="256">
+      Authorization app…
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="202">
+    <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_ce4428e1-0jaak2j" text-anchor="middle" x="340" y="200">
       Authorize payment
     </text>
-    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="146">
+    <text data-width="75.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_e787e49c-037wrzv" text-anchor="middle" x="180" y="144">
       Place order
     </text>
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="260" y="72.667">
+    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-node-seq_6d48fc82-10dwo25" text-anchor="middle" x="260" y="72.9">
       Shop
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="420" y="72.667">
+    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-node-seq_75aa37ac-1hqp0be" text-anchor="middle" x="420" y="72.9">
       Payments
     </text>
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-node-seq_f0d7723a-0sd5r30" text-anchor="middle" x="100" y="72.9">
       User
     </text>
   </g>
