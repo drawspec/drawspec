@@ -55,7 +55,19 @@ export interface SvgRenderOptions {
   preserveAspectRatio?: string;
 }
 
+/** Supported SVG edge arrowhead marker shapes. */
+export type ArrowMarkerShape =
+  | "filled-triangle"
+  | "open-triangle"
+  | "open-arrow"
+  | "diamond"
+  | "circle"
+  | "cross"
+  | "none";
+
 export interface ResolvedStyle {
+  arrowEnd?: ArrowMarkerShape;
+  arrowStart?: ArrowMarkerShape;
   fill: string;
   stroke: string;
   strokeWidth: number;

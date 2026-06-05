@@ -10,6 +10,7 @@ export {
   stableSvgId,
 } from "./svg";
 export type {
+  ArrowMarkerShape,
   Renderer,
   ResolvedStyle,
   SvgAccessibilityOptions,
