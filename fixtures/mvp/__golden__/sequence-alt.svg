@@ -51,40 +51,40 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_a6ff72df-activation-1uck5db" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="268" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_d73b174f-activation-0oib66h" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="380" />
   <g id="drawspec-seqdoc_50f5132c-13xu4za-text-layer-1k1cz49">
-    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="start" x="28" y="256">
-      alt
-    </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="start" x="24" y="254">
-      approved
-    </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="start" x="24" y="366">
-      declined
-    </text>
-    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="314">
+    <text data-width="49.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-159i9uf" text-anchor="middle" x="180" y="312">
       Receipt
     </text>
-    <text data-width="252" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="426">
-      Request another payment method
+    <text data-width="126.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl" text-anchor="middle" x="180" y="424">
+      Request another …
     </text>
-    <text data-width="75.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="202">
+    <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-1364xyj" text-anchor="middle" x="340" y="200">
       Authorize
     </text>
-    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="146">
+    <text data-width="79.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-0d7cwmm" text-anchor="middle" x="180" y="144">
       Submit card
     </text>
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="258">
+    <text data-width="95.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-071fuaf" text-anchor="middle" x="340" y="256">
       Approval code
     </text>
-    <text data-width="117.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="370">
+    <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-183zkvl" text-anchor="middle" x="340" y="368">
       Decline reason
     </text>
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="260" y="72.667">
+    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-0tj9xvf" text-anchor="start" x="28" y="256">
+      alt
+    </text>
+    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-1mt7tad" text-anchor="start" transform="translate(0 18)" x="24" y="254">
+      approved
+    </text>
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-1-1mj87le" text-anchor="start" x="24" y="366">
+      declined
+    </text>
+    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_6d48fc82-0c83c15" text-anchor="middle" x="260" y="72.9">
       Shop
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="420" y="72.667">
+    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_75aa37ac-1j5ijm6" text-anchor="middle" x="420" y="72.9">
       Payments
     </text>
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_f0d7723a-1jgngvs" text-anchor="middle" x="100" y="72.9">
       User
     </text>
   </g>

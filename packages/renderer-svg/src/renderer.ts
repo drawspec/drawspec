@@ -81,7 +81,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       ? metadataDescription
       : `${document.kind} diagram ${document.id}`);
   const markerId = stableSvgId(idPrefix, "marker", "arrow");
-  const labels: SvgElementSpec[] = [];
+  const labels: SvgLabelSpec[] = [];
   const children: SvgElementSpec[] = [
     { name: "title", attrs: { id: stableSvgId(idPrefix, "title") }, children: [title] },
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
@@ -118,10 +118,11 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       .map((bar) => renderActivation(document, bar, options, idPrefix)),
   ];
   if (labels.length > 0) {
+    const adjustedLabels = avoidLabelOverlaps(labels).map((label) => label.element);
     children.push({
       name: "g",
       attrs: { id: stableSvgId(idPrefix, "text-layer") },
-      children: labels,
+      children: adjustedLabels,
     });
   }
   const svg = renderElement({
@@ -187,7 +188,20 @@ function renderBackground(width: number, height: number, fill: string): SvgEleme
 
 interface RenderedElement {
   element: SvgElementSpec;
-  labels: SvgElementSpec[];
+  labels: SvgLabelSpec[];
+}
+
+interface LabelBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+interface SvgLabelSpec {
+  id: string;
+  element: SvgElementSpec;
+  bounds: LabelBounds;
 }
 
 function renderGroup(
@@ -197,7 +211,7 @@ function renderGroup(
   idPrefix: string
 ): RenderedElement {
   const style = resolveStyle(document, group, options.theme, "group");
-  const labels: SvgElementSpec[] = [];
+  const labels: SvgLabelSpec[] = [];
   const children: SvgElementSpec[] = [
     {
       name: "rect",
@@ -217,7 +231,18 @@ function renderGroup(
     },
   ];
   if (group.label !== undefined) {
-    labels.push(textElement(group.label, group.x + 12, group.y + 20, style, "start"));
+    labels.push(
+      textElement({
+        id: stableSvgId(idPrefix, "label", "group", group.id),
+        label: group.label,
+        x: group.x + 12,
+        y: group.y + 20,
+        style,
+        anchor: "start",
+        maxWidth: Math.max(0, group.width - 24),
+        clipBounds: { x: group.x, y: group.y, width: group.width, height: group.height },
+      })
+    );
   }
   for (const lane of sortById(group.lanes ?? [])) {
     children.push({
@@ -233,7 +258,18 @@ function renderGroup(
       selfClosing: true,
     });
     if (lane.label !== undefined) {
-      labels.push(textElement(lane.label, lane.x + 8, lane.y + 18, style, "start"));
+      labels.push(
+        textElement({
+          id: stableSvgId(idPrefix, "label", "lane", lane.id),
+          label: lane.label,
+          x: lane.x + 8,
+          y: lane.y + 18,
+          style,
+          anchor: "start",
+          maxWidth: Math.max(0, lane.width - 16),
+          clipBounds: { x: lane.x, y: lane.y, width: lane.width, height: lane.height },
+        })
+      );
     }
   }
   return {
@@ -255,14 +291,19 @@ function renderNode(
   const style = resolveStyle(document, node, options.theme, "node");
   const children = shapeForNode(node, style);
   const label = node.label ?? node.id;
-  const labels: SvgElementSpec[] = [
-    textElement(
+  const verticalCenter = node.y + node.height / 2;
+  const baseline = verticalCenter + style.fontSize * 0.35;
+  const labels: SvgLabelSpec[] = [
+    textElement({
+      id: stableSvgId(idPrefix, "label", "node", node.id),
       label,
-      node.x + node.width / 2,
-      node.y + node.height / 2 + style.fontSize / 3,
+      x: node.x + node.width / 2,
+      y: baseline,
       style,
-      "middle"
-    ),
+      anchor: "middle",
+      maxWidth: Math.max(0, node.width - style.fontSize),
+      clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
+    }),
   ];
   return {
     element: {
@@ -360,10 +401,21 @@ function renderEdge(
       selfClosing: true,
     },
   ];
-  const labels: SvgElementSpec[] = [];
+  const labels: SvgLabelSpec[] = [];
   if (edge.label !== undefined) {
     const mid = midpoint(edge.waypoints);
-    labels.push(textElement(edge.label, mid.x, mid.y - 6, style, "middle"));
+    const maxWidth = availableEdgeLabelWidth(edge.waypoints, mid, style.fontSize);
+    labels.push(
+      textElement({
+        id: stableSvgId(idPrefix, "label", "edge", edge.id),
+        label: edge.label,
+        x: mid.x,
+        y: mid.y - Math.max(8, style.fontSize * 0.5),
+        style,
+        anchor: "middle",
+        ...(maxWidth === undefined ? {} : { maxWidth }),
+      })
+    );
   }
   return {
     element: {
@@ -401,6 +453,33 @@ function midpoint(points: Point[]): Point {
   return { x: (current.x + next.x) / 2, y: (current.y + next.y) / 2 };
 }
 
+function availableEdgeLabelWidth(
+  points: Point[],
+  mid: Point,
+  fontSize: number
+): number | undefined {
+  if (points.length < 2) {
+    return undefined;
+  }
+  const horizontalSegments = points
+    .slice(0, -1)
+    .map((point, index) => ({ current: point, next: points[index + 1] }))
+    .filter((segment): segment is { current: Point; next: Point } => segment.next !== undefined)
+    .filter((segment) => Math.abs(segment.current.y - segment.next.y) <= fontSize);
+
+  const containingSegment = horizontalSegments.find(
+    (segment) =>
+      mid.x >= Math.min(segment.current.x, segment.next.x) &&
+      mid.x <= Math.max(segment.current.x, segment.next.x)
+  );
+  const segment = containingSegment ?? horizontalSegments[0];
+  if (segment === undefined) {
+    return undefined;
+  }
+  const width = Math.abs(segment.next.x - segment.current.x) - fontSize * 2;
+  return Math.max(fontSize * 2, width);
+}
+
 function renderActivation(
   document: DiagramDocument,
   bar: ActivationBar,
@@ -427,25 +506,151 @@ function renderActivation(
   };
 }
 
-function textElement(
-  label: string,
-  x: number,
-  y: number,
-  style: ReturnType<typeof resolveStyle>,
-  anchor: "start" | "middle"
-): SvgElementSpec {
-  const width = measureText(label, style.fontSize);
-  return {
+interface TextElementOptions {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  style: ReturnType<typeof resolveStyle>;
+  anchor: "start" | "middle";
+  maxWidth?: number;
+  clipBounds?: LabelBounds;
+}
+
+function textElement(options: TextElementOptions): SvgLabelSpec {
+  const { anchor, clipBounds, id, label, maxWidth, style, x, y } = options;
+  const constrainedWidth = maxWidth === undefined ? undefined : Math.max(0, maxWidth);
+  const displayLabel = truncateText(label, style.fontSize, constrainedWidth);
+  const width = measureText(displayLabel, style.fontSize);
+  const shouldClip = constrainedWidth !== undefined && width > constrainedWidth;
+  const text: SvgElementSpec = {
     name: "text",
     attrs: {
+      "clip-path": shouldClip ? `url(#${stableSvgId(id, "clip")})` : undefined,
       "data-width": width,
       fill: style.text,
       "font-family": style.fontFamily,
       "font-size": style.fontSize,
+      id,
       "text-anchor": anchor,
       x,
       y,
     },
-    children: [label],
+    children: [displayLabel],
   };
+  const textBounds = labelBounds(x, y, width, style.fontSize, anchor);
+  if (!shouldClip) {
+    return { id, element: text, bounds: textBounds };
+  }
+  const bounds = clipBounds ?? textBounds;
+  return {
+    id,
+    element: {
+      name: "g",
+      attrs: { id: stableSvgId(id, "clipped") },
+      children: [
+        {
+          name: "clipPath",
+          attrs: { id: stableSvgId(id, "clip") },
+          children: [
+            {
+              name: "rect",
+              attrs: { height: bounds.height, width: bounds.width, x: bounds.x, y: bounds.y },
+              selfClosing: true,
+            },
+          ],
+        },
+        text,
+      ],
+    },
+    bounds: intersectBounds(textBounds, bounds),
+  };
+}
+
+function truncateText(label: string, fontSize: number, maxWidth: number | undefined): string {
+  if (maxWidth === undefined || measureText(label, fontSize) <= maxWidth) {
+    return label;
+  }
+  const ellipsis = "…";
+  if (measureText(ellipsis, fontSize) >= maxWidth) {
+    return ellipsis;
+  }
+  const characters = [...label];
+  let low = 0;
+  let high = characters.length;
+  while (low < high) {
+    const mid = Math.ceil((low + high) / 2);
+    const candidate = `${characters.slice(0, mid).join("")}${ellipsis}`;
+    if (measureText(candidate, fontSize) <= maxWidth) {
+      low = mid;
+    } else {
+      high = mid - 1;
+    }
+  }
+  return `${characters.slice(0, low).join("")}${ellipsis}`;
+}
+
+function labelBounds(
+  x: number,
+  y: number,
+  width: number,
+  fontSize: number,
+  anchor: "start" | "middle"
+): LabelBounds {
+  const left = anchor === "middle" ? x - width / 2 : x;
+  return { x: left, y: y - fontSize * 0.8, width, height: fontSize };
+}
+
+function intersectBounds(left: LabelBounds, right: LabelBounds): LabelBounds {
+  const x = Math.max(left.x, right.x);
+  const y = Math.max(left.y, right.y);
+  const maxX = Math.min(left.x + left.width, right.x + right.width);
+  const maxY = Math.min(left.y + left.height, right.y + right.height);
+  return { x, y, width: Math.max(0, maxX - x), height: Math.max(0, maxY - y) };
+}
+
+function avoidLabelOverlaps(labels: readonly SvgLabelSpec[]): SvgLabelSpec[] {
+  const placed: SvgLabelSpec[] = [];
+  const adjusted: SvgLabelSpec[] = [];
+  for (const label of [...labels].sort((left, right) => compareStable(left.id, right.id))) {
+    let bounds = { ...label.bounds };
+    let offsetX = 0;
+    let offsetY = 0;
+    for (const previous of placed) {
+      if (!boundsOverlap(bounds, previous.bounds, 2)) {
+        continue;
+      }
+      const shiftY = previous.bounds.y + previous.bounds.height - bounds.y + 2;
+      offsetY += shiftY;
+      bounds = { ...bounds, y: bounds.y + shiftY };
+      if (boundsOverlap(bounds, previous.bounds, 2)) {
+        offsetX += previous.bounds.x + previous.bounds.width - bounds.x + 2;
+        bounds = { ...bounds, x: bounds.x + offsetX };
+      }
+    }
+    const element =
+      offsetX === 0 && offsetY === 0
+        ? label.element
+        : withTransform(
+            label.element,
+            `translate(${formatNumber(offsetX)} ${formatNumber(offsetY)})`
+          );
+    const shifted = { id: label.id, element, bounds };
+    placed.push(shifted);
+    adjusted.push(shifted);
+  }
+  return adjusted;
+}
+
+function boundsOverlap(left: LabelBounds, right: LabelBounds, padding: number): boolean {
+  return (
+    left.x < right.x + right.width + padding &&
+    left.x + left.width + padding > right.x &&
+    left.y < right.y + right.height + padding &&
+    left.y + left.height + padding > right.y
+  );
+}
+
+function withTransform(element: SvgElementSpec, transform: string): SvgElementSpec {
+  return { ...element, attrs: { ...element.attrs, transform } };
 }
