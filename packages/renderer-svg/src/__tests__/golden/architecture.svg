@@ -8,15 +8,30 @@
   </desc>
   <rect fill="#ffffff" height="136" width="552" x="0" y="0" />
   <defs>
-    <marker id="drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+    <marker id="drawspec-architecture-demo-1o08l38-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
     </marker>
   </defs>
   <g id="drawspec-architecture-demo-1o08l38-edge-calls-15voqqc">
-    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-architecture-demo-1o08l38-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-architecture-demo-1o08l38-edge-stores-1sgeolt">
-    <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-architecture-demo-1o08l38-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-architecture-demo-1o08l38-node-api-0k9ctg4">
     <rect fill="#f0fdf4" height="56" rx="12" ry="12" stroke="#15803d" stroke-width="1.5" width="120" x="216" y="40" />

@@ -8,21 +8,36 @@
   </desc>
   <rect fill="#ffffff" height="360" width="520" x="0" y="0" />
   <defs>
-    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
     </marker>
   </defs>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_488bd19a-0v2gx3z">
-    <path d="M 260 320 L 100 320" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 260 320 L 100 320" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_9e381ab3-05543ck">
-    <path d="M 420 264 L 260 264" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 420 264 L 260 264" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_ce4428e1-10u1y98">
-    <path d="M 260 208 L 420 208" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 260 208 L 420 208" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_e787e49c-1jdyv9s">
-    <path d="M 100 152 L 260 152" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 152 L 260 152" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-node-seq_6d48fc82-12xzx7y">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="200" y="40" />

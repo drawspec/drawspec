@@ -15,7 +15,7 @@ import {
   type SvgElementSpec,
   stableSvgId,
 } from "./svg";
-import type { Renderer, SvgOutput, SvgRenderOptions, SvgViewport } from "./types";
+import type { ArrowMarkerShape, Renderer, SvgOutput, SvgRenderOptions, SvgViewport } from "./types";
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
 
@@ -80,13 +80,12 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
     (typeof metadataDescription === "string"
       ? metadataDescription
       : `${document.kind} diagram ${document.id}`);
-  const markerId = stableSvgId(idPrefix, "marker", "arrow");
   const labels: SvgElementSpec[] = [];
   const children: SvgElementSpec[] = [
     { name: "title", attrs: { id: stableSvgId(idPrefix, "title") }, children: [title] },
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
     renderBackground(width, height, theme.background),
-    renderDefs(markerId, theme.edgeStroke),
+    renderDefs(idPrefix, theme.edgeStroke),
     ...sortById(positionedDiagram.groups)
       .filter(
         (group) =>
@@ -100,7 +99,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
     ...sortById(positionedDiagram.edges)
       .filter((edge) => !viewport || edgeInViewport(edge.waypoints, viewport))
       .map((edge) => {
-        const result = renderEdge(document, edge, options, idPrefix, markerId);
+        const result = renderEdge(document, edge, options, idPrefix);
         labels.push(...result.labels);
         return result.element;
       }),
@@ -154,26 +153,63 @@ function sortById<T extends { id: string }>(items: readonly T[]): T[] {
   return [...items].sort(byId);
 }
 
-function renderDefs(markerId: string, stroke: string): SvgElementSpec {
+type MarkerSpec =
+  | { shape: "circle"; attrs: Record<string, string | number> }
+  | { shape: "path"; attrs: Record<string, string | number> };
+
+const markerRegistry: Record<Exclude<ArrowMarkerShape, "none">, MarkerSpec> = {
+  circle: { shape: "circle", attrs: { cx: 4, cy: 4, fill: "__stroke__", r: 3 } },
+  cross: {
+    shape: "path",
+    attrs: { d: "M 0 0 L 8 8 M 0 8 L 8 0", fill: "none", stroke: "__stroke__" },
+  },
+  diamond: {
+    shape: "path",
+    attrs: { d: "M 0 4 L 4 0 L 8 4 L 4 8 z", fill: "__stroke__" },
+  },
+  "filled-triangle": {
+    shape: "path",
+    attrs: { d: "M 0 0 L 8 4 L 0 8 z", fill: "__stroke__" },
+  },
+  "open-arrow": {
+    shape: "path",
+    attrs: { d: "M 0 0 L 8 4 L 0 8", fill: "none", stroke: "__stroke__" },
+  },
+  "open-triangle": {
+    shape: "path",
+    attrs: { d: "M 0 0 L 8 4 L 0 8", fill: "none", stroke: "__stroke__" },
+  },
+};
+
+function markerId(idPrefix: string, shape: Exclude<ArrowMarkerShape, "none">): string {
+  return `${idPrefix}-marker-${shape}`;
+}
+
+function markerAttrs(
+  attrs: Record<string, string | number>,
+  stroke: string
+): Record<string, string | number> {
+  return Object.fromEntries(
+    Object.entries(attrs).map(([key, value]) => [key, value === "__stroke__" ? stroke : value])
+  );
+}
+
+function renderDefs(idPrefix: string, stroke: string): SvgElementSpec {
   return {
     name: "defs",
-    children: [
-      {
-        name: "marker",
-        attrs: {
-          id: markerId,
-          markerHeight: 8,
-          markerWidth: 8,
-          orient: "auto",
-          refX: 8,
-          refY: 4,
-          viewBox: "0 0 8 8",
-        },
-        children: [
-          { name: "path", attrs: { d: "M 0 0 L 8 4 L 0 8 z", fill: stroke }, selfClosing: true },
-        ],
+    children: Object.entries(markerRegistry).map(([shape, spec]) => ({
+      name: "marker",
+      attrs: {
+        id: markerId(idPrefix, shape as Exclude<ArrowMarkerShape, "none">),
+        markerHeight: 8,
+        markerWidth: 8,
+        orient: "auto",
+        refX: 8,
+        refY: 4,
+        viewBox: "0 0 8 8",
       },
-    ],
+      children: [{ name: spec.shape, attrs: markerAttrs(spec.attrs, stroke), selfClosing: true }],
+    })),
   };
 }
 
@@ -335,25 +371,32 @@ function renderEdge(
   document: DiagramDocument,
   edge: PositionedEdge,
   options: SvgRenderOptions,
-  idPrefix: string,
-  markerId: string
+  idPrefix: string
 ): RenderedElement {
   const style = resolveStyle(document, edge, options.theme, "edge");
   const direction = edge.direction ?? "forward";
+  const arrowEnd = style.arrowEnd ?? "filled-triangle";
+  const arrowStart = style.arrowStart ?? "filled-triangle";
+  const markerEnd =
+    direction !== "none" &&
+    (direction === "forward" || direction === "bidirectional") &&
+    arrowEnd !== "none"
+      ? `url(#${markerId(idPrefix, arrowEnd)})`
+      : undefined;
+  const markerStart =
+    direction !== "none" &&
+    (direction === "backward" || direction === "bidirectional") &&
+    arrowStart !== "none"
+      ? `url(#${markerId(idPrefix, arrowStart)})`
+      : undefined;
   const children: SvgElementSpec[] = [
     {
       name: "path",
       attrs: {
         d: edgePath(edge.waypoints),
         fill: "none",
-        "marker-end":
-          direction === "forward" || direction === "bidirectional"
-            ? `url(#${markerId})`
-            : undefined,
-        "marker-start":
-          direction === "backward" || direction === "bidirectional"
-            ? `url(#${markerId})`
-            : undefined,
+        "marker-end": markerEnd,
+        "marker-start": markerStart,
         stroke: style.stroke,
         "stroke-width": style.strokeWidth,
       },

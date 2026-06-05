@@ -3,6 +3,8 @@ import type { DiagramDocument } from "@drawspec/core";
 import { sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import { renderSvg, renderSvgSync, stableSvgId } from "../index";
 
+const edgeMarkerPrefix = stableSvgId("drawspec", "edge-marker-test");
+
 function document(overrides: Partial<DiagramDocument> = {}): DiagramDocument {
   return {
     annotations: [],
@@ -78,6 +80,29 @@ async function sequenceSvg(): Promise<string> {
   const positionedDiagram = await sequenceLayout().layout(sequenceDoc);
   return renderSvg(sequenceDoc, { positionedDiagram });
 }
+
+async function edgeSvg(
+  edgeOverrides: Partial<DiagramDocument["edges"][number]> = {}
+): Promise<string> {
+  const doc = document({
+    id: "edge-marker-test",
+    kind: "graph",
+    nodes: [
+      { id: "a", kind: "component", label: "A" },
+      { id: "b", kind: "component", label: "B" },
+    ],
+    edges: [{ id: "ab", kind: "calls", sourceId: "a", targetId: "b", ...edgeOverrides }],
+    groups: [],
+    styles: {
+      rules: {
+        "tag:async": { arrowEnd: "open-arrow", arrowStart: "diamond" },
+      },
+    },
+  });
+  const positionedDiagram = await simpleGraphLayout().layout(doc);
+  return renderSvg(doc, { positionedDiagram });
+}
+
 async function expectGolden(name: string, svg: string): Promise<void> {
   const path = new URL(`./golden/${name}.svg`, import.meta.url).pathname;
   if (Bun.env.UPDATE_GOLDEN === "1") {
@@ -125,11 +150,50 @@ describe("SvgRenderer", () => {
 
   test("renders edges as paths with deterministic arrow markers and labels", async () => {
     const svg = await architectureSvg();
-    expect(svg).toContain('id="drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn"');
+    expect(svg).toContain('id="drawspec-architecture-demo-1o08l38-marker-filled-triangle"');
     expect(svg).toContain(
-      'marker-end="url(#drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn)"'
+      'marker-end="url(#drawspec-architecture-demo-1o08l38-marker-filled-triangle)"'
     );
     expect(svg).toContain("calls");
+  });
+
+  test("defines each supported arrow marker shape", async () => {
+    const svg = await architectureSvg();
+    expect(svg).toContain('id="drawspec-architecture-demo-1o08l38-marker-filled-triangle"');
+    expect(svg).toContain('d="M 0 0 L 8 4 L 0 8 z" fill="#475569"');
+    expect(svg).toContain('id="drawspec-architecture-demo-1o08l38-marker-open-triangle"');
+    expect(svg).toContain('d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569"');
+    expect(svg).toContain('id="drawspec-architecture-demo-1o08l38-marker-open-arrow"');
+    expect(svg).toContain('id="drawspec-architecture-demo-1o08l38-marker-diamond"');
+    expect(svg).toContain('d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569"');
+    expect(svg).toContain('id="drawspec-architecture-demo-1o08l38-marker-circle"');
+    expect(svg).toContain('<circle cx="4" cy="4" fill="#475569" r="3" />');
+    expect(svg).toContain('id="drawspec-architecture-demo-1o08l38-marker-cross"');
+    expect(svg).toContain('d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569"');
+  });
+
+  test("uses marker-start for backward edges", async () => {
+    const svg = await edgeSvg({ direction: "backward" });
+    expect(svg).toContain(`marker-start="url(#${edgeMarkerPrefix}-marker-filled-triangle)"`);
+    expect(svg).not.toContain(`marker-end="url(#${edgeMarkerPrefix}-marker-filled-triangle)"`);
+  });
+
+  test("uses both marker-start and marker-end for bidirectional edges", async () => {
+    const svg = await edgeSvg({ direction: "bidirectional" });
+    expect(svg).toContain(`marker-start="url(#${edgeMarkerPrefix}-marker-filled-triangle)"`);
+    expect(svg).toContain(`marker-end="url(#${edgeMarkerPrefix}-marker-filled-triangle)"`);
+  });
+
+  test("omits edge marker references when direction is none", async () => {
+    const svg = await edgeSvg({ direction: "none" });
+    expect(svg).not.toContain('marker-start="url(');
+    expect(svg).not.toContain('marker-end="url(');
+  });
+
+  test("allows style rules to override arrow markers", async () => {
+    const svg = await edgeSvg({ direction: "bidirectional", tags: ["async"] });
+    expect(svg).toContain(`marker-start="url(#${edgeMarkerPrefix}-marker-diamond)"`);
+    expect(svg).toContain(`marker-end="url(#${edgeMarkerPrefix}-marker-open-arrow)"`);
   });
 
   test("renders groups and sequence fragment lanes", async () => {
