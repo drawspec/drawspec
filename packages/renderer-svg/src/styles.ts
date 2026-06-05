@@ -31,6 +31,32 @@ const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
   sequence: { fill: "#f8fafc", stroke: "#334155" },
 };
 
+/** Per-edge-kind visual defaults for line style and arrowhead markers. */
+const edgeKindStyleMap: Record<
+  string,
+  { lineStyle: LineStyle; arrowEnd: ArrowMarkerShape; arrowStart?: ArrowMarkerShape }
+> = {
+  // Sequence diagram
+  message: { lineStyle: "solid", arrowEnd: "filled-triangle" },
+  response: { lineStyle: "dashed", arrowEnd: "open-arrow" },
+  // Class diagram
+  extends: { lineStyle: "solid", arrowEnd: "open-triangle" },
+  implements: { lineStyle: "dashed", arrowEnd: "open-triangle" },
+  uses: { lineStyle: "dashed", arrowEnd: "open-arrow" },
+  // Architecture (C4)
+  "dynamic-message": { lineStyle: "solid", arrowEnd: "filled-triangle" },
+  // State diagram
+  transition: { lineStyle: "solid", arrowEnd: "filled-triangle" },
+  // Component diagram
+  dependency: { lineStyle: "dashed", arrowEnd: "open-arrow" },
+  provides: { lineStyle: "solid", arrowEnd: "none" },
+  requires: { lineStyle: "solid", arrowEnd: "none" },
+  // Deployment diagram
+  communication: { lineStyle: "solid", arrowEnd: "open-arrow" },
+  // Activity diagram
+  flow: { lineStyle: "solid", arrowEnd: "filled-triangle" },
+};
+
 type StyledEntity = DiagramNode | DiagramEdge | DiagramGroup;
 
 interface StyleRule {
@@ -141,6 +167,12 @@ export function resolveStyle(
   };
   const kindStyle = kindDefaults[entity.kind] ?? {};
   let resolved: ResolvedStyle = { ...base, ...kindStyle };
+  if (elementType === "edge") {
+    const edgeKindStyle = edgeKindStyleMap[entity.kind];
+    if (edgeKindStyle !== undefined) {
+      resolved = mergeRule(resolved, edgeKindStyle);
+    }
+  }
   if (elementType === "group") {
     resolved = {
       ...resolved,
