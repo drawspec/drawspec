@@ -8,21 +8,36 @@
   </desc>
   <rect fill="#ffffff" height="336" width="728" x="0" y="0" />
   <defs>
-    <marker id="drawspec-view_dcd46170de182cc6-05bzavs-marker-arrow-0k441nl" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+    <marker id="drawspec-view_dcd46170de182cc6-05bzavs-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-view_dcd46170de182cc6-05bzavs-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-view_dcd46170de182cc6-05bzavs-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-view_dcd46170de182cc6-05bzavs-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-view_dcd46170de182cc6-05bzavs-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
     </marker>
   </defs>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_1119936806011451-0y9nwk5">
-    <path d="M 100 68 L 276 268" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-arrow-0k441nl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 68 L 276 268" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_3093dfff7a08d97f-134qjmy">
-    <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-arrow-0k441nl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_51b9312d0f5b5c39-06oobad">
-    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-arrow-0k441nl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_d0f8539ad07ce354-061ahw2">
-    <path d="M 452 68 L 628 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-arrow-0k441nl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 452 68 L 628 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-container_4c19412c99504b8f-11vv76e">
     <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="216" y="40" />

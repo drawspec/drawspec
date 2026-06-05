@@ -1,5 +1,5 @@
 import type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode } from "@drawspec/core";
-import type { ResolvedStyle, SvgTheme } from "./types";
+import type { ArrowMarkerShape, LineStyle, ResolvedStyle, SvgTheme } from "./types";
 
 export const defaultTheme: SvgTheme = {
   activationFill: "#e0f2fe",
@@ -15,6 +15,13 @@ export const defaultTheme: SvgTheme = {
   text: "#0f172a",
 };
 
+const lineStylePresets: Record<LineStyle, string> = {
+  solid: "",
+  dashed: "8 4",
+  dotted: "2 4",
+  "dash-dot": "8 4 2 4",
+};
+
 const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
   actor: { fill: "#eef2ff", stroke: "#4338ca" },
   container: { fill: "#ecfeff", stroke: "#0891b2" },
@@ -27,14 +34,27 @@ const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
 type StyledEntity = DiagramNode | DiagramEdge | DiagramGroup;
 
 interface StyleRule {
+  arrowEnd?: string | number;
+  arrowStart?: string | number;
   fill?: string | number;
   fontFamily?: string | number;
   fontSize?: string | number;
+  lineStyle?: string | number;
   stroke?: string | number;
   strokeDasharray?: string | number;
   strokeWidth?: string | number;
   text?: string | number;
 }
+
+const arrowMarkerShapes = new Set<ArrowMarkerShape>([
+  "filled-triangle",
+  "open-triangle",
+  "open-arrow",
+  "diamond",
+  "circle",
+  "cross",
+  "none",
+]);
 
 function asString(value: string | number | undefined): string | undefined {
   return value === undefined ? undefined : String(value);
@@ -48,21 +68,57 @@ function asNumber(value: string | number | undefined): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
+function asArrowMarker(value: string | number | undefined): ArrowMarkerShape | undefined {
+  const marker = asString(value);
+  return marker !== undefined && arrowMarkerShapes.has(marker as ArrowMarkerShape)
+    ? (marker as ArrowMarkerShape)
+    : undefined;
+}
+
+function asLineStyle(value: string | number | undefined): LineStyle | undefined {
+  const lineStyle = asString(value);
+  if (
+    lineStyle === "solid" ||
+    lineStyle === "dashed" ||
+    lineStyle === "dotted" ||
+    lineStyle === "dash-dot"
+  ) {
+    return lineStyle;
+  }
+  return undefined;
+}
+
 function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedStyle {
   if (rule === undefined) {
     return style;
   }
-  const strokeDasharray = asString(rule.strokeDasharray) ?? style.strokeDasharray;
-  return {
+  const arrowEnd = asArrowMarker(rule.arrowEnd) ?? style.arrowEnd;
+  const arrowStart = asArrowMarker(rule.arrowStart) ?? style.arrowStart;
+  const lineStyle = asLineStyle(rule.lineStyle);
+  const strokeDasharray =
+    asString(rule.strokeDasharray) ??
+    (lineStyle === undefined ? undefined : lineStylePresets[lineStyle]) ??
+    style.strokeDasharray;
+  const resolved: ResolvedStyle = {
     ...style,
+    ...(arrowEnd === undefined ? {} : { arrowEnd }),
+    ...(arrowStart === undefined ? {} : { arrowStart }),
     fill: asString(rule.fill) ?? style.fill,
     fontFamily: asString(rule.fontFamily) ?? style.fontFamily,
     fontSize: asNumber(rule.fontSize) ?? style.fontSize,
     stroke: asString(rule.stroke) ?? style.stroke,
-    ...(strokeDasharray === undefined ? {} : { strokeDasharray }),
     strokeWidth: asNumber(rule.strokeWidth) ?? style.strokeWidth,
     text: asString(rule.text) ?? style.text,
   };
+  if (lineStyle !== undefined) {
+    resolved.lineStyle = lineStyle;
+  }
+  if (strokeDasharray === undefined || strokeDasharray === "") {
+    delete resolved.strokeDasharray;
+  } else {
+    resolved.strokeDasharray = strokeDasharray;
+  }
+  return resolved;
 }
 
 export function resolveStyle(
@@ -73,6 +129,9 @@ export function resolveStyle(
 ): ResolvedStyle {
   const theme = { ...defaultTheme, ...themeOverrides };
   const base: ResolvedStyle = {
+    ...(elementType === "edge"
+      ? { arrowEnd: "filled-triangle" as const, arrowStart: "filled-triangle" as const }
+      : {}),
     fill: elementType === "edge" ? "none" : theme.nodeFill,
     fontFamily: theme.fontFamily,
     fontSize: theme.fontSize,
@@ -94,6 +153,9 @@ export function resolveStyle(
     resolved = { ...resolved, fill: theme.activationFill, stroke: theme.activationStroke };
   }
   const rules = document.styles?.rules ?? {};
+  if (elementType === "edge") {
+    resolved = mergeRule(resolved, rules[`relationship:${entity.kind}`]);
+  }
   for (const tag of [...(entity.tags ?? [])].sort()) {
     resolved = mergeRule(resolved, tagRule(rules, tag, elementType));
   }
