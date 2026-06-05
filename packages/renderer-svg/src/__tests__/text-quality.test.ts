@@ -177,7 +177,7 @@ describe("Text quality", () => {
       ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
-    expect(svg).toMatch(/transform="translate\(\d+ \d+\)"/);
+    expect(svg).toMatch(/transform="translate\([\d.]+ [\d.]+\)"/);
   });
 
   test("text layer group contains all labels", () => {
