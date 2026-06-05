@@ -47,6 +47,12 @@ export interface SvgRenderOptions {
   theme?: Partial<SvgTheme>;
   /** Optional viewport for culling off-screen elements. Elements entirely outside this rectangle are skipped. */
   viewport?: SvgViewport;
+  /** Padding around diagram content (pixels). Applied when autoFit is true. */
+  padding?: number;
+  /** Automatically fit viewport to content bounds. */
+  autoFit?: boolean;
+  /** Preserve aspect ratio. Default: "xMidYMid meet". */
+  preserveAspectRatio?: string;
 }
 
 export interface ResolvedStyle {

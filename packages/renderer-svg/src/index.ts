@@ -1,4 +1,4 @@
-export { renderSvg, renderSvgSync, SvgRenderer } from "./renderer";
+export { computeContentBounds, renderSvg, renderSvgSync, SvgRenderer } from "./renderer";
 export { defaultTheme, resolveStyle } from "./styles";
 export {
   escapeAttribute,
