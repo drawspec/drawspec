@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { DiagramDocument } from "@drawspec/core";
-import { sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
-import { measureText, renderSvg, renderSvgSync, stableSvgId } from "../index";
+import { type PositionedDiagram, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
+import { computeContentBounds, measureText, renderSvg, renderSvgSync, stableSvgId } from "../index";
 
 const edgeMarkerPrefix = stableSvgId("drawspec", "edge-marker-test");
 
@@ -111,6 +111,20 @@ async function expectGolden(name: string, svg: string): Promise<void> {
   expect(await Bun.file(path).text()).toBe(svg);
 }
 
+function positionedDiagram(overrides: Partial<PositionedDiagram> = {}): PositionedDiagram {
+  const doc = document({ id: "positioned" });
+  return {
+    activations: [],
+    document: doc,
+    edges: [],
+    groups: [],
+    height: 300,
+    nodes: [],
+    width: 400,
+    ...overrides,
+  };
+}
+
 describe("SvgRenderer", () => {
   test("renders the same positioned diagram byte-identically", async () => {
     const positionedDiagram = await simpleGraphLayout().layout(architectureDoc, {
@@ -121,6 +135,126 @@ describe("SvgRenderer", () => {
       positionedDiagram: { ...positionedDiagram, nodes: [...positionedDiagram.nodes] },
     });
     expect(second).toBe(first);
+  });
+
+  test("computes content bounds across positioned elements", () => {
+    const doc = document({ id: "bounds" });
+    const diagram = positionedDiagram({
+      document: doc,
+      nodes: [{ id: "node", kind: "component", x: 10, y: 20, width: 30, height: 40 }],
+      edges: [
+        {
+          id: "edge",
+          kind: "calls",
+          sourceId: "node",
+          targetId: "node",
+          waypoints: [
+            { x: -20, y: 200 },
+            { x: 200, y: -30 },
+          ],
+        },
+      ],
+      groups: [
+        { id: "group", kind: "boundary", childIds: ["node"], x: -5, y: -10, width: 5, height: 5 },
+      ],
+      activations: [
+        { id: "bar", nodeId: "node", edgeId: "edge", x: 100, y: 50, width: 10, height: 20 },
+      ],
+    });
+
+    expect(computeContentBounds(diagram)).toEqual({ x: -20, y: -30, width: 220, height: 230 });
+  });
+
+  test("auto-fit viewBox encompasses all positioned content", () => {
+    const doc = document({ id: "auto-fit" });
+    const diagram = positionedDiagram({
+      document: doc,
+      nodes: [
+        { id: "left", kind: "component", x: 50, y: 80, width: 100, height: 40 },
+        { id: "right", kind: "component", x: 250, y: 120, width: 80, height: 60 },
+      ],
+      edges: [
+        {
+          id: "wide",
+          kind: "calls",
+          sourceId: "left",
+          targetId: "right",
+          waypoints: [
+            { x: 30, y: 90 },
+            { x: 360, y: 200 },
+          ],
+        },
+      ],
+    });
+
+    const svg = renderSvgSync(doc, { positionedDiagram: diagram, autoFit: true, padding: 0 });
+
+    expect(svg).toContain('viewBox="30 80 330 120"');
+    expect(svg).toContain('width="330"');
+    expect(svg).toContain('height="120"');
+    expect(svg).toContain('<rect fill="#ffffff" height="120" width="330" x="30" y="80" />');
+  });
+
+  test("auto-fit padding expands the viewBox around content", () => {
+    const doc = document({ id: "auto-fit-padding" });
+    const diagram = positionedDiagram({
+      document: doc,
+      nodes: [{ id: "box", kind: "component", x: 10, y: 20, width: 30, height: 40 }],
+    });
+
+    const svg = renderSvgSync(doc, { positionedDiagram: diagram, autoFit: true, padding: 5 });
+
+    expect(svg).toContain('viewBox="5 15 40 50"');
+    expect(svg).toContain('width="40"');
+    expect(svg).toContain('height="50"');
+  });
+
+  test("auto-fit single-node diagrams keep a non-degenerate viewBox", () => {
+    const doc = document({ id: "single-node" });
+    const diagram = positionedDiagram({
+      document: doc,
+      nodes: [{ id: "box", kind: "component", x: 100, y: 200, width: 120, height: 80 }],
+    });
+
+    const svg = renderSvgSync(doc, { positionedDiagram: diagram, autoFit: true, padding: 0 });
+
+    expect(svg).toContain('viewBox="100 200 120 80"');
+    expect(svg).toContain('width="120"');
+    expect(svg).toContain('height="80"');
+  });
+
+  test("emits preserveAspectRatio when provided", () => {
+    const doc = document({ id: "preserve-aspect-ratio" });
+    const diagram = positionedDiagram({
+      document: doc,
+      nodes: [{ id: "box", kind: "component", x: 0, y: 0, width: 100, height: 50 }],
+    });
+
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: diagram,
+      autoFit: true,
+      preserveAspectRatio: "xMinYMin slice",
+    });
+
+    expect(svg).toContain('preserveAspectRatio="xMinYMin slice"');
+  });
+
+  test("keeps explicit-dimension rendering unchanged when auto-fit is disabled", () => {
+    const doc = document({ id: "backward-compatible" });
+    const diagram = positionedDiagram({
+      document: doc,
+      nodes: [{ id: "box", kind: "component", x: 100, y: 200, width: 120, height: 80 }],
+    });
+
+    const implicit = renderSvgSync(doc, { positionedDiagram: diagram });
+    const explicit = renderSvgSync(doc, {
+      positionedDiagram: diagram,
+      width: diagram.width,
+      height: diagram.height,
+    });
+
+    expect(implicit).toBe(explicit);
+    expect(implicit).toContain('viewBox="0 0 400 300"');
   });
 
   test("includes title, desc, ARIA references, and stable IDs", async () => {
