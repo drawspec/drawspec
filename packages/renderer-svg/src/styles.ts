@@ -1,5 +1,5 @@
 import type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode } from "@drawspec/core";
-import type { LineStyle, ResolvedStyle, SvgTheme } from "./types";
+import type { ArrowMarkerShape, LineStyle, ResolvedStyle, SvgTheme } from "./types";
 
 export const defaultTheme: SvgTheme = {
   activationFill: "#e0f2fe",
@@ -34,6 +34,8 @@ const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
 type StyledEntity = DiagramNode | DiagramEdge | DiagramGroup;
 
 interface StyleRule {
+  arrowEnd?: string | number;
+  arrowStart?: string | number;
   fill?: string | number;
   fontFamily?: string | number;
   fontSize?: string | number;
@@ -43,6 +45,16 @@ interface StyleRule {
   strokeWidth?: string | number;
   text?: string | number;
 }
+
+const arrowMarkerShapes = new Set<ArrowMarkerShape>([
+  "filled-triangle",
+  "open-triangle",
+  "open-arrow",
+  "diamond",
+  "circle",
+  "cross",
+  "none",
+]);
 
 function asString(value: string | number | undefined): string | undefined {
   return value === undefined ? undefined : String(value);
@@ -54,6 +66,13 @@ function asNumber(value: string | number | undefined): number | undefined {
   }
   const parsed = typeof value === "number" ? value : Number(value);
   return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function asArrowMarker(value: string | number | undefined): ArrowMarkerShape | undefined {
+  const marker = asString(value);
+  return marker !== undefined && arrowMarkerShapes.has(marker as ArrowMarkerShape)
+    ? (marker as ArrowMarkerShape)
+    : undefined;
 }
 
 function asLineStyle(value: string | number | undefined): LineStyle | undefined {
@@ -73,6 +92,8 @@ function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedS
   if (rule === undefined) {
     return style;
   }
+  const arrowEnd = asArrowMarker(rule.arrowEnd) ?? style.arrowEnd;
+  const arrowStart = asArrowMarker(rule.arrowStart) ?? style.arrowStart;
   const lineStyle = asLineStyle(rule.lineStyle);
   const strokeDasharray =
     asString(rule.strokeDasharray) ??
@@ -80,6 +101,8 @@ function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedS
     style.strokeDasharray;
   const resolved: ResolvedStyle = {
     ...style,
+    ...(arrowEnd === undefined ? {} : { arrowEnd }),
+    ...(arrowStart === undefined ? {} : { arrowStart }),
     fill: asString(rule.fill) ?? style.fill,
     fontFamily: asString(rule.fontFamily) ?? style.fontFamily,
     fontSize: asNumber(rule.fontSize) ?? style.fontSize,
@@ -106,6 +129,9 @@ export function resolveStyle(
 ): ResolvedStyle {
   const theme = { ...defaultTheme, ...themeOverrides };
   const base: ResolvedStyle = {
+    ...(elementType === "edge"
+      ? { arrowEnd: "filled-triangle" as const, arrowStart: "filled-triangle" as const }
+      : {}),
     fill: elementType === "edge" ? "none" : theme.nodeFill,
     fontFamily: theme.fontFamily,
     fontSize: theme.fontSize,

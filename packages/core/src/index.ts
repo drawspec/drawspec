@@ -19,15 +19,39 @@ export type { CreateIdOptions } from "./id";
 export { createDeterministicId, IdRegistry } from "./id";
 export { serializeDocument, stableStringify, stableValue } from "./serialize";
 export { SymbolRegistry } from "./symbol-registry";
+export type { ResolvedStyleSheet, ResolveStyleSheetOptions } from "./theme";
+export {
+  createThemeRules,
+  createThemeTokens,
+  DEFAULT_DIAGRAM_THEME,
+  DIAGRAM_KIND_THEME_DEFAULTS,
+  mergeDiagramTheme,
+  resolveDiagramTheme,
+  resolveStyleSheet,
+} from "./theme";
 export type {
+  ArrowheadDefaults,
+  ColorPalette,
+  DashPatternConfig,
   DiagramAnnotation,
   DiagramDocument,
   DiagramEdge,
   DiagramGroup,
   DiagramKind,
   DiagramNode,
+  DiagramTheme,
+  DiagramThemeOverride,
+  EdgeStyleConfig,
   LayoutSpec,
+  NodeStyleConfig,
   SourceRef,
+  SpacingConfig,
+  SpacingScaleConfig,
   StyleRef,
   StyleSheet,
+  StyleTokenValue,
+  Theme,
+  TypographyConfig,
+  TypographySizeConfig,
+  TypographyWeightConfig,
 } from "./types";
