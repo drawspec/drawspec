@@ -61,22 +61,189 @@ function computeDepths(nodes: DiagramNode[], edges: DiagramEdge[]): Record<strin
   return depth;
 }
 
+function groupNodesByDepth(
+  nodes: DiagramNode[],
+  depths: Record<string, number>
+): Map<number, DiagramNode[]> {
+  const layers = new Map<number, DiagramNode[]>();
+  for (const node of nodes) {
+    const rank = depths[node.id] ?? 0;
+    layers.set(rank, [...(layers.get(rank) ?? []), node]);
+  }
+
+  return new Map([...layers.entries()].sort(([left], [right]) => left - right));
+}
+
+function rankIndexes(layers: Map<number, DiagramNode[]>): Record<string, number> {
+  const indexes: Record<string, number> = {};
+  for (const [, layer] of layers) {
+    for (const [index, node] of layer.entries()) {
+      indexes[node.id] = index;
+    }
+  }
+
+  return indexes;
+}
+
+function sortedConnectedEdges(
+  edges: DiagramEdge[],
+  depths: Record<string, number>,
+  sourceRank: number,
+  targetRank: number
+): DiagramEdge[] {
+  return edges
+    .filter(
+      (edge) =>
+        edge.sourceId !== edge.targetId &&
+        depths[edge.sourceId] === sourceRank &&
+        depths[edge.targetId] === targetRank
+    )
+    .sort((left, right) => left.id.localeCompare(right.id));
+}
+
+function countLayerCrossings(
+  edges: DiagramEdge[],
+  depths: Record<string, number>,
+  indexes: Record<string, number>
+): number {
+  const ranks = [...new Set(Object.values(depths))].sort((left, right) => left - right);
+  let crossings = 0;
+
+  for (const rank of ranks) {
+    const layerEdges = sortedConnectedEdges(edges, depths, rank, rank + 1);
+    for (let leftIndex = 0; leftIndex < layerEdges.length; leftIndex += 1) {
+      for (let rightIndex = leftIndex + 1; rightIndex < layerEdges.length; rightIndex += 1) {
+        const left = layerEdges[leftIndex];
+        const right = layerEdges[rightIndex];
+        if (left === undefined || right === undefined) {
+          continue;
+        }
+        const sourceOrder = (indexes[left.sourceId] ?? 0) - (indexes[right.sourceId] ?? 0);
+        const targetOrder = (indexes[left.targetId] ?? 0) - (indexes[right.targetId] ?? 0);
+        if (sourceOrder * targetOrder < 0) {
+          crossings += 1;
+        }
+      }
+    }
+  }
+
+  return crossings;
+}
+
+function reorderLayerByBarycenter(
+  layer: DiagramNode[],
+  edges: DiagramEdge[],
+  neighborIndexes: Record<string, number>,
+  useSources: boolean
+): DiagramNode[] {
+  const previousIndexes: Record<string, number> = {};
+  for (const [index, node] of layer.entries()) {
+    previousIndexes[node.id] = index;
+  }
+
+  return [...layer].sort((left, right) => {
+    const leftCenter = barycenterForNode(left.id, edges, neighborIndexes, useSources);
+    const rightCenter = barycenterForNode(right.id, edges, neighborIndexes, useSources);
+    if (leftCenter !== rightCenter) {
+      return leftCenter - rightCenter;
+    }
+
+    const previousOrder = (previousIndexes[left.id] ?? 0) - (previousIndexes[right.id] ?? 0);
+    return previousOrder === 0 ? left.id.localeCompare(right.id) : previousOrder;
+  });
+}
+
+function barycenterForNode(
+  nodeId: string,
+  edges: DiagramEdge[],
+  neighborIndexes: Record<string, number>,
+  useSources: boolean
+): number {
+  const positions = edges
+    .filter((edge) => (useSources ? edge.targetId === nodeId : edge.sourceId === nodeId))
+    .map((edge) => neighborIndexes[useSources ? edge.sourceId : edge.targetId])
+    .filter((index): index is number => index !== undefined)
+    .sort((left, right) => left - right);
+
+  if (positions.length === 0) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  return positions.reduce((sum, position) => sum + position, 0) / positions.length;
+}
+
+function minimizeCrossings(
+  nodes: DiagramNode[],
+  edges: DiagramEdge[],
+  depths: Record<string, number>
+): DiagramNode[] {
+  let layers = groupNodesByDepth(nodes, depths);
+  let bestLayers = layers;
+  let bestCrossings = countLayerCrossings(edges, depths, rankIndexes(layers));
+  const ranks = [...layers.keys()].sort((left, right) => left - right);
+  const maxIterations = Math.max(1, nodes.length * 2);
+
+  for (let iteration = 0; iteration < maxIterations; iteration += 1) {
+    let changed = false;
+
+    for (const rank of ranks.slice(1)) {
+      const previous = layers.get(rank - 1) ?? [];
+      const current = layers.get(rank) ?? [];
+      const reordered = reorderLayerByBarycenter(
+        current,
+        sortedConnectedEdges(edges, depths, rank - 1, rank),
+        rankIndexes(new Map([[rank - 1, previous]])),
+        true
+      );
+      changed ||= reordered.some((node, index) => node.id !== current[index]?.id);
+      layers = new Map(layers).set(rank, reordered);
+    }
+
+    for (const rank of ranks.slice(0, -1).reverse()) {
+      const next = layers.get(rank + 1) ?? [];
+      const current = layers.get(rank) ?? [];
+      const reordered = reorderLayerByBarycenter(
+        current,
+        sortedConnectedEdges(edges, depths, rank, rank + 1),
+        rankIndexes(new Map([[rank + 1, next]])),
+        false
+      );
+      changed ||= reordered.some((node, index) => node.id !== current[index]?.id);
+      layers = new Map(layers).set(rank, reordered);
+    }
+
+    const previousBest = bestCrossings;
+    const crossings = countLayerCrossings(edges, depths, rankIndexes(layers));
+    if (crossings < bestCrossings) {
+      bestCrossings = crossings;
+      bestLayers = layers;
+    }
+
+    if (!changed || crossings >= previousBest) {
+      break;
+    }
+  }
+
+  return [...bestLayers.values()].flat();
+}
+
 function positionGraphNodes(
   document: DiagramDocument,
   normalized: ReturnType<typeof normalizeLayoutOptions>
 ): PositionedNode[] {
   const nodes = sortedNodes(document);
   const depths = computeDepths(nodes, sortedEdges(document));
+  const orderedNodes = minimizeCrossings(nodes, sortedEdges(document), depths);
 
   const rowIndexes: Record<string, number> = {};
-  for (const node of nodes) {
+  for (const node of orderedNodes) {
     const rank = String(depths[node.id] ?? 0);
     rowIndexes[rank] = (rowIndexes[rank] ?? 0) + 1;
   }
 
   const seenInRank: Record<string, number> = {};
   const isHorizontal = normalized.direction === "LR" || normalized.direction === "RL";
-  const positioned = nodes.map((node) => {
+  const positioned = orderedNodes.map((node) => {
     const rank = depths[node.id] ?? 0;
     const rankKey = String(rank);
     const index = seenInRank[rankKey] ?? 0;
@@ -108,27 +275,109 @@ function positionGraphNodes(
   return positioned;
 }
 
-function edgeWaypoints(edge: DiagramEdge, nodesById: Record<string, PositionedNode>): Point[] {
+function routeOffset(edgeIndex: number, edgeCount: number): number {
+  return (edgeIndex - (edgeCount - 1) / 2) * 12;
+}
+
+function shiftedPoint(point: Point, offset: number, isHorizontal: boolean): Point {
+  return isHorizontal ? { x: point.x, y: point.y + offset } : { x: point.x + offset, y: point.y };
+}
+
+function parallelEdgeKey(edge: DiagramEdge): string {
+  return `${edge.sourceId}\u0000${edge.targetId}`;
+}
+
+function parallelEdgeIndexes(
+  edges: DiagramEdge[]
+): Record<string, { count: number; index: number }> {
+  const grouped = new Map<string, DiagramEdge[]>();
+  for (const edge of edges) {
+    const key = parallelEdgeKey(edge);
+    grouped.set(key, [...(grouped.get(key) ?? []), edge]);
+  }
+
+  const indexes: Record<string, { count: number; index: number }> = {};
+  for (const [, group] of [...grouped.entries()].sort(([left], [right]) =>
+    left.localeCompare(right)
+  )) {
+    const sorted = [...group].sort((left, right) => left.id.localeCompare(right.id));
+    for (const [index, edge] of sorted.entries()) {
+      indexes[edge.id] = { count: sorted.length, index };
+    }
+  }
+
+  return indexes;
+}
+
+function selfLoopWaypoints(source: PositionedNode, offset: number): Point[] {
+  const center = centerOf(source);
+  const radius = 28 + Math.abs(offset);
+  const sideX = source.x + source.width + radius;
+  const topY = source.y - radius;
+  return [
+    { x: source.x + source.width, y: center.y },
+    { x: sideX, y: center.y - radius / 2 },
+    { x: sideX, y: topY },
+    { x: center.x, y: topY },
+    { x: source.x, y: center.y - radius / 2 },
+    { x: source.x, y: center.y },
+  ];
+}
+
+function straightWaypoints(
+  sourceCenter: Point,
+  targetCenter: Point,
+  offset: number,
+  isHorizontal: boolean
+): Point[] {
+  return [
+    shiftedPoint(sourceCenter, offset, isHorizontal),
+    shiftedPoint(targetCenter, offset, isHorizontal),
+  ];
+}
+
+function orthogonalWaypoints(
+  sourceCenter: Point,
+  targetCenter: Point,
+  offset: number,
+  isHorizontal: boolean
+): Point[] {
+  const source = shiftedPoint(sourceCenter, offset, isHorizontal);
+  const target = shiftedPoint(targetCenter, offset, isHorizontal);
+
+  if (isHorizontal) {
+    const midX = (source.x + target.x) / 2;
+    return [source, { x: midX, y: source.y }, { x: midX, y: target.y }, target];
+  }
+
+  const midY = (source.y + target.y) / 2;
+  return [source, { x: source.x, y: midY }, { x: target.x, y: midY }, target];
+}
+
+function edgeWaypoints(
+  edge: DiagramEdge,
+  nodesById: Record<string, PositionedNode>,
+  normalized: ReturnType<typeof normalizeLayoutOptions>,
+  parallelIndexes: Record<string, { count: number; index: number }>
+): Point[] {
   const source = nodesById[edge.sourceId];
   const target = nodesById[edge.targetId];
   if (source === undefined || target === undefined) {
     return [];
   }
 
+  const parallel = parallelIndexes[edge.id] ?? { count: 1, index: 0 };
+  const offset = routeOffset(parallel.index, parallel.count);
+  const isHorizontal = normalized.direction === "LR" || normalized.direction === "RL";
   const sourceCenter = centerOf(source);
   if (edge.sourceId === edge.targetId) {
-    const loopX = source.x + source.width + 28;
-    const loopY = source.y - 28;
-    return [
-      sourceCenter,
-      { x: loopX, y: sourceCenter.y },
-      { x: loopX, y: loopY },
-      { x: sourceCenter.x, y: loopY },
-      sourceCenter,
-    ];
+    return selfLoopWaypoints(source, offset);
   }
 
-  return [sourceCenter, centerOf(target)];
+  const targetCenter = centerOf(target);
+  return normalized.routing === "orthogonal"
+    ? orthogonalWaypoints(sourceCenter, targetCenter, offset, isHorizontal)
+    : straightWaypoints(sourceCenter, targetCenter, offset, isHorizontal);
 }
 
 function createGraphLayout(
@@ -142,9 +391,11 @@ function createGraphLayout(
     nodesById[node.id] = node;
   }
 
-  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => ({
+  const orderedEdges = sortedEdges(document);
+  const parallelIndexes = parallelEdgeIndexes(orderedEdges);
+  const edges: PositionedEdge[] = orderedEdges.map((edge) => ({
     ...edge,
-    waypoints: edgeWaypoints(edge, nodesById),
+    waypoints: edgeWaypoints(edge, nodesById, normalized, parallelIndexes),
   }));
 
   const width = Math.max(0, ...nodes.map((node) => node.x + node.width)) + normalized.padding;

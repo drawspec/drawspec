@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg aria-describedby="drawspec-view_49b744c8cc155f25-15h7gpi-desc-0je4h82" aria-labelledby="drawspec-view_49b744c8cc155f25-15h7gpi-title-15fmjvz" height="664" id="drawspec-view_49b744c8cc155f25-15h7gpi" role="img" viewBox="0 0 600 664" width="600" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
   <title id="drawspec-view_49b744c8cc155f25-15h7gpi-title-15fmjvz">
     nested-commerce-containers
   </title>
@@ -8,27 +23,42 @@
   </desc>
   <rect fill="#ffffff" height="664" width="600" x="0" y="0" />
   <defs>
-    <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+    <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-view_49b744c8cc155f25-15h7gpi-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
     </marker>
   </defs>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_18acfa6794477135-1jt6ixa">
-    <path d="M 300 68 L 300 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 300 68 L 300 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_254078794ac1a113-0c1a0za">
-    <path d="M 100 68 L 100 420" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 68 L 100 420" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_51a563570f1aab38-0efz2zq">
-    <path d="M 300 68 L 500 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 300 68 L 500 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_730a18c6ea565480-1rc7ots">
-    <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_828cd01b042fca7e-13p40q9">
-    <path d="M 100 420 L 100 596" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 420 L 100 596" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-edge-rel_8d053a5378268edf-0x9vz70">
-    <path d="M 300 68 L 100 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-arrow-0awsgnl)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 300 68 L 100 244" fill="none" marker-end="url(#drawspec-view_49b744c8cc155f25-15h7gpi-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-container_0fac53dae12bb9fe-09rsbvl">
     <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="40" y="392" />
@@ -54,43 +84,43 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="216" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-text-layer-1fsjk54">
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="150">
+    <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_18acfa6794477135-12xtnl1" text-anchor="middle" x="300" y="148">
       Manages store
     </text>
-    <text data-width="134.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="238">
+    <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-1ln6x9p" text-anchor="middle" x="100" y="236">
       Validates tokens
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="400" y="150">
+    <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-01dj40p" text-anchor="middle" transform="translate(0 16)" x="400" y="148">
       Authenticates via
     </text>
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="326">
+    <text data-width="99.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_730a18c6ea565480-1wmia97" text-anchor="middle" x="100" y="324">
       Saves changes
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="502">
+    <text data-width="108.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_828cd01b042fca7e-1dor4wu" text-anchor="middle" x="100" y="500">
       Persists settings
     </text>
-    <text data-width="201.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="200" y="150">
+    <text data-width="169.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-0o8o97b" text-anchor="middle" transform="translate(0 16)" x="200" y="148">
       Configures payment rules
     </text>
-    <text data-width="75.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="424.667">
+    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_0fac53dae12bb9fe-0b9iuve" text-anchor="middle" x="100" y="424.9">
       Admin API
     </text>
-    <text data-width="126" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="248.667">
-      Admin Dashboard
+    <text data-width="101.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_3015d7cc580484e2-02svfph" text-anchor="middle" transform="translate(0 3.1)" x="100" y="248.9">
+      Admin Dashb…
     </text>
-    <text data-width="109.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="96.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_ea612b28b0b1fefd-0hmdj40" text-anchor="middle" x="100" y="72.9">
       OIDC Provider
     </text>
-    <text data-width="159.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="600.667">
-      Configuration Store
+    <text data-width="105.98" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-database_03ab52d399de1e70-0rf9zmd" text-anchor="middle" x="100" y="600.9">
+      Configuration …
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="72.667">
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-person_494a4f7dfd392f13-1o5de92" text-anchor="middle" x="300" y="72.9">
       Operator
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="300" y="248.667">
+    <text data-width="71.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_e27ada29a9783f1d-0hex6tq" text-anchor="middle" x="300" y="248.9">
       Commerce
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="500" y="248.667">
+    <text data-width="49.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_f31d789af8a06024-1m3t7hy" text-anchor="middle" x="500" y="248.9">
       Identity
     </text>
   </g>

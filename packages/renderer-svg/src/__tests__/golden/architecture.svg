@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg aria-describedby="drawspec-architecture-demo-1o08l38-desc-1rio9h8" aria-labelledby="drawspec-architecture-demo-1o08l38-title-1itnbjx" height="136" id="drawspec-architecture-demo-1o08l38" role="img" viewBox="0 0 552 136" width="552" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
   <title id="drawspec-architecture-demo-1o08l38-title-1itnbjx">
     architecture-demo
   </title>
@@ -8,15 +23,30 @@
   </desc>
   <rect fill="#ffffff" height="136" width="552" x="0" y="0" />
   <defs>
-    <marker id="drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+    <marker id="drawspec-architecture-demo-1o08l38-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-architecture-demo-1o08l38-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
     </marker>
   </defs>
   <g id="drawspec-architecture-demo-1o08l38-edge-calls-15voqqc">
-    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-architecture-demo-1o08l38-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-architecture-demo-1o08l38-edge-stores-1sgeolt">
-    <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-architecture-demo-1o08l38-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-architecture-demo-1o08l38-node-api-0k9ctg4">
     <rect fill="#f0fdf4" height="56" rx="12" ry="12" stroke="#15803d" stroke-width="1.5" width="120" x="216" y="40" />
@@ -30,19 +60,19 @@
     <rect fill="#dbeafe" height="56" rx="12" ry="12" stroke="#1d4ed8" stroke-width="1.5" width="120" x="40" y="40" />
   </g>
   <g id="drawspec-architecture-demo-1o08l38-text-layer-19mhc8u">
-    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="188" y="62">
+    <text data-width="29.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-edge-calls-16kzib9" text-anchor="middle" x="188" y="60">
       calls
     </text>
-    <text data-width="50.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="364" y="62">
+    <text data-width="40.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-edge-stores-1uzghjm" text-anchor="middle" x="364" y="60">
       stores
     </text>
-    <text data-width="25.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="276" y="72.667">
+    <text data-width="23.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-api-0at6ccl" text-anchor="middle" x="276" y="72.9">
       API
     </text>
-    <text data-width="75.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="452" y="72.667">
+    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-db-00jkcdl" text-anchor="middle" x="452" y="72.9">
       Orders DB
     </text>
-    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-web-0zjn973" text-anchor="middle" x="100" y="72.9">
       Web App
     </text>
   </g>

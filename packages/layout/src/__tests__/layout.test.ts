@@ -129,6 +129,80 @@ describe("simple graph layout", () => {
     ]);
   });
 
+  test("orders nodes by barycenter to reduce crossings", async () => {
+    const crossingDoc = doc({
+      nodes: [
+        { id: "a", kind: "node" },
+        { id: "b", kind: "node" },
+        { id: "c", kind: "node" },
+        { id: "d", kind: "node" },
+      ],
+      edges: [
+        { id: "e1", kind: "rel", sourceId: "a", targetId: "d" },
+        { id: "e2", kind: "rel", sourceId: "b", targetId: "c" },
+      ],
+    });
+
+    const positioned = await simpleGraphLayout().layout(crossingDoc);
+    expect(positioned.nodes.map((node) => [node.id, node.x, node.y])).toEqual([
+      ["a", 40, 40],
+      ["b", 240, 40],
+      ["d", 40, 216],
+      ["c", 240, 216],
+    ]);
+  });
+
+  test("routes orthogonal edges with right-angle waypoints", async () => {
+    const routedDoc = doc({
+      nodes: [
+        { id: "a", kind: "node" },
+        { id: "b", kind: "node" },
+        { id: "c", kind: "node" },
+        { id: "d", kind: "node" },
+      ],
+      edges: [
+        { id: "e1", kind: "rel", sourceId: "a", targetId: "d" },
+        { id: "e2", kind: "rel", sourceId: "b", targetId: "c" },
+        { id: "e3", kind: "rel", sourceId: "a", targetId: "c" },
+      ],
+    });
+
+    const edge = (
+      await simpleGraphLayout().layout(routedDoc, { routing: "orthogonal" })
+    ).edges.find((item) => item.id === "e3");
+    expect(edge?.waypoints).toEqual([
+      { x: 100, y: 68 },
+      { x: 100, y: 156 },
+      { x: 300, y: 156 },
+      { x: 300, y: 244 },
+    ]);
+  });
+
+  test("offsets parallel edges between the same nodes", async () => {
+    const parallelDoc = doc({
+      nodes: [
+        { id: "a", kind: "node" },
+        { id: "b", kind: "node" },
+      ],
+      edges: [
+        { id: "e1", kind: "rel", sourceId: "a", targetId: "b" },
+        { id: "e2", kind: "rel", sourceId: "a", targetId: "b" },
+      ],
+    });
+
+    const positioned = await simpleGraphLayout().layout(parallelDoc);
+    expect(positioned.edges.map((edge) => edge.waypoints)).toEqual([
+      [
+        { x: 94, y: 68 },
+        { x: 94, y: 244 },
+      ],
+      [
+        { x: 106, y: 68 },
+        { x: 106, y: 244 },
+      ],
+    ]);
+  });
+
   test("routes self-loops deterministically", async () => {
     const selfLoop = doc({
       nodes: [{ id: "n", kind: "node" }],
@@ -136,11 +210,12 @@ describe("simple graph layout", () => {
     });
     const [edge] = (await simpleGraphLayout().layout(selfLoop)).edges;
     expect(edge?.waypoints).toEqual([
-      { x: 100, y: 68 },
-      { x: 188, y: 68 },
+      { x: 160, y: 68 },
+      { x: 188, y: 54 },
       { x: 188, y: 12 },
       { x: 100, y: 12 },
-      { x: 100, y: 68 },
+      { x: 40, y: 54 },
+      { x: 40, y: 68 },
     ]);
   });
 

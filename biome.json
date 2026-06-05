@@ -36,12 +36,40 @@
   },
   "overrides": [
     {
+      "includes": ["**/app.css"],
+      "css": {
+        "parser": {
+          "tailwindDirectives": true
+        }
+      },
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noImportantStyles": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": ["**/*.svelte"],
       "linter": {
         "rules": {
           "correctness": {
             "noUnusedVariables": "off",
             "noUnusedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/components/ui/**"],
+      "linter": {
+        "enabled": false
+      },
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": "off"
           }
         }
       }

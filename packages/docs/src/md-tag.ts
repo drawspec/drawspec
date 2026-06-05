@@ -155,6 +155,7 @@ type RemarkBlock =
 // ─── Special directive patterns ───────────────────────────────────────
 
 const DIAGRAM_RE = /^@diagram\s+(\S+)(?:\s+"([^"]*)")?\s*$/;
+const SOURCE_RE = /^@source\s+(\S+)\s+(\S+)\s*$/;
 const BADGE_RE = /^@badge\s+(.+?)(?:\s+(default|primary|success|warning|danger|info))?\s*$/;
 const TAB_GROUP_START_RE = /^@tab-group\s*$|^<tab-group>\s*$/;
 const TAB_GROUP_END_RE = /^<\/tab-group>\s*$/;
@@ -240,6 +241,18 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
           (block as { caption?: string }).caption = diagramMatch[2];
         }
         result.push(block);
+        i++;
+        continue;
+      }
+
+      const sourceMatch = SOURCE_RE.exec(line);
+      if (sourceMatch?.[1] && sourceMatch[2]) {
+        result.push({
+          type: "codeBlock",
+          lang: sourceMatch[1],
+          source: sourceMatch[2],
+          value: "",
+        });
         i++;
         continue;
       }

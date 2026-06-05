@@ -3,7 +3,12 @@ import type { Workspace } from "@drawspec/architecture";
 import { compileWorkspace } from "@drawspec/architecture";
 import { DependencyGraph, extractImports } from "@drawspec/cache";
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
-import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
+import {
+  type LayoutEngine,
+  type LayoutOptions,
+  sequenceLayout,
+  simpleGraphLayout,
+} from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
 import {
   loadPolicyPack,
@@ -22,7 +27,11 @@ declare const process: {
   exit(code?: number): never;
   on(event: "SIGINT" | "SIGTERM", listener: () => void): void;
 };
-declare const console: { log(message?: unknown): void; error(message?: unknown): void };
+declare const console: {
+  log(message?: unknown): void;
+  warn(message?: unknown): void;
+  error(message?: unknown): void;
+};
 declare const Bun: {
   argv: string[];
   file(path: string): {
@@ -270,7 +279,8 @@ export async function renderDocumentSvg(
   themeName?: string
 ): Promise<string> {
   const renderTheme = themeName ?? config.render?.theme ?? config.theme;
-  const positionedDiagram = await layoutFor(document).layout(document, layoutOptions(document));
+  const engine = await layoutFor(document);
+  const positionedDiagram = await engine.layout(document, layoutOptions(document));
   return await renderSvg(document, {
     positionedDiagram,
     accessibility: { title: document.title ?? document.id },
@@ -681,8 +691,61 @@ function openBrowser(url: string): void {
   Bun.spawn(args, { stdout: "ignore", stderr: "ignore" });
 }
 
-function layoutFor(document: DiagramDocument) {
-  return document.kind === "sequence" ? sequenceLayout() : simpleGraphLayout();
+async function layoutFor(document: DiagramDocument): Promise<LayoutEngine> {
+  const engine = document.layout?.engine;
+  if (engine === "sequence" || document.kind === "sequence") {
+    return sequenceLayout();
+  }
+  if (engine === "simple" || engine === undefined) {
+    return simpleGraphLayout();
+  }
+  if (engine === "dagre") {
+    return await tryLoadDagreLayout();
+  }
+  if (engine === "elk") {
+    return await tryLoadElkLayout();
+  }
+  if (engine === "wasm") {
+    return await tryLoadWasmLayout();
+  }
+  console.warn(`Unknown layout engine '${engine}', falling back to simple`);
+  return simpleGraphLayout();
+}
+
+async function tryLoadDagreLayout(): Promise<LayoutEngine> {
+  try {
+    const { dagreLayout } = await import("@drawspec/layout-dagre");
+    return dagreLayout();
+  } catch {
+    console.warn(
+      "Layout engine 'dagre' requested but @drawspec/layout-dagre is not available, falling back to simple"
+    );
+    return simpleGraphLayout();
+  }
+}
+
+async function tryLoadElkLayout(): Promise<LayoutEngine> {
+  try {
+    const { elkLayout } = await import("@drawspec/layout-elk");
+    return elkLayout();
+  } catch {
+    console.warn(
+      "Layout engine 'elk' requested but @drawspec/layout-elk is not available, falling back to simple"
+    );
+    return simpleGraphLayout();
+  }
+}
+
+async function tryLoadWasmLayout(): Promise<LayoutEngine> {
+  try {
+    const { wasmLayout } = await import("@drawspec/layout-wasm");
+    return wasmLayout();
+  } catch {
+    console.warn(
+      "Layout engine 'wasm' requested but @drawspec/layout-wasm is not available, falling back to simple"
+    );
+    return simpleGraphLayout();
+  }
 }
 
 function layoutOptions(document: DiagramDocument): LayoutOptions {

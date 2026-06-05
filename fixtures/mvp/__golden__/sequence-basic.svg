@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg aria-describedby="drawspec-seqdoc_6e4a2ce8-0kldh0p-desc-0x7opuf" aria-labelledby="drawspec-seqdoc_6e4a2ce8-0kldh0p-title-0gyl4xs" height="360" id="drawspec-seqdoc_6e4a2ce8-0kldh0p" role="img" viewBox="0 0 520 360" width="520" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
   <title id="drawspec-seqdoc_6e4a2ce8-0kldh0p-title-0gyl4xs">
     Payment authorization
   </title>
@@ -8,21 +23,36 @@
   </desc>
   <rect fill="#ffffff" height="360" width="520" x="0" y="0" />
   <defs>
-    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
     </marker>
   </defs>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_488bd19a-0v2gx3z">
-    <path d="M 260 320 L 100 320" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 260 320 L 100 320" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_9e381ab3-05543ck">
-    <path d="M 420 264 L 260 264" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 420 264 L 260 264" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_ce4428e1-10u1y98">
-    <path d="M 260 208 L 420 208" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 260 208 L 420 208" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-edge-msg_e787e49c-1jdyv9s">
-    <path d="M 100 152 L 260 152" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-arrow-0kx087s)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 152 L 260 152" fill="none" marker-end="url(#drawspec-seqdoc_6e4a2ce8-0kldh0p-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-node-seq_6d48fc82-12xzx7y">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="200" y="40" />
@@ -38,25 +68,25 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_ce4428e1-activation-0y40rq3" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="415" y="212" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_e787e49c-activation-1esj5rv" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="156" />
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-text-layer-1o78ybx">
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="314">
+    <text data-width="122.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_488bd19a-01ed16k" text-anchor="middle" x="180" y="312">
       Show confirmation
     </text>
-    <text data-width="184.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="258">
-      Authorization approved
+    <text data-width="129.22" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-0j98vcv" text-anchor="middle" x="340" y="256">
+      Authorization app…
     </text>
-    <text data-width="142.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="202">
+    <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_ce4428e1-0jaak2j" text-anchor="middle" x="340" y="200">
       Authorize payment
     </text>
-    <text data-width="92.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="146">
+    <text data-width="75.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_e787e49c-037wrzv" text-anchor="middle" x="180" y="144">
       Place order
     </text>
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="260" y="72.667">
+    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-node-seq_6d48fc82-10dwo25" text-anchor="middle" x="260" y="72.9">
       Shop
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="420" y="72.667">
+    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-node-seq_75aa37ac-1hqp0be" text-anchor="middle" x="420" y="72.9">
       Payments
     </text>
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-node-seq_f0d7723a-0sd5r30" text-anchor="middle" x="100" y="72.9">
       User
     </text>
   </g>

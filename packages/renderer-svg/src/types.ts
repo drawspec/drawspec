@@ -39,22 +39,48 @@ export interface SvgViewport {
   height: number;
 }
 
+/** Named theme preset or a custom theme object. */
+export type SvgThemeInput = "light" | "dark" | "high-contrast" | Partial<SvgTheme>;
+
 export interface SvgRenderOptions {
   positionedDiagram: PositionedDiagram;
   width?: number;
   height?: number;
   accessibility?: SvgAccessibilityOptions;
-  theme?: Partial<SvgTheme>;
+  /** Theme preset name ("light", "dark", "high-contrast") or a custom theme override. Defaults to "light". */
+  theme?: SvgThemeInput;
   /** Optional viewport for culling off-screen elements. Elements entirely outside this rectangle are skipped. */
   viewport?: SvgViewport;
+  /** Padding around diagram content (pixels). Applied when autoFit is true. */
+  padding?: number;
+  /** Automatically fit viewport to content bounds. */
+  autoFit?: boolean;
+  /** Preserve aspect ratio. Default: "xMidYMid meet". */
+  preserveAspectRatio?: string;
 }
 
+/** Supported SVG edge arrowhead marker shapes. */
+export type ArrowMarkerShape =
+  | "filled-triangle"
+  | "open-triangle"
+  | "open-arrow"
+  | "diamond"
+  | "circle"
+  | "cross"
+  | "none";
+
+/** Named SVG stroke dash presets for connection lines. */
+export type LineStyle = "solid" | "dashed" | "dotted" | "dash-dot";
+
 export interface ResolvedStyle {
+  arrowEnd?: ArrowMarkerShape;
+  arrowStart?: ArrowMarkerShape;
   fill: string;
   stroke: string;
   strokeWidth: number;
   text: string;
   fontFamily: string;
   fontSize: number;
+  lineStyle?: LineStyle;
   strokeDasharray?: string;
 }
