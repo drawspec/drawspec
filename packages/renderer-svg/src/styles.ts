@@ -1,5 +1,5 @@
 import type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode } from "@drawspec/core";
-import type { ArrowMarkerShape, ResolvedStyle, SvgTheme } from "./types";
+import type { ArrowMarkerShape, LineStyle, ResolvedStyle, SvgTheme } from "./types";
 
 export const defaultTheme: SvgTheme = {
   activationFill: "#e0f2fe",
@@ -13,6 +13,13 @@ export const defaultTheme: SvgTheme = {
   nodeFill: "#f8fafc",
   nodeStroke: "#334155",
   text: "#0f172a",
+};
+
+const lineStylePresets: Record<LineStyle, string> = {
+  solid: "",
+  dashed: "8 4",
+  dotted: "2 4",
+  "dash-dot": "8 4 2 4",
 };
 
 const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
@@ -32,6 +39,7 @@ interface StyleRule {
   fill?: string | number;
   fontFamily?: string | number;
   fontSize?: string | number;
+  lineStyle?: string | number;
   stroke?: string | number;
   strokeDasharray?: string | number;
   strokeWidth?: string | number;
@@ -67,14 +75,31 @@ function asArrowMarker(value: string | number | undefined): ArrowMarkerShape | u
     : undefined;
 }
 
+function asLineStyle(value: string | number | undefined): LineStyle | undefined {
+  const lineStyle = asString(value);
+  if (
+    lineStyle === "solid" ||
+    lineStyle === "dashed" ||
+    lineStyle === "dotted" ||
+    lineStyle === "dash-dot"
+  ) {
+    return lineStyle;
+  }
+  return undefined;
+}
+
 function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedStyle {
   if (rule === undefined) {
     return style;
   }
   const arrowEnd = asArrowMarker(rule.arrowEnd) ?? style.arrowEnd;
   const arrowStart = asArrowMarker(rule.arrowStart) ?? style.arrowStart;
-  const strokeDasharray = asString(rule.strokeDasharray) ?? style.strokeDasharray;
-  return {
+  const lineStyle = asLineStyle(rule.lineStyle);
+  const strokeDasharray =
+    asString(rule.strokeDasharray) ??
+    (lineStyle === undefined ? undefined : lineStylePresets[lineStyle]) ??
+    style.strokeDasharray;
+  const resolved: ResolvedStyle = {
     ...style,
     ...(arrowEnd === undefined ? {} : { arrowEnd }),
     ...(arrowStart === undefined ? {} : { arrowStart }),
@@ -82,10 +107,18 @@ function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedS
     fontFamily: asString(rule.fontFamily) ?? style.fontFamily,
     fontSize: asNumber(rule.fontSize) ?? style.fontSize,
     stroke: asString(rule.stroke) ?? style.stroke,
-    ...(strokeDasharray === undefined ? {} : { strokeDasharray }),
     strokeWidth: asNumber(rule.strokeWidth) ?? style.strokeWidth,
     text: asString(rule.text) ?? style.text,
   };
+  if (lineStyle !== undefined) {
+    resolved.lineStyle = lineStyle;
+  }
+  if (strokeDasharray === undefined || strokeDasharray === "") {
+    delete resolved.strokeDasharray;
+  } else {
+    resolved.strokeDasharray = strokeDasharray;
+  }
+  return resolved;
 }
 
 export function resolveStyle(
@@ -120,6 +153,9 @@ export function resolveStyle(
     resolved = { ...resolved, fill: theme.activationFill, stroke: theme.activationStroke };
   }
   const rules = document.styles?.rules ?? {};
+  if (elementType === "edge") {
+    resolved = mergeRule(resolved, rules[`relationship:${entity.kind}`]);
+  }
   for (const tag of [...(entity.tags ?? [])].sort()) {
     resolved = mergeRule(resolved, tagRule(rules, tag, elementType));
   }

@@ -65,6 +65,9 @@ export type ArrowMarkerShape =
   | "cross"
   | "none";
 
+/** Named SVG stroke dash presets for connection lines. */
+export type LineStyle = "solid" | "dashed" | "dotted" | "dash-dot";
+
 export interface ResolvedStyle {
   arrowEnd?: ArrowMarkerShape;
   arrowStart?: ArrowMarkerShape;
@@ -74,5 +77,6 @@ export interface ResolvedStyle {
   text: string;
   fontFamily: string;
   fontSize: number;
+  lineStyle?: LineStyle;
   strokeDasharray?: string;
 }
