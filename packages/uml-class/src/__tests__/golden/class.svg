@@ -43,13 +43,13 @@
     </marker>
   </defs>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_24678296-1m326lp">
-    <path d="M 100 68 L 276 468" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 68 L 276 468" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-triangle)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_78a277d9-155onlo">
-    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_f2545dbb-03yqdt9">
-    <path d="M 100 68 L 276 268" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 68 L 276 268" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-class_412c2b79-1p5yoan">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="40" />
