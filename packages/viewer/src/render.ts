@@ -1,5 +1,10 @@
 import type { Diagnostic, DiagramDocument } from "@drawspec/core";
-import { type LayoutOptions, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
+import {
+  type LayoutEngine,
+  type LayoutOptions,
+  sequenceLayout,
+  simpleGraphLayout,
+} from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
 import type { ArchitectureData, DrawspecTheme, ViewerPayload } from "./types";
 
@@ -7,15 +12,70 @@ export async function renderDiagramSvg(
   document: DiagramDocument,
   theme: DrawspecTheme = "light"
 ): Promise<string> {
-  const positionedDiagram = await (document.kind === "sequence"
-    ? sequenceLayout()
-    : simpleGraphLayout()
-  ).layout(document, layoutOptions(document));
+  const engine = await selectLayoutEngine(document);
+  const positionedDiagram = await engine.layout(document, layoutOptions(document));
   return renderSvg(document, {
     positionedDiagram,
     accessibility: { title: document.title ?? document.id },
     ...(theme === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
   });
+}
+
+async function selectLayoutEngine(document: DiagramDocument): Promise<LayoutEngine> {
+  const engine = document.layout?.engine;
+  if (engine === "sequence" || document.kind === "sequence") {
+    return sequenceLayout();
+  }
+  if (engine === "simple" || engine === undefined) {
+    return simpleGraphLayout();
+  }
+  if (engine === "dagre") {
+    return await tryLoadDagreLayout();
+  }
+  if (engine === "elk") {
+    return await tryLoadElkLayout();
+  }
+  if (engine === "wasm") {
+    return await tryLoadWasmLayout();
+  }
+  console.warn(`Unknown layout engine '${engine}', falling back to simple`);
+  return simpleGraphLayout();
+}
+
+async function tryLoadDagreLayout(): Promise<LayoutEngine> {
+  try {
+    const { dagreLayout } = await import("@drawspec/layout-dagre");
+    return dagreLayout();
+  } catch {
+    console.warn(
+      "Layout engine 'dagre' requested but @drawspec/layout-dagre is not available, falling back to simple"
+    );
+    return simpleGraphLayout();
+  }
+}
+
+async function tryLoadElkLayout(): Promise<LayoutEngine> {
+  try {
+    const { elkLayout } = await import("@drawspec/layout-elk");
+    return elkLayout();
+  } catch {
+    console.warn(
+      "Layout engine 'elk' requested but @drawspec/layout-elk is not available, falling back to simple"
+    );
+    return simpleGraphLayout();
+  }
+}
+
+async function tryLoadWasmLayout(): Promise<LayoutEngine> {
+  try {
+    const { wasmLayout } = await import("@drawspec/layout-wasm");
+    return wasmLayout();
+  } catch {
+    console.warn(
+      "Layout engine 'wasm' requested but @drawspec/layout-wasm is not available, falling back to simple"
+    );
+    return simpleGraphLayout();
+  }
 }
 
 export function normalizeViewerPayload(value: unknown): ViewerPayload {

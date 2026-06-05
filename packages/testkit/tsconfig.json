@@ -12,6 +12,9 @@
     { "path": "../architecture" },
     { "path": "../validation" },
     { "path": "../layout" },
+    { "path": "../layout-dagre" },
+    { "path": "../layout-elk" },
+    { "path": "../layout-wasm" },
     { "path": "../renderer-svg" }
   ]
 }
