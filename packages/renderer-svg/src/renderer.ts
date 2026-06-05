@@ -7,7 +7,7 @@ import type {
   PositionedGroup,
   PositionedNode,
 } from "@drawspec/layout";
-import { defaultTheme, resolveStyle } from "./styles";
+import { renderThemeStyleBlock, resolveStyle, resolveTheme } from "./styles";
 import {
   compareStable,
   formatNumber,
@@ -70,7 +70,7 @@ export async function renderSvg(
 
 export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptions): SvgOutput {
   const { positionedDiagram, viewport } = options;
-  const theme = { ...defaultTheme, ...options.theme };
+  const theme = resolveTheme(options.theme);
   const autoFit = options.autoFit === true;
   const contentBounds = autoFit
     ? computePaddedBounds(positionedDiagram, options.padding)
@@ -131,6 +131,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       children: adjustedLabels,
     });
   }
+  const styleBlock = renderThemeStyleBlock(theme);
   const svg = renderElement({
     name: "svg",
     attrs: {
@@ -146,7 +147,8 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
     },
     children,
   });
-  return `${XML_DECLARATION}\n${svg}\n`;
+  const svgWithStyles = svg.replace(">\n  <title", `>\n${styleBlock}\n  <title`);
+  return `${XML_DECLARATION}\n${svgWithStyles}\n`;
 }
 
 /** Computes the axis-aligned bounds of all positioned diagram content. */

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg aria-describedby="drawspec-architecture-demo-1o08l38-desc-1rio9h8" aria-labelledby="drawspec-architecture-demo-1o08l38-title-1itnbjx" height="136" id="drawspec-architecture-demo-1o08l38" role="img" viewBox="0 0 552 136" width="552" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
   <title id="drawspec-architecture-demo-1o08l38-title-1itnbjx">
     architecture-demo
   </title>

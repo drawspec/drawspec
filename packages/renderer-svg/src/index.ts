@@ -1,5 +1,14 @@
 export { computeContentBounds, renderSvg, renderSvgSync, SvgRenderer } from "./renderer";
-export { defaultTheme, resolveStyle } from "./styles";
+export {
+  darkTheme,
+  defaultTheme,
+  highContrastTheme,
+  lightTheme,
+  renderThemeStyleBlock,
+  resolveStyle,
+  resolveTheme,
+  themeToCssVariables,
+} from "./styles";
 export {
   escapeAttribute,
   escapeText,
@@ -18,5 +27,6 @@ export type {
   SvgOutput,
   SvgRenderOptions,
   SvgTheme,
+  SvgThemeInput,
   SvgViewport,
 } from "./types";

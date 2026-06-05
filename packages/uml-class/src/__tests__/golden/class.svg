@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg aria-describedby="drawspec-classdoc_f5ee8bb6-0paqxzb-desc-0822wwq" aria-labelledby="drawspec-classdoc_f5ee8bb6-0paqxzb-title-1wmin6v" height="536" id="drawspec-classdoc_f5ee8bb6-0paqxzb" role="img" viewBox="0 0 376 536" width="376" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
   <title id="drawspec-classdoc_f5ee8bb6-0paqxzb-title-1wmin6v">
     Payment Class Diagram
   </title>

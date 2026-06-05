@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg aria-describedby="drawspec-classdoc_5f8ebd7c-0zw98uq-desc-1h5f75j" aria-labelledby="drawspec-classdoc_5f8ebd7c-0zw98uq-title-0g8n4yo" height="488" id="drawspec-classdoc_5f8ebd7c-0zw98uq" role="img" viewBox="0 0 400 488" width="400" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
   <title id="drawspec-classdoc_5f8ebd7c-0zw98uq-title-0g8n4yo">
     User domain model
   </title>

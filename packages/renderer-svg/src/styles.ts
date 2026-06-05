@@ -1,7 +1,7 @@
 import type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode } from "@drawspec/core";
-import type { ArrowMarkerShape, LineStyle, ResolvedStyle, SvgTheme } from "./types";
+import type { ArrowMarkerShape, LineStyle, ResolvedStyle, SvgTheme, SvgThemeInput } from "./types";
 
-export const defaultTheme: SvgTheme = {
+export const lightTheme: SvgTheme = {
   activationFill: "#e0f2fe",
   activationStroke: "#0369a1",
   background: "#ffffff",
@@ -14,6 +14,82 @@ export const defaultTheme: SvgTheme = {
   nodeStroke: "#334155",
   text: "#0f172a",
 };
+
+/** @deprecated Use `lightTheme` instead. Kept for backward compatibility. */
+export const defaultTheme: SvgTheme = lightTheme;
+
+export const darkTheme: SvgTheme = {
+  activationFill: "#1e3a5f",
+  activationStroke: "#38bdf8",
+  background: "#0f172a",
+  edgeStroke: "#94a3b8",
+  fontFamily: "Arial, sans-serif",
+  fontSize: 14,
+  groupFill: "#1e293b",
+  groupStroke: "#475569",
+  nodeFill: "#1e293b",
+  nodeStroke: "#94a3b8",
+  text: "#f8fafc",
+};
+
+export const highContrastTheme: SvgTheme = {
+  activationFill: "#ffffff",
+  activationStroke: "#000000",
+  background: "#ffffff",
+  edgeStroke: "#000000",
+  fontFamily: "Arial, sans-serif",
+  fontSize: 14,
+  groupFill: "#ffffff",
+  groupStroke: "#000000",
+  nodeFill: "#ffffff",
+  nodeStroke: "#000000",
+  text: "#000000",
+};
+
+const themePresets: Record<string, SvgTheme> = {
+  dark: darkTheme,
+  "high-contrast": highContrastTheme,
+  light: lightTheme,
+};
+
+export function resolveTheme(input: SvgThemeInput | undefined): SvgTheme {
+  if (input === undefined || input === "light") {
+    return lightTheme;
+  }
+  if (typeof input === "string") {
+    return themePresets[input] ?? lightTheme;
+  }
+  return { ...lightTheme, ...input };
+}
+
+const cssVariableMap: Record<keyof SvgTheme, string> = {
+  activationFill: "--ds-activation-fill",
+  activationStroke: "--ds-activation-stroke",
+  background: "--ds-background",
+  edgeStroke: "--ds-edge-stroke",
+  fontFamily: "--ds-font-family",
+  fontSize: "--ds-font-size",
+  groupFill: "--ds-group-fill",
+  groupStroke: "--ds-group-stroke",
+  nodeFill: "--ds-node-fill",
+  nodeStroke: "--ds-node-stroke",
+  text: "--ds-text",
+};
+
+export function themeToCssVariables(theme: SvgTheme): Record<string, string> {
+  const vars: Record<string, string> = {};
+  for (const [key, varName] of Object.entries(cssVariableMap)) {
+    vars[varName] = String(theme[key as keyof SvgTheme]);
+  }
+  return vars;
+}
+
+export function renderThemeStyleBlock(theme: SvgTheme): string {
+  const vars = themeToCssVariables(theme);
+  const entries = Object.entries(vars).sort(([a], [b]) => a.localeCompare(b));
+  const declarations = entries.map(([prop, value]) => `    ${prop}: ${value};`).join("\n");
+  return `  <style>\n    :root {\n${declarations}\n    }\n  </style>`;
+}
 
 const lineStylePresets: Record<LineStyle, string> = {
   solid: "",
@@ -124,10 +200,10 @@ function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedS
 export function resolveStyle(
   document: DiagramDocument,
   entity: StyledEntity,
-  themeOverrides: Partial<SvgTheme> | undefined,
+  themeOverrides: SvgThemeInput | undefined,
   elementType: "node" | "edge" | "group" | "activation"
 ): ResolvedStyle {
-  const theme = { ...defaultTheme, ...themeOverrides };
+  const theme = resolveTheme(themeOverrides);
   const base: ResolvedStyle = {
     ...(elementType === "edge"
       ? { arrowEnd: "filled-triangle" as const, arrowStart: "filled-triangle" as const }
