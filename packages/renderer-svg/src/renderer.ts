@@ -2,6 +2,7 @@ import type { DiagramDocument, SourceRef } from "@drawspec/core";
 import type {
   ActivationBar,
   Point,
+  PositionedDiagram,
   PositionedEdge,
   PositionedGroup,
   PositionedNode,
@@ -18,6 +19,7 @@ import {
 import type { Renderer, SvgOutput, SvgRenderOptions, SvgViewport } from "./types";
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
+const DEFAULT_AUTO_FIT_PADDING = 20;
 
 /** Check if a rectangle overlaps with the viewport. Returns true if there is overlap. */
 function rectInViewport(
@@ -69,8 +71,13 @@ export async function renderSvg(
 export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptions): SvgOutput {
   const { positionedDiagram, viewport } = options;
   const theme = { ...defaultTheme, ...options.theme };
-  const width = options.width ?? positionedDiagram.width;
-  const height = options.height ?? positionedDiagram.height;
+  const autoFit = options.autoFit === true;
+  const contentBounds = autoFit
+    ? computePaddedBounds(positionedDiagram, options.padding)
+    : undefined;
+  const width = contentBounds?.width ?? options.width ?? positionedDiagram.width;
+  const height = contentBounds?.height ?? options.height ?? positionedDiagram.height;
+  const viewBox = contentBounds ?? { x: 0, y: 0, width, height };
   const idPrefix = stableSvgId("drawspec", document.id);
   const title = options.accessibility?.title ?? document.title ?? document.id;
   const metadata = document.metadata as { description?: unknown } | undefined;
@@ -85,7 +92,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
   const children: SvgElementSpec[] = [
     { name: "title", attrs: { id: stableSvgId(idPrefix, "title") }, children: [title] },
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
-    renderBackground(width, height, theme.background),
+    renderBackground(viewBox, theme.background),
     renderDefs(markerId, theme.edgeStroke),
     ...sortById(positionedDiagram.groups)
       .filter(
@@ -133,13 +140,69 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       height,
       id: idPrefix,
       role: options.accessibility?.role ?? "img",
-      viewBox: `0 0 ${formatNumber(width)} ${formatNumber(height)}`,
+      preserveAspectRatio: options.preserveAspectRatio,
+      viewBox: `${formatNumber(viewBox.x)} ${formatNumber(viewBox.y)} ${formatNumber(viewBox.width)} ${formatNumber(viewBox.height)}`,
       width,
       xmlns: "http://www.w3.org/2000/svg",
     },
     children,
   });
   return `${XML_DECLARATION}\n${svg}\n`;
+}
+
+/** Computes the axis-aligned bounds of all positioned diagram content. */
+export function computeContentBounds(positionedDiagram: PositionedDiagram): SvgViewport {
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+
+  const includeRect = (x: number, y: number, width: number, height: number): void => {
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x + width);
+    maxY = Math.max(maxY, y + height);
+  };
+  const includePoint = (point: Point): void => {
+    minX = Math.min(minX, point.x);
+    minY = Math.min(minY, point.y);
+    maxX = Math.max(maxX, point.x);
+    maxY = Math.max(maxY, point.y);
+  };
+
+  for (const group of positionedDiagram.groups) {
+    includeRect(group.x, group.y, group.width, group.height);
+  }
+  for (const edge of positionedDiagram.edges) {
+    for (const point of edge.waypoints) {
+      includePoint(point);
+    }
+  }
+  for (const node of positionedDiagram.nodes) {
+    includeRect(node.x, node.y, node.width, node.height);
+  }
+  for (const bar of positionedDiagram.activations) {
+    includeRect(bar.x, bar.y, bar.width, bar.height);
+  }
+
+  if (!Number.isFinite(minX) || !Number.isFinite(minY)) {
+    return { x: 0, y: 0, width: positionedDiagram.width, height: positionedDiagram.height };
+  }
+
+  return { x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
+}
+
+function computePaddedBounds(
+  positionedDiagram: PositionedDiagram,
+  padding = DEFAULT_AUTO_FIT_PADDING
+): SvgViewport {
+  const bounds = computeContentBounds(positionedDiagram);
+  return {
+    x: bounds.x - padding,
+    y: bounds.y - padding,
+    width: Math.max(1, bounds.width + padding * 2),
+    height: Math.max(1, bounds.height + padding * 2),
+  };
 }
 
 function sourceDataAttrs(source: SourceRef | undefined): Record<string, string | number> {
@@ -178,10 +241,10 @@ function renderDefs(markerId: string, stroke: string): SvgElementSpec {
   };
 }
 
-function renderBackground(width: number, height: number, fill: string): SvgElementSpec {
+function renderBackground(bounds: SvgViewport, fill: string): SvgElementSpec {
   return {
     name: "rect",
-    attrs: { fill, height, width, x: 0, y: 0 },
+    attrs: { fill, height: bounds.height, width: bounds.width, x: bounds.x, y: bounds.y },
     selfClosing: true,
   };
 }
