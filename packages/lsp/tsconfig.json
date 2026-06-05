@@ -4,6 +4,7 @@
     "composite": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "types": ["node"],
     "paths": {
       "@drawspec/core": ["../core/src/index.ts"],
       "@drawspec/validation": ["../validation/src/index.ts"]

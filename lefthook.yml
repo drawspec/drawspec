@@ -8,3 +8,17 @@ commit-msg:
   commands:
     cog:
       run: cog verify --file {1}
+
+pre-push:
+  commands:
+    test:
+      run: bun test
+    golden-freshness:
+      run: |
+        DRAWSPEC_UPDATE_GOLDEN=1 UPDATE_GOLDEN=1 bun test --silent 2>/dev/null
+        changed=$(git diff --name-only -- '**/__golden__/**' '**/golden/**')
+        if [ -n "$changed" ]; then
+          echo "❌ Stale golden fixtures detected. Commit the updated files:"
+          echo "$changed" | sed 's/^/  /'
+          exit 1
+        fi
