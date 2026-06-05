@@ -10,6 +10,7 @@ export {
   stableSvgId,
 } from "./svg";
 export type {
+  LineStyle,
   Renderer,
   ResolvedStyle,
   SvgAccessibilityOptions,

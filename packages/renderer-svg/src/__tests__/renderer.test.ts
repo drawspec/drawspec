@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { DiagramDocument } from "@drawspec/core";
-import { sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
-import { renderSvg, renderSvgSync, stableSvgId } from "../index";
+import { type PositionedDiagram, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
+import { type LineStyle, renderSvg, renderSvgSync, stableSvgId } from "../index";
 
 function document(overrides: Partial<DiagramDocument> = {}): DiagramDocument {
   return {
@@ -86,6 +86,60 @@ async function expectGolden(name: string, svg: string): Promise<void> {
   expect(await Bun.file(path).text()).toBe(svg);
 }
 
+function lineStyleDocument(rule: Record<string, string | number>): DiagramDocument {
+  return document({
+    id: "line-style-test",
+    kind: "graph",
+    nodes: [
+      { id: "a", kind: "component", label: "A" },
+      { id: "b", kind: "component", label: "B" },
+    ],
+    edges: [
+      {
+        id: "ab",
+        kind: "calls",
+        sourceId: "a",
+        style: { id: "edge-style" },
+        targetId: "b",
+      },
+    ],
+    groups: [],
+    styles: { rules: { "edge-style": rule } },
+  });
+}
+
+function positionedLineStyleDiagram(doc: DiagramDocument): PositionedDiagram {
+  const edge = doc.edges[0];
+  if (edge === undefined) {
+    throw new Error("line style test document must contain an edge");
+  }
+  return {
+    activations: [],
+    document: doc,
+    edges: [
+      {
+        ...edge,
+        waypoints: [
+          { x: 30, y: 30 },
+          { x: 170, y: 30 },
+        ],
+      },
+    ],
+    groups: [],
+    height: 80,
+    nodes: [
+      { id: "a", kind: "component", label: "A", x: 0, y: 10, width: 60, height: 40 },
+      { id: "b", kind: "component", label: "B", x: 140, y: 10, width: 60, height: 40 },
+    ],
+    width: 200,
+  };
+}
+
+function renderLineStyleRule(rule: Record<string, string | number>): string {
+  const doc = lineStyleDocument(rule);
+  return renderSvgSync(doc, { positionedDiagram: positionedLineStyleDiagram(doc) });
+}
+
 describe("SvgRenderer", () => {
   test("renders the same positioned diagram byte-identically", async () => {
     const positionedDiagram = await simpleGraphLayout().layout(architectureDoc, {
@@ -130,6 +184,51 @@ describe("SvgRenderer", () => {
       'marker-end="url(#drawspec-architecture-demo-1o08l38-marker-arrow-1r281gn)"'
     );
     expect(svg).toContain("calls");
+  });
+
+  const lineStyleCases: Array<{ lineStyle: LineStyle; strokeDasharray: string | undefined }> = [
+    { lineStyle: "solid", strokeDasharray: undefined },
+    { lineStyle: "dashed", strokeDasharray: "8 4" },
+    { lineStyle: "dotted", strokeDasharray: "2 4" },
+    { lineStyle: "dash-dot", strokeDasharray: "8 4 2 4" },
+  ];
+
+  for (const { lineStyle, strokeDasharray } of lineStyleCases) {
+    test(`renders ${lineStyle} edge line style preset`, () => {
+      const svg = renderLineStyleRule({ lineStyle });
+      if (strokeDasharray === undefined) {
+        expect(svg).not.toContain("stroke-dasharray");
+      } else {
+        expect(svg).toContain(`stroke-dasharray="${strokeDasharray}"`);
+      }
+    });
+  }
+
+  test("lets explicit strokeDasharray override lineStyle presets", () => {
+    const svg = renderLineStyleRule({ lineStyle: "dashed", strokeDasharray: "1 2 3" });
+    expect(svg).toContain('stroke-dasharray="1 2 3"');
+    expect(svg).not.toContain('stroke-dasharray="8 4"');
+  });
+
+  test("resolves edge-kind lineStyle rules from document styles", () => {
+    const doc = document({
+      id: "edge-kind-line-style-test",
+      kind: "graph",
+      nodes: [
+        { id: "a", kind: "component", label: "A" },
+        { id: "b", kind: "component", label: "B" },
+      ],
+      edges: [{ id: "ab", kind: "calls", sourceId: "a", targetId: "b" }],
+      groups: [],
+      styles: { rules: { "relationship:calls": { lineStyle: "dotted" } } },
+    });
+    const svg = renderSvgSync(doc, { positionedDiagram: positionedLineStyleDiagram(doc) });
+    expect(svg).toContain('stroke-dasharray="2 4"');
+  });
+
+  test("keeps default edge rendering solid when no line style is configured", () => {
+    const svg = renderLineStyleRule({});
+    expect(svg).not.toContain("stroke-dasharray");
   });
 
   test("renders groups and sequence fragment lanes", async () => {

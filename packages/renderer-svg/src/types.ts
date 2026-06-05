@@ -49,6 +49,9 @@ export interface SvgRenderOptions {
   viewport?: SvgViewport;
 }
 
+/** Named SVG stroke dash presets for connection lines. */
+export type LineStyle = "solid" | "dashed" | "dotted" | "dash-dot";
+
 export interface ResolvedStyle {
   fill: string;
   stroke: string;
@@ -56,5 +59,6 @@ export interface ResolvedStyle {
   text: string;
   fontFamily: string;
   fontSize: number;
+  lineStyle?: LineStyle;
   strokeDasharray?: string;
 }

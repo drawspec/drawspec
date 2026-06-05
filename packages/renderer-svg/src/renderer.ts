@@ -355,6 +355,7 @@ function renderEdge(
             ? `url(#${markerId})`
             : undefined,
         stroke: style.stroke,
+        "stroke-dasharray": style.strokeDasharray,
         "stroke-width": style.strokeWidth,
       },
       selfClosing: true,
