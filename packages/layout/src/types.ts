@@ -2,7 +2,11 @@ import type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode } from "@d
 
 export type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode };
 
+/** Direction in which graph ranks progress. */
 export type LayoutDirection = "TB" | "BT" | "LR" | "RL";
+
+/** Edge routing strategy for graph layouts. */
+export type LayoutRouting = "straight" | "orthogonal";
 
 export interface Point {
   x: number;
@@ -23,6 +27,8 @@ export interface LayoutSpacing {
 
 export interface LayoutOptions {
   direction?: LayoutDirection;
+  /** Routing strategy for graph edges. Defaults to `"straight"`. */
+  routing?: LayoutRouting;
   spacing?: Partial<LayoutSpacing>;
   padding?: number;
   nodeSize?: Partial<Size>;
@@ -68,6 +74,7 @@ export interface LayoutEngine {
 
 export interface NormalizedLayoutOptions {
   direction: LayoutDirection;
+  routing: LayoutRouting;
   spacing: LayoutSpacing;
   padding: number;
   nodeSize: Size;

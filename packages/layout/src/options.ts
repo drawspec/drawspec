@@ -2,10 +2,12 @@ import type {
   DiagramDocument,
   LayoutDirection,
   LayoutOptions,
+  LayoutRouting,
   NormalizedLayoutOptions,
 } from "./types";
 
 const DEFAULT_DIRECTION: LayoutDirection = "TB";
+const DEFAULT_ROUTING: LayoutRouting = "straight";
 
 const directionBySpec: Record<string, LayoutDirection> = {
   bt: "BT",
@@ -21,6 +23,7 @@ export function normalizeLayoutOptions(
   return {
     direction:
       options.direction ?? directionBySpec[document.layout?.direction ?? ""] ?? DEFAULT_DIRECTION,
+    routing: options.routing ?? DEFAULT_ROUTING,
     spacing: {
       lifeline: options.spacing?.lifeline ?? 160,
       message: options.spacing?.message ?? 56,

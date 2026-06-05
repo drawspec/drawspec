@@ -16,19 +16,19 @@
     <path d="M 100 244 L 500 420" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_301fa988_requires_ifc_487bdfd7-0hj0lcj">
-    <path d="M 100 244 L 100 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 244 L 300 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_301fa988_requires_ifc_66670299-1ibstka">
-    <path d="M 100 244 L 300 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 244 L 100 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_3611b529_requires_ifc_6725ba7f-07l9pgy">
     <path d="M 100 68 L 500 420" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_3b1de8f3_provides_ifc_66670299-1kpgmpw">
-    <path d="M 100 420 L 300 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 420 L 100 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-cmp_ff803cd6_provides_ifc_487bdfd7-0zm1h2f">
-    <path d="M 300 420 L 100 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 300 420 L 300 596" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-edge-dep_466a8b5c-024xzhq">
     <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-cmpdoc_d1ebcbaa-1ajois9-marker-arrow-1l163rx)" stroke="#475569" stroke-width="1.5" />
@@ -52,10 +52,10 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="392" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_487bdfd7-1382yxh">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="568" />
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="568" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_66670299-1si6i0w">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="568" />
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="568" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_6725ba7f-14avwv1">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="392" />
@@ -82,10 +82,10 @@
     <text data-width="101.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_ff803cd6-0q5sg28" text-anchor="middle" x="300" y="424.9">
       Inventory Ser…
     </text>
-    <text data-width="90.3" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_487bdfd7-1nd1sj6" text-anchor="middle" x="100" y="600.9">
+    <text data-width="90.3" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_487bdfd7-1nd1sj6" text-anchor="middle" x="300" y="600.9">
       Inventory API
     </text>
-    <text data-width="85.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_66670299-19mieav" text-anchor="middle" x="300" y="600.9">
+    <text data-width="85.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_66670299-19mieav" text-anchor="middle" x="100" y="600.9">
       Payment API
     </text>
     <text data-width="66.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_6725ba7f-027sdpy" text-anchor="middle" x="500" y="424.9">
