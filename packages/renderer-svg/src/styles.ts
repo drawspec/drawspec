@@ -107,6 +107,15 @@ const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
   sequence: { fill: "#f8fafc", stroke: "#334155" },
 };
 
+const darkKindDefaults: Record<string, Partial<ResolvedStyle>> = {
+  actor: { fill: "#312e81", stroke: "#818cf8" },
+  container: { fill: "#164e63", stroke: "#22d3ee" },
+  database: { fill: "#713f12", stroke: "#f59e0b" },
+  person: { fill: "#14532d", stroke: "#4ade80" },
+  participant: { fill: "#1e293b", stroke: "#94a3b8" },
+  sequence: { fill: "#1e293b", stroke: "#94a3b8" },
+};
+
 /** Per-edge-kind visual defaults for line style and arrowhead markers. */
 const edgeKindStyleMap: Record<
   string,
@@ -227,7 +236,8 @@ export function resolveStyle(
   document: DiagramDocument,
   entity: StyledEntity,
   themeOverrides: SvgThemeInput | undefined,
-  elementType: "node" | "edge" | "group" | "activation"
+  elementType: "node" | "edge" | "group" | "activation",
+  themeName = "light"
 ): ResolvedStyle {
   const theme = resolveTheme(themeOverrides);
   const base: ResolvedStyle = {
@@ -241,7 +251,8 @@ export function resolveStyle(
     strokeWidth: 1.5,
     text: theme.text,
   };
-  const kindStyle = kindDefaults[entity.kind] ?? {};
+  const themedKindDefaults = themeName === "dark" ? darkKindDefaults : kindDefaults;
+  const kindStyle = themedKindDefaults[entity.kind] ?? {};
   let resolved: ResolvedStyle = { ...base, ...kindStyle };
   if (elementType === "edge") {
     const edgeKindStyle = edgeKindStyleMap[entity.kind];

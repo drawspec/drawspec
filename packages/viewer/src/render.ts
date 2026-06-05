@@ -17,7 +17,22 @@ export async function renderDiagramSvg(
   return renderSvg(document, {
     positionedDiagram,
     accessibility: { title: document.title ?? document.id },
-    ...(theme === "dark" ? { theme: { background: "#111827", text: "#f9fafb" } } : {}),
+    ...(theme === "dark"
+      ? {
+          theme: {
+            activationFill: "#0c4a6e",
+            activationStroke: "#38bdf8",
+            background: "#111827",
+            edgeStroke: "#94a3b8",
+            groupFill: "#111827",
+            groupStroke: "#475569",
+            nodeFill: "#1e293b",
+            nodeStroke: "#64748b",
+            text: "#f9fafb",
+          },
+          themeName: "dark",
+        }
+      : {}),
   });
 }
 
