@@ -38,7 +38,7 @@ jobs:
       - run: bun run docs:build
         env:
           BASE_PATH: /drawspec/docs
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: apps/docs/build
 
@@ -49,5 +49,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v5
         id: deployment

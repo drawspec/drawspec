@@ -39,31 +39,31 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-ok-activation-1j1jwdr" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="268" />
   <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-start-activation-1qkvb8f" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="156" />
   <g id="drawspec-checkout-sequence-1nkmrpb-text-layer-1qywb69">
-    <text data-width="117.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="start" x="188" y="200">
-      Payment result
-    </text>
-    <text data-width="84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="start" x="184" y="198">
-      authorized
-    </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="start" x="184" y="254">
-      declined
-    </text>
-    <text data-width="50.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="202">
+    <text data-width="45.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-1ndsu0p" text-anchor="middle" x="340" y="200">
       charge
     </text>
-    <text data-width="16.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="340" y="258">
+    <text data-width="15.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-0g0r43r" text-anchor="middle" x="340" y="256">
       ok
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="180" y="146">
+    <text data-width="59.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-1p9y2p3" text-anchor="middle" x="180" y="144">
       checkout
     </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="420" y="72.667">
+    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-1y49qfv" text-anchor="start" x="188" y="200">
+      Payment result
+    </text>
+    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-1efqdl5" text-anchor="start" transform="translate(0 18)" x="184" y="198">
+      authorized
+    </text>
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-1e5qrw6" text-anchor="start" x="184" y="254">
+      declined
+    </text>
+    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-payments-0yaafn1" text-anchor="middle" x="420" y="72.9">
       Payments
     </text>
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="260" y="72.667">
+    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-shop-0l74ef6" text-anchor="middle" x="260" y="72.9">
       Shop
     </text>
-    <text data-width="33.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" x="100" y="72.667">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-user-0m5ij8x" text-anchor="middle" x="100" y="72.9">
       User
     </text>
   </g>

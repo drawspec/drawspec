@@ -7,5 +7,13 @@
     "rootDir": "./src"
   },
   "include": ["src"],
-  "exclude": ["src/**/__tests__/**/*.ts", "src/**/__bench__/**/*.ts"]
+  "exclude": ["src/**/__tests__/**/*.ts", "src/**/__bench__/**/*.ts"],
+  "references": [
+    { "path": "../core" },
+    { "path": "../layout" },
+    { "path": "../layout-dagre" },
+    { "path": "../layout-elk" },
+    { "path": "../layout-wasm" },
+    { "path": "../renderer-svg" }
+  ]
 }
