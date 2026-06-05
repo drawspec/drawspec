@@ -39,12 +39,16 @@ export interface SvgViewport {
   height: number;
 }
 
+/** Named theme preset or a custom theme object. */
+export type SvgThemeInput = "light" | "dark" | "high-contrast" | Partial<SvgTheme>;
+
 export interface SvgRenderOptions {
   positionedDiagram: PositionedDiagram;
   width?: number;
   height?: number;
   accessibility?: SvgAccessibilityOptions;
-  theme?: Partial<SvgTheme>;
+  /** Theme preset name ("light", "dark", "high-contrast") or a custom theme override. Defaults to "light". */
+  theme?: SvgThemeInput;
   /** Optional viewport for culling off-screen elements. Elements entirely outside this rectangle are skipped. */
   viewport?: SvgViewport;
   /** Padding around diagram content (pixels). Applied when autoFit is true. */
