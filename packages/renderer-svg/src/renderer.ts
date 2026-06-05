@@ -504,6 +504,7 @@ function renderEdge(
         "marker-end": markerEnd,
         "marker-start": markerStart,
         stroke: style.stroke,
+        "stroke-dasharray": style.strokeDasharray,
         "stroke-width": style.strokeWidth,
       },
       selfClosing: true,

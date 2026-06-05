@@ -20,6 +20,7 @@ export {
 } from "./svg";
 export type {
   ArrowMarkerShape,
+  LineStyle,
   Renderer,
   ResolvedStyle,
   SvgAccessibilityOptions,

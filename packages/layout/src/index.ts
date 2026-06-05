@@ -8,6 +8,7 @@ export type {
   LayoutDirection,
   LayoutEngine,
   LayoutOptions,
+  LayoutRouting,
   LayoutSpacing,
   NormalizedLayoutOptions,
   Point,
