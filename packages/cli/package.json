@@ -30,6 +30,7 @@
     "@drawspec/exporter-mermaid": "workspace:*",
     "@drawspec/exporter-plantuml": "workspace:*",
     "@drawspec/layout": "workspace:*",
+    "@drawspec/layout-elk": "workspace:*",
     "@drawspec/renderer-svg": "workspace:*",
     "@drawspec/uml-sequence": "workspace:*",
     "@drawspec/validation": "workspace:*"

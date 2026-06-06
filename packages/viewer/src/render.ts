@@ -53,6 +53,13 @@ async function selectLayoutEngine(document: DiagramDocument): Promise<LayoutEngi
   if (engine === "wasm") {
     return await tryLoadWasmLayout();
   }
+  if (engine === "auto") {
+    const elk = await tryImportElk();
+    if (elk) return elk;
+    const dagre = await tryImportDagre();
+    if (dagre) return dagre;
+    return simpleGraphLayout();
+  }
   console.warn(`Unknown layout engine '${engine}', falling back to simple`);
   return simpleGraphLayout();
 }
@@ -90,6 +97,24 @@ async function tryLoadWasmLayout(): Promise<LayoutEngine> {
       "Layout engine 'wasm' requested but @drawspec/layout-wasm is not available, falling back to simple"
     );
     return simpleGraphLayout();
+  }
+}
+
+async function tryImportDagre(): Promise<LayoutEngine | null> {
+  try {
+    const { dagreLayout } = await import("@drawspec/layout-dagre");
+    return dagreLayout();
+  } catch {
+    return null;
+  }
+}
+
+async function tryImportElk(): Promise<LayoutEngine | null> {
+  try {
+    const { elkLayout } = await import("@drawspec/layout-elk");
+    return elkLayout();
+  } catch {
+    return null;
   }
 }
 
