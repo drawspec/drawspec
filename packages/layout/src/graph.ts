@@ -1,5 +1,6 @@
 import { LayoutCache } from "./cache";
 import { normalizeLayoutOptions } from "./options";
+import { sizeGraphNodes } from "./sizing";
 import type {
   DiagramDocument,
   DiagramEdge,
@@ -262,33 +263,35 @@ function positionGraphNodes(
   normalized: ReturnType<typeof normalizeLayoutOptions>
 ): PositionedNode[] {
   const nodes = sortedNodes(document);
-  const depths = computeDepths(nodes, sortedEdges(document));
-  const orderedNodes = minimizeCrossings(nodes, sortedEdges(document), depths);
+  const sizedNodes = sizeGraphNodes(nodes, normalized.sizing);
+  const sizedMap = new Map(sizedNodes.map((node) => [node.id, node]));
+  const edges = sortedEdges(document);
+  const depths = computeDepths(sizedNodes, edges);
+  const orderedNodes = minimizeCrossings(sizedNodes, edges, depths);
 
-  const rowIndexes: Record<string, number> = {};
-  for (const node of orderedNodes) {
-    const rank = String(depths[node.id] ?? 0);
-    rowIndexes[rank] = (rowIndexes[rank] ?? 0) + 1;
-  }
-
+  const rankWidths: Record<string, number> = {};
   const seenInRank: Record<string, number> = {};
   const isHorizontal = normalized.direction === "LR" || normalized.direction === "RL";
   const positioned = orderedNodes.map((node) => {
     const rank = depths[node.id] ?? 0;
     const rankKey = String(rank);
-    const index = seenInRank[rankKey] ?? 0;
-    seenInRank[rankKey] = index + 1;
+    const sizedNode = sizedMap.get(node.id);
+    const nodeWidth = sizedNode?.computedWidth ?? normalized.nodeSize.width;
+    const nodeHeight = sizedNode?.computedHeight ?? normalized.nodeSize.height;
+    const isFirst = seenInRank[rankKey] === undefined;
+    const nodeOffset =
+      (rankWidths[rankKey] ?? normalized.padding) + (isFirst ? 0 : normalized.spacing.node);
+    rankWidths[rankKey] = nodeOffset + nodeWidth;
+    seenInRank[rankKey] = (seenInRank[rankKey] ?? 0) + 1;
     const rankOffset =
       normalized.padding + rank * (normalized.nodeSize.height + normalized.spacing.rank);
-    const nodeOffset =
-      normalized.padding + index * (normalized.nodeSize.width + normalized.spacing.node);
 
     return {
       ...node,
       x: isHorizontal ? rankOffset : nodeOffset,
       y: isHorizontal ? nodeOffset : rankOffset,
-      width: normalized.nodeSize.width,
-      height: normalized.nodeSize.height,
+      width: nodeWidth,
+      height: nodeHeight,
     };
   });
 

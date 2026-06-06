@@ -64,16 +64,16 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="440" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-text-layer-1vwxgww">
-    <text data-width="99.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-class_412c2b79-1moz8as" text-anchor="middle" x="276" y="72.9">
-      AggregateRoot
+    <text data-width="81.48" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-class_412c2b79-line0-0qy936r" text-anchor="middle" x="276" y="63.8">
+      Aggregate…
     </text>
-    <text data-width="57.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-class_9fb30820-1n9s48e" text-anchor="middle" x="100" y="72.9">
+    <text data-width="57.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-class_9fb30820-line0-05slvt5" text-anchor="middle" x="100" y="63.8">
       Payment
     </text>
-    <text data-width="99.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-enum_a36c23b8-0uv8tlj" text-anchor="middle" x="276" y="272.9">
-      PaymentStatus
+    <text data-width="84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-enum_a36c23b8-line0-1ivbinw" text-anchor="middle" x="276" y="263.8">
+      PaymentSt…
     </text>
-    <text data-width="52.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-iface_bc02efc2-0b9dg1d" text-anchor="middle" x="276" y="472.9">
+    <text data-width="52.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-iface_bc02efc2-line0-0b0b0aq" text-anchor="middle" x="276" y="463.8">
       Payable
     </text>
   </g>

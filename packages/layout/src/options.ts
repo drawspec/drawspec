@@ -1,3 +1,4 @@
+import { createTextMeasurer } from "./measure";
 import type {
   DiagramDocument,
   LayoutDirection,
@@ -20,6 +21,12 @@ export function normalizeLayoutOptions(
   document: DiagramDocument,
   options: LayoutOptions = {}
 ): NormalizedLayoutOptions {
+  const nodeSize = {
+    height: options.nodeSize?.height ?? 56,
+    width: options.nodeSize?.width ?? 120,
+  };
+  const fontSize = options.sizing?.typography?.fontSize ?? 14;
+
   return {
     direction:
       options.direction ?? directionBySpec[document.layout?.direction ?? ""] ?? DEFAULT_DIRECTION,
@@ -31,9 +38,26 @@ export function normalizeLayoutOptions(
       rank: options.spacing?.rank ?? document.layout?.rankSpacing ?? 120,
     },
     padding: options.padding ?? 40,
-    nodeSize: {
-      height: options.nodeSize?.height ?? 56,
-      width: options.nodeSize?.width ?? 120,
+    nodeSize,
+    sizing: {
+      mode: options.sizing === undefined ? "fixed" : (options.sizing.mode ?? "auto"),
+      defaultSize: {
+        width: options.nodeSize?.width ?? options.sizing?.defaultSize?.width ?? 120,
+        height: options.nodeSize?.height ?? options.sizing?.defaultSize?.height ?? 56,
+      },
+      minSize: {
+        width: options.sizing?.minSize?.width ?? 60,
+        height: options.sizing?.minSize?.height ?? 40,
+      },
+      maxSize: {
+        width: options.sizing?.maxSize?.width ?? Infinity,
+        height: options.sizing?.maxSize?.height ?? Infinity,
+      },
+      padding: options.sizing?.padding ?? { x: 16, y: 10 },
+      labelWrap: options.sizing?.labelWrap ?? "none",
+      fontSize,
+      lineHeight: fontSize * 1.3,
+      measurer: options.sizing?.measurer ?? createTextMeasurer(),
     },
   };
 }

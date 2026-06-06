@@ -544,7 +544,7 @@ describe("SvgRenderer", () => {
       height: 80,
     };
     const svg = renderSvgSync(doc, { positionedDiagram });
-    expect(svg).toContain('transform="translate(0 28.3)"');
+    expect(svg).toContain('transform="translate(0 37.4)"');
   });
 
   test("measures narrow and wide text differently", () => {

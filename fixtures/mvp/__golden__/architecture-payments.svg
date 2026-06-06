@@ -96,19 +96,19 @@
         Stores authorization
       </text>
     </g>
-    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_4c19412c99504b8f-1814jv9" text-anchor="middle" x="276" y="72.9">
+    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_4c19412c99504b8f-line0-11ea9fq" text-anchor="middle" x="276" y="63.8">
       Web App
     </text>
-    <text data-width="93.1" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_ac6c49ec729308c5-0wg89rw" text-anchor="middle" x="452" y="72.9">
-      Payments API
+    <text data-width="81.9" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_ac6c49ec729308c5-line0-03dtynv" text-anchor="middle" x="452" y="63.8">
+      Payments …
     </text>
-    <text data-width="46.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-database_2e2143da83454bad-05kgbxi" text-anchor="middle" x="628" y="72.9">
+    <text data-width="46.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-database_2e2143da83454bad-line0-1c4kr8h" text-anchor="middle" x="628" y="63.8">
       Ledger
     </text>
-    <text data-width="63.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-person_bc8335d0874d8bfb-1rukz5c" text-anchor="middle" x="100" y="72.9">
+    <text data-width="63.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-person_bc8335d0874d8bfb-line0-0z9ira7" text-anchor="middle" x="100" y="63.8">
       Customer
     </text>
-    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-softwaresystem_47a27c87ada29e42-05ekjnp" text-anchor="middle" x="276" y="272.9">
+    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-softwaresystem_47a27c87ada29e42-line0-05ko4uu" text-anchor="middle" x="276" y="263.8">
       Shop
     </text>
   </g>

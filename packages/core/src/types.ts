@@ -259,6 +259,27 @@ export interface DiagramNode {
   metadata?: Record<string, unknown>;
   style?: StyleRef;
   source?: SourceRef;
+  layout?: NodeLayoutOptions;
+}
+
+/** Layout sizing options for an individual node. */
+export interface NodeLayoutOptions {
+  /** Explicit width override. When set, disables auto-width for this node. */
+  width?: number;
+  /** Explicit height override. When set, disables auto-height for this node. */
+  height?: number;
+  /** Minimum width. Defaults to global minSize.width. */
+  minWidth?: number;
+  /** Minimum height. Defaults to global minSize.height. */
+  minHeight?: number;
+  /** Maximum width. When hit, enables wrapping then truncation. */
+  maxWidth?: number;
+  /** Maximum height. When hit, truncates visible lines. */
+  maxHeight?: number;
+  /** Horizontal and vertical padding around label text. */
+  padding?: Partial<{ x: number; y: number }>;
+  /** Label wrapping behavior. Defaults to global setting. */
+  labelWrap?: "none" | "auto" | number;
 }
 
 /** Edge element in a diagram document. */

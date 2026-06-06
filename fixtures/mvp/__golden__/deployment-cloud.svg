@@ -115,32 +115,32 @@
         HTTPS
       </text>
     </g>
-    <text data-width="86.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_0d327c3221e87ae4-1542hfm" text-anchor="middle" x="100" y="72.9">
+    <text data-width="86.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_0d327c3221e87ae4-line0-14sya19" text-anchor="middle" x="100" y="63.8">
       Static Assets
     </text>
-    <text data-width="77.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_655eb4eb95fd5677-1h3ch9e" text-anchor="middle" x="300" y="72.9">
+    <text data-width="77.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_655eb4eb95fd5677-line0-1e33vxp" text-anchor="middle" x="300" y="63.8">
       API Service
     </text>
-    <text data-width="90.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_a87e9d0792858505-0psbuv4" text-anchor="middle" x="500" y="72.9">
-      Order Worker
+    <text data-width="82.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_a87e9d0792858505-line0-0vukamn" text-anchor="middle" x="500" y="63.8">
+      Order Wor…
     </text>
-    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_f6a66885afb27708-08jdkli" text-anchor="middle" x="700" y="72.9">
+    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_f6a66885afb27708-line0-0m3om0x" text-anchor="middle" x="700" y="63.8">
       Web App
     </text>
-    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_2983a74f2170307a-1jwac2x" text-anchor="middle" x="900" y="72.9">
+    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_2983a74f2170307a-line0-0951oka" text-anchor="middle" x="900" y="63.8">
       CDN Edge
     </text>
-    <text data-width="78.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_e7b3f06185a8639c-1sitjrb" text-anchor="middle" x="100" y="248.9">
+    <text data-width="78.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_e7b3f06185a8639c-line0-1bv0l58" text-anchor="middle" x="100" y="239.8">
       App Cluster
     </text>
-    <text data-width="81.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_ed947a100831258e-0qtl3hh" text-anchor="middle" x="1100" y="72.9">
+    <text data-width="81.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_ed947a100831258e-line0-09nco6u" text-anchor="middle" x="1100" y="63.8">
       Worker Pool
     </text>
-    <text data-width="103.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_3df758453a713335-1pyetb5" text-anchor="middle" x="100" y="424.9">
-      Message Que…
+    <text data-width="87.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_3df758453a713335-line0-05myc42" text-anchor="middle" x="100" y="415.8">
+      Message Q…
     </text>
-    <text data-width="102.9" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_8980d18d222a454a-1mq3jqg" text-anchor="middle" x="300" y="424.9">
-      Managed Pos…
+    <text data-width="87.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_8980d18d222a454a-line0-0yfrfnb" text-anchor="middle" x="300" y="415.8">
+      Managed P…
     </text>
   </g>
 </svg>
