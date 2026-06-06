@@ -106,22 +106,22 @@
         create order
       </text>
     </g>
-    <text data-width="24.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_02d7e8ebbb-line0-0oq8mjm" text-anchor="middle" x="100" y="943.8">
+    <text data-width="24.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_02d7e8ebbb-line0-0oq8mjm" text-anchor="middle" x="100" y="952.9">
       end
     </text>
-    <text data-width="52.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_1e9d063f9f-line0-05ity4k" text-anchor="middle" x="100" y="239.8">
+    <text data-width="52.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_1e9d063f9f-line0-05ity4k" text-anchor="middle" x="100" y="248.9">
       Created
     </text>
-    <text data-width="29.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_64f5330b4a-line0-1re0943" text-anchor="middle" x="100" y="63.8">
+    <text data-width="29.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_64f5330b4a-line0-1re0943" text-anchor="middle" x="100" y="72.9">
       start
     </text>
-    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_7f315c4e59-line0-19349zj" text-anchor="middle" x="100" y="591.8">
+    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_7f315c4e59-line0-19349zj" text-anchor="middle" x="100" y="600.9">
       Shipped
     </text>
-    <text data-width="62.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_d41f43ca4e-line0-09rhuce" text-anchor="middle" x="100" y="767.8">
+    <text data-width="62.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_d41f43ca4e-line0-09rhuce" text-anchor="middle" x="100" y="776.9">
       Delivered
     </text>
-    <text data-width="28.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_ec47ea95a0-line0-1seey2f" text-anchor="middle" x="100" y="415.8">
+    <text data-width="28.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_ec47ea95a0-line0-1seey2f" text-anchor="middle" x="100" y="424.9">
       Paid
     </text>
   </g>

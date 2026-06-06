@@ -120,25 +120,25 @@
         Configures payment rules
       </text>
     </g>
-    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_0fac53dae12bb9fe-line0-0xbqzrp" text-anchor="middle" x="100" y="415.8">
+    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_0fac53dae12bb9fe-line0-0xbqzrp" text-anchor="middle" x="100" y="424.9">
       Admin API
     </text>
-    <text data-width="84.98" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_3015d7cc580484e2-line0-00ndhzq" text-anchor="middle" x="100" y="239.8">
+    <text data-width="84.98" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_3015d7cc580484e2-line0-00ndhzq" text-anchor="middle" x="100" y="248.9">
       Admin Das…
     </text>
-    <text data-width="87.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_ea612b28b0b1fefd-line0-1q9vy6n" text-anchor="middle" x="100" y="63.8">
+    <text data-width="87.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-container_ea612b28b0b1fefd-line0-1q9vy6n" text-anchor="middle" x="100" y="72.9">
       OIDC Provi…
     </text>
-    <text data-width="85.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-database_03ab52d399de1e70-line0-0zx7806" text-anchor="middle" x="100" y="591.8">
+    <text data-width="85.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-database_03ab52d399de1e70-line0-0zx7806" text-anchor="middle" x="100" y="600.9">
       Configurati…
     </text>
-    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-person_494a4f7dfd392f13-line0-1ftlae9" text-anchor="middle" x="300" y="63.8">
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-person_494a4f7dfd392f13-line0-1ftlae9" text-anchor="middle" x="300" y="72.9">
       Operator
     </text>
-    <text data-width="71.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_e27ada29a9783f1d-line0-0jfqzop" text-anchor="middle" x="300" y="239.8">
+    <text data-width="71.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_e27ada29a9783f1d-line0-0jfqzop" text-anchor="middle" x="300" y="248.9">
       Commerce
     </text>
-    <text data-width="49.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_f31d789af8a06024-line0-1jk7psh" text-anchor="middle" x="500" y="239.8">
+    <text data-width="49.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_f31d789af8a06024-line0-1jk7psh" text-anchor="middle" x="500" y="248.9">
       Identity
     </text>
   </g>

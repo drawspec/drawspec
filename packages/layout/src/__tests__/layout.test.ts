@@ -124,8 +124,8 @@ describe("simple graph layout", () => {
     const positioned = await simpleGraphLayout().layout(graphDoc, { direction: "LR" });
     expect(positioned.nodes.map((node) => [node.id, node.x, node.y])).toEqual([
       ["a", 40, 40],
-      ["b", 216, 40],
-      ["c", 392, 40],
+      ["b", 280, 40],
+      ["c", 520, 40],
     ]);
   });
 

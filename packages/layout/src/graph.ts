@@ -268,41 +268,69 @@ function positionGraphNodes(
   const edges = sortedEdges(document);
   const depths = computeDepths(sizedNodes, edges);
   const orderedNodes = minimizeCrossings(sizedNodes, edges, depths);
-
-  const rankWidths: Record<string, number> = {};
-  const seenInRank: Record<string, number> = {};
   const isHorizontal = normalized.direction === "LR" || normalized.direction === "RL";
+
+  const nodesByRank = new Map<number, DiagramNode[]>();
+  for (const node of orderedNodes) {
+    const rank = depths[node.id] ?? 0;
+    const existing = nodesByRank.get(rank) ?? [];
+    existing.push(node);
+    nodesByRank.set(rank, existing);
+  }
+
+  const sortedRanks = [...nodesByRank.keys()].sort((left, right) => left - right);
+  const rankOffsets = new Map<number, number>();
+  let cumulativeRankOffset = normalized.padding;
+  for (const rank of sortedRanks) {
+    rankOffsets.set(rank, cumulativeRankOffset);
+    const rankNodes = nodesByRank.get(rank) ?? [];
+    const maxDimension = Math.max(
+      ...rankNodes.map((node) => {
+        const sizedNode = sizedMap.get(node.id);
+        return isHorizontal
+          ? (sizedNode?.computedWidth ?? normalized.nodeSize.width)
+          : (sizedNode?.computedHeight ?? normalized.nodeSize.height);
+      })
+    );
+    cumulativeRankOffset += maxDimension + normalized.spacing.rank;
+  }
+
+  const withinRankOffsets: Record<string, number> = {};
   const positioned = orderedNodes.map((node) => {
     const rank = depths[node.id] ?? 0;
     const rankKey = String(rank);
     const sizedNode = sizedMap.get(node.id);
     const nodeWidth = sizedNode?.computedWidth ?? normalized.nodeSize.width;
     const nodeHeight = sizedNode?.computedHeight ?? normalized.nodeSize.height;
-    const isFirst = seenInRank[rankKey] === undefined;
-    const nodeOffset =
-      (rankWidths[rankKey] ?? normalized.padding) + (isFirst ? 0 : normalized.spacing.node);
-    rankWidths[rankKey] = nodeOffset + nodeWidth;
-    seenInRank[rankKey] = (seenInRank[rankKey] ?? 0) + 1;
-    const rankOffset =
-      normalized.padding + rank * (normalized.nodeSize.height + normalized.spacing.rank);
+    const isFirst = withinRankOffsets[rankKey] === undefined;
+    const withinOffset =
+      (withinRankOffsets[rankKey] ?? normalized.padding) + (isFirst ? 0 : normalized.spacing.node);
+    withinRankOffsets[rankKey] = withinOffset + (isHorizontal ? nodeHeight : nodeWidth);
+    const rankOffset = rankOffsets.get(rank) ?? normalized.padding;
 
     return {
       ...node,
-      x: isHorizontal ? rankOffset : nodeOffset,
-      y: isHorizontal ? nodeOffset : rankOffset,
+      x: isHorizontal ? rankOffset : withinOffset,
+      y: isHorizontal ? withinOffset : rankOffset,
       width: nodeWidth,
       height: nodeHeight,
     };
   });
 
   if (normalized.direction === "BT") {
-    const maxY = Math.max(0, ...positioned.map((node) => node.y));
-    return positioned.map((node) => ({ ...node, y: maxY - node.y + normalized.padding }));
+    const maxY = Math.max(0, ...positioned.map((node) => node.y + node.height));
+    return positioned.map((node) => ({
+      ...node,
+      y: maxY - (node.y + node.height) + normalized.padding,
+    }));
   }
 
   if (normalized.direction === "RL") {
-    const maxX = Math.max(0, ...positioned.map((node) => node.x));
-    return positioned.map((node) => ({ ...node, x: maxX - node.x + normalized.padding }));
+    const maxX = Math.max(0, ...positioned.map((node) => node.x + node.width));
+    return positioned.map((node) => ({
+      ...node,
+      x: maxX - (node.x + node.width) + normalized.padding,
+    }));
   }
 
   return positioned;

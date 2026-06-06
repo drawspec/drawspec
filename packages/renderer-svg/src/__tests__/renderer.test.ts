@@ -340,7 +340,7 @@ describe("SvgRenderer", () => {
     const svg = await architectureSvg();
     expect(svg).toContain('rx="12"');
     expect(svg).toContain("<circle ");
-    expect(svg).toContain("C 392 35.333 512 35.333 512 54");
+    expect(svg).toContain("C 520 35.333 640 35.333 640 54");
   });
 
   test("renders edges as paths with deterministic arrow markers and labels", async () => {
@@ -544,7 +544,7 @@ describe("SvgRenderer", () => {
       height: 80,
     };
     const svg = renderSvgSync(doc, { positionedDiagram });
-    expect(svg).toContain('transform="translate(0 37.4)"');
+    expect(svg).toContain('transform="translate(0 28.3)"');
   });
 
   test("measures narrow and wide text differently", () => {

@@ -439,8 +439,8 @@ function renderNode(
   const label = node.label ?? node.id;
   const lines = node.labelLines ?? [label];
   const lineHeight = style.fontSize * 1.3;
-  const totalHeight = lines.length * lineHeight;
-  const startY = node.y + (node.height - totalHeight) / 2 + style.fontSize * 0.35;
+  const startY =
+    node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2;
   const labels: SvgLabelSpec[] = lines.map((line, index) =>
     textElement({
       id: stableSvgId(idPrefix, "label", "node", `${node.id}-line${index}`),
@@ -450,7 +450,7 @@ function renderNode(
       y: startY + index * lineHeight,
       style,
       anchor: "middle",
-      maxWidth: Math.max(0, node.width - 16),
+      maxWidth: Math.max(0, node.width - style.fontSize),
       clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
     })
   );
