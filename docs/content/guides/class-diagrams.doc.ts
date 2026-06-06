@@ -12,8 +12,8 @@ Class diagrams visualize the structure of object-oriented systems. They show cla
 
 Define a simple class diagram with two classes and an inheritance relationship:
 
-@diagram ./class-quick-start.class.ts "Quick start class"
 @source typescript ./class-quick-start.class.ts
+@diagram ./class-quick-start.class.ts "Quick start class"
 
 The callback receives builders for every structural element. Return an array combining elements and relationships.
 
@@ -145,7 +145,7 @@ if (result.diagnostics.length > 0) {
 
 Here is a complete class diagram modeling a payment processing system:
 
-@diagram ./class-complete.class.ts "Payment system class"
 @source typescript ./class-complete.class.ts
+@diagram ./class-complete.class.ts "Payment system class"
 `,
 });

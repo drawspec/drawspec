@@ -12,8 +12,8 @@ Component diagrams visualize the modular structure of a system. They show compon
 
 Define components with provided and required interfaces:
 
-@diagram ./component-quick-start.component.ts "Quick start component diagram"
 @source typescript ./component-quick-start.component.ts
+@diagram ./component-quick-start.component.ts "Quick start component diagram"
 
 The callback receives \`component\` and \`dependency\` functions for building the diagram.
 
@@ -101,7 +101,7 @@ component("AdminService", (c) => {
 
 Here is a complete component diagram for a typical web application architecture:
 
-@diagram ./component-complete.component.ts "Web application component diagram"
 @source typescript ./component-complete.component.ts
+@diagram ./component-complete.component.ts "Web application component diagram"
 `,
 });

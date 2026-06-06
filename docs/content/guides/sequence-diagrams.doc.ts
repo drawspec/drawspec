@@ -12,8 +12,8 @@ Sequence diagrams model how actors and participants exchange messages over time.
 
 Participants represent the entities that send and receive messages. Use \`sequence()\` and call \`actor()\` for external users or \`participant()\` for systems or services:
 
-@diagram ./sequence-quick-start.sequence.ts "Quick start sequence"
 @source typescript ./sequence-quick-start.sequence.ts
+@diagram ./sequence-quick-start.sequence.ts "Quick start sequence"
 
 Actors appear with a stick-figure icon. Participants appear as rectangles with a label.
 
@@ -120,7 +120,7 @@ export default sequence("Parallel fetch", (ctx) => {
 
 Here is a full sequence diagram showing a payment authorization flow:
 
-@diagram ./sequence-complete.sequence.ts "Payment authorization sequence"
 @source typescript ./sequence-complete.sequence.ts
+@diagram ./sequence-complete.sequence.ts "Payment authorization sequence"
 `,
 });
