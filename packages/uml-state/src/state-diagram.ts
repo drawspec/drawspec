@@ -38,6 +38,7 @@ export function stateDiagram(
   ): StateDocument => {
     const stateNameCounts = new Map<string, number>();
     const pseudostateNameCounts = new Map<string, number>();
+    const helperElements = new Map<string, StateDiagramElement>();
 
     const helpers: StateDiagramHelpers = {
       state: (name, cb) => {
@@ -45,24 +46,53 @@ export function stateDiagram(
         stateNameCounts.set(name, index + 1);
         const element = new MutableStateElement(name, index);
         cb?.(element);
+        helperElements.set(element.id, element);
         return element;
       },
       initial: (name = "initial") => {
         const index = pseudostateNameCounts.get(`initial:${name}`) ?? 0;
         pseudostateNameCounts.set(`initial:${name}`, index + 1);
-        return baseInitial(name, index);
+        const element = baseInitial(name, index);
+        helperElements.set(element.id, element);
+        return element;
       },
       final: (name = "final") => {
         const index = pseudostateNameCounts.get(`final:${name}`) ?? 0;
         pseudostateNameCounts.set(`final:${name}`, index + 1);
-        return baseFinal(name, index);
+        const element = baseFinal(name, index);
+        helperElements.set(element.id, element);
+        return element;
       },
     };
+
+    const result = elementsCallback(helpers);
+    const elements: StateDiagramElement[] = [];
+    const seen = new Set<string>();
+
+    for (const item of result) {
+      if (item !== null && item !== undefined && "transitions" in item) {
+        const el = item as StateDiagramElement;
+        if (!seen.has(el.id)) {
+          seen.add(el.id);
+          elements.push(el);
+        }
+      } else if (item !== null && item !== undefined && "transition" in item) {
+        const transition = (item as { transition: { sourceId: string } }).transition;
+        const sourceId = transition.sourceId;
+        if (!seen.has(sourceId)) {
+          const source = helperElements.get(sourceId);
+          if (source !== undefined) {
+            seen.add(sourceId);
+            elements.push(source);
+          }
+        }
+      }
+    }
 
     const model: StateDomainModel = {
       id: stateDocumentId(title),
       title,
-      elements: elementsCallback(helpers),
+      elements,
     };
     return compileStateDocument(model);
   };
