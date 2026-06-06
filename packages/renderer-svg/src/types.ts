@@ -49,6 +49,8 @@ export interface SvgRenderOptions {
   accessibility?: SvgAccessibilityOptions;
   /** Theme preset name ("light", "dark", "high-contrast") or a custom theme override. Defaults to "light". */
   theme?: SvgThemeInput;
+  /** Explicit theme preset name used for style defaults when `theme` is a custom object. */
+  themeName?: string;
   /** Optional viewport for culling off-screen elements. Elements entirely outside this rectangle are skipped. */
   viewport?: SvgViewport;
   /** Padding around diagram content (pixels). Applied when autoFit is true. */

@@ -7,7 +7,7 @@ import type {
   PositionedGroup,
   PositionedNode,
 } from "@drawspec/layout";
-import { renderThemeStyleBlock, resolveStyle, resolveTheme } from "./styles";
+import { darkTheme, renderThemeStyleBlock, resolveStyle, resolveTheme } from "./styles";
 import {
   compareStable,
   formatNumber,
@@ -71,6 +71,7 @@ export async function renderSvg(
 export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptions): SvgOutput {
   const { positionedDiagram, viewport } = options;
   const theme = resolveTheme(options.theme);
+  const themeName = resolveThemeName(options);
   const autoFit = options.autoFit === true;
   const contentBounds = autoFit
     ? computePaddedBounds(positionedDiagram, options.padding)
@@ -99,14 +100,14 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
           !viewport || rectInViewport(group.x, group.y, group.width, group.height, viewport)
       )
       .map((group) => {
-        const result = renderGroup(document, group, options, idPrefix);
+        const result = renderGroup(document, group, options, idPrefix, themeName);
         labels.push(...result.labels);
         return result.element;
       }),
     ...sortById(positionedDiagram.edges)
       .filter((edge) => !viewport || edgeInViewport(edge.waypoints, viewport))
       .map((edge) => {
-        const result = renderEdge(document, edge, options, idPrefix);
+        const result = renderEdge(document, edge, options, idPrefix, themeName);
         labels.push(...result.labels);
         return result.element;
       }),
@@ -115,13 +116,13 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
         (node) => !viewport || rectInViewport(node.x, node.y, node.width, node.height, viewport)
       )
       .map((node) => {
-        const result = renderNode(document, node, options, idPrefix);
+        const result = renderNode(document, node, options, idPrefix, themeName);
         labels.push(...result.labels);
         return result.element;
       }),
     ...sortById(positionedDiagram.activations)
       .filter((bar) => !viewport || rectInViewport(bar.x, bar.y, bar.width, bar.height, viewport))
-      .map((bar) => renderActivation(document, bar, options, idPrefix)),
+      .map((bar) => renderActivation(document, bar, options, idPrefix, themeName)),
   ];
   if (labels.length > 0) {
     const adjustedLabels = avoidLabelOverlaps(labels).map((label) => label.element);
@@ -204,6 +205,16 @@ function computePaddedBounds(
     width: Math.max(1, bounds.width + padding * 2),
     height: Math.max(1, bounds.height + padding * 2),
   };
+}
+
+function resolveThemeName(options: SvgRenderOptions): string {
+  if (options.themeName !== undefined) {
+    return options.themeName;
+  }
+  if (typeof options.theme === "string") {
+    return options.theme;
+  }
+  return options.theme === darkTheme ? "dark" : "light";
 }
 
 function sourceDataAttrs(source: SourceRef | undefined): Record<string, string | number> {
@@ -309,9 +320,10 @@ function renderGroup(
   document: DiagramDocument,
   group: PositionedGroup,
   options: SvgRenderOptions,
-  idPrefix: string
+  idPrefix: string,
+  themeName: string
 ): RenderedElement {
-  const style = resolveStyle(document, group, options.theme, "group");
+  const style = resolveStyle(document, group, options.theme, "group", themeName);
   const labels: SvgLabelSpec[] = [];
   const children: SvgElementSpec[] = [
     {
@@ -387,9 +399,10 @@ function renderNode(
   document: DiagramDocument,
   node: PositionedNode,
   options: SvgRenderOptions,
-  idPrefix: string
+  idPrefix: string,
+  themeName: string
 ): RenderedElement {
-  const style = resolveStyle(document, node, options.theme, "node");
+  const style = resolveStyle(document, node, options.theme, "node", themeName);
   const children = shapeForNode(node, style);
   const label = node.label ?? node.id;
   const verticalCenter = node.y + node.height / 2;
@@ -477,9 +490,10 @@ function renderEdge(
   document: DiagramDocument,
   edge: PositionedEdge,
   options: SvgRenderOptions,
-  idPrefix: string
+  idPrefix: string,
+  themeName: string
 ): RenderedElement {
-  const style = resolveStyle(document, edge, options.theme, "edge");
+  const style = resolveStyle(document, edge, options.theme, "edge", themeName);
   const direction = edge.direction ?? "forward";
   const arrowEnd = style.arrowEnd ?? "filled-triangle";
   const arrowStart = style.arrowStart ?? "filled-triangle";
@@ -593,10 +607,11 @@ function renderActivation(
   document: DiagramDocument,
   bar: ActivationBar,
   options: SvgRenderOptions,
-  idPrefix: string
+  idPrefix: string,
+  themeName: string
 ): SvgElementSpec {
   const proxy = { id: bar.id, kind: "activation" };
-  const style = resolveStyle(document, proxy, options.theme, "activation");
+  const style = resolveStyle(document, proxy, options.theme, "activation", themeName);
   return {
     name: "rect",
     attrs: {
