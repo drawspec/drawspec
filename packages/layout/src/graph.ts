@@ -26,6 +26,7 @@ function sortedEdges(document: DiagramDocument): DiagramEdge[] {
 
 function computeDepths(nodes: DiagramNode[], edges: DiagramEdge[]): Record<string, number> {
   const nodeIds = nodes.map((node) => node.id).sort();
+  const nodeSet = new Set(nodeIds);
   const depth: Record<string, number> = {};
   for (const id of nodeIds) {
     depth[id] = 0;
@@ -34,9 +35,7 @@ function computeDepths(nodes: DiagramNode[], edges: DiagramEdge[]): Record<strin
   const usefulEdges = edges
     .filter(
       (edge) =>
-        edge.sourceId !== edge.targetId &&
-        nodeIds.includes(edge.sourceId) &&
-        nodeIds.includes(edge.targetId)
+        edge.sourceId !== edge.targetId && nodeSet.has(edge.sourceId) && nodeSet.has(edge.targetId)
     )
     .sort((left, right) => left.id.localeCompare(right.id));
 
@@ -85,32 +84,57 @@ function rankIndexes(layers: Map<number, DiagramNode[]>): Record<string, number>
   return indexes;
 }
 
-function sortedConnectedEdges(
-  edges: DiagramEdge[],
-  depths: Record<string, number>,
+function edgeMapKey(sourceRank: number, targetRank: number): string {
+  return `${sourceRank}\0${targetRank}`;
+}
+
+function connectedEdgesForRanks(
+  edgeMap: Map<string, DiagramEdge[]>,
   sourceRank: number,
   targetRank: number
 ): DiagramEdge[] {
-  return edges
-    .filter(
-      (edge) =>
-        edge.sourceId !== edge.targetId &&
-        depths[edge.sourceId] === sourceRank &&
-        depths[edge.targetId] === targetRank
-    )
-    .sort((left, right) => left.id.localeCompare(right.id));
+  return edgeMap.get(edgeMapKey(sourceRank, targetRank)) ?? [];
+}
+
+function buildConnectedEdgeMap(
+  edges: DiagramEdge[],
+  depths: Record<string, number>
+): Map<string, DiagramEdge[]> {
+  const edgeMap = new Map<string, DiagramEdge[]>();
+  for (const edge of edges) {
+    if (edge.sourceId === edge.targetId) {
+      continue;
+    }
+
+    const sourceRank = depths[edge.sourceId];
+    const targetRank = depths[edge.targetId];
+    if (sourceRank === undefined || targetRank === undefined) {
+      continue;
+    }
+
+    const key = edgeMapKey(sourceRank, targetRank);
+    const list = edgeMap.get(key) ?? [];
+    list.push(edge);
+    edgeMap.set(key, list);
+  }
+
+  for (const list of edgeMap.values()) {
+    list.sort((left, right) => left.id.localeCompare(right.id));
+  }
+
+  return edgeMap;
 }
 
 function countLayerCrossings(
-  edges: DiagramEdge[],
   depths: Record<string, number>,
-  indexes: Record<string, number>
+  indexes: Record<string, number>,
+  edgeMap: Map<string, DiagramEdge[]>
 ): number {
   const ranks = [...new Set(Object.values(depths))].sort((left, right) => left - right);
   let crossings = 0;
 
   for (const rank of ranks) {
-    const layerEdges = sortedConnectedEdges(edges, depths, rank, rank + 1);
+    const layerEdges = connectedEdgesForRanks(edgeMap, rank, rank + 1);
     for (let leftIndex = 0; leftIndex < layerEdges.length; leftIndex += 1) {
       for (let rightIndex = leftIndex + 1; rightIndex < layerEdges.length; rightIndex += 1) {
         const left = layerEdges[leftIndex];
@@ -136,14 +160,19 @@ function reorderLayerByBarycenter(
   neighborIndexes: Record<string, number>,
   useSources: boolean
 ): DiagramNode[] {
+  const baryMap = new Map<string, number>();
+  for (const node of layer) {
+    baryMap.set(node.id, barycenterForNode(node.id, edges, neighborIndexes, useSources));
+  }
+
   const previousIndexes: Record<string, number> = {};
   for (const [index, node] of layer.entries()) {
     previousIndexes[node.id] = index;
   }
 
   return [...layer].sort((left, right) => {
-    const leftCenter = barycenterForNode(left.id, edges, neighborIndexes, useSources);
-    const rightCenter = barycenterForNode(right.id, edges, neighborIndexes, useSources);
+    const leftCenter = baryMap.get(left.id) ?? Number.POSITIVE_INFINITY;
+    const rightCenter = baryMap.get(right.id) ?? Number.POSITIVE_INFINITY;
     if (leftCenter !== rightCenter) {
       return leftCenter - rightCenter;
     }
@@ -179,9 +208,10 @@ function minimizeCrossings(
 ): DiagramNode[] {
   let layers = groupNodesByDepth(nodes, depths);
   let bestLayers = layers;
-  let bestCrossings = countLayerCrossings(edges, depths, rankIndexes(layers));
+  const edgeMap = buildConnectedEdgeMap(edges, depths);
+  let bestCrossings = countLayerCrossings(depths, rankIndexes(layers), edgeMap);
   const ranks = [...layers.keys()].sort((left, right) => left - right);
-  const maxIterations = Math.max(1, nodes.length * 2);
+  const maxIterations = 24;
 
   for (let iteration = 0; iteration < maxIterations; iteration += 1) {
     let changed = false;
@@ -191,7 +221,7 @@ function minimizeCrossings(
       const current = layers.get(rank) ?? [];
       const reordered = reorderLayerByBarycenter(
         current,
-        sortedConnectedEdges(edges, depths, rank - 1, rank),
+        connectedEdgesForRanks(edgeMap, rank - 1, rank),
         rankIndexes(new Map([[rank - 1, previous]])),
         true
       );
@@ -204,7 +234,7 @@ function minimizeCrossings(
       const current = layers.get(rank) ?? [];
       const reordered = reorderLayerByBarycenter(
         current,
-        sortedConnectedEdges(edges, depths, rank, rank + 1),
+        connectedEdgesForRanks(edgeMap, rank, rank + 1),
         rankIndexes(new Map([[rank + 1, next]])),
         false
       );
@@ -213,7 +243,7 @@ function minimizeCrossings(
     }
 
     const previousBest = bestCrossings;
-    const crossings = countLayerCrossings(edges, depths, rankIndexes(layers));
+    const crossings = countLayerCrossings(depths, rankIndexes(layers), edgeMap);
     if (crossings < bestCrossings) {
       bestCrossings = crossings;
       bestLayers = layers;
