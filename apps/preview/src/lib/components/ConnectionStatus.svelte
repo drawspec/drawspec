@@ -1,4 +1,5 @@
 <script lang="ts">
+import { connected } from "$lib/stores/diagram";
 </script>
 
 <div class="status" class:connected={$connected} title={$connected ? "Connected" : "Disconnected"}>

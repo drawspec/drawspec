@@ -1,5 +1,10 @@
 <script lang="ts">
+import ConnectionStatus from "$lib/components/ConnectionStatus.svelte";
+import DiagnosticsPanel from "$lib/components/DiagnosticsPanel.svelte";
+import DiagramList from "$lib/components/DiagramList.svelte";
+import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 import {
+  connected,
   currentSvg,
   diagnostics as diagnosticsStore,
   diagrams,

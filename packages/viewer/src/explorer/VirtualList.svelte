@@ -42,7 +42,7 @@ const visibleItems = $derived(
         const idx = startIndex + i;
         const item = items[idx];
         return item !== undefined ? { item, index: idx } : null;
-      }).filter((entry): entry is { item: unknown; index: number } => entry !== null)
+      }).filter((entry): entry is NonNullable<typeof entry> => entry !== null)
 );
 
 const offsetY = $derived(startIndex * itemHeight);

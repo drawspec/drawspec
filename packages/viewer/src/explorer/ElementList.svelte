@@ -33,7 +33,7 @@ function handleClick(elementId: string): void {
 {#if elements.length > 0}
   <div class="element-list">
     <VirtualList items={elements} itemHeight={ITEM_HEIGHT} overscan={8}>
-      {#snippet children(item, index, style)}
+      {#snippet children(item, _index, style)}
         {@const el = item as SerializedElement}
         {@const isHidden = hiddenIds.has(el.id)}
         {@const isHighlighted = highlightedIds.has(el.id)}

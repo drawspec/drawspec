@@ -20,6 +20,7 @@
     "preview:dev": "bun run --filter '@drawspec/preview' dev",
     "docs:dev": "bun packages/cli/src/index.ts build docs --content-dir docs/content --output-dir docs/dist && cd apps/docs && bunx vite dev",
     "docs:build": "bun packages/cli/src/index.ts build docs --content-dir docs/content --output-dir docs/dist && cd apps/docs && bunx vite build",
+    "svelte-check": "cd packages/viewer && svelte-check --threshold error && cd ../../apps/docs && svelte-kit sync && svelte-check --threshold error && cd ../../apps/preview && svelte-kit sync && svelte-check --threshold error",
     "changeset": "changeset",
     "release": "bun run check && changeset version && bun run build"
   },
@@ -36,6 +37,7 @@
     "@drawspec/uml-sequence": "workspace:*",
     "@drawspec/validation": "workspace:*",
     "@types/node": "25.9.1",
+    "svelte-check": "4.6.0",
     "typescript": "latest"
   }
 }
