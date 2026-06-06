@@ -24,8 +24,23 @@ jobs:
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: cog check ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
 
-  check:
-    name: check
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          curl https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+      - run: bun install --frozen-lockfile
+      - run: biome check .
+
+  svelte-check:
+    name: svelte-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -38,7 +53,7 @@ jobs:
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
       - run: bun install --frozen-lockfile
       - run: bun run build
-      - run: bun run check
+      - run: bun run svelte-check
 
   typecheck:
     name: typecheck
@@ -91,7 +106,7 @@ jobs:
     name: perf-check
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
-    needs: [check]
+    needs: [lint, svelte-check, typecheck, test, build]
     timeout-minutes: 15
     env:
       DRAWSPEC_RUN_BENCH: "1"

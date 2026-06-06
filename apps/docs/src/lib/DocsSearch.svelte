@@ -37,11 +37,13 @@ const results = $derived.by(() => {
   const normalizedQuery = query.trim();
   if (search === undefined || normalizedQuery.length < 2) return [];
 
-  return (search.search(normalizedQuery) as SearchResultItem[]).slice(0, 8).map((result) => ({
-    ...result,
-    description: result.description ?? "",
-    text: result.text ?? "",
-  }));
+  return (search.search(normalizedQuery) as unknown as SearchResultItem[])
+    .slice(0, 8)
+    .map((result) => ({
+      ...result,
+      description: result.description ?? "",
+      text: result.text ?? "",
+    }));
 });
 
 onMount(async () => {

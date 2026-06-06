@@ -15,16 +15,11 @@
 <script lang="ts">
 import type { ArchitectureRelationshipKind } from "@drawspec/architecture";
 import type { Diagnostic } from "@drawspec/core";
+import type { SerializedElement, SerializedRelationship } from "./explorer";
 import ElementList from "./explorer/ElementList.svelte";
 import { createExplorerState, type ExplorerState } from "./explorer/state";
 import { normalizeViewerPayload, renderDiagramSvg } from "./render";
-import type {
-  ArchitectureData,
-  DrawspecTheme,
-  SerializedElement,
-  SerializedRelationship,
-  SourceSelectDetail,
-} from "./types";
+import type { ArchitectureData, DrawspecTheme, SourceSelectDetail } from "./types";
 
 let {
   src = "",
@@ -211,7 +206,7 @@ function onCanvasClick(event: MouseEvent): void {
   const target = event.target as HTMLElement;
   const svgElement = target.closest("[data-element-id]") as HTMLElement | null;
   if (svgElement) {
-    const elementId = svgElement.dataset.elementId;
+    const elementId = svgElement.dataset["elementId"];
     if (elementId) {
       selectElementById(elementId);
       return;
@@ -219,7 +214,7 @@ function onCanvasClick(event: MouseEvent): void {
   }
   const groupElement = target.closest("[data-group-id]") as HTMLElement | null;
   if (groupElement) {
-    const groupId = groupElement.dataset.groupId;
+    const groupId = groupElement.dataset["groupId"];
     if (groupId) {
       explorer.toggleGroupCollapsed(groupId);
       applyCollapsedState();
@@ -240,15 +235,15 @@ function dispatchSourceSelect(event: MouseEvent): void {
   const sourceEl = target.closest("[data-source-file]") as HTMLElement | null;
   if (sourceEl === null) return;
 
-  const file = sourceEl.dataset.sourceFile;
-  const lineAttr = sourceEl.dataset.sourceLine;
+  const file = sourceEl.dataset["sourceFile"];
+  const lineAttr = sourceEl.dataset["sourceLine"];
   if (file === undefined || lineAttr === undefined) return;
 
   const line = Math.max(1, Math.trunc(Number(lineAttr)));
   if (!Number.isFinite(line)) return;
 
   const detail: SourceSelectDetail = { file, line };
-  const columnAttr = sourceEl.dataset.sourceColumn;
+  const columnAttr = sourceEl.dataset["sourceColumn"];
   if (columnAttr !== undefined) {
     const column = Math.max(1, Math.trunc(Number(columnAttr)));
     if (Number.isFinite(column)) {
@@ -280,11 +275,11 @@ function applyVisualFilters(): void {
   const highlightedIds = explorer?.highlightedElementIds ?? new Set();
   const hiddenIds = explorer?.hiddenElementIds ?? new Set();
   const visibleRels = explorer?.visibleRelationshipIds ?? new Set();
-  const hasSearch = explorer?.searchQuery.length > 0;
+  const hasSearch = (explorer?.searchQuery?.length ?? 0) > 0;
 
   for (const node of svgRoot.querySelectorAll("[data-element-id]")) {
     const el = node as HTMLElement;
-    const id = el.dataset.elementId ?? "";
+    const id = el.dataset["elementId"] ?? "";
     el.classList.toggle("ds-dimmed", hasSearch && !highlightedIds.has(id));
     el.classList.toggle("ds-hidden", hiddenIds.has(id));
     el.classList.toggle("ds-highlighted", highlightedIds.has(id));
@@ -292,7 +287,7 @@ function applyVisualFilters(): void {
 
   for (const edge of svgRoot.querySelectorAll("[data-edge-id]")) {
     const el = edge as HTMLElement;
-    const id = el.dataset.edgeId ?? "";
+    const id = el.dataset["edgeId"] ?? "";
     el.classList.toggle("ds-dimmed", !visibleRels.has(id));
   }
 }
@@ -305,14 +300,14 @@ function applyCollapsedState(): void {
 
   for (const group of svgRoot.querySelectorAll("[data-group-id]")) {
     const el = group as HTMLElement;
-    const id = el.dataset.groupId ?? "";
+    const id = el.dataset["groupId"] ?? "";
     el.classList.toggle("ds-collapsed", collapsed.has(id));
   }
 
   const hiddenIds = explorer?.hiddenElementIds ?? new Set();
   for (const node of svgRoot.querySelectorAll("[data-element-id]")) {
     const el = node as HTMLElement;
-    const id = el.dataset.elementId ?? "";
+    const id = el.dataset["elementId"] ?? "";
     el.classList.toggle("ds-hidden", hiddenIds.has(id));
   }
   applyVisualFilters();
