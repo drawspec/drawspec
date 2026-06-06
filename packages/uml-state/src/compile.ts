@@ -66,7 +66,7 @@ function compileEdge(
 
 export function compileStateDocument(model: StateDomainModel): StateDocument {
   const nodes = model.elements.map(compileNode).sort(byId);
-  const transitions = model.elements.flatMap((element) => element.transitions);
+  const transitions = model.elements.flatMap((element) => element.transitions).filter(Boolean);
   const diagnostics: Diagnostic[] = [];
   const edges = transitions
     .map((transition) => compileEdge(transition, model.elements, diagnostics))
