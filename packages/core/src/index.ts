@@ -43,6 +43,7 @@ export type {
   DiagramThemeOverride,
   EdgeStyleConfig,
   LayoutSpec,
+  NodeLayoutOptions,
   NodeStyleConfig,
   SourceRef,
   SpacingConfig,

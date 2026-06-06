@@ -437,21 +437,23 @@ function renderNode(
   const style = resolveStyle(document, node, options.theme, "node", themeName);
   const children = shapeForNode(node, style);
   const label = node.label ?? node.id;
-  const verticalCenter = node.y + node.height / 2;
-  const baseline = verticalCenter + style.fontSize * 0.35;
-  const labels: SvgLabelSpec[] = [
+  const lines = node.labelLines ?? [label];
+  const lineHeight = style.fontSize * 1.3;
+  const startY =
+    node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2;
+  const labels: SvgLabelSpec[] = lines.map((line, index) =>
     textElement({
-      id: stableSvgId(idPrefix, "label", "node", node.id),
+      id: stableSvgId(idPrefix, "label", "node", `${node.id}-line${index}`),
       ownerId: node.id,
-      label,
+      label: line,
       x: node.x + node.width / 2,
-      y: baseline,
+      y: startY + index * lineHeight,
       style,
       anchor: "middle",
       maxWidth: Math.max(0, node.width - style.fontSize),
       clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
-    }),
-  ];
+    })
+  );
   return {
     element: {
       name: "g",

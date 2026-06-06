@@ -96,13 +96,13 @@
     <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-1e5qrw6" text-anchor="start" transform="translate(0 51.2)" x="184" y="254">
       declined
     </text>
-    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-payments-0yaafn1" text-anchor="middle" x="420" y="72.9">
+    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-payments-line0-1cbqhmm" text-anchor="middle" x="420" y="72.9">
       Payments
     </text>
-    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-shop-0l74ef6" text-anchor="middle" x="260" y="72.9">
+    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-shop-line0-0ycwolp" text-anchor="middle" x="260" y="72.9">
       Shop
     </text>
-    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-user-0m5ij8x" text-anchor="middle" x="100" y="72.9">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-user-line0-0k5i1mq" text-anchor="middle" x="100" y="72.9">
       User
     </text>
   </g>

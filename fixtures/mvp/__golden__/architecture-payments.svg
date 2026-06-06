@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg aria-describedby="drawspec-view_dcd46170de182cc6-05bzavs-desc-0xl2ltu" aria-labelledby="drawspec-view_dcd46170de182cc6-05bzavs-title-19l6ygv" height="336" id="drawspec-view_dcd46170de182cc6-05bzavs" role="img" viewBox="0 0 728 336" width="728" xmlns="http://www.w3.org/2000/svg">
+<svg aria-describedby="drawspec-view_dcd46170de182cc6-05bzavs-desc-0xl2ltu" aria-labelledby="drawspec-view_dcd46170de182cc6-05bzavs-title-19l6ygv" height="272" id="drawspec-view_dcd46170de182cc6-05bzavs" role="img" viewBox="0 0 920 272" width="920" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
     --ds-activation-fill: #e0f2fe;
@@ -21,7 +21,7 @@
   <desc id="drawspec-view_dcd46170de182cc6-05bzavs-desc-0xl2ltu">
     architecture diagram view_dcd46170de182cc6
   </desc>
-  <rect fill="#ffffff" height="336" width="728" x="0" y="0" />
+  <rect fill="#ffffff" height="272" width="920" x="0" y="0" />
   <defs>
     <marker id="drawspec-view_dcd46170de182cc6-05bzavs-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <circle cx="4" cy="4" fill="#475569" r="3" />
@@ -43,25 +43,25 @@
     </marker>
   </defs>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_1119936806011451-0y9nwk5">
-    <path d="M 100 68 L 276 268" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 100 68 L 340 204" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_3093dfff7a08d97f-134qjmy">
-    <path d="M 276 68 L 452 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 340 68 L 580 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_51b9312d0f5b5c39-06oobad">
-    <path d="M 100 68 L 276 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 100 68 L 340 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-edge-rel_d0f8539ad07ce354-061ahw2">
-    <path d="M 452 68 L 628 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 580 68 L 820 68" fill="none" marker-end="url(#drawspec-view_dcd46170de182cc6-05bzavs-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-container_4c19412c99504b8f-11vv76e">
-    <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="216" y="40" />
+    <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="280" y="40" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-container_ac6c49ec729308c5-08rv8bn">
-    <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="392" y="40" />
+    <rect fill="#ecfeff" height="56" rx="12" ry="12" stroke="#0891b2" stroke-width="1.5" width="120" x="520" y="40" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-database_2e2143da83454bad-01b1jsr">
-    <path d="M 568 54 C 568 35.333 688 35.333 688 54 L 688 82 C 688 100.667 568 100.667 568 82 Z" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
+    <path d="M 760 54 C 760 35.333 880 35.333 880 54 L 880 82 C 880 100.667 760 100.667 760 82 Z" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-person_bc8335d0874d8bfb-0xe2p25">
     <rect fill="#f0fdf4" height="56" rx="12" ry="12" stroke="#15803d" stroke-width="1.5" width="120" x="40" y="40" />
@@ -69,46 +69,46 @@
     <path d="M 58 62 v 15 M 49 70 h 18" fill="none" stroke="#15803d" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-softwaresystem_47a27c87ada29e42-0cene4k">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="240" />
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="176" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-text-layer-0a2fs7c">
     <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_1119936806011451-0nbm6fu-bg-0yg30l3">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="117.06" x="129.47" y="144.8" />
-      <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_1119936806011451-0nbm6fu" text-anchor="middle" x="188" y="160">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="117.06" x="161.47" y="112.8" />
+      <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_1119936806011451-0nbm6fu" text-anchor="middle" x="220" y="128">
         Browses catalog
       </text>
     </g>
     <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-1tss1wt-bg-1dh352z" transform="translate(0 49.2)">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="130.78" x="298.61" y="44.8" />
-      <text data-width="122.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-1tss1wt" text-anchor="middle" x="364" y="60">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="130.78" x="394.61" y="44.8" />
+      <text data-width="122.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-1tss1wt" text-anchor="middle" x="460" y="60">
         Requests payment
       </text>
     </g>
-    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-129tmbi-bg-07lv9od" transform="translate(0 49.2)">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="90.74" x="142.63" y="44.8" />
-      <text data-width="82.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-129tmbi" text-anchor="middle" x="188" y="60">
+    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-129tmbi-bg-07lv9od">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="90.74" x="174.63" y="44.8" />
+      <text data-width="82.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-129tmbi" text-anchor="middle" x="220" y="60">
         Places order
       </text>
     </g>
     <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-1u4zyll-bg-1w26vuh" transform="translate(0 49.2)">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="140.3" x="469.85" y="44.8" />
-      <text data-width="132.3" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-1u4zyll" text-anchor="middle" x="540" y="60">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="140.3" x="629.85" y="44.8" />
+      <text data-width="132.3" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-1u4zyll" text-anchor="middle" x="700" y="60">
         Stores authorization
       </text>
     </g>
-    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_4c19412c99504b8f-1814jv9" text-anchor="middle" x="276" y="72.9">
+    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_4c19412c99504b8f-line0-11ea9fq" text-anchor="middle" x="340" y="72.9">
       Web App
     </text>
-    <text data-width="93.1" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_ac6c49ec729308c5-0wg89rw" text-anchor="middle" x="452" y="72.9">
-      Payments API
+    <text data-width="81.9" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_ac6c49ec729308c5-line0-03dtynv" text-anchor="middle" x="580" y="72.9">
+      Payments …
     </text>
-    <text data-width="46.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-database_2e2143da83454bad-05kgbxi" text-anchor="middle" x="628" y="72.9">
+    <text data-width="46.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-database_2e2143da83454bad-line0-1c4kr8h" text-anchor="middle" x="820" y="72.9">
       Ledger
     </text>
-    <text data-width="63.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-person_bc8335d0874d8bfb-1rukz5c" text-anchor="middle" x="100" y="72.9">
+    <text data-width="63.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-person_bc8335d0874d8bfb-line0-0z9ira7" text-anchor="middle" x="100" y="72.9">
       Customer
     </text>
-    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-softwaresystem_47a27c87ada29e42-05ekjnp" text-anchor="middle" x="276" y="272.9">
+    <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-softwaresystem_47a27c87ada29e42-line0-05ko4uu" text-anchor="middle" x="340" y="208.9">
       Shop
     </text>
   </g>

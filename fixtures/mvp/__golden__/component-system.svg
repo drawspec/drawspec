@@ -109,25 +109,25 @@
         Reserve stock
       </text>
     </g>
-    <text data-width="91.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_301fa988-0l6yjhu" text-anchor="middle" x="100" y="248.9">
-      Order Service
+    <text data-width="85.26" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_301fa988-line0-0rg2bml" text-anchor="middle" x="100" y="248.9">
+      Order Serv…
     </text>
-    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_3611b529-1wl71df" text-anchor="middle" x="100" y="72.9">
+    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_3611b529-line0-0qkfprs" text-anchor="middle" x="100" y="72.9">
       Web App
     </text>
-    <text data-width="104.58" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_3b1de8f3-1cgevt2" text-anchor="middle" x="100" y="424.9">
-      Payment Serv…
+    <text data-width="83.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_3b1de8f3-line0-0gfjts1" text-anchor="middle" x="100" y="424.9">
+      Payment S…
     </text>
-    <text data-width="101.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_ff803cd6-0q5sg28" text-anchor="middle" x="300" y="424.9">
-      Inventory Ser…
+    <text data-width="79.1" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_ff803cd6-line0-0pg0vzz" text-anchor="middle" x="300" y="424.9">
+      Inventory …
     </text>
-    <text data-width="90.3" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_487bdfd7-1nd1sj6" text-anchor="middle" x="300" y="600.9">
-      Inventory API
+    <text data-width="79.1" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_487bdfd7-line0-0gihg4d" text-anchor="middle" x="300" y="600.9">
+      Inventory …
     </text>
-    <text data-width="85.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_66670299-19mieav" text-anchor="middle" x="100" y="600.9">
+    <text data-width="85.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_66670299-line0-1uw8i0c" text-anchor="middle" x="100" y="600.9">
       Payment API
     </text>
-    <text data-width="66.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_6725ba7f-027sdpy" text-anchor="middle" x="500" y="424.9">
+    <text data-width="66.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_6725ba7f-line0-0fl0sk1" text-anchor="middle" x="500" y="424.9">
       Order API
     </text>
   </g>

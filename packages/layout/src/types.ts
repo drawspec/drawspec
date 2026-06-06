@@ -1,4 +1,5 @@
 import type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode } from "@drawspec/core";
+import type { NormalizedNodeSizingOptions } from "./sizing";
 
 export type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode };
 
@@ -25,6 +26,40 @@ export interface LayoutSpacing {
   lifeline: number;
 }
 
+/** Text style for label measurement. */
+export interface TextStyle {
+  /** Font size in pixels. */
+  fontSize?: number;
+  /** CSS font-family value. */
+  fontFamily?: string;
+}
+
+/** Interface for measuring text width. Deterministic, no DOM dependency. */
+export interface TextMeasurer {
+  /** Measure label width in pixels for the provided font size. */
+  measure(label: string, fontSize: number): number;
+}
+
+/** Node sizing configuration at the layout level. */
+export interface NodeSizingOptions {
+  /** Sizing mode. "auto" measures labels, "fixed" uses defaultSize. Default: "auto". */
+  mode?: "auto" | "fixed";
+  /** Base size when mode is "fixed", or minimum size for "auto". Default: 120×56. */
+  defaultSize?: Partial<Size>;
+  /** Minimum node size. Default: 60×40. */
+  minSize?: Partial<Size>;
+  /** Maximum node size. Nodes exceeding this get truncation. Default: unbounded. */
+  maxSize?: Partial<Size>;
+  /** Padding around label text. Default: { x: 16, y: 10 }. */
+  padding?: { x: number; y: number };
+  /** Global label wrapping. Default: "none". */
+  labelWrap?: "none" | "auto" | number;
+  /** Text style for measurement. Default: { fontSize: 14, fontFamily: "Arial, sans-serif" }. */
+  typography?: TextStyle;
+  /** Custom text measurer. Default: built-in heuristic measurer. */
+  measurer?: TextMeasurer;
+}
+
 export interface LayoutOptions {
   direction?: LayoutDirection;
   /** Routing strategy for graph edges. Defaults to `"straight"`. */
@@ -32,9 +67,14 @@ export interface LayoutOptions {
   spacing?: Partial<LayoutSpacing>;
   padding?: number;
   nodeSize?: Partial<Size>;
+  /** Node sizing configuration. */
+  sizing?: NodeSizingOptions;
 }
 
-export interface PositionedNode extends DiagramNode, Size, Point {}
+export interface PositionedNode extends DiagramNode, Size, Point {
+  /** Pre-computed label lines from auto-sizing. Present when sizing mode is "auto". */
+  labelLines?: string[];
+}
 
 export interface PositionedEdge extends DiagramEdge {
   waypoints: Point[];
@@ -78,4 +118,5 @@ export interface NormalizedLayoutOptions {
   spacing: LayoutSpacing;
   padding: number;
   nodeSize: Size;
+  sizing: NormalizedNodeSizingOptions;
 }
