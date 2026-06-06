@@ -85,21 +85,36 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="392" />
   </g>
   <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-text-layer-0ba9ryy">
-    <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-0qaxbel" text-anchor="middle" x="600" y="236">
-      HTTPS
-    </text>
-    <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-046hrxi" text-anchor="middle" x="200" y="324">
-      TLS
-    </text>
-    <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-16h1v22" text-anchor="middle" x="700" y="236">
-      TLS
-    </text>
-    <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-0318s1e" text-anchor="middle" x="500" y="148">
-      HTTPS
-    </text>
-    <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-1h5kuj1" text-anchor="middle" x="100" y="324">
-      HTTPS
-    </text>
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-0qaxbel-bg-1umv8r3">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="572.48" y="220.8" />
+      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-0qaxbel" text-anchor="middle" x="600" y="236">
+        HTTPS
+      </text>
+    </g>
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-046hrxi-bg-0rehc8w">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="34.6" x="182.7" y="308.8" />
+      <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-046hrxi" text-anchor="middle" x="200" y="324">
+        TLS
+      </text>
+    </g>
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-16h1v22-bg-0wzi5pf">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="34.6" x="682.7" y="220.8" />
+      <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-16h1v22" text-anchor="middle" x="700" y="236">
+        TLS
+      </text>
+    </g>
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-0318s1e-bg-1kb9ap8">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="472.48" y="132.8" />
+      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-0318s1e" text-anchor="middle" x="500" y="148">
+        HTTPS
+      </text>
+    </g>
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-1h5kuj1-bg-1ihi95f">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="72.48" y="308.8" />
+      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-1h5kuj1" text-anchor="middle" x="100" y="324">
+        HTTPS
+      </text>
+    </g>
     <text data-width="86.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_0d327c3221e87ae4-1542hfm" text-anchor="middle" x="100" y="72.9">
       Static Assets
     </text>

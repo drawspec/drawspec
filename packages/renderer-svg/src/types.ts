@@ -1,5 +1,5 @@
 import type { DiagramDocument } from "@drawspec/core";
-import type { PositionedDiagram } from "@drawspec/layout";
+import type { LayoutRouting, PositionedDiagram } from "@drawspec/layout";
 
 export type SvgOutput = string;
 
@@ -53,6 +53,8 @@ export interface SvgRenderOptions {
   themeName?: string;
   /** Optional viewport for culling off-screen elements. Elements entirely outside this rectangle are skipped. */
   viewport?: SvgViewport;
+  /** Edge routing strategy. Defaults to "straight". */
+  routing?: LayoutRouting;
   /** Padding around diagram content (pixels). Applied when autoFit is true. */
   padding?: number;
   /** Automatically fit viewport to content bounds. */
@@ -83,6 +85,8 @@ export interface ResolvedStyle {
   text: string;
   fontFamily: string;
   fontSize: number;
+  /** Background color for edge labels. Defaults to theme background (invisible line interruption). */
+  labelBg?: string;
   lineStyle?: LineStyle;
   strokeDasharray?: string;
 }
