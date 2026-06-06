@@ -71,48 +71,15 @@ Views define how elements are rendered and which relationships are visible.
 
 The context view shows the system at its highest level — the people and external systems that interact with it:
 
-\`\`\`typescript
-import { workspace, softwareSystem, person } from "@drawspec/architecture";
-
-export default workspace("Shipping system", (ws) => {
-  const customer = ws.model.add(person("Customer"));
-  const shipping = ws.model.add(softwareSystem("Shipping System"));
-
-  customer.uses(shipping, "Tracks packages");
-
-  ws.views.systemContext(shipping, "shipping-context", (view) => {
-    view.include(customer);
-    view.autoLayout("left-right");
-  });
-});
-\`\`\`
+@diagram ./architecture-c4-context.arch.ts "Shipping system context diagram"
+@source typescript ./architecture-c4-context.arch.ts
 
 ### Container View
 
 A container view zooms into a software system to show the containers it contains:
 
-\`\`\`typescript
-import { workspace, softwareSystem, container, database, person } from "@drawspec/architecture";
-
-export default workspace("Payments platform", (ws) => {
-  const customer = ws.model.add(person("Customer", { description: "Buyer placing an order" }));
-  const shop = ws.model.add(softwareSystem("Shop", { description: "Online storefront" }));
-
-  const web = shop.add(container("Web App", { technology: "Bun + React" }));
-  const api = shop.add(container("Payments API", { technology: "Bun" }));
-  const ledger = shop.add(database("Ledger", { technology: "PostgreSQL" }));
-
-  customer.uses(shop, "Browses catalog");
-  customer.uses(web, "Places order");
-  web.uses(api, "Processes payment");
-  api.uses(ledger, "Records transaction");
-
-  ws.views.container(shop, "payments-containers", (view) => {
-    view.include(shop, customer);
-    view.autoLayout("left-right");
-  });
-});
-\`\`\`
+@diagram ./architecture-c4-container.arch.ts "Payments platform container diagram"
+@source typescript ./architecture-c4-container.arch.ts
 
 ## Auto Layout
 
@@ -129,32 +96,7 @@ view.autoLayout("bottom-up"); // bottom-to-top
 
 Here is a complete architecture workspace defining a payments platform:
 
-\`\`\`typescript
-import {
-  container,
-  database,
-  person,
-  softwareSystem,
-  workspace,
-} from "@drawspec/architecture";
-
-export default workspace("Payments platform", (ws) => {
-  const customer = ws.model.add(person("Customer", { description: "Buyer placing an order" }));
-  const shop = ws.model.add(softwareSystem("Shop", { description: "Online storefront" }));
-
-  const web = shop.add(container("Web App", { technology: "Bun + React", tags: ["frontend"] }));
-  const api = shop.add(container("Payments API", { technology: "Bun" }));
-  const ledger = shop.add(database("Ledger", { technology: "PostgreSQL" }));
-
-  customer.uses(shop, "Browses catalog", { technology: "HTTPS" });
-  customer.uses(web, "Places order", { technology: "HTTPS" });
-  web.uses(api, "Requests payment", { technology: "HTTPS" });
-  api.uses(ledger, "Stores authorization", { technology: "SQL" });
-
-  ws.views.container(shop, "payments-containers", (view) =>
-    view.include("*").autoLayout("left-right")
-  );
-});
-\`\`\`
+@diagram ./architecture-c4-complete.arch.ts "Payments platform architecture diagram"
+@source typescript ./architecture-c4-complete.arch.ts
 `,
 });

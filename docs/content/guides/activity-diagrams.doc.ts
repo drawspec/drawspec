@@ -12,28 +12,8 @@ Activity diagrams visualize the flow of actions and decisions in a process. They
 
 Model a simple order processing flow:
 
-\`\`\`typescript
-import { activityDiagram } from "@drawspec/uml-activity";
-
-export default activityDiagram("Order processing", (ctx) => {
-  const { start, action, decision, end } = ctx;
-  const checkStock = action("Check Stock");
-  const stockAvailable = decision("Stock available?");
-  const expressShipping = decision("Express shipping?");
-  const notifyCustomer = action("Notify customer");
-
-  start()
-    .to("Validate Order")
-    .to(checkStock)
-    .to(stockAvailable);
-
-  stockAvailable.when("yes").to(expressShipping);
-  stockAvailable.when("no").to("Backorder").to(notifyCustomer);
-  expressShipping.when("yes").to("Ship express").to(notifyCustomer);
-  expressShipping.when("no").to("Ship standard").to(notifyCustomer);
-  notifyCustomer.to(end());
-});
-\`\`\`
+@diagram ./activity-quick-start.activity.ts "Quick start activity diagram"
+@source typescript ./activity-quick-start.activity.ts
 
 The callback receives a context with \`start\`, \`action\`, \`decision\`, and \`end\` functions for building the flow.
 
@@ -133,35 +113,7 @@ processInParallel.when("Task C").to("Task C").to("Merge");
 
 Here is a complete activity diagram for a purchase approval workflow:
 
-\`\`\`typescript
-import { activityDiagram } from "@drawspec/uml-activity";
-
-export default activityDiagram("Purchase approval", (ctx) => {
-  const { start, action, decision, end } = ctx;
-  const calculateTotal = action("Calculate total");
-  const amountExceedsLimit = decision("Amount exceeds limit?");
-  const managerApproved = decision("Manager approved?");
-  const directorApproved = decision("Director approved?");
-  const sendConfirmation = action("Send confirmation");
-  const notifyRequester = action("Notify requester");
-
-  start()
-    .to("Submit request")
-    .to(calculateTotal)
-    .to(amountExceedsLimit);
-
-  amountExceedsLimit.when("yes").to("Route to manager").to("Manager review").to(managerApproved);
-  amountExceedsLimit.when("no").to("Auto-approve").to("Process order").to(sendConfirmation);
-
-  managerApproved.when("yes").to("Process order").to(sendConfirmation);
-  managerApproved.when("no").to("Escalate to director").to("Director review").to(directorApproved);
-
-  directorApproved.when("yes").to("Process order").to(sendConfirmation);
-  directorApproved.when("no").to("Reject request").to(notifyRequester);
-
-  sendConfirmation.to(end());
-  notifyRequester.to(end());
-});
-\`\`\`
+@diagram ./activity-complete.activity.ts "Purchase approval activity diagram"
+@source typescript ./activity-complete.activity.ts
 `,
 });
