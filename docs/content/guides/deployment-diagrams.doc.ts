@@ -12,8 +12,8 @@ Deployment diagrams visualize the physical deployment of software artifacts acro
 
 Define deployment nodes with artifacts:
 
-@diagram ./deployment-quick-start.deployment.ts "Quick start deployment diagram"
 @source typescript ./deployment-quick-start.deployment.ts
+@diagram ./deployment-quick-start.deployment.ts "Quick start deployment diagram"
 
 The callback receives a builder with methods for creating deployment nodes, infrastructure nodes, artifacts, and communication paths.
 
@@ -103,7 +103,7 @@ builder.deploymentNode("Docker Host", (node) => {
 
 Here is a complete deployment diagram for a three-tier web application:
 
-@diagram ./deployment-complete.deployment.ts "Three-tier deployment diagram"
 @source typescript ./deployment-complete.deployment.ts
+@diagram ./deployment-complete.deployment.ts "Three-tier deployment diagram"
 `,
 });

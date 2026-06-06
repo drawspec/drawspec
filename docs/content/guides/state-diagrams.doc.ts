@@ -12,8 +12,8 @@ State diagrams visualize the behavior of systems that transition between discret
 
 Create a traffic light state machine:
 
-@diagram ./state-quick-start.state.ts "Quick start state"
 @source typescript ./state-quick-start.state.ts
+@diagram ./state-quick-start.state.ts "Quick start state"
 
 The callback receives helpers for creating states, initial pseudostates, and final pseudostates.
 
@@ -120,7 +120,7 @@ state("Disconnected", (s) => {
 
 Here is a complete state diagram for an order processing system:
 
-@diagram ./state-complete.state.ts "Order processing state"
 @source typescript ./state-complete.state.ts
+@diagram ./state-complete.state.ts "Order processing state"
 `,
 });

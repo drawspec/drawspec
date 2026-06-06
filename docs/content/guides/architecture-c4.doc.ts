@@ -71,15 +71,15 @@ Views define how elements are rendered and which relationships are visible.
 
 The context view shows the system at its highest level — the people and external systems that interact with it:
 
-@diagram ./architecture-c4-context.arch.ts "Shipping system context diagram"
 @source typescript ./architecture-c4-context.arch.ts
+@diagram ./architecture-c4-context.arch.ts "Shipping system context diagram"
 
 ### Container View
 
 A container view zooms into a software system to show the containers it contains:
 
-@diagram ./architecture-c4-container.arch.ts "Payments platform container diagram"
 @source typescript ./architecture-c4-container.arch.ts
+@diagram ./architecture-c4-container.arch.ts "Payments platform container diagram"
 
 ## Auto Layout
 
@@ -96,7 +96,7 @@ view.autoLayout("bottom-up"); // bottom-to-top
 
 Here is a complete architecture workspace defining a payments platform:
 
-@diagram ./architecture-c4-complete.arch.ts "Payments platform architecture diagram"
 @source typescript ./architecture-c4-complete.arch.ts
+@diagram ./architecture-c4-complete.arch.ts "Payments platform architecture diagram"
 `,
 });

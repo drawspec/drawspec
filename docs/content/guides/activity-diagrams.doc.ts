@@ -12,8 +12,8 @@ Activity diagrams visualize the flow of actions and decisions in a process. They
 
 Model a simple order processing flow:
 
-@diagram ./activity-quick-start.activity.ts "Quick start activity diagram"
 @source typescript ./activity-quick-start.activity.ts
+@diagram ./activity-quick-start.activity.ts "Quick start activity diagram"
 
 The callback receives a context with \`start\`, \`action\`, \`decision\`, and \`end\` functions for building the flow.
 
@@ -113,7 +113,7 @@ processInParallel.when("Task C").to("Task C").to("Merge");
 
 Here is a complete activity diagram for a purchase approval workflow:
 
-@diagram ./activity-complete.activity.ts "Purchase approval activity diagram"
 @source typescript ./activity-complete.activity.ts
+@diagram ./activity-complete.activity.ts "Purchase approval activity diagram"
 `,
 });
