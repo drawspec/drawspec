@@ -14,20 +14,7 @@ This example shows a simple client-server interaction where a user places an ord
 
 ## Code
 
-\`\`\`typescript
-import { sequence } from "@drawspec/uml-sequence";
-
-export default sequence("Order confirmation", (seq) => {
-  const user = seq.actor("User");
-  const shop = seq.participant("Shop");
-  const payments = seq.participant("Payments");
-
-  user.to(shop, "Place order");
-  shop.to(payments, "Authorize payment").note("Idempotency key included");
-  payments.to(shop, "Authorization approved");
-  shop.to(user, "Show confirmation");
-});
-\`\`\`
+@source typescript ./basic-sequence.sequence.ts
 
 ## How It Works
 
