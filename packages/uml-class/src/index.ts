@@ -58,13 +58,13 @@ export function uses(sourceName: string, targetName: string): ClassRelationship 
   return relationship("uses", sourceName, targetName);
 }
 
-export { implementsRelationship as implements };
+export { implementsRelationship as implements_ };
 
 export interface ClassDiagramBuilderApi {
   class_: typeof class_;
   interface_: typeof interface_;
   enum_: typeof enum_;
-  implements: typeof implementsRelationship;
+  implements_: typeof implementsRelationship;
   uses: typeof uses;
 }
 
@@ -72,7 +72,13 @@ export function classDiagram(
   title: string,
   callback: (api: ClassDiagramBuilderApi) => readonly (ClassDiagramElement | ClassRelationship)[]
 ): ClassDiagramDocument {
-  const entries = callback({ class_, interface_, enum_, implements: implementsRelationship, uses });
+  const entries = callback({
+    class_,
+    interface_,
+    enum_,
+    implements_: implementsRelationship,
+    uses,
+  });
   const elements = entries.filter((entry): entry is ClassDiagramElement => "name" in entry);
   const relationships = entries.filter(
     (entry): entry is ClassRelationship => "sourceName" in entry

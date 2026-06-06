@@ -1,6 +1,6 @@
 import { classDiagram } from "../../../packages/uml-class/src/index.js";
 
-export default classDiagram("Vehicle system", ({ class_, interface_, enum_, implements, uses }) => [
+export default classDiagram("Vehicle system", ({ class_, interface_, enum_, implements_, uses }) => [
   interface_("IDriveable", (i) => {
     i.method("start", { visibility: "public" });
     i.method("stop", { visibility: "public" });

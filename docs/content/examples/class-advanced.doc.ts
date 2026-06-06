@@ -17,7 +17,7 @@ This example shows a vehicle domain model with interfaces, enums, composition, a
 \`\`\`typescript
 import { classDiagram } from "@drawspec/uml-class";
 
-export default classDiagram("Vehicle system", ({ class_, interface_, enum_, implements, uses }) => [
+export default classDiagram("Vehicle system", ({ class_, interface_, enum_, implements_, uses }) => [
   interface_("IDriveable", (i) => {
     i.method("start", { visibility: "public" });
     i.method("stop", { visibility: "public" });

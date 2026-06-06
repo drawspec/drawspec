@@ -1,6 +1,6 @@
 import { classDiagram } from "../../../packages/uml-class/src/index.js";
 
-export default classDiagram("User management", ({ class_, interface_, enum_, implements, uses }) => [
+export default classDiagram("User management", ({ class_, interface_, enum_, implements_, uses }) => [
   class_("User", (c) => {
     c.field("id", "string");
     c.field("email", "string");
@@ -34,6 +34,6 @@ export default classDiagram("User management", ({ class_, interface_, enum_, imp
     e.value("Guest");
   }),
 
-  implements("Admin", "Repository"),
+  implements_("Admin", "Repository"),
   uses("Session", "Repository"),
 ]);
