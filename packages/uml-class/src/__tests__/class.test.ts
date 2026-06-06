@@ -1,15 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { simpleGraphLayout } from "@drawspec/layout";
 import { renderSvg } from "@drawspec/renderer-svg";
-import {
-  class_,
-  classDiagram,
-  compile,
-  enum_,
-  implements as implements_,
-  interface_,
-  uses,
-} from "../index";
+import { class_, classDiagram, compile, enum_, implements_, interface_, uses } from "../index";
 
 const payable = interface_("Payable", (i) =>
   i.method("pay", { visibility: "public" }).method("refund", { visibility: "public" })
