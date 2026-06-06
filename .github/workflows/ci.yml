@@ -90,23 +90,54 @@ jobs:
   perf-check:
     name: perf-check
     runs-on: ubuntu-latest
-    # Only run on pull requests, not on push to main
     if: github.event_name == 'pull_request'
     needs: [check]
+    timeout-minutes: 15
     env:
       DRAWSPEC_RUN_BENCH: "1"
     steps:
       - uses: actions/checkout@v6
       - run: |
-          curl https://mise.run | sh
+          curl -fsSL https://mise.run | sh
           export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
           mise install
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+
+      # --- PR branch benchmarks ---
       - run: bun install --frozen-lockfile
       - run: bun run build
-      - name: Run benchmarks and compare against baseline
+      - name: Run benchmarks on PR branch
         run: |
-          bun test --bench ./packages/core/src/__bench__/compile.bench.ts 2>&1 | node scripts/bench-compare.mjs
-          bun test --bench ./packages/layout/src/__bench__/layout.bench.ts 2>&1 | node scripts/bench-compare.mjs
+          bun scripts/bench-run.ts ./packages/core/src/__bench__/compile.bench.ts --key pr > /tmp/bench-pr-core.json
+          bun scripts/bench-run.ts ./packages/layout/src/__bench__/layout.bench.ts --key pr > /tmp/bench-pr-layout.json
+          bun scripts/bench-merge.ts --key pr /tmp/bench-pr-core.json /tmp/bench-pr-layout.json -o /tmp/bench-pr.json
+
+      # --- Base branch benchmarks (uses base's scripts for trust) ---
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+      - run: |
+          curl -fsSL https://mise.run | sh
+          export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+          mise install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - name: Run benchmarks on base branch
+        run: |
+          bun scripts/bench-run.ts ./packages/core/src/__bench__/compile.bench.ts --key base > /tmp/bench-base-core.json
+          bun scripts/bench-run.ts ./packages/layout/src/__bench__/layout.bench.ts --key base > /tmp/bench-base-layout.json
+          bun scripts/bench-merge.ts --key base /tmp/bench-base-core.json /tmp/bench-base-layout.json -o /tmp/bench-base.json
+
+      # --- Compare (using base-branch scripts) ---
+      - name: Compare PR vs base
+        run: bun scripts/bench-compare.ts /tmp/bench-base.json /tmp/bench-pr.json --threshold 0.25
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results
+          path: /tmp/bench-*.json
