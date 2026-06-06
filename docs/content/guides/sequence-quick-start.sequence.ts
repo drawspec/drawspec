@@ -5,5 +5,8 @@ export default sequence("Order flow", (ctx) => {
   const shop = ctx.participant("Shop");
   const payments = ctx.participant("Payments");
 
-  // ... messages go here
+  customer.to(shop, "Browse catalog");
+  shop.to(payments, "Process payment");
+  payments.to(shop, "Payment confirmed");
+  shop.to(customer, "Show receipt");
 });
