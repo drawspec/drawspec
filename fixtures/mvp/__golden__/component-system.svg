@@ -91,15 +91,24 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="392" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-text-layer-1yke4f0">
-    <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-1sz8mdh" text-anchor="middle" x="100" y="324">
-      Authorize payment
-    </text>
-    <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-0xw7air" text-anchor="middle" x="100" y="148">
-      HTTP commands
-    </text>
-    <text data-width="93.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-1xfy3nt" text-anchor="middle" transform="translate(0 16)" x="200" y="324">
-      Reserve stock
-    </text>
+    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-1sz8mdh-bg-1c73qq7">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="132.18" x="33.91" y="308.8" />
+      <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-1sz8mdh" text-anchor="middle" x="100" y="324">
+        Authorize payment
+      </text>
+    </g>
+    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-0xw7air-bg-0zy8pdo">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="121.82" x="39.09" y="132.8" />
+      <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-0xw7air" text-anchor="middle" x="100" y="148">
+        HTTP commands
+      </text>
+    </g>
+    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-1xfy3nt-bg-0ci2n8l" transform="translate(0 16)">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="101.66" x="149.17" y="308.8" />
+      <text data-width="93.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-1xfy3nt" text-anchor="middle" x="200" y="324">
+        Reserve stock
+      </text>
+    </g>
     <text data-width="91.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_301fa988-0l6yjhu" text-anchor="middle" x="100" y="248.9">
       Order Service
     </text>

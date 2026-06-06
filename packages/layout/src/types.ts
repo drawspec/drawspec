@@ -6,7 +6,7 @@ export type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode };
 export type LayoutDirection = "TB" | "BT" | "LR" | "RL";
 
 /** Edge routing strategy for graph layouts. */
-export type LayoutRouting = "straight" | "orthogonal";
+export type LayoutRouting = "straight" | "orthogonal" | "curved";
 
 export interface Point {
   x: number;

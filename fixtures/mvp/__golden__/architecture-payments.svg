@@ -72,18 +72,30 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="216" y="240" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-text-layer-0a2fs7c">
-    <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_1119936806011451-0nbm6fu" text-anchor="middle" x="188" y="160">
-      Browses catalog
-    </text>
-    <text data-width="122.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-1tss1wt" text-anchor="middle" transform="translate(0 49.2)" x="364" y="60">
-      Requests payment
-    </text>
-    <text data-width="82.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-129tmbi" text-anchor="middle" transform="translate(0 49.2)" x="188" y="60">
-      Places order
-    </text>
-    <text data-width="132.3" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-1u4zyll" text-anchor="middle" transform="translate(0 49.2)" x="540" y="60">
-      Stores authorization
-    </text>
+    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_1119936806011451-0nbm6fu-bg-0yg30l3">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="117.06" x="129.47" y="144.8" />
+      <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_1119936806011451-0nbm6fu" text-anchor="middle" x="188" y="160">
+        Browses catalog
+      </text>
+    </g>
+    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-1tss1wt-bg-1dh352z" transform="translate(0 49.2)">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="130.78" x="298.61" y="44.8" />
+      <text data-width="122.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-1tss1wt" text-anchor="middle" x="364" y="60">
+        Requests payment
+      </text>
+    </g>
+    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-129tmbi-bg-07lv9od" transform="translate(0 49.2)">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="90.74" x="142.63" y="44.8" />
+      <text data-width="82.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-129tmbi" text-anchor="middle" x="188" y="60">
+        Places order
+      </text>
+    </g>
+    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-1u4zyll-bg-1w26vuh" transform="translate(0 49.2)">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="140.3" x="469.85" y="44.8" />
+      <text data-width="132.3" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-1u4zyll" text-anchor="middle" x="540" y="60">
+        Stores authorization
+      </text>
+    </g>
     <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-container_4c19412c99504b8f-1814jv9" text-anchor="middle" x="276" y="72.9">
       Web App
     </text>

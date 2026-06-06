@@ -1,6 +1,7 @@
 import type { DiagramDocument, SourceRef } from "@drawspec/core";
 import type {
   ActivationBar,
+  LayoutRouting,
   Point,
   PositionedDiagram,
   PositionedEdge,
@@ -545,7 +546,7 @@ function renderEdge(
     {
       name: "path",
       attrs: {
-        d: edgePath(edge.waypoints),
+        d: edgePath(edge.waypoints, options.routing),
         fill: "none",
         "marker-end": markerEnd,
         "marker-start": markerStart,
@@ -560,6 +561,7 @@ function renderEdge(
   if (edge.label !== undefined) {
     const mid = midpoint(edge.waypoints);
     const maxWidth = availableEdgeLabelWidth(edge.waypoints, mid, style.fontSize);
+    const theme = resolveTheme(options.theme);
     labels.push(
       textElement({
         id: stableSvgId(idPrefix, "label", "edge", edge.id),
@@ -569,6 +571,7 @@ function renderEdge(
         y: mid.y - Math.max(8, style.fontSize * 0.5),
         style,
         anchor: "middle",
+        backgroundFill: theme.background,
         ...(maxWidth === undefined ? {} : { maxWidth }),
       })
     );
@@ -582,15 +585,72 @@ function renderEdge(
     labels,
   };
 }
-function edgePath(points: Point[]): string {
+
+function edgePath(points: Point[], routing?: LayoutRouting): string {
   const [first, ...rest] = points;
   if (first === undefined) {
     return "M 0 0";
   }
+
+  if (routing === "curved" && rest.length >= 2) {
+    const last = rest[rest.length - 1];
+    if (last === undefined) {
+      return `M ${fmt(first.x)} ${fmt(first.y)}`;
+    }
+    const mid = rest[0];
+    if (mid === undefined) {
+      return `M ${fmt(first.x)} ${fmt(first.y)} L ${fmt(last.x)} ${fmt(last.y)}`;
+    }
+    return [
+      `M ${fmt(first.x)} ${fmt(first.y)}`,
+      `Q ${fmt(mid.x)} ${fmt(mid.y)} ${fmt(last.x)} ${fmt(last.y)}`,
+    ].join(" ");
+  }
+
+  if (routing === "orthogonal" && rest.length >= 3) {
+    const cornerRadius = 8;
+    const parts = [`M ${fmt(first.x)} ${fmt(first.y)}`];
+    for (let i = 0; i < rest.length; i++) {
+      const prev = i === 0 ? first : rest[i - 1];
+      const curr = rest[i];
+      const next = rest[i + 1];
+      if (prev === undefined || curr === undefined) continue;
+      if (next !== undefined && isCorner(prev, curr, next)) {
+        const before = approachPoint(curr, prev, cornerRadius);
+        const after = approachPoint(curr, next, cornerRadius);
+        parts.push(`L ${fmt(before.x)} ${fmt(before.y)}`);
+        parts.push(`Q ${fmt(curr.x)} ${fmt(curr.y)} ${fmt(after.x)} ${fmt(after.y)}`);
+      } else {
+        parts.push(`L ${fmt(curr.x)} ${fmt(curr.y)}`);
+      }
+    }
+    return parts.join(" ");
+  }
+
   return [
-    `M ${formatNumber(first.x)} ${formatNumber(first.y)}`,
-    ...rest.map((point) => `L ${formatNumber(point.x)} ${formatNumber(point.y)}`),
+    `M ${fmt(first.x)} ${fmt(first.y)}`,
+    ...rest.map((point) => `L ${fmt(point.x)} ${fmt(point.y)}`),
   ].join(" ");
+}
+
+function fmt(value: number): string {
+  return formatNumber(value);
+}
+
+function isCorner(prev: Point, curr: Point, next: Point): boolean {
+  const dx1 = curr.x - prev.x;
+  const dy1 = curr.y - prev.y;
+  const dx2 = next.x - curr.x;
+  const dy2 = next.y - curr.y;
+  return dx1 * dx2 + dy1 * dy2 === 0;
+}
+
+function approachPoint(corner: Point, from: Point, radius: number): Point {
+  const dx = corner.x - from.x;
+  const dy = corner.y - from.y;
+  const len = Math.sqrt(dx * dx + dy * dy);
+  const r = Math.min(radius, len / 2);
+  return { x: corner.x - (dx / len) * r, y: corner.y - (dy / len) * r };
 }
 
 function midpoint(points: Point[]): Point {
@@ -673,15 +733,16 @@ interface TextElementOptions {
   anchor: "start" | "middle";
   maxWidth?: number;
   clipBounds?: LabelBounds;
+  backgroundFill?: string;
 }
 
 function textElement(options: TextElementOptions): SvgLabelSpec {
-  const { anchor, clipBounds, id, label, maxWidth, ownerId, style, x, y } = options;
+  const { anchor, backgroundFill, clipBounds, id, label, maxWidth, ownerId, style, x, y } = options;
   const constrainedWidth = maxWidth === undefined ? undefined : Math.max(0, maxWidth);
   const displayLabel = truncateText(label, style.fontSize, constrainedWidth);
   const width = measureText(displayLabel, style.fontSize);
   const shouldClip = constrainedWidth !== undefined && width > constrainedWidth;
-  const text: SvgElementSpec = {
+  let text: SvgElementSpec = {
     name: "text",
     attrs: {
       "clip-path": shouldClip ? `url(#${stableSvgId(id, "clip")})` : undefined,
@@ -697,30 +758,59 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
     children: [displayLabel],
   };
   const textBounds = labelBounds(x, y, width, style.fontSize, anchor);
-  if (!shouldClip) {
+  const bgPadding = backgroundFill === undefined ? 0 : 4;
+  const bgRect: SvgElementSpec | undefined =
+    backgroundFill === undefined
+      ? undefined
+      : {
+          name: "rect",
+          attrs: {
+            fill: backgroundFill,
+            height: textBounds.height + bgPadding * 2,
+            rx: 3,
+            ry: 3,
+            width: width + bgPadding * 2,
+            x: textBounds.x - bgPadding,
+            y: textBounds.y - bgPadding,
+          },
+          selfClosing: true,
+        };
+  if (!shouldClip && bgRect === undefined) {
     return { id, ...(ownerId === undefined ? {} : { ownerId }), element: text, bounds: textBounds };
   }
   const bounds = clipBounds ?? textBounds;
+  const children: SvgElementSpec[] = [];
+  if (shouldClip) {
+    children.push({
+      name: "clipPath",
+      attrs: { id: stableSvgId(id, "clip") },
+      children: [
+        {
+          name: "rect",
+          attrs: {
+            height: bounds.height + bgPadding * 2,
+            width: bounds.width + bgPadding * 2,
+            x: bounds.x - bgPadding,
+            y: bounds.y - bgPadding,
+          },
+          selfClosing: true,
+        },
+      ],
+    });
+    text = { ...text, attrs: { ...text.attrs, "clip-path": `url(#${stableSvgId(id, "clip")})` } };
+  }
+  if (bgRect !== undefined) {
+    children.push(bgRect);
+  }
+  children.push(text);
+
   return {
     id,
     ...(ownerId === undefined ? {} : { ownerId }),
     element: {
       name: "g",
-      attrs: { id: stableSvgId(id, "clipped") },
-      children: [
-        {
-          name: "clipPath",
-          attrs: { id: stableSvgId(id, "clip") },
-          children: [
-            {
-              name: "rect",
-              attrs: { height: bounds.height, width: bounds.width, x: bounds.x, y: bounds.y },
-              selfClosing: true,
-            },
-          ],
-        },
-        text,
-      ],
+      attrs: { id: stableSvgId(id, shouldClip ? "clipped" : "bg") },
+      children,
     },
     bounds: intersectBounds(textBounds, bounds),
   };

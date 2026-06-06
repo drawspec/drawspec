@@ -384,6 +384,28 @@ function orthogonalWaypoints(
   return [source, { x: source.x, y: midY }, { x: target.x, y: midY }, target];
 }
 
+function curvedWaypoints(
+  sourceCenter: Point,
+  targetCenter: Point,
+  offset: number,
+  isHorizontal: boolean
+): Point[] {
+  const mid = {
+    x: (sourceCenter.x + targetCenter.x) / 2,
+    y: (sourceCenter.y + targetCenter.y) / 2,
+  };
+  if (isHorizontal) {
+    mid.y += offset;
+  } else {
+    mid.x += offset;
+  }
+  return [
+    shiftedPoint(sourceCenter, offset, isHorizontal),
+    mid,
+    shiftedPoint(targetCenter, offset, isHorizontal),
+  ];
+}
+
 function edgeWaypoints(
   edge: DiagramEdge,
   nodesById: Record<string, PositionedNode>,
@@ -407,7 +429,9 @@ function edgeWaypoints(
   const targetCenter = centerOf(target);
   return normalized.routing === "orthogonal"
     ? orthogonalWaypoints(sourceCenter, targetCenter, offset, isHorizontal)
-    : straightWaypoints(sourceCenter, targetCenter, offset, isHorizontal);
+    : normalized.routing === "curved"
+      ? curvedWaypoints(sourceCenter, targetCenter, offset, isHorizontal)
+      : straightWaypoints(sourceCenter, targetCenter, offset, isHorizontal);
 }
 
 function createGraphLayout(
