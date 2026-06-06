@@ -13,32 +13,32 @@ export default componentDiagram("Web application", ({ component, dependency, add
   add(interface_("OrderDatabase"));
   add(interface_("InventoryService"));
 
-  const webApp = component("Web Application", (c) => {
+  component("Web Application", (c) => {
     c.provides("UserInterface");
     c.requires("APIGateway");
   });
 
-  const apiGateway = component("API Gateway", (c) => {
+  component("API Gateway", (c) => {
     c.provides("RESTAPI");
     c.requires("AuthService");
     c.requires("BusinessLogic");
   });
 
-  const authService = component("Auth Service", (c) => {
+  component("Auth Service", (c) => {
     c.provides("Authentication");
     c.requires("UserDatabase");
     c.requires("TokenService");
   });
 
-  const businessLogic = component("Business Logic", (c) => {
+  component("Business Logic", (c) => {
     c.provides("OrderManagement");
     c.requires("OrderDatabase");
     c.requires("InventoryService");
   });
 
-  const userDb = component("User Database");
-  const orderDb = component("Order Database");
-  const inventory = component("Inventory Service");
+  component("User Database");
+  component("Order Database");
+  component("Inventory Service");
 
   dependency("Web Application", "API Gateway");
   dependency("API Gateway", "Auth Service");

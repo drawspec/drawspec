@@ -7,16 +7,16 @@ export default componentDiagram("Microservices", ({ component, dependency, add }
   add(interface_("Order Interface"));
   add(interface_("Payment Gateway"));
 
-  const apiGateway = component("API Gateway", (c) => {
+  component("API Gateway", (c) => {
     c.provides("HTTP API");
   });
 
-  const userService = component("User Service", (c) => {
+  component("User Service", (c) => {
     c.provides("User Interface");
     c.requires("Database");
   });
 
-  const orderService = component("Order Service", (c) => {
+  component("Order Service", (c) => {
     c.provides("Order Interface");
     c.requires("Database");
     c.requires("Payment Gateway");
