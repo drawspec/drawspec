@@ -295,8 +295,9 @@ export async function renderDocumentSvg(
             groupStroke: "#475569",
             nodeFill: "#1e293b",
             nodeStroke: "#64748b",
-            text: "#f8fafc",
+            text: "#f9fafb",
           },
+          themeName: "dark",
         }
       : {}),
   });
