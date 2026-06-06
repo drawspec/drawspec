@@ -36,6 +36,11 @@ if (!baselinePath || !currentPath) {
   process.exit(2);
 }
 
+if (!Number.isFinite(threshold) || threshold < 0 || threshold > 1) {
+  console.error(`Invalid --threshold "${values.threshold}": must be a number between 0 and 1.`);
+  process.exit(2);
+}
+
 async function loadResultsAsync(path: string): Promise<Record<string, number>> {
   const raw = (await Bun.file(path).json()) as BenchFile | BenchFile[];
   if ("results" in raw) return raw.results;
@@ -47,8 +52,20 @@ async function loadResultsAsync(path: string): Promise<Record<string, number>> {
   return raw as unknown as Record<string, number>;
 }
 
+function validateResults(results: Record<string, number>, label: string): void {
+  for (const [name, value] of Object.entries(results)) {
+    if (!Number.isFinite(value) || value <= 0) {
+      console.error(`Invalid ${label} value for "${name}": ${value}`);
+      process.exit(1);
+    }
+  }
+}
+
 const baseline = await loadResultsAsync(baselinePath);
 const current = await loadResultsAsync(currentPath);
+
+validateResults(baseline, "baseline");
+validateResults(current, "current");
 
 const baselineKeys = new Set(Object.keys(baseline));
 const currentKeys = new Set(Object.keys(current));
@@ -56,6 +73,20 @@ const currentKeys = new Set(Object.keys(current));
 const common = [...baselineKeys].filter((k) => currentKeys.has(k));
 const added = [...currentKeys].filter((k) => !baselineKeys.has(k));
 const removed = [...baselineKeys].filter((k) => !currentKeys.has(k));
+
+if (common.length === 0) {
+  console.error("No common benchmarks found between baseline and current results.");
+  console.error(`  Baseline has ${baselineKeys.size} benchmarks, current has ${currentKeys.size}.`);
+  console.error("This usually means benchmark names changed or parsing broke.");
+  process.exit(1);
+}
+
+if (removed.length > 0) {
+  console.error(`Benchmarks removed in current branch (${removed.length}):`);
+  for (const name of removed) console.error(`  - ${name}: ${baseline[name].toFixed(2)}ms`);
+  console.error("Removed benchmarks indicate a gap in performance coverage.");
+  process.exit(1);
+}
 
 const regressions: DiffEntry[] = [];
 const improvements: DiffEntry[] = [];
@@ -115,15 +146,9 @@ if (added.length > 0) {
   for (const name of added) console.log(`  + ${name}: ${current[name].toFixed(2)}ms`);
 }
 
-if (removed.length > 0) {
-  console.log("");
-  console.log("Removed benchmarks:");
-  for (const name of removed) console.log(`  - ${name}: ${baseline[name].toFixed(2)}ms`);
-}
-
 console.log("");
 console.log(
-  `Summary: ${common.length} compared, ${regressions.length} regressions, ${improvements.length} improvements, ${added.length} new, ${removed.length} removed`,
+  `Summary: ${common.length} compared, ${regressions.length} regressions, ${improvements.length} improvements, ${added.length} new`,
 );
 
 if (regressions.length > 0) {

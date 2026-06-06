@@ -48,9 +48,11 @@ const proc = Bun.spawn(["bun", "test", "--bench", benchFile], {
   env: { ...process.env, DRAWSPEC_RUN_BENCH: "1", FORCE_COLOR: "0" },
 });
 
-const stdout = await new Response(proc.stdout).text();
-const stderr = await new Response(proc.stderr).text();
-const exitCode = await proc.exited;
+const [stdout, stderr, exitCode] = await Promise.all([
+  new Response(proc.stdout).text(),
+  new Response(proc.stderr).text(),
+  proc.exited,
+]);
 
 const results = parseBenchmarks(stdout + "\n" + stderr);
 

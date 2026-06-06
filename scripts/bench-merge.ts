@@ -33,7 +33,13 @@ const merged: Record<string, number> = {};
 for (const path of inputPaths) {
   const file = Bun.file(path);
   const raw = (await file.json()) as BenchFile;
-  Object.assign(merged, raw.results);
+  for (const [name, value] of Object.entries(raw.results)) {
+    if (name in merged) {
+      console.error(`Duplicate benchmark name across files: "${name}"`);
+      process.exit(1);
+    }
+    merged[name] = value;
+  }
 }
 
 const output: BenchFile = { key: values.key!, results: merged };
