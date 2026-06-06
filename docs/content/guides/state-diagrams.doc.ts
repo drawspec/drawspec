@@ -12,17 +12,8 @@ State diagrams visualize the behavior of systems that transition between discret
 
 Create a traffic light state machine:
 
-\`\`\`typescript
-import { stateDiagram } from "@drawspec/uml-state";
-
-export default stateDiagram("Traffic light", ({ state, initial, final }) => [
-  initial(),
-  state("Red", (s) => s.to("Green").label("timer")),
-  state("Green", (s) => s.to("Yellow").label("timer")),
-  state("Yellow", (s) => s.to("Red").label("timer")),
-  final(),
-]);
-\`\`\`
+@diagram ./state-quick-start.state.ts "Quick start state"
+@source typescript ./state-quick-start.state.ts
 
 The callback receives helpers for creating states, initial pseudostates, and final pseudostates.
 
@@ -129,22 +120,7 @@ state("Disconnected", (s) => {
 
 Here is a complete state diagram for an order processing system:
 
-\`\`\`typescript
-import { stateDiagram } from "@drawspec/uml-state";
-
-export default stateDiagram("Order processing", ({ state, initial, final }) => [
-  initial("new order"),
-  state("Received", (s) => s.to("Validated").label("submit")),
-  state("Validated", (s) => {
-    s.to("Processing").label("valid");
-    s.to("Rejected").label("invalid");
-  }),
-  state("Processing", (s) => s.to("Shipped").label("dispatch")),
-  state("Shipped", (s) => s.to("Delivered").label("deliver")),
-  state("Rejected", (s) => s.to("end").label("cancel")),
-  state("Delivered", (s) => s.to("end").label("complete")),
-  final("end"),
-]);
-\`\`\`
+@diagram ./state-complete.state.ts "Order processing state"
+@source typescript ./state-complete.state.ts
 `,
 });

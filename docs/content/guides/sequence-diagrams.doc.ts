@@ -12,17 +12,8 @@ Sequence diagrams model how actors and participants exchange messages over time.
 
 Participants represent the entities that send and receive messages. Use \`sequence()\` and call \`actor()\` for external users or \`participant()\` for systems or services:
 
-\`\`\`typescript
-import { sequence } from "@drawspec/uml-sequence";
-
-export default sequence("Order flow", (ctx) => {
-  const customer = ctx.actor("Customer");
-  const shop = ctx.participant("Shop");
-  const payments = ctx.participant("Payments");
-
-  // ... messages go here
-});
-\`\`\`
+@diagram ./sequence-quick-start.sequence.ts "Quick start sequence"
+@source typescript ./sequence-quick-start.sequence.ts
 
 Actors appear with a stick-figure icon. Participants appear as rectangles with a label.
 
@@ -129,22 +120,7 @@ export default sequence("Parallel fetch", (ctx) => {
 
 Here is a full sequence diagram showing a payment authorization flow:
 
-\`\`\`typescript
-import { sequence } from "@drawspec/uml-sequence";
-
-export default sequence("Payment authorization", (ctx) => {
-  const user = ctx.actor("User");
-  const shop = ctx.participant("Shop");
-  const payments = ctx.participant("Payments");
-  const ledger = ctx.participant("Ledger");
-
-  user.to(shop, "Place order");
-  shop.to(payments, "Authorize payment").note("Idempotency key included");
-  payments.to(ledger, "Record transaction");
-  ledger.to(payments, "Confirmed");
-  payments.to(shop, "Authorization approved");
-  shop.to(user, "Show confirmation");
-});
-\`\`\`
+@diagram ./sequence-complete.sequence.ts "Payment authorization sequence"
+@source typescript ./sequence-complete.sequence.ts
 `,
 });

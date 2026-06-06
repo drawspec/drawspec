@@ -12,29 +12,8 @@ Component diagrams visualize the modular structure of a system. They show compon
 
 Define components with provided and required interfaces:
 
-\`\`\`typescript
-import { componentDiagram, interface_, provides, requires } from "@drawspec/uml-component";
-
-export default componentDiagram("Microservices", ({ component, dependency }) => {
-  const apiGateway = component("API Gateway", (c) => {
-    c.provides("HTTP API");
-  });
-
-  const userService = component("User Service", (c) => {
-    c.provides("User Interface");
-    c.requires("Database");
-  });
-
-  const orderService = component("Order Service", (c) => {
-    c.provides("Order Interface");
-    c.requires("Database");
-    c.requires("Payment Gateway");
-  });
-
-  dependency("API Gateway", "User Service");
-  dependency("API Gateway", "Order Service");
-});
-\`\`\`
+@diagram ./component-quick-start.component.ts "Quick start component diagram"
+@source typescript ./component-quick-start.component.ts
 
 The callback receives \`component\` and \`dependency\` functions for building the diagram.
 
@@ -122,44 +101,7 @@ component("AdminService", (c) => {
 
 Here is a complete component diagram for a typical web application architecture:
 
-\`\`\`typescript
-import { componentDiagram, interface_, provides, requires, dependency } from "@drawspec/uml-component";
-
-export default componentDiagram("Web application", ({ component, dependency }) => {
-  const webApp = component("Web Application", (c) => {
-    c.provides("UserInterface");
-    c.requires("APIGateway");
-  });
-
-  const apiGateway = component("API Gateway", (c) => {
-    c.provides("RESTAPI");
-    c.requires("AuthService");
-    c.requires("BusinessLogic");
-  });
-
-  const authService = component("Auth Service", (c) => {
-    c.provides("Authentication");
-    c.requires("UserDatabase");
-    c.requires("TokenService");
-  });
-
-  const businessLogic = component("Business Logic", (c) => {
-    c.provides("OrderManagement");
-    c.requires("OrderDatabase");
-    c.requires("InventoryService");
-  });
-
-  const userDb = component("User Database");
-  const orderDb = component("Order Database");
-  const inventory = component("Inventory Service");
-
-  dependency("Web Application", "API Gateway");
-  dependency("API Gateway", "Auth Service");
-  dependency("API Gateway", "Business Logic");
-  dependency("Auth Service", "User Database");
-  dependency("Business Logic", "Order Database");
-  dependency("Business Logic", "Inventory Service");
-});
-\`\`\`
+@diagram ./component-complete.component.ts "Web application component diagram"
+@source typescript ./component-complete.component.ts
 `,
 });
