@@ -21,6 +21,14 @@ import type { ArrowMarkerShape, Renderer, SvgOutput, SvgRenderOptions, SvgViewpo
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
 const DEFAULT_AUTO_FIT_PADDING = 20;
 
+interface OcclusionRect {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 /** Check if a rectangle overlaps with the viewport. Returns true if there is overlap. */
 function rectInViewport(
   x: number,
@@ -89,6 +97,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       ? metadataDescription
       : `${document.kind} diagram ${document.id}`);
   const labels: SvgLabelSpec[] = [];
+  const occlusionRects = buildOcclusionRects(positionedDiagram);
   const children: SvgElementSpec[] = [
     { name: "title", attrs: { id: stableSvgId(idPrefix, "title") }, children: [title] },
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
@@ -125,7 +134,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       .map((bar) => renderActivation(document, bar, options, idPrefix, themeName)),
   ];
   if (labels.length > 0) {
-    const adjustedLabels = avoidLabelOverlaps(labels).map((label) => label.element);
+    const adjustedLabels = avoidLabelOverlaps(labels, occlusionRects).map((label) => label.element);
     children.push({
       name: "g",
       attrs: { id: stableSvgId(idPrefix, "text-layer") },
@@ -215,6 +224,25 @@ function resolveThemeName(options: SvgRenderOptions): string {
     return options.theme;
   }
   return options.theme === darkTheme ? "dark" : "light";
+}
+
+function buildOcclusionRects(positionedDiagram: PositionedDiagram): OcclusionRect[] {
+  return [
+    ...sortById(positionedDiagram.groups).map((group) => ({
+      id: group.id,
+      x: group.x,
+      y: group.y,
+      width: group.width,
+      height: group.height,
+    })),
+    ...sortById(positionedDiagram.nodes).map((node) => ({
+      id: node.id,
+      x: node.x,
+      y: node.y,
+      width: node.width,
+      height: node.height,
+    })),
+  ];
 }
 
 function sourceDataAttrs(source: SourceRef | undefined): Record<string, string | number> {
@@ -312,6 +340,7 @@ interface LabelBounds {
 
 interface SvgLabelSpec {
   id: string;
+  ownerId?: string;
   element: SvgElementSpec;
   bounds: LabelBounds;
 }
@@ -347,6 +376,7 @@ function renderGroup(
     labels.push(
       textElement({
         id: stableSvgId(idPrefix, "label", "group", group.id),
+        ownerId: group.id,
         label: group.label,
         x: group.x + 12,
         y: group.y + 20,
@@ -374,6 +404,7 @@ function renderGroup(
       labels.push(
         textElement({
           id: stableSvgId(idPrefix, "label", "lane", lane.id),
+          ownerId: lane.id,
           label: lane.label,
           x: lane.x + 8,
           y: lane.y + 18,
@@ -410,6 +441,7 @@ function renderNode(
   const labels: SvgLabelSpec[] = [
     textElement({
       id: stableSvgId(idPrefix, "label", "node", node.id),
+      ownerId: node.id,
       label,
       x: node.x + node.width / 2,
       y: baseline,
@@ -531,6 +563,7 @@ function renderEdge(
     labels.push(
       textElement({
         id: stableSvgId(idPrefix, "label", "edge", edge.id),
+        ownerId: edge.id,
         label: edge.label,
         x: mid.x,
         y: mid.y - Math.max(8, style.fontSize * 0.5),
@@ -632,6 +665,7 @@ function renderActivation(
 
 interface TextElementOptions {
   id: string;
+  ownerId?: string;
   label: string;
   x: number;
   y: number;
@@ -642,7 +676,7 @@ interface TextElementOptions {
 }
 
 function textElement(options: TextElementOptions): SvgLabelSpec {
-  const { anchor, clipBounds, id, label, maxWidth, style, x, y } = options;
+  const { anchor, clipBounds, id, label, maxWidth, ownerId, style, x, y } = options;
   const constrainedWidth = maxWidth === undefined ? undefined : Math.max(0, maxWidth);
   const displayLabel = truncateText(label, style.fontSize, constrainedWidth);
   const width = measureText(displayLabel, style.fontSize);
@@ -664,11 +698,12 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
   };
   const textBounds = labelBounds(x, y, width, style.fontSize, anchor);
   if (!shouldClip) {
-    return { id, element: text, bounds: textBounds };
+    return { id, ...(ownerId === undefined ? {} : { ownerId }), element: text, bounds: textBounds };
   }
   const bounds = clipBounds ?? textBounds;
   return {
     id,
+    ...(ownerId === undefined ? {} : { ownerId }),
     element: {
       name: "g",
       attrs: { id: stableSvgId(id, "clipped") },
@@ -733,7 +768,10 @@ function intersectBounds(left: LabelBounds, right: LabelBounds): LabelBounds {
   return { x, y, width: Math.max(0, maxX - x), height: Math.max(0, maxY - y) };
 }
 
-function avoidLabelOverlaps(labels: readonly SvgLabelSpec[]): SvgLabelSpec[] {
+function avoidLabelOverlaps(
+  labels: readonly SvgLabelSpec[],
+  occlusionRects: readonly OcclusionRect[] = []
+): SvgLabelSpec[] {
   const placed: SvgLabelSpec[] = [];
   const adjusted: SvgLabelSpec[] = [];
   for (const label of [...labels].sort((left, right) => compareStable(left.id, right.id))) {
@@ -752,6 +790,18 @@ function avoidLabelOverlaps(labels: readonly SvgLabelSpec[]): SvgLabelSpec[] {
         bounds = { ...bounds, x: bounds.x + offsetX };
       }
     }
+    for (const rect of occlusionRects) {
+      if (rect.id === label.ownerId || !boundsOverlap(bounds, rect, 2)) {
+        continue;
+      }
+      const shiftY = rect.y + rect.height - bounds.y + 2;
+      offsetY += shiftY;
+      bounds = { ...bounds, y: bounds.y + shiftY };
+      if (boundsOverlap(bounds, rect, 2)) {
+        offsetX += rect.x + rect.width - bounds.x + 2;
+        bounds = { ...bounds, x: bounds.x + offsetX };
+      }
+    }
     const element =
       offsetX === 0 && offsetY === 0
         ? label.element
@@ -759,7 +809,7 @@ function avoidLabelOverlaps(labels: readonly SvgLabelSpec[]): SvgLabelSpec[] {
             label.element,
             `translate(${formatNumber(offsetX)} ${formatNumber(offsetY)})`
           );
-    const shifted = { id: label.id, element, bounds };
+    const shifted = { ...label, element, bounds };
     placed.push(shifted);
     adjusted.push(shifted);
   }

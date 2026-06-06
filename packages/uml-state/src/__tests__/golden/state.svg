@@ -70,7 +70,7 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="392" y="40" />
   </g>
   <g id="drawspec-statedoc_429b95ea84-1fklrl2-text-layer-02i7asp">
-    <text data-width="60.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_429b95ea84-1fklrl2-label-edge-transition_58cf6adaff-1vq18rh" text-anchor="middle" x="364" y="60">
+    <text data-width="60.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_429b95ea84-1fklrl2-label-edge-transition_58cf6adaff-1vq18rh" text-anchor="middle" transform="translate(0 49.2)" x="364" y="60">
       authorize
     </text>
     <text data-width="35" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_429b95ea84-1fklrl2-label-edge-transition_c69c9f5aff-1vhlk63" text-anchor="middle" x="716" y="60">
