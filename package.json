@@ -32,6 +32,7 @@
     "@drawspec/docs": "workspace:*",
     "@drawspec/layout": "workspace:*",
     "@drawspec/renderer-svg": "workspace:*",
+    "@drawspec/text-measure": "workspace:*",
     "@drawspec/testkit": "workspace:*",
     "@drawspec/uml-component": "workspace:*",
     "@drawspec/uml-sequence": "workspace:*",

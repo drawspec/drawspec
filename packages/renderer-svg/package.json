@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "@drawspec/core": "workspace:*",
-    "@drawspec/layout": "workspace:*"
+    "@drawspec/layout": "workspace:*",
+    "@drawspec/text-measure": "workspace:*"
   },
   "devDependencies": {
     "typescript": "latest"

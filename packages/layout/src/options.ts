@@ -1,4 +1,4 @@
-import { createTextMeasurer } from "./measure";
+import { createTextMeasurer } from "@drawspec/text-measure";
 import type {
   DiagramDocument,
   LayoutDirection,

@@ -13,6 +13,7 @@
         "@drawspec/layout": "workspace:*",
         "@drawspec/renderer-svg": "workspace:*",
         "@drawspec/testkit": "workspace:*",
+        "@drawspec/text-measure": "workspace:*",
         "@drawspec/uml-component": "workspace:*",
         "@drawspec/uml-sequence": "workspace:*",
         "@drawspec/validation": "workspace:*",
@@ -112,6 +113,7 @@
         "@drawspec/exporter-mermaid": "workspace:*",
         "@drawspec/exporter-plantuml": "workspace:*",
         "@drawspec/layout": "workspace:*",
+        "@drawspec/layout-elk": "workspace:*",
         "@drawspec/renderer-svg": "workspace:*",
         "@drawspec/uml-sequence": "workspace:*",
         "@drawspec/validation": "workspace:*",
@@ -184,6 +186,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@drawspec/core": "workspace:*",
+        "@drawspec/text-measure": "workspace:*",
       },
       "devDependencies": {
         "typescript": "latest",
@@ -246,6 +249,7 @@
       "dependencies": {
         "@drawspec/core": "workspace:*",
         "@drawspec/layout": "workspace:*",
+        "@drawspec/text-measure": "workspace:*",
       },
       "devDependencies": {
         "typescript": "latest",
@@ -261,6 +265,13 @@
         "@drawspec/renderer-svg": "workspace:*",
         "@drawspec/validation": "workspace:*",
       },
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/text-measure": {
+      "name": "@drawspec/text-measure",
+      "version": "0.0.0",
       "devDependencies": {
         "typescript": "latest",
       },
@@ -442,6 +453,8 @@
     "@drawspec/renderer-svg": ["@drawspec/renderer-svg@workspace:packages/renderer-svg"],
 
     "@drawspec/testkit": ["@drawspec/testkit@workspace:packages/testkit"],
+
+    "@drawspec/text-measure": ["@drawspec/text-measure@workspace:packages/text-measure"],
 
     "@drawspec/uml-activity": ["@drawspec/uml-activity@workspace:packages/uml-activity"],
 

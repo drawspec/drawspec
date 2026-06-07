@@ -1,5 +1,6 @@
 import type { DiagramNode, NodeLayoutOptions } from "@drawspec/core";
-import type { Size, TextMeasurer } from "./types";
+import type { TextMeasurer } from "@drawspec/text-measure";
+import type { Size } from "./types";
 
 /** Fully resolved node sizing options used by graph layout. */
 export interface NormalizedNodeSizingOptions {

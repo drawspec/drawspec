@@ -1,6 +1,6 @@
 {
-  "name": "@drawspec/layout",
-  "version": "0.0.1",
+  "name": "@drawspec/text-measure",
+  "version": "0.0.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,10 +13,6 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json"
-  },
-  "dependencies": {
-    "@drawspec/core": "workspace:*",
-    "@drawspec/text-measure": "workspace:*"
   },
   "devDependencies": {
     "typescript": "latest"
