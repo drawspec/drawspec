@@ -33,16 +33,13 @@ describe("@drawspec/flowchart", () => {
       radius: 8,
     });
     expect(doc.nodes.find((n) => n.label === "Done?")?.shape).toEqual({
-      type: "rounded-rect",
-      radius: 0,
+      type: "diamond",
     });
     expect(doc.nodes.find((n) => n.label === "Read Input")?.shape).toEqual({
-      type: "rounded-rect",
-      radius: 4,
+      type: "parallelogram",
     });
     expect(doc.nodes.find((n) => n.label === "A")?.shape).toEqual({
-      type: "rounded-rect",
-      radius: 50,
+      type: "circle",
     });
   });
 

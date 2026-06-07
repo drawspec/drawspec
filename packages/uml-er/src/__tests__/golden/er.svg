@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg aria-describedby="drawspec-erdoc_e439061d-0px2e1l-desc-0k15p2i" aria-labelledby="drawspec-erdoc_e439061d-0px2e1l-title-18ihr3r" height="136" id="drawspec-erdoc_e439061d-0px2e1l" role="img" viewBox="0 0 680 136" width="680" xmlns="http://www.w3.org/2000/svg">
+<svg aria-describedby="drawspec-erdoc_e439061d-0px2e1l-desc-0k15p2i" aria-labelledby="drawspec-erdoc_e439061d-0px2e1l-title-18ihr3r" height="191" id="drawspec-erdoc_e439061d-0px2e1l" role="img" viewBox="0 0 898.58 191" width="898.58" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
     --ds-activation-fill: #e0f2fe;
@@ -21,7 +21,7 @@
   <desc id="drawspec-erdoc_e439061d-0px2e1l-desc-0k15p2i">
     er diagram erdoc_e439061d
   </desc>
-  <rect fill="#ffffff" height="136" width="680" x="0" y="0" />
+  <rect fill="#ffffff" height="191" width="898.58" x="0" y="0" />
   <defs>
     <marker id="drawspec-erdoc_e439061d-0px2e1l-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <circle cx="4" cy="4" fill="#475569" r="3" />
@@ -43,41 +43,74 @@
     </marker>
   </defs>
   <g id="drawspec-erdoc_e439061d-0px2e1l-edge-rel_03c52851-1ejrsn4">
-    <path d="M 340 68 L 580 68" fill="none" stroke="#475569" stroke-width="1.5" />
+    <path d="M 453.84 95.5 L 764.67 95.5" fill="none" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-erdoc_e439061d-0px2e1l-edge-rel_75f4710c-16atvce">
-    <path d="M 100 68 L 340 68" fill="none" stroke="#475569" stroke-width="1.5" />
+    <path d="M 138.46 86.4 L 453.84 95.5" fill="none" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-erdoc_e439061d-0px2e1l-node-entity_22ede22f-134ikq8">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <rect fill="#f8fafc" height="92.8" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="196.92" x="40" y="40" />
   </g>
   <g id="drawspec-erdoc_e439061d-0px2e1l-node-entity_6a53d9f6-03rso54">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="520" y="40" />
+    <rect fill="#f8fafc" height="111" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="187.82" x="670.76" y="40" />
   </g>
   <g id="drawspec-erdoc_e439061d-0px2e1l-node-entity_dc6ba18d-03130vt">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="40" />
+    <rect fill="#f8fafc" height="111" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="193.84" x="356.92" y="40" />
   </g>
   <g id="drawspec-erdoc_e439061d-0px2e1l-text-layer-0ywmrsg">
+    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_22ede22f-attributes-header-05nx88j" text-anchor="middle" x="138.46" y="61.9">
+      Attributes
+    </text>
+    <text data-width="104.58" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_22ede22f-attributes-line-0-1p755jm" text-anchor="start" x="56" y="80.1">
+      + id: UUID [PK]
+    </text>
+    <text data-width="164.92" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_22ede22f-attributes-line-1-1ph4r8l" text-anchor="start" x="56" y="98.3">
+      + email: VARCHAR(255)
+    </text>
+    <text data-width="164.64" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_22ede22f-attributes-line-2-1on5y5o" text-anchor="start" x="56" y="116.5">
+      + name: VARCHAR(100)
+    </text>
+    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_6a53d9f6-attributes-header-1rq0cqr" text-anchor="middle" x="764.67" y="61.9">
+      Attributes
+    </text>
+    <text data-width="104.58" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_6a53d9f6-attributes-line-0-0ht2awy" text-anchor="start" x="686.76" y="80.1">
+      + id: UUID [PK]
+    </text>
+    <text data-width="140.14" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_6a53d9f6-attributes-line-1-0i31wlx" text-anchor="start" x="686.76" y="98.3">
+      + orderId: UUID [FK]
+    </text>
+    <text data-width="155.82" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_6a53d9f6-attributes-line-2-0h933j0" text-anchor="start" x="686.76" y="116.5">
+      + productId: UUID [FK]
+    </text>
+    <text data-width="100.24" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_6a53d9f6-attributes-line-3-0hj2p7z" text-anchor="start" x="686.76" y="134.7">
+      + quantity: INT
+    </text>
+    <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_dc6ba18d-attributes-header-1eazzgi" text-anchor="middle" x="453.84" y="61.9">
+      Attributes
+    </text>
+    <text data-width="104.58" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_dc6ba18d-attributes-line-0-097f0zv" text-anchor="start" x="372.92" y="80.1">
+      + id: UUID [PK]
+    </text>
+    <text data-width="133.7" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_dc6ba18d-attributes-line-1-08xffaw" text-anchor="start" x="372.92" y="98.3">
+      + userId: UUID [FK]
+    </text>
+    <text data-width="155.96" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_dc6ba18d-attributes-line-2-09re8dt" text-anchor="start" x="372.92" y="116.5">
+      + total: DECIMAL(10,2)
+    </text>
+    <text data-width="161.84" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_dc6ba18d-attributes-line-3-09hemou" text-anchor="start" x="372.92" y="134.7">
+      + status: VARCHAR(20)
+    </text>
     <g id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w-bg-02jnl19">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="59.16" x="430.42" y="45.8" />
-      <text data-width="55.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w" text-anchor="middle" x="460" y="60">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="59.16" x="579.675" y="73.3" />
+      <text data-width="55.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w" text-anchor="middle" x="609.255" y="87.5">
         contains
       </text>
     </g>
     <g id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a-bg-1knwe70">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="46.28" x="196.86" y="45.8" />
-      <text data-width="42.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a" text-anchor="middle" x="220" y="60">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="46.28" x="273.01" y="62.4" />
+      <text data-width="42.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a" text-anchor="middle" x="296.15" y="76.6">
         places
       </text>
     </g>
-    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-node-entity_22ede22f-line0-1qsxf86" text-anchor="middle" x="100" y="72.9">
-      User
-    </text>
-    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-node-entity_6a53d9f6-line0-0v769jq" text-anchor="middle" x="580" y="72.9">
-      OrderItem
-    </text>
-    <text data-width="38.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-node-entity_dc6ba18d-line0-1m4ck47" text-anchor="middle" x="340" y="72.9">
-      Order
-    </text>
   </g>
 </svg>
