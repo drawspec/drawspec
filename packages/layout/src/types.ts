@@ -1,7 +1,8 @@
 import type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode } from "@drawspec/core";
+import type { TextMeasurer } from "@drawspec/text-measure";
 import type { NormalizedNodeSizingOptions } from "./sizing";
 
-export type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode };
+export type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode, TextMeasurer };
 
 /** Direction in which graph ranks progress. */
 export type LayoutDirection = "TB" | "BT" | "LR" | "RL";
@@ -32,12 +33,6 @@ export interface TextStyle {
   fontSize?: number;
   /** CSS font-family value. */
   fontFamily?: string;
-}
-
-/** Interface for measuring text width. Deterministic, no DOM dependency. */
-export interface TextMeasurer {
-  /** Measure label width in pixels for the provided font size. */
-  measure(label: string, fontSize: number): number;
 }
 
 /** Node sizing configuration at the layout level. */

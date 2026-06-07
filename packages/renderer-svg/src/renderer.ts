@@ -8,11 +8,11 @@ import type {
   PositionedGroup,
   PositionedNode,
 } from "@drawspec/layout";
+import { measureText, truncateText } from "@drawspec/text-measure";
 import { darkTheme, renderThemeStyleBlock, resolveStyle, resolveTheme } from "./styles";
 import {
   compareStable,
   formatNumber,
-  measureText,
   renderElement,
   type SvgElementSpec,
   stableSvgId,
@@ -741,7 +741,8 @@ interface TextElementOptions {
 function textElement(options: TextElementOptions): SvgLabelSpec {
   const { anchor, backgroundFill, clipBounds, id, label, maxWidth, ownerId, style, x, y } = options;
   const constrainedWidth = maxWidth === undefined ? undefined : Math.max(0, maxWidth);
-  const displayLabel = truncateText(label, style.fontSize, constrainedWidth);
+  const displayLabel =
+    constrainedWidth === undefined ? label : truncateText(label, constrainedWidth, style.fontSize);
   const width = measureText(displayLabel, style.fontSize);
   const shouldClip = constrainedWidth !== undefined && width > constrainedWidth;
   let text: SvgElementSpec = {
@@ -816,29 +817,6 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
     },
     bounds: intersectBounds(textBounds, bounds),
   };
-}
-
-function truncateText(label: string, fontSize: number, maxWidth: number | undefined): string {
-  if (maxWidth === undefined || measureText(label, fontSize) <= maxWidth) {
-    return label;
-  }
-  const ellipsis = "…";
-  if (measureText(ellipsis, fontSize) >= maxWidth) {
-    return ellipsis;
-  }
-  const characters = [...label];
-  let low = 0;
-  let high = characters.length;
-  while (low < high) {
-    const mid = Math.ceil((low + high) / 2);
-    const candidate = `${characters.slice(0, mid).join("")}${ellipsis}`;
-    if (measureText(candidate, fontSize) <= maxWidth) {
-      low = mid;
-    } else {
-      high = mid - 1;
-    }
-  }
-  return `${characters.slice(0, low).join("")}${ellipsis}`;
 }
 
 function labelBounds(
