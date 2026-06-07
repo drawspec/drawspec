@@ -73,6 +73,8 @@ export interface PositionedNode extends DiagramNode, Size, Point {
 
 export interface PositionedEdge extends DiagramEdge {
   waypoints: Point[];
+  /** Label position computed by layout engine. When present, renderer uses this instead of midpoint heuristic. */
+  labelPosition?: Point;
 }
 
 export interface PositionedGroup extends DiagramGroup, Size, Point {

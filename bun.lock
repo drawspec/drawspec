@@ -218,6 +218,7 @@
       "dependencies": {
         "@drawspec/core": "workspace:*",
         "@drawspec/layout": "workspace:*",
+        "@drawspec/text-measure": "workspace:*",
         "elkjs": "^0.11.1",
       },
       "devDependencies": {
