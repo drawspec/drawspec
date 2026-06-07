@@ -1714,6 +1714,57 @@ describe("SvgRenderer", () => {
       expect(groupContent).toContain('fill="none"');
     });
 
+    test("socket faces toward the requiring component", () => {
+      const doc = interfaceDocument("requires");
+      const diagram = interfaceDiagram(doc);
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      const nodeGroup = svg.match(/<g id="[^"]*node-iface[^"]*">[\s\S]*?<\/g>/);
+      expect(nodeGroup).not.toBeNull();
+      const groupContent = nodeGroup?.[0] ?? "";
+      // Source (comp) is at x=10, interface at x=140 → source is to the left → socket opens left
+      // Left-facing arc: sweep-flag 0
+      expect(groupContent).toMatch(/ d="[^"]*A 8 8 0 0 0/);
+    });
+
+    test("socket faces right when requiring component is to the right", () => {
+      const doc = interfaceDocument("requires");
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [],
+        groups: [],
+        height: 120,
+        nodes: [
+          {
+            id: "iface",
+            kind: "interface",
+            label: "IUserRepo",
+            x: 10,
+            y: 20,
+            width: 80,
+            height: 40,
+          },
+          {
+            id: "comp",
+            kind: "component",
+            label: "Service",
+            x: 140,
+            y: 20,
+            width: 100,
+            height: 50,
+          },
+        ],
+        width: 260,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      const nodeGroup = svg.match(/<g id="[^"]*node-iface[^"]*">[\s\S]*?<\/g>/);
+      expect(nodeGroup).not.toBeNull();
+      const groupContent = nodeGroup?.[0] ?? "";
+      // Source (comp) is to the right of interface → socket opens right
+      // Right-facing arc: sweep-flag 1
+      expect(groupContent).toMatch(/ d="[^"]*A 8 8 0 0 1/);
+    });
+
     test("renders an interface without edges as a lollipop (provided by default)", () => {
       const doc = interfaceDocument();
       const svg = renderSvgSync(doc, { positionedDiagram: interfaceDiagram(doc) });

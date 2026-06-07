@@ -16,8 +16,7 @@ describe("normalizeNodeVisuals", () => {
       curve: 18,
     });
     expect(normalizeNodeVisuals({ id: "component", kind: "component" }).shape).toEqual({
-      type: "rounded-rect",
-      radius: 3,
+      type: "tabbed-rect",
     });
   });
 

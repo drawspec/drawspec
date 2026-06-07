@@ -22,7 +22,7 @@ const KIND_SHAPE_DEFAULTS: Record<string, NodeShapeSpec> = {
   note: { type: "note" },
   person: { type: "rounded-rect", radius: 12 },
   "use-case": { type: "ellipse" },
-  component: { type: "rounded-rect", radius: 3 },
+  component: { type: "tabbed-rect" },
 };
 
 const KIND_ICON_DEFAULTS: Record<string, BuiltinIconName> = {

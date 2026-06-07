@@ -136,6 +136,9 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
   const labels: SvgLabelSpec[] = [];
   const occlusionRects = buildOcclusionRects(positionedDiagram);
   const groupBounds = buildGroupBounds(positionedDiagram);
+  const nodePositions = new Map<string, PositionedNode>(
+    positionedDiagram.nodes.map((n) => [n.id, n])
+  );
   const children: SvgElementSpec[] = [
     { name: "title", attrs: { id: stableSvgId(idPrefix, "title") }, children: [title] },
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
@@ -163,7 +166,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
         (node) => !viewport || rectInViewport(node.x, node.y, node.width, node.height, viewport)
       )
       .map((node) => {
-        const result = renderNode(document, node, options, idPrefix, themeName);
+        const result = renderNode(document, node, options, idPrefix, themeName, nodePositions);
         labels.push(...result.labels);
         return result.element;
       }),
@@ -496,10 +499,11 @@ function renderNode(
   node: PositionedNodeWithContentLayout,
   options: SvgRenderOptions,
   idPrefix: string,
-  themeName: string
+  themeName: string,
+  nodePositions: ReadonlyMap<string, PositionedNode> = new Map()
 ): RenderedElement {
   const style = resolveStyle(document, node, options.theme, "node", themeName);
-  const children = shapeForNode(node, style, document.edges);
+  const children = shapeForNode(node, style, document.edges, nodePositions);
   const contentLayout = node.contentLayout;
   if (contentLayout !== undefined) {
     children.push(
@@ -654,10 +658,37 @@ function isRequiredInterface(nodeId: string, documentEdges: readonly DiagramEdge
   return false;
 }
 
+function socketDirection(
+  interfaceNode: PositionedNode,
+  documentEdges: readonly DiagramEdge[],
+  nodePositions: ReadonlyMap<string, PositionedNode>
+): SocketDirection {
+  for (const edge of documentEdges) {
+    if (edge.kind === "requires" && edge.targetId === interfaceNode.id) {
+      const sourceNode = nodePositions.get(edge.sourceId);
+      if (sourceNode === undefined) {
+        return "right";
+      }
+      const sourceCx = sourceNode.x + sourceNode.width / 2;
+      const sourceCy = sourceNode.y + sourceNode.height / 2;
+      const ifaceCx = interfaceNode.x + interfaceNode.width / 2;
+      const ifaceCy = interfaceNode.y + interfaceNode.height / 2;
+      const dx = sourceCx - ifaceCx;
+      const dy = sourceCy - ifaceCy;
+      if (Math.abs(dx) >= Math.abs(dy)) {
+        return dx < 0 ? "left" : "right";
+      }
+      return dy < 0 ? "up" : "down";
+    }
+  }
+  return "right";
+}
+
 function shapeForNode(
   node: PositionedNodeWithContentLayout,
   style: ResolvedStyle,
-  documentEdges: readonly DiagramEdge[] = []
+  documentEdges: readonly DiagramEdge[] = [],
+  nodePositions: ReadonlyMap<string, PositionedNode> = new Map()
 ): SvgElementSpec[] {
   if (node.contentLayout !== undefined) {
     return outerShapeForNode(node, style);
@@ -667,7 +698,8 @@ function shapeForNode(
     const cx = node.x + node.width / 2;
     const cy = node.y + node.height / 2 - radius;
     if (isRequiredInterface(node.id, documentEdges)) {
-      return [renderSocketShape(cx, cy, radius, style)];
+      const dir = socketDirection(node, documentEdges, nodePositions);
+      return [renderSocketShape(cx, cy, radius, style, dir)];
     }
     return [renderLollipopShape(cx, cy, radius, style)];
   }
@@ -682,6 +714,9 @@ function shapeForNode(
         Math.min(18, node.height / 4)
       ),
     ];
+  }
+  if (node.kind === "component") {
+    return [renderTabbedRectShape(node.x, node.y, node.width, node.height, style)];
   }
   const rounded = node.kind === "container" || node.kind === "person" ? 12 : 3;
   const rect: SvgElementSpec = {
@@ -737,6 +772,9 @@ function shapeFromNodeKind(kind: string): NodeShapeSpec {
   if (kind === "container" || kind === "person") {
     return { type: "rounded-rect", radius: 12 };
   }
+  if (kind === "component") {
+    return { type: "tabbed-rect" };
+  }
   return { type: "rounded-rect", radius: 3 };
 }
 
@@ -780,6 +818,8 @@ export function renderNodeShape(
       return [renderRectShape(x, y, width, height, style, 0)];
     case "rounded-rect":
       return [renderRectShape(x, y, width, height, style, shape.radius ?? 3)];
+    case "tabbed-rect":
+      return [renderTabbedRectShape(x, y, width, height, style)];
   }
 }
 
@@ -1050,6 +1090,44 @@ function renderRectShape(
   };
 }
 
+function renderTabbedRectShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const tabWidth = 16;
+  const tabHeight = 10;
+  const r = 3;
+  const w = formatNumber;
+  const d = [
+    `M ${w(x)} ${w(y + r)}`,
+    `A ${r} ${r} 0 0 1 ${w(x + r)} ${w(y)}`,
+    `L ${w(x + tabWidth)} ${w(y)}`,
+    `L ${w(x + tabWidth)} ${w(y - tabHeight)}`,
+    `L ${w(x + tabWidth + tabWidth)} ${w(y - tabHeight)}`,
+    `L ${w(x + tabWidth + tabWidth)} ${w(y)}`,
+    `L ${w(x + width - r)} ${w(y)}`,
+    `A ${r} ${r} 0 0 1 ${w(x + width)} ${w(y + r)}`,
+    `L ${w(x + width)} ${w(y + height - r)}`,
+    `A ${r} ${r} 0 0 1 ${w(x + width - r)} ${w(y + height)}`,
+    `L ${w(x + r)} ${w(y + height)}`,
+    `A ${r} ${r} 0 0 1 ${w(x)} ${w(y + height - r)}`,
+    "Z",
+  ].join(" ");
+  return {
+    name: "path",
+    attrs: {
+      d,
+      fill: style.fill,
+      stroke: style.stroke,
+      "stroke-width": style.strokeWidth,
+    },
+    selfClosing: true,
+  };
+}
+
 function renderCylinderShape(
   x: number,
   y: number,
@@ -1096,19 +1174,36 @@ function renderLollipopShape(
 }
 
 /** Renders a socket (required interface) as a semicircle arc open to the right. */
+type SocketDirection = "right" | "down" | "left" | "up";
+
 function renderSocketShape(
   cx: number,
   cy: number,
   radius: number,
-  style: ResolvedStyle
+  style: ResolvedStyle,
+  direction: SocketDirection = "right"
 ): SvgElementSpec {
-  const startX = cx;
-  const startY = cy - radius;
-  const endY = cy + radius;
+  const f = formatNumber;
+  const r = radius;
+  let d: string;
+  switch (direction) {
+    case "right":
+      d = `M ${f(cx)} ${f(cy - r)} A ${r} ${r} 0 0 1 ${f(cx)} ${f(cy + r)}`;
+      break;
+    case "left":
+      d = `M ${f(cx)} ${f(cy - r)} A ${r} ${r} 0 0 0 ${f(cx)} ${f(cy + r)}`;
+      break;
+    case "down":
+      d = `M ${f(cx - r)} ${f(cy)} A ${r} ${r} 0 0 1 ${f(cx + r)} ${f(cy)}`;
+      break;
+    case "up":
+      d = `M ${f(cx - r)} ${f(cy)} A ${r} ${r} 0 0 0 ${f(cx + r)} ${f(cy)}`;
+      break;
+  }
   return {
     name: "path",
     attrs: {
-      d: `M ${formatNumber(startX)} ${formatNumber(startY)} A ${radius} ${radius} 0 0 1 ${formatNumber(startX)} ${formatNumber(endY)}`,
+      d,
       fill: "none",
       stroke: style.stroke,
       "stroke-width": style.strokeWidth,
