@@ -39,7 +39,7 @@ import type {
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
 const DEFAULT_AUTO_FIT_PADDING = 20;
-const EDGE_LABEL_MAX_WIDTH = 240;
+const EDGE_LABEL_FALLBACK_WIDTH = 240;
 const EDGE_LABEL_BG_PADDING_X = 2;
 const EDGE_LABEL_BG_PADDING_Y = 3;
 const MARKER_SIZE = 8;
@@ -1156,7 +1156,7 @@ function edgeLabelMaxWidth(
   hasEndMarker: boolean
 ): number {
   if (waypoints.length < 2) {
-    return EDGE_LABEL_MAX_WIDTH;
+    return EDGE_LABEL_FALLBACK_WIDTH;
   }
   let pathLength = 0;
   for (let i = 0; i < waypoints.length - 1; i++) {

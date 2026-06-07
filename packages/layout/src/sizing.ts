@@ -91,8 +91,8 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
     const height = clamp(explicitHeight ?? global.defaultSize.height, minHeight, maxHeight);
     const labelLines =
       labelOverflow === "truncate"
-        ? truncateLabelLines(label, width - padding.x * 2, global.measurer, global.fontSize)
-        : wrapLabelLines(label, width - padding.x * 2, global.measurer, global.fontSize);
+        ? truncateLabelLines(label, width - padding.x * 2, global.fontSize)
+        : wrapLabelLines(label, width - padding.x * 2, global.fontSize);
     const contentLayout = layoutContent(labelLines, iconItems, width, height, global);
     return {
       ...node,
@@ -109,12 +109,7 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
   let labelLines =
     labelWrap === "none"
       ? label.split("\n")
-      : wrapLabelLines(
-          label,
-          labelWrap === "auto" ? maxContentWidth : labelWrap,
-          global.measurer,
-          global.fontSize
-        );
+      : wrapLabelLines(label, labelWrap === "auto" ? maxContentWidth : labelWrap, global.fontSize);
 
   const labelWidth = Math.max(
     0,
@@ -138,13 +133,11 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
         ? truncateLabelLines(
             label,
             Math.max(0, maxWidth - padding.x * 2 - iconHorizontalSpace),
-            global.measurer,
             global.fontSize
           )
         : wrapLabelLines(
             label,
             Math.max(0, maxWidth - padding.x * 2 - iconHorizontalSpace),
-            global.measurer,
             global.fontSize
           );
   }
@@ -392,12 +385,7 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-function wrapLabelLines(
-  label: string,
-  wrapWidth: number | undefined,
-  _measurer: TextMeasurer,
-  fontSize: number
-): string[] {
+function wrapLabelLines(label: string, wrapWidth: number | undefined, fontSize: number): string[] {
   if (wrapWidth === undefined) {
     return label.split("\n");
   }
@@ -407,7 +395,6 @@ function wrapLabelLines(
 function truncateLabelLines(
   label: string,
   maxWidth: number | undefined,
-  _measurer: TextMeasurer,
   fontSize: number
 ): string[] {
   if (maxWidth === undefined) {
