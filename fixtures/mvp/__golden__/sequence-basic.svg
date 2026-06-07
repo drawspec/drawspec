@@ -82,9 +82,9 @@
         Authorization
       </text>
     </g>
-    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-line1-1tnmjrr-bg-0xqojfs" transform="translate(0 3.8)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="65.88" x="307.06" y="278.2" />
-      <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-line1-1tnmjrr" text-anchor="middle" x="340" y="292.4">
+    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-line1-1tnmjrr-bg-0xqojfs">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="65.88" x="307.06" y="286.2" />
+      <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-line1-1tnmjrr" text-anchor="middle" x="340" y="300.4">
         approved
       </text>
     </g>
