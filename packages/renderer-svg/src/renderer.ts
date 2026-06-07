@@ -809,7 +809,7 @@ export function renderNodeShape(
     case "document":
       return [renderDocumentShape(x, y, width, height, style)];
     case "tabbed-rect":
-      return renderTabbedRectShape(x, y, width, height, style);
+      return [renderTabbedRectShape(x, y, width, height, style)];
     case "note":
       return renderNoteShape(x, y, width, height, style);
     case "hexagon":
@@ -818,8 +818,6 @@ export function renderNodeShape(
       return [renderRectShape(x, y, width, height, style, 0)];
     case "rounded-rect":
       return [renderRectShape(x, y, width, height, style, shape.radius ?? 3)];
-    case "tabbed-rect":
-      return [renderTabbedRectShape(x, y, width, height, style)];
   }
 }
 
@@ -983,30 +981,6 @@ function renderDocumentShape(
     },
     selfClosing: true,
   };
-}
-
-function renderTabbedRectShape(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  style: ResolvedStyle
-): SvgElementSpec[] {
-  const tabWidth = Math.min(36, width * 0.32);
-  const tabHeight = Math.min(16, height * 0.28);
-  const paint = shapePaintAttrs(style);
-  return [
-    renderRectShape(x, y, width, height, style, 3),
-    {
-      name: "path",
-      attrs: {
-        ...paint,
-        d: `M ${formatNumber(x + width - tabWidth)} ${formatNumber(y)} v ${formatNumber(tabHeight)} h ${formatNumber(tabWidth)}`,
-        fill: "none",
-      },
-      selfClosing: true,
-    },
-  ];
 }
 
 function renderNoteShape(
