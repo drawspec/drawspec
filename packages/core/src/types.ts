@@ -370,6 +370,39 @@ export type NodeShapeSpec =
   | { type: "cylinder"; curve?: number }
   | { type: "none" };
 
+/** Semantic role for a text line rendered inside a node compartment. */
+export type NodeCompartmentTextRole = "name" | "stereotype" | "header" | "member" | "value";
+
+/** Inline text entry rendered inside a node compartment. */
+export interface NodeCompartmentLine {
+  /** Text content to render. */
+  text: string;
+  /** Semantic role used by renderers for deterministic styling. */
+  role?: NodeCompartmentTextRole;
+  /** Horizontal alignment within the compartment. Defaults to `start` for members and `middle` otherwise. */
+  align?: "start" | "middle";
+  /** CSS font family override for this line. */
+  fontFamily?: string;
+  /** CSS font style override for this line. */
+  fontStyle?: "normal" | "italic";
+  /** CSS font weight override for this line. */
+  fontWeight?: string | number;
+}
+
+/** Content section rendered inside a node with horizontal dividers between adjacent sections. */
+export interface NodeCompartment {
+  /** Stable compartment identifier scoped to the node. */
+  id?: string;
+  /** Optional section heading rendered before content lines. */
+  header?: string;
+  /** Text lines in deterministic render order. */
+  lines: readonly NodeCompartmentLine[];
+  /** Optional per-section padding override in pixels. */
+  padding?: Partial<{ x: number; y: number }>;
+  /** Optional per-section line height in pixels. */
+  lineHeight?: number;
+}
+
 /** Node element in a diagram document. */
 export interface DiagramNode {
   id: string;
@@ -386,6 +419,8 @@ export interface DiagramNode {
   icons?: IconSpec[];
   /** Explicit node shape. When undefined, derived from `kind` during normalization. */
   shape?: NodeShapeSpec;
+  /** Optional compartment sections rendered inside the node body. */
+  compartments?: NodeCompartment[];
 }
 
 /** Layout sizing options for an individual node. */

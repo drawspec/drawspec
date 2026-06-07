@@ -4,6 +4,7 @@ import type {
   DiagramGroup,
   DiagramNode,
   IconSpec,
+  NodeCompartmentLine,
 } from "@drawspec/core";
 import type { TextMeasurer } from "@drawspec/text-measure";
 import type { NormalizedNodeSizingOptions } from "./sizing";
@@ -40,6 +41,30 @@ export interface NodeContentLayout {
   label?: { x: number; y: number; lines: string[] };
   /** Icons positioned relative to the node origin. */
   icons: readonly PositionedIcon[];
+  /** Compartment geometry and text positions, relative to the node origin. */
+  compartments?: readonly PositionedCompartment[];
+}
+
+/** Text line positioned inside a node compartment. */
+export interface PositionedCompartmentLine extends NodeCompartmentLine {
+  /** Stable text line identifier scoped to the node. */
+  id: string;
+  /** X coordinate relative to the node origin. */
+  x: number;
+  /** Baseline Y coordinate relative to the node origin. */
+  y: number;
+}
+
+/** Compartment section positioned inside a node. */
+export interface PositionedCompartment extends Size, Point {
+  /** Stable compartment identifier scoped to the node. */
+  id: string;
+  /** Optional section heading rendered before content lines. */
+  header?: PositionedCompartmentLine;
+  /** Positioned text lines in deterministic render order. */
+  lines: readonly PositionedCompartmentLine[];
+  /** Divider Y coordinate relative to the node origin, omitted for the first compartment. */
+  dividerY?: number;
 }
 
 export interface LayoutSpacing {

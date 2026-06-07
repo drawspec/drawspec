@@ -85,6 +85,10 @@ export interface ResolvedStyle {
   text: string;
   fontFamily: string;
   fontSize: number;
+  /** Monospace font used for code-like node compartment member lines. */
+  memberFontFamily: string;
+  /** Stroke color used for compartment divider lines. */
+  dividerStroke: string;
   /** Background color for edge labels. Defaults to theme background (invisible line interruption). */
   labelBg: string;
   lineStyle?: LineStyle;

@@ -247,9 +247,11 @@ export function resolveStyle(
       ? { arrowEnd: "filled-triangle" as const, arrowStart: "filled-triangle" as const }
       : {}),
     fill: elementType === "edge" ? "none" : theme.nodeFill,
+    dividerStroke: theme.nodeStroke,
     fontFamily: theme.fontFamily,
     fontSize: theme.fontSize,
     labelBg: theme.background,
+    memberFontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
     stroke: elementType === "edge" ? theme.edgeStroke : theme.nodeStroke,
     strokeWidth: 1.5,
     text: theme.text,

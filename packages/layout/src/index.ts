@@ -19,6 +19,8 @@ export type {
   NodeSizingOptions,
   NormalizedLayoutOptions,
   Point,
+  PositionedCompartment,
+  PositionedCompartmentLine,
   PositionedDiagram,
   PositionedEdge,
   PositionedGroup,

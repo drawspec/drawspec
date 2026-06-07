@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg aria-describedby="drawspec-classdoc_f5ee8bb6-0paqxzb-desc-0822wwq" aria-labelledby="drawspec-classdoc_f5ee8bb6-0paqxzb-title-1wmin6v" height="408" id="drawspec-classdoc_f5ee8bb6-0paqxzb" role="img" viewBox="0 0 440 408" width="440" xmlns="http://www.w3.org/2000/svg">
+<svg aria-describedby="drawspec-classdoc_f5ee8bb6-0paqxzb-desc-0822wwq" aria-labelledby="drawspec-classdoc_f5ee8bb6-0paqxzb-title-1wmin6v" height="544" id="drawspec-classdoc_f5ee8bb6-0paqxzb" role="img" viewBox="0 0 512.22 544" width="512.22" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
     --ds-activation-fill: #e0f2fe;
@@ -21,7 +21,7 @@
   <desc id="drawspec-classdoc_f5ee8bb6-0paqxzb-desc-0822wwq">
     class diagram classdoc_f5ee8bb6
   </desc>
-  <rect fill="#ffffff" height="408" width="440" x="0" y="0" />
+  <rect fill="#ffffff" height="544" width="512.22" x="0" y="0" />
   <defs>
     <marker id="drawspec-classdoc_f5ee8bb6-0paqxzb-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <circle cx="4" cy="4" fill="#475569" r="3" />
@@ -43,37 +43,74 @@
     </marker>
   </defs>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_24678296-1m326lp">
-    <path d="M 100 68 L 340 340" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-triangle)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 130.13 107.4 L 404 447.1" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-triangle)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_78a277d9-155onlo">
-    <path d="M 100 68 L 340 68" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 130.13 107.4 L 406.24 60" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-edge-rel_f2545dbb-03yqdt9">
-    <path d="M 100 68 L 340 204" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 130.13 107.4 L 405.96 235.1" fill="none" marker-end="url(#drawspec-classdoc_f5ee8bb6-0paqxzb-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-class_412c2b79-1p5yoan">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="40" />
+    <rect fill="#f8fafc" height="40" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="131.96" x="340.26" y="40" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-class_9fb30820-1crwmvp">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <rect fill="#f8fafc" height="134.8" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="180.26" x="40" y="40" />
+    <line stroke="#334155" stroke-width="1" x1="40" x2="220.26" y1="78.7" y2="78.7" />
+    <line stroke="#334155" stroke-width="1" x1="40" x2="220.26" y1="136.1" y2="136.1" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-enum_a36c23b8-0kp7rqa">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="176" />
+    <rect fill="#f8fafc" height="150.2" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="131.4" x="340.26" y="160" />
+    <line stroke="#334155" stroke-width="1" x1="340.26" x2="471.66" y1="216.9" y2="216.9" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-iface_bc02efc2-09toevq">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="312" />
+    <rect fill="#f8fafc" height="113.8" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="127.48" x="340.26" y="390.2" />
+    <line stroke="#334155" stroke-width="1" x1="340.26" x2="467.74" y1="447.1" y2="447.1" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-text-layer-1vwxgww">
-    <text data-width="99.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-class_412c2b79-line0-0qy936r" text-anchor="middle" x="340" y="72.9">
+    <text data-width="99.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_412c2b79-name-line-0-0gjbzip" text-anchor="middle" x="406.24" y="62.8">
       AggregateRoot
     </text>
-    <text data-width="57.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-class_9fb30820-line0-05slvt5" text-anchor="middle" x="100" y="72.9">
+    <text data-width="67.48" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_9fb30820-fields-line-0-1h03mw9" text-anchor="start" x="56" y="101.1">
+      - id: string
+    </text>
+    <text data-width="148.26" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_9fb30820-fields-line-1-1gq417a" text-anchor="start" x="56" y="119.3">
+      status: PaymentStatus
+    </text>
+    <text data-width="145.6" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_9fb30820-methods-line-0-12ru5ps" text-anchor="start" x="56" y="158.5">
+      + authorize(): boolean
+    </text>
+    <text data-width="57.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_9fb30820-name-line-0-1m3tzan" text-anchor="middle" x="130.13" y="61.9">
       Payment
     </text>
-    <text data-width="99.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-enum_a36c23b8-line0-1ivbinw" text-anchor="middle" x="340" y="208.9">
+    <text data-width="74.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-style="italic" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-enum_a36c23b8-name-line-0-0gq1wbu" text-anchor="middle" x="405.96" y="181.9">
+      &lt;&lt;enum&gt;&gt;
+    </text>
+    <text data-width="99.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-enum_a36c23b8-name-line-1-0h01i0t" text-anchor="middle" x="405.96" y="200.1">
       PaymentStatus
     </text>
-    <text data-width="52.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-node-iface_bc02efc2-line0-0b0b0aq" text-anchor="middle" x="340" y="344.9">
+    <text data-width="53.48" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-enum_a36c23b8-values-line-0-124c9gt" text-anchor="start" x="356.26" y="239.3">
+      Pending
+    </text>
+    <text data-width="71.4" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-enum_a36c23b8-values-line-1-11ucnru" text-anchor="start" x="356.26" y="257.5">
+      Authorized
+    </text>
+    <text data-width="61.04" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-enum_a36c23b8-values-line-2-11kd22v" text-anchor="start" x="356.26" y="275.7">
+      Captured
+    </text>
+    <text data-width="39.48" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-enum_a36c23b8-values-line-3-11adgdw" text-anchor="start" x="356.26" y="293.9">
+      Failed
+    </text>
+    <text data-width="48.02" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-methods-line-0-1st0mlh" text-anchor="start" x="356.26" y="469.5">
+      + pay()
+    </text>
+    <text data-width="66.78" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-methods-line-1-1sj10wi" text-anchor="start" x="356.26" y="487.7">
+      + refund()
+    </text>
+    <text data-width="95.48" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-style="italic" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-name-line-0-0g73gbs" text-anchor="middle" x="404" y="412.1">
+      &lt;&lt;interface&gt;&gt;
+    </text>
+    <text data-width="52.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-name-line-1-0gh320r" text-anchor="middle" x="404" y="430.3">
       Payable
     </text>
   </g>
