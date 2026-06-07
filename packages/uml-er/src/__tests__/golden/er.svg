@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-erdoc_e439061d-0px2e1l-desc-0k15p2i" aria-labelledby="drawspec-erdoc_e439061d-0px2e1l-title-18ihr3r" height="136" id="drawspec-erdoc_e439061d-0px2e1l" role="img" viewBox="0 0 680 136" width="680" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
+  <title id="drawspec-erdoc_e439061d-0px2e1l-title-18ihr3r">
+    E-Commerce ER
+  </title>
+  <desc id="drawspec-erdoc_e439061d-0px2e1l-desc-0k15p2i">
+    er diagram erdoc_e439061d
+  </desc>
+  <rect fill="#ffffff" height="136" width="680" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-erdoc_e439061d-0px2e1l-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-erdoc_e439061d-0px2e1l-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-erdoc_e439061d-0px2e1l-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-erdoc_e439061d-0px2e1l-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-erdoc_e439061d-0px2e1l-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-erdoc_e439061d-0px2e1l-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-erdoc_e439061d-0px2e1l-edge-rel_03c52851-1ejrsn4">
+    <path d="M 340 68 L 580 68" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-erdoc_e439061d-0px2e1l-edge-rel_75f4710c-16atvce">
+    <path d="M 100 68 L 340 68" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-erdoc_e439061d-0px2e1l-node-entity_22ede22f-134ikq8">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+  </g>
+  <g id="drawspec-erdoc_e439061d-0px2e1l-node-entity_6a53d9f6-03rso54">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="520" y="40" />
+  </g>
+  <g id="drawspec-erdoc_e439061d-0px2e1l-node-entity_dc6ba18d-03130vt">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="40" />
+  </g>
+  <g id="drawspec-erdoc_e439061d-0px2e1l-text-layer-0ywmrsg">
+    <g id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w-bg-02jnl19">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="59.16" x="430.42" y="45.8" />
+      <text data-width="55.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w" text-anchor="middle" x="460" y="60">
+        contains
+      </text>
+    </g>
+    <g id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a-bg-1knwe70">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="46.28" x="196.86" y="45.8" />
+      <text data-width="42.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a" text-anchor="middle" x="220" y="60">
+        places
+      </text>
+    </g>
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-node-entity_22ede22f-line0-1qsxf86" text-anchor="middle" x="100" y="72.9">
+      User
+    </text>
+    <text data-width="67.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-node-entity_6a53d9f6-line0-0v769jq" text-anchor="middle" x="580" y="72.9">
+      OrderItem
+    </text>
+    <text data-width="38.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-node-entity_dc6ba18d-line0-1m4ck47" text-anchor="middle" x="340" y="72.9">
+      Order
+    </text>
+  </g>
+</svg>
