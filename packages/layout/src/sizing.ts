@@ -1,4 +1,10 @@
-import type { DiagramNode, IconPlacement, IconSpec, NodeLayoutOptions } from "@drawspec/core";
+import type {
+  DiagramNode,
+  IconPlacement,
+  IconSpec,
+  LabelOverflow,
+  NodeLayoutOptions,
+} from "@drawspec/core";
 import type { TextMeasurer } from "@drawspec/text-measure";
 import { normalizeNodeVisuals } from "./normalize";
 import type { NodeContentLayout, PositionedIcon, Size } from "./types";
@@ -15,6 +21,8 @@ export interface NormalizedNodeSizingOptions {
   maxSize: Size;
   /** Padding around label text. */
   padding: { x: number; y: number };
+  /** Document-level label overflow behavior. */
+  labelOverflow: LabelOverflow;
   /** Label wrapping behavior. */
   labelWrap: "none" | "auto" | number;
   /** Font size in pixels. */
@@ -33,7 +41,6 @@ export interface SizedNode extends DiagramNode {
   contentLayout: NodeContentLayout;
 }
 
-const ELLIPSIS = "…";
 const ICON_GAP = 4;
 const ICON_LABEL_GAP = 6;
 const DEFAULT_BUILTIN_ICON_SIZE: Size = { width: 24, height: 30 };
@@ -71,6 +78,7 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
     y: layout?.padding?.y ?? global.padding.y,
   };
   const labelWrap = layout?.labelWrap ?? global.labelWrap;
+  const labelOverflow = layout?.labelOverflow ?? global.labelOverflow;
   const explicitWidth = layout?.width;
   const explicitHeight = layout?.height;
   const label = node.label ?? node.id;
@@ -80,12 +88,10 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
   if (mode === "fixed") {
     const width = clamp(explicitWidth ?? global.defaultSize.width, minWidth, maxWidth);
     const height = clamp(explicitHeight ?? global.defaultSize.height, minHeight, maxHeight);
-    const labelLines = truncateToWidth(
-      label,
-      width - padding.x * 2,
-      global.measurer,
-      global.fontSize
-    );
+    const labelLines =
+      labelOverflow === "truncate"
+        ? truncateLabelLines(label, width - padding.x * 2, global.measurer, global.fontSize)
+        : wrapLabelLines(label, width - padding.x * 2, global.measurer, global.fontSize);
     const contentLayout = layoutContent(labelLines, iconItems, width, height, global);
     return {
       ...node,
@@ -126,12 +132,20 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
   if (explicitWidth === undefined && maxWidth !== Infinity && width > maxWidth) {
     width = maxWidth;
     const iconHorizontalSpace = horizontalIconSpace(iconItems);
-    labelLines = truncateLinesToWidth(
-      labelLines,
-      Math.max(0, maxWidth - padding.x * 2 - iconHorizontalSpace),
-      global.measurer,
-      global.fontSize
-    );
+    labelLines =
+      labelOverflow === "truncate"
+        ? truncateLabelLines(
+            label,
+            Math.max(0, maxWidth - padding.x * 2 - iconHorizontalSpace),
+            global.measurer,
+            global.fontSize
+          )
+        : wrapLabelLines(
+            label,
+            Math.max(0, maxWidth - padding.x * 2 - iconHorizontalSpace),
+            global.measurer,
+            global.fontSize
+          );
   }
 
   if (maxHeight !== Infinity && height > maxHeight) {
@@ -140,12 +154,10 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
       1,
       Math.floor((maxHeight - padding.y * 2 - iconVerticalSpace) / global.lineHeight)
     );
-    const visibleLines = labelLines.slice(0, maxLines);
-    const lastLine = visibleLines.at(-1);
-    if (lastLine !== undefined) {
-      visibleLines[visibleLines.length - 1] = `${lastLine}${ELLIPSIS}`;
+    labelLines = labelLines.slice(0, maxLines);
+    if (labelOverflow === "truncate" && labelLines.length > 0) {
+      labelLines[labelLines.length - 1] = `${labelLines[labelLines.length - 1]}…`;
     }
-    labelLines = visibleLines;
     height = maxHeight;
   }
 
@@ -429,48 +441,35 @@ function wrapSingleLine(
   return lines;
 }
 
-function truncateLinesToWidth(
-  lines: string[],
-  maxContentWidth: number,
-  measurer: TextMeasurer,
-  fontSize: number
-): string[] {
-  return lines.map((line) =>
-    measurer.measure(line, fontSize) <= maxContentWidth
-      ? line
-      : truncateLineToWidth(line, maxContentWidth, measurer, fontSize)
-  );
-}
-
-function truncateToWidth(
+function truncateLabelLines(
   label: string,
-  maxContentWidth: number,
+  maxWidth: number | undefined,
   measurer: TextMeasurer,
   fontSize: number
 ): string[] {
-  if (measurer.measure(label, fontSize) <= maxContentWidth) {
-    return [label];
+  if (maxWidth === undefined) {
+    return label.split("\n");
   }
-  return [truncateLineToWidth(label, maxContentWidth, measurer, fontSize)];
-}
-
-function truncateLineToWidth(
-  line: string,
-  maxContentWidth: number,
-  measurer: TextMeasurer,
-  fontSize: number
-): string {
-  const chars = [...line];
-  let low = 0;
-  let high = chars.length;
-  while (low < high) {
-    const mid = Math.ceil((low + high) / 2);
-    const candidate = `${chars.slice(0, mid).join("")}${ELLIPSIS}`;
-    if (measurer.measure(candidate, fontSize) <= maxContentWidth) {
-      low = mid;
-    } else {
-      high = mid - 1;
+  return label.split("\n").map((line) => {
+    if (measurer.measure(line, fontSize) <= maxWidth) {
+      return line;
     }
-  }
-  return `${chars.slice(0, low).join("")}${ELLIPSIS}`;
+    const ELLIPSIS = "…";
+    if (measurer.measure(ELLIPSIS, fontSize) >= maxWidth) {
+      return ELLIPSIS;
+    }
+    const chars = [...line];
+    let lo = 0;
+    let hi = chars.length;
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2);
+      const candidate = `${chars.slice(0, mid).join("")}${ELLIPSIS}`;
+      if (measurer.measure(candidate, fontSize) <= maxWidth) {
+        lo = mid;
+      } else {
+        hi = mid - 1;
+      }
+    }
+    return `${chars.slice(0, lo).join("")}${ELLIPSIS}`;
+  });
 }

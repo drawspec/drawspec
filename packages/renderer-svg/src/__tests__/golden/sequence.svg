@@ -70,31 +70,31 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-ok-activation-1j1jwdr" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="286.2" />
   <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-start-activation-1qkvb8f" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="174.2" />
   <g id="drawspec-checkout-sequence-1nkmrpb-text-layer-1qywb69">
-    <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-1ndsu0p-bg-00g51u3">
+    <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-line0-0phsakq-bg-0mgtsah">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="53.08" x="313.46" y="203" />
-      <text data-width="45.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-1ndsu0p" text-anchor="middle" x="340" y="218.2">
+      <text data-width="45.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-line0-0phsakq" text-anchor="middle" x="340" y="218.2">
         charge
       </text>
     </g>
-    <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-0g0r43r-bg-0rzp5sq">
+    <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-line0-13sz2a4-bg-09ip5w3">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="23.68" x="328.16" y="259" />
-      <text data-width="15.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-0g0r43r" text-anchor="middle" x="340" y="274.2">
+      <text data-width="15.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-line0-13sz2a4" text-anchor="middle" x="340" y="274.2">
         ok
       </text>
     </g>
-    <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-1p9y2p3-bg-1ryphwo">
+    <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-line0-0ou4z1o-bg-1aepsv1">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="67.64" x="146.18" y="147" />
-      <text data-width="59.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-1p9y2p3" text-anchor="middle" x="180" y="162.2">
+      <text data-width="59.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-line0-0ou4z1o" text-anchor="middle" x="180" y="162.2">
         checkout
       </text>
     </g>
-    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-1y49qfv" text-anchor="start" x="188" y="214.2">
+    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-line0-1oy9npc" text-anchor="start" x="188" y="214.2">
       Payment result
     </text>
-    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-1efqdl5" text-anchor="start" x="184" y="232.2">
+    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-line0-1qxbx6i" text-anchor="start" x="184" y="232.2">
       authorized
     </text>
-    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-1e5qrw6" text-anchor="start" x="184" y="272.2">
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-line0-07wur4h" text-anchor="start" x="184" y="272.2">
       declined
     </text>
     <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-payments-line0-1cbqhmm" text-anchor="middle" x="420" y="72.9">

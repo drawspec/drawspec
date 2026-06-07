@@ -70,27 +70,27 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_ce4428e1-activation-0y40rq3" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="415" y="230.2" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-activation-msg_e787e49c-activation-1esj5rv" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="174.2" />
   <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-text-layer-1o78ybx">
-    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_488bd19a-01ed16k-bg-0b18iod">
+    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_488bd19a-line0-1x8qpvf-bg-1rtz6ks">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="130.5" x="114.75" y="315" />
-      <text data-width="122.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_488bd19a-01ed16k" text-anchor="middle" x="180" y="330.2">
+      <text data-width="122.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_488bd19a-line0-1x8qpvf" text-anchor="middle" x="180" y="330.2">
         Show confirmation
       </text>
     </g>
-    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-0j98vcv-bg-14wnjjw">
+    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-line0-1tdmy2s-bg-0dqesa9">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="161.86" x="259.07" y="259" />
-      <text data-width="153.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-0j98vcv" text-anchor="middle" x="340" y="274.2">
+      <text data-width="153.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_9e381ab3-line0-1tdmy2s" text-anchor="middle" x="340" y="274.2">
         Authorization approved
       </text>
     </g>
-    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_ce4428e1-0jaak2j-bg-0rltycl">
+    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_ce4428e1-line0-18k8lds-bg-189saae">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="132.18" x="273.91" y="203" />
-      <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_ce4428e1-0jaak2j" text-anchor="middle" x="340" y="218.2">
+      <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_ce4428e1-line0-18k8lds" text-anchor="middle" x="340" y="218.2">
         Authorize payment
       </text>
     </g>
-    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_e787e49c-037wrzv-bg-0yf64xj">
+    <g id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_e787e49c-line0-1g8fwps-bg-11qhtll">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="83.46" x="138.27" y="147" />
-      <text data-width="75.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_e787e49c-037wrzv" text-anchor="middle" x="180" y="162.2">
+      <text data-width="75.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_6e4a2ce8-0kldh0p-label-edge-msg_e787e49c-line0-1g8fwps" text-anchor="middle" x="180" y="162.2">
         Place order
       </text>
     </g>

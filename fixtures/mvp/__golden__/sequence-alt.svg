@@ -82,49 +82,49 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_a6ff72df-activation-1uck5db" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="286.2" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_d73b174f-activation-0oib66h" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="398.2" />
   <g id="drawspec-seqdoc_50f5132c-13xu4za-text-layer-1k1cz49">
-    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-159i9uf-bg-1p8md9a">
+    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-line0-1kbb4jg-bg-1lgcy46">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="57.84" x="151.08" y="315" />
-      <text data-width="49.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-159i9uf" text-anchor="middle" x="180" y="330.2">
+      <text data-width="49.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-line0-1kbb4jg" text-anchor="middle" x="180" y="330.2">
         Receipt
       </text>
     </g>
-    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl-bg-13dw392">
+    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line0-008h9h6-bg-1ra9y6y">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="232.14" x="63.93" y="427" />
-      <text data-width="224.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl" text-anchor="middle" x="180" y="442.2">
+      <text data-width="224.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line0-008h9h6" text-anchor="middle" x="180" y="442.2">
         Request another payment method
       </text>
     </g>
-    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-1364xyj-bg-0i94ngp">
+    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-line0-1da2pww-bg-1xm5mn3">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="71" x="304.5" y="203" />
-      <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-1364xyj" text-anchor="middle" x="340" y="218.2">
+      <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-line0-1da2pww" text-anchor="middle" x="340" y="218.2">
         Authorize
       </text>
     </g>
-    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-0d7cwmm-bg-1m68aoy">
+    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-line0-1or64g9-bg-19wb0wo">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="87.66" x="136.17" y="147" />
-      <text data-width="79.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-0d7cwmm" text-anchor="middle" x="180" y="162.2">
+      <text data-width="79.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-line0-1or64g9" text-anchor="middle" x="180" y="162.2">
         Submit card
       </text>
     </g>
-    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-071fuaf-bg-1thhogw">
+    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-line0-0q5zfjw-bg-1ip22hw">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="103.62" x="288.19" y="259" />
-      <text data-width="95.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-071fuaf" text-anchor="middle" x="340" y="274.2">
+      <text data-width="95.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-line0-0q5zfjw" text-anchor="middle" x="340" y="274.2">
         Approval code
       </text>
     </g>
-    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-183zkvl-bg-0ckb9vx">
+    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-line0-101mx4y-bg-1ac0i0f">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="105.86" x="287.07" y="371" />
-      <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-183zkvl" text-anchor="middle" x="340" y="386.2">
+      <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-line0-101mx4y" text-anchor="middle" x="340" y="386.2">
         Decline reason
       </text>
     </g>
-    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-0tj9xvf" text-anchor="start" x="28" y="270.2">
+    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-line0-1d1wcps" text-anchor="start" x="28" y="270.2">
       alt
     </text>
-    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-1mt7tad" text-anchor="start" x="24" y="288.2">
+    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-line0-1c1fwuu" text-anchor="start" x="24" y="288.2">
       approved
     </text>
-    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-1-1mj87le" text-anchor="start" x="24" y="384.2">
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-1-line0-0veftst" text-anchor="start" x="24" y="384.2">
       declined
     </text>
     <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_6d48fc82-line0-1oyq7q2" text-anchor="middle" x="260" y="72.9">

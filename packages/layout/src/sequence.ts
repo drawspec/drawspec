@@ -1,3 +1,5 @@
+import type { LabelOverflow } from "@drawspec/core";
+import { truncateText, wrapText } from "@drawspec/text-measure";
 import { LayoutCache } from "./cache";
 import { normalizeLayoutOptions } from "./options";
 import { sizeNode } from "./sizing";
@@ -201,12 +203,18 @@ function positionedLane(
   y: number,
   x: number,
   width: number,
-  height: number
+  height: number,
+  labelOverflow: LabelOverflow
 ): PositionedGroupLane {
   const childIds = childIdsFrom(operand.childIds);
   const lane: PositionedGroupLane = { id, x, y, width, height, childIds };
   if (typeof operand.condition === "string") {
     lane.label = operand.condition;
+    if (labelOverflow === "truncate") {
+      lane.labelLines = [truncateText(operand.condition, width - 16, 14)];
+    } else {
+      lane.labelLines = wrapText(operand.condition, width - 16, 14);
+    }
   }
   return lane;
 }
@@ -219,12 +227,14 @@ function positionGroups(
   options: LayoutOptions
 ): PositionedGroup[] {
   const normalized = normalizeLayoutOptions(document, options);
+  const labelOverflow = document.labelOverflow ?? "wrap";
   const edgesById: Record<string, PositionedEdge> = {};
   for (const edge of edges) {
     edgesById[edge.id] = edge;
   }
 
   return document.groups.map((group) => {
+    const groupOverflow = group.labelOverflow ?? labelOverflow;
     const childIds = childIdsFrom(group.childIds);
     const bounds = edgeYRange(childIds, edgesById);
     const xBounds = groupXBounds(childIds, edgesById, nodesById);
@@ -239,9 +249,17 @@ function positionGroups(
         top + laneHeight * index,
         xBounds.x,
         xBounds.width,
-        laneHeight
+        laneHeight,
+        groupOverflow
       )
     );
+
+    const groupLabelLines =
+      group.label !== undefined
+        ? groupOverflow === "truncate"
+          ? [truncateText(group.label, xBounds.width - 24, 14)]
+          : wrapText(group.label, xBounds.width - 24, 14)
+        : undefined;
 
     return {
       ...group,
@@ -250,6 +268,7 @@ function positionGroups(
       width: xBounds.width,
       height: bottom - top,
       lanes,
+      ...(groupLabelLines !== undefined && { labelLines: groupLabelLines }),
     };
   });
 }

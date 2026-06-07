@@ -85,33 +85,33 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="392" />
   </g>
   <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-text-layer-0ba9ryy">
-    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-0qaxbel-bg-1umv8r3">
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-line0-1izayge-bg-077jjlj">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="572.48" y="220.8" />
-      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-0qaxbel" text-anchor="middle" x="600" y="236">
+      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-line0-1izayge" text-anchor="middle" x="600" y="236">
         HTTPS
       </text>
     </g>
-    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-046hrxi-bg-0rehc8w">
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-line0-0cv7f35-bg-03m2wqo">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="34.6" x="182.7" y="308.8" />
-      <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-046hrxi" text-anchor="middle" x="200" y="324">
+      <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-line0-0cv7f35" text-anchor="middle" x="200" y="324">
         TLS
       </text>
     </g>
-    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-16h1v22-bg-0wzi5pf">
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-line0-0t1xlyd-bg-0st7omi">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="34.6" x="682.7" y="220.8" />
-      <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-16h1v22" text-anchor="middle" x="700" y="236">
+      <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-line0-0t1xlyd" text-anchor="middle" x="700" y="236">
         TLS
       </text>
     </g>
-    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-0318s1e-bg-1kb9ap8">
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-line0-0c2xrml-bg-0k3yi6e">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="472.48" y="132.8" />
-      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-0318s1e" text-anchor="middle" x="500" y="148">
+      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-line0-0c2xrml" text-anchor="middle" x="500" y="148">
         HTTPS
       </text>
     </g>
-    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-1h5kuj1-bg-1ihi95f">
+    <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-line0-1g8u6xq-bg-1v3nmst">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="72.48" y="308.8" />
-      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-1h5kuj1" text-anchor="middle" x="100" y="324">
+      <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-line0-1g8u6xq" text-anchor="middle" x="100" y="324">
         HTTPS
       </text>
     </g>
@@ -121,8 +121,11 @@
     <text data-width="77.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_655eb4eb95fd5677-line0-1e33vxp" text-anchor="middle" x="300" y="72.9">
       API Service
     </text>
-    <text data-width="82.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_a87e9d0792858505-line0-0vukamn" text-anchor="middle" x="500" y="72.9">
-      Order Wor…
+    <text data-width="38.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_a87e9d0792858505-line0-0vukamn" text-anchor="middle" x="500" y="63.8">
+      Order
+    </text>
+    <text data-width="48.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_a87e9d0792858505-line1-0vkkoxo" text-anchor="middle" x="500" y="82">
+      Worker
     </text>
     <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-art_f6a66885afb27708-line0-0m3om0x" text-anchor="middle" x="700" y="72.9">
       Web App
@@ -136,11 +139,17 @@
     <text data-width="81.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-dn_ed947a100831258e-line0-09nco6u" text-anchor="middle" x="1100" y="72.9">
       Worker Pool
     </text>
-    <text data-width="87.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_3df758453a713335-line0-05myc42" text-anchor="middle" x="100" y="424.9">
-      Message Q…
+    <text data-width="59.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_3df758453a713335-line0-05myc42" text-anchor="middle" x="100" y="415.8">
+      Message
     </text>
-    <text data-width="87.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_8980d18d222a454a-line0-0yfrfnb" text-anchor="middle" x="300" y="424.9">
-      Managed P…
+    <text data-width="43.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_3df758453a713335-line1-05wxxt1" text-anchor="middle" x="100" y="434">
+      Queue
+    </text>
+    <text data-width="61.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_8980d18d222a454a-line0-0yfrfnb" text-anchor="middle" x="300" y="415.8">
+      Managed
+    </text>
+    <text data-width="58.24" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-node-in_8980d18d222a454a-line1-0y5rtyc" text-anchor="middle" x="300" y="434">
+      Postgres
     </text>
   </g>
 </svg>

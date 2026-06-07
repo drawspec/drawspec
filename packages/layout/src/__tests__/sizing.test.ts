@@ -56,7 +56,7 @@ describe("sizeGraphNodes", () => {
     expect(result[0]?.computedHeight).toBe(80);
   });
 
-  test("maxWidth enables truncation", () => {
+  test("maxWidth enables wrapping", () => {
     const nodes: DiagramNode[] = [
       {
         id: "a",
@@ -67,7 +67,8 @@ describe("sizeGraphNodes", () => {
     ];
     const result = sizeGraphNodes(nodes, defaultOptions);
     expect(result[0]?.computedWidth).toBeLessThanOrEqual(100);
-    expect(result[0]?.labelLines[0]).toContain("…");
+    expect(result[0]?.labelLines.length).toBeGreaterThan(1);
+    expect(result[0]?.labelLines.join(" ")).toBe("Very long label that exceeds max");
   });
 
   test("labelWrap auto wraps text", () => {
