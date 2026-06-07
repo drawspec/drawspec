@@ -44,7 +44,6 @@
   </defs>
   <g id="drawspec-checkout-sequence-1nkmrpb-group-payment-alt-0uev8vs">
     <rect fill="#f8fafc" height="112" rx="8" ry="8" stroke="#94a3b8" stroke-dasharray="6 4" stroke-width="1.5" width="328" x="176" y="198.2" />
-    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="176" x2="504" y1="198.2" y2="198.2" />
     <line stroke="#94a3b8" stroke-dasharray="3 3" x1="176" x2="504" y1="254.2" y2="254.2" />
   </g>
   <g id="drawspec-checkout-sequence-1nkmrpb-edge-charge-0mlrezu">
@@ -89,10 +88,10 @@
         checkout
       </text>
     </g>
-    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-1y49qfv" text-anchor="start" x="188" y="218.2">
+    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-1y49qfv" text-anchor="start" x="188" y="214.2">
       Payment result
     </text>
-    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-1efqdl5" text-anchor="start" x="184" y="216.2">
+    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-1efqdl5" text-anchor="start" x="184" y="232.2">
       authorized
     </text>
     <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-1e5qrw6" text-anchor="start" x="184" y="272.2">

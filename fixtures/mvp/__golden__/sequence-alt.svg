@@ -44,7 +44,6 @@
   </defs>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-group-frag_a7e3f9f2-1i63q5w">
     <rect fill="#f8fafc" height="224" rx="8" ry="8" stroke="#94a3b8" stroke-dasharray="6 4" stroke-width="1.5" width="488" x="16" y="254.2" />
-    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="16" x2="504" y1="254.2" y2="254.2" />
     <line stroke="#94a3b8" stroke-dasharray="3 3" x1="16" x2="504" y1="366.2" y2="366.2" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-edge-msg_148fcc18-19lnabc">
@@ -90,9 +89,9 @@
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl-bg-13dw392">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="134.28" x="112.86" y="427" />
-      <text data-width="126.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl" text-anchor="middle" x="180" y="442.2">
-        Request another …
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="232.14" x="63.93" y="427" />
+      <text data-width="224.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl" text-anchor="middle" x="180" y="442.2">
+        Request another payment method
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-1364xyj-bg-0i94ngp">
@@ -119,10 +118,10 @@
         Decline reason
       </text>
     </g>
-    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-0tj9xvf" text-anchor="start" x="28" y="274.2">
+    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-0tj9xvf" text-anchor="start" x="28" y="270.2">
       alt
     </text>
-    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-1mt7tad" text-anchor="start" x="24" y="272.2">
+    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-1mt7tad" text-anchor="start" x="24" y="288.2">
       approved
     </text>
     <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-1-1mj87le" text-anchor="start" x="24" y="384.2">
