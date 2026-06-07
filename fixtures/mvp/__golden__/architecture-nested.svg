@@ -84,39 +84,39 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="216" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-text-layer-1fsjk54">
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_18acfa6794477135-line0-1pc7lme-bg-0e9f65s">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="101.86" x="249.07" y="133.8" />
-      <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_18acfa6794477135-line0-1pc7lme" text-anchor="middle" x="300" y="148">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_18acfa6794477135-line0-1pc7lme-bg-0e9f65s" transform="translate(0 54)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="101.86" x="249.07" y="44" />
+      <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_18acfa6794477135-line0-1pc7lme" text-anchor="middle" x="300" y="58.2">
         Manages store
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-line0-0s2yjum-bg-1lfs6k1" transform="translate(0 52.2)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="113.06" x="43.47" y="221.8" />
-      <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-line0-0s2yjum" text-anchor="middle" x="100" y="236">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-line0-0s2yjum-bg-1lfs6k1" transform="translate(0 54)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="113.06" x="43.47" y="44" />
+      <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-line0-0s2yjum" text-anchor="middle" x="100" y="58.2">
         Validates tokens
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-line0-1xuic2y-bg-1izlo52" transform="translate(0 22)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="117.82" x="341.09" y="133.8" />
-      <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-line0-1xuic2y" text-anchor="middle" x="400" y="148">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-line0-1xuic2y-bg-1izlo52" transform="translate(0 54)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="117.82" x="341.09" y="44" />
+      <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-line0-1xuic2y" text-anchor="middle" x="400" y="58.2">
         Authenticates via
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_730a18c6ea565480-line0-0wuo9ps-bg-1heeli0">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="103.54" x="48.23" y="309.8" />
-      <text data-width="99.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_730a18c6ea565480-line0-0wuo9ps" text-anchor="middle" x="100" y="324">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_730a18c6ea565480-line0-0wuo9ps-bg-1heeli0" transform="translate(0 54)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="103.54" x="48.23" y="220" />
+      <text data-width="99.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_730a18c6ea565480-line0-0wuo9ps" text-anchor="middle" x="100" y="234.2">
         Saves changes
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_828cd01b042fca7e-line0-0kkpz89-bg-0bhyi9l">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="112.78" x="43.61" y="485.8" />
-      <text data-width="108.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_828cd01b042fca7e-line0-0kkpz89" text-anchor="middle" x="100" y="500">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_828cd01b042fca7e-line0-0kkpz89-bg-0bhyi9l" transform="translate(0 54)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="112.78" x="43.61" y="396" />
+      <text data-width="108.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_828cd01b042fca7e-line0-0kkpz89" text-anchor="middle" x="100" y="410.2">
         Persists settings
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-line0-05umfp8-bg-0hynkpo" transform="translate(0 22)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="173.4" x="113.3" y="133.8" />
-      <text data-width="169.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-line0-05umfp8" text-anchor="middle" x="200" y="148">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-line0-05umfp8-bg-0hynkpo" transform="translate(0 54)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="173.4" x="113.3" y="44" />
+      <text data-width="169.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-line0-05umfp8" text-anchor="middle" x="200" y="58.2">
         Configures payment rules
       </text>
     </g>

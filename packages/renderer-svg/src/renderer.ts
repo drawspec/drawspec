@@ -1125,7 +1125,15 @@ function renderEdge(
         const baseY = edgeLabelY + index * edgeLineHeight;
         const bgTop = baseY - textTopOffset;
         const bgBottom = baseY + textBottomOffset;
-        const overlapsEdge = bgTop <= pos.y && bgBottom >= pos.y;
+        const lineWidth = measureText(line, style.fontSize);
+        const labelLeft = pos.x - lineWidth / 2;
+        const labelRight = pos.x + lineWidth / 2;
+        const overlapsEdge = edgeOverlapsRect(edge.waypoints, {
+          left: labelLeft,
+          top: bgTop,
+          right: labelRight,
+          bottom: bgBottom,
+        });
         let extraGap = 0;
         if (overlapsEdge) {
           // shiftUp = how far bg extends below edge + gap (positive = shift up = move label up)
@@ -1134,8 +1142,9 @@ function renderEdge(
           // edge and bgBottom below edge. Since textTopOffset > textBottomOffset, bgTop is always
           // closer to edge than bgBottom, making shiftDown < shiftUp. The shiftUp < shiftDown branch
           // is unreachable with current defaults (yAdjust = -max(8, fontSize * 0.5)).
-          const shiftUp = bgBottom - pos.y + EDGE_LABEL_LINE_GAP;
-          const shiftDown = pos.y - bgTop + EDGE_LABEL_LINE_GAP;
+          const edgeYRange = edgeYInXRange(edge.waypoints, labelLeft, labelRight);
+          const shiftUp = bgBottom - edgeYRange.minY + EDGE_LABEL_LINE_GAP;
+          const shiftDown = edgeYRange.maxY - bgTop + EDGE_LABEL_LINE_GAP;
           extraGap = shiftUp <= shiftDown ? -shiftUp : shiftDown;
         }
         const id = stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`);
@@ -1379,19 +1388,115 @@ function approachPoint(corner: Point, from: Point, radius: number): Point {
 }
 
 function midpoint(points: Point[]): Point {
-  if (points.length === 0) {
-    return { x: 0, y: 0 };
+  if (points.length === 0) return { x: 0, y: 0 };
+  if (points.length === 1) return points[0] ?? { x: 0, y: 0 };
+
+  let totalLength = 0;
+  const cumulativeLengths: number[] = [0];
+  for (let i = 0; i < points.length - 1; i++) {
+    const current = points[i];
+    const next = points[i + 1];
+    if (current === undefined || next === undefined) continue;
+    const dx = next.x - current.x;
+    const dy = next.y - current.y;
+    totalLength += Math.sqrt(dx * dx + dy * dy);
+    cumulativeLengths.push(totalLength);
   }
-  const index = Math.floor((points.length - 1) / 2);
-  const current = points[index];
-  const next = points[index + 1];
-  if (current === undefined) {
-    return { x: 0, y: 0 };
+
+  if (totalLength === 0) {
+    return points[0] ?? { x: 0, y: 0 };
   }
-  if (next === undefined) {
-    return current;
+
+  const halfLength = totalLength / 2;
+  for (let i = 0; i < cumulativeLengths.length - 1; i++) {
+    const segStart = cumulativeLengths[i] ?? 0;
+    const segEnd = cumulativeLengths[i + 1] ?? segStart;
+    if (segStart === undefined || segEnd === undefined) continue;
+    if (halfLength >= segStart && halfLength <= segEnd) {
+      const segLength = segEnd - segStart;
+      const t = segLength > 0 ? (halfLength - segStart) / segLength : 0;
+      const p0 = points[i];
+      const p1 = points[i + 1];
+      if (p0 === undefined || p1 === undefined) continue;
+      return { x: p0.x + t * (p1.x - p0.x), y: p0.y + t * (p1.y - p0.y) };
+    }
   }
-  return { x: (current.x + next.x) / 2, y: (current.y + next.y) / 2 };
+
+  return points[points.length - 1] ?? { x: 0, y: 0 };
+}
+
+function edgeOverlapsRect(
+  waypoints: readonly Point[],
+  rect: { left: number; top: number; right: number; bottom: number }
+): boolean {
+  for (let i = 0; i < waypoints.length - 1; i++) {
+    const p0 = waypoints[i];
+    const p1 = waypoints[i + 1];
+    if (p0 === undefined || p1 === undefined) continue;
+    if (segmentOverlapsRect(p0, p1, rect)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function segmentOverlapsRect(
+  p0: Point,
+  p1: Point,
+  rect: { left: number; top: number; right: number; bottom: number }
+): boolean {
+  const dx = p1.x - p0.x;
+
+  const segMinX = Math.min(p0.x, p1.x);
+  const segMaxX = Math.max(p0.x, p1.x);
+  if (segMaxX < rect.left || segMinX > rect.right) return false;
+
+  const tLeft = dx !== 0 ? Math.max(0, Math.min(1, (rect.left - p0.x) / dx)) : 0;
+  const tRight = dx !== 0 ? Math.max(0, Math.min(1, (rect.right - p0.x) / dx)) : 1;
+  const tMin = Math.min(tLeft, tRight);
+  const tMax = Math.max(tLeft, tRight);
+
+  const dy = p1.y - p0.y;
+  const y0 = p0.y + tMin * dy;
+  const y1 = p0.y + tMax * dy;
+  const segMinY = Math.min(y0, y1, p0.y, p1.y);
+  const segMaxY = Math.max(y0, y1, p0.y, p1.y);
+
+  return segMaxY >= rect.top && segMinY <= rect.bottom;
+}
+
+function edgeYInXRange(
+  waypoints: readonly Point[],
+  xLeft: number,
+  xRight: number
+): { minY: number; maxY: number } {
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  for (let i = 0; i < waypoints.length - 1; i++) {
+    const p0 = waypoints[i];
+    const p1 = waypoints[i + 1];
+    if (p0 === undefined || p1 === undefined) continue;
+
+    const dx = p1.x - p0.x;
+    const segMinX = Math.min(p0.x, p1.x);
+    const segMaxX = Math.max(p0.x, p1.x);
+    if (segMaxX < xLeft || segMinX > xRight) continue;
+
+    const tLeft = dx !== 0 ? Math.max(0, Math.min(1, (xLeft - p0.x) / dx)) : 0;
+    const tRight = dx !== 0 ? Math.max(0, Math.min(1, (xRight - p0.x) / dx)) : 1;
+    const tMin = Math.min(tLeft, tRight);
+    const tMax = Math.max(tLeft, tRight);
+
+    const dy = p1.y - p0.y;
+    const y0 = p0.y + tMin * dy;
+    const y1 = p0.y + tMax * dy;
+
+    minY = Math.min(minY, y0, y1, p0.y, p1.y);
+    maxY = Math.max(maxY, y0, y1, p0.y, p1.y);
+  }
+
+  return { minY, maxY };
 }
 
 function renderActivation(
