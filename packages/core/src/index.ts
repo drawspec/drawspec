@@ -52,6 +52,7 @@ export type {
   ImageIconSpec,
   ImageSource,
   LabelOverflow,
+  LabelRotation,
   LayoutSpec,
   NodeLayoutOptions,
   NodeShapeSpec,

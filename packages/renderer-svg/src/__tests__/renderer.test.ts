@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { DiagramDocument } from "@drawspec/core";
+import type { DiagramDocument, LabelRotation } from "@drawspec/core";
 import { type PositionedDiagram, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import {
   computeContentBounds,
@@ -184,6 +184,47 @@ function positionedDiagram(overrides: Partial<PositionedDiagram> = {}): Position
     width: 400,
     ...overrides,
   };
+}
+
+function edgeLabelRotationSvg(options: {
+  waypoints: PositionedDiagram["edges"][number]["waypoints"];
+  documentRotation?: LabelRotation;
+  edgeRotation?: LabelRotation;
+}): string {
+  const doc = document({
+    id: "edge-label-rotation-test",
+    labelRotation: options.documentRotation,
+    nodes: [
+      { id: "a", kind: "component", label: "A" },
+      { id: "b", kind: "component", label: "B" },
+    ],
+    edges: [
+      {
+        id: "e1",
+        kind: "calls",
+        sourceId: "a",
+        targetId: "b",
+        label: "calls",
+        labelRotation: options.edgeRotation,
+      },
+    ],
+  });
+  const edge = doc.edges[0];
+  if (edge === undefined) {
+    throw new Error("edge label rotation test document must contain an edge");
+  }
+  return renderSvgSync(doc, {
+    positionedDiagram: positionedDiagram({
+      document: doc,
+      edges: [{ ...edge, waypoints: options.waypoints }],
+      height: 240,
+      width: 240,
+    }),
+  });
+}
+
+function edgeLabelRotationTransform(svg: string): string | undefined {
+  return svg.match(/transform="(rotate\([^"]+\))"/)?.[1];
 }
 
 describe("SvgRenderer", () => {
@@ -817,6 +858,122 @@ describe("SvgRenderer", () => {
     const svg = renderSvgSync(doc, { positionedDiagram });
     expect(svg).not.toContain("data-source-file");
     expect(svg).not.toContain("data-source-line");
+  });
+
+  describe("edge label rotation", () => {
+    test("keeps diagonal edge labels horizontal by default", () => {
+      const svg = edgeLabelRotationSvg({
+        waypoints: [
+          { x: 40, y: 40 },
+          { x: 160, y: 160 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBeUndefined();
+    });
+
+    test("rotates diagonal edge labels when auto rotation is enabled", () => {
+      const svg = edgeLabelRotationSvg({
+        edgeRotation: "auto",
+        waypoints: [
+          { x: 40, y: 40 },
+          { x: 160, y: 160 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBe("rotate(45 100 100)");
+    });
+
+    test("keeps near-vertical auto-rotated edge labels horizontal for readability", () => {
+      const svg = edgeLabelRotationSvg({
+        edgeRotation: "auto",
+        waypoints: [
+          { x: 100, y: 20 },
+          { x: 120, y: 220 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBeUndefined();
+    });
+
+    test("uses per-edge rotation override before the document default", () => {
+      const svg = edgeLabelRotationSvg({
+        documentRotation: "auto",
+        edgeRotation: "none",
+        waypoints: [
+          { x: 40, y: 40 },
+          { x: 160, y: 160 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBeUndefined();
+    });
+
+    test("flips right-to-left diagonal labels to avoid upside-down text", () => {
+      const svg = edgeLabelRotationSvg({
+        edgeRotation: "auto",
+        waypoints: [
+          { x: 160, y: 160 },
+          { x: 40, y: 40 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBe("rotate(45 100 100)");
+    });
+
+    test("rotated labels use expanded bounds for overlap avoidance", () => {
+      const doc = document({
+        id: "rotated-overlap-test",
+        labelRotation: "auto",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+          { id: "c", kind: "component", label: "C" },
+          { id: "d", kind: "component", label: "D" },
+        ],
+        edges: [
+          { id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "alpha" },
+          { id: "e2", kind: "calls", sourceId: "c", targetId: "d", label: "beta" },
+        ],
+      });
+      const e1 = doc.edges[0];
+      const e2 = doc.edges[1];
+      if (e1 === undefined || e2 === undefined) {
+        throw new Error("test document must have two edges");
+      }
+      const svg = renderSvgSync(doc, {
+        positionedDiagram: positionedDiagram({
+          document: doc,
+          edges: [
+            {
+              ...e1,
+              waypoints: [
+                { x: 40, y: 35 },
+                { x: 160, y: 155 },
+              ],
+            },
+            {
+              ...e2,
+              waypoints: [
+                { x: 40, y: 45 },
+                { x: 160, y: 165 },
+              ],
+            },
+          ],
+          height: 240,
+          width: 240,
+        }),
+      });
+
+      const rotationTransforms = [...svg.matchAll(/transform="rotate\(45 [^"]+\)"/g)];
+      expect(rotationTransforms.length).toBe(2);
+
+      const labelGroupsWithTranslate = svg.match(
+        /<g id="[^"]*label-edge-e[12][^"]*"[^>]*transform="translate\([^"]+\)"/g
+      );
+      expect(labelGroupsWithTranslate).not.toBeNull();
+      expect(labelGroupsWithTranslate?.length).toBeGreaterThanOrEqual(1);
+    });
   });
 
   describe("edge label overlap prevention", () => {
