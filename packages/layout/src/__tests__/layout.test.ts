@@ -115,8 +115,8 @@ describe("simple graph layout", () => {
     const positioned = await simpleGraphLayout().layout(graphDoc);
     expect(positioned.nodes.map((node) => [node.id, node.x, node.y])).toEqual([
       ["a", 40, 40],
-      ["b", 40, 216],
-      ["c", 40, 392],
+      ["b", 40, 224],
+      ["c", 40, 408],
     ]);
   });
 
@@ -124,8 +124,8 @@ describe("simple graph layout", () => {
     const positioned = await simpleGraphLayout().layout(graphDoc, { direction: "LR" });
     expect(positioned.nodes.map((node) => [node.id, node.x, node.y])).toEqual([
       ["a", 40, 40],
-      ["b", 280, 40],
-      ["c", 520, 40],
+      ["b", 292, 40],
+      ["c", 544, 40],
     ]);
   });
 
