@@ -414,7 +414,7 @@ function renderGroup(
         ownerId: group.id,
         label: group.label,
         x: group.x + 12,
-        y: group.y + 20,
+        y: group.y + 16,
         style,
         anchor: "start",
         maxWidth: Math.max(0, group.width - 24),
@@ -423,18 +423,21 @@ function renderGroup(
     );
   }
   for (const lane of sortById(group.lanes ?? [])) {
-    children.push({
-      name: "line",
-      attrs: {
-        stroke: style.stroke,
-        "stroke-dasharray": "3 3",
-        x1: lane.x,
-        x2: lane.x + lane.width,
-        y1: lane.y,
-        y2: lane.y,
-      },
-      selfClosing: true,
-    });
+    const isFirstLane = Math.abs(lane.y - group.y) < 1;
+    if (!isFirstLane) {
+      children.push({
+        name: "line",
+        attrs: {
+          stroke: style.stroke,
+          "stroke-dasharray": "3 3",
+          x1: lane.x,
+          x2: lane.x + lane.width,
+          y1: lane.y,
+          y2: lane.y,
+        },
+        selfClosing: true,
+      });
+    }
     if (lane.label !== undefined) {
       labels.push(
         textElement({
@@ -442,7 +445,7 @@ function renderGroup(
           ownerId: lane.id,
           label: lane.label,
           x: lane.x + 8,
-          y: lane.y + 18,
+          y: isFirstLane ? group.y + 34 : lane.y + 18,
           style,
           anchor: "start",
           maxWidth: Math.max(0, lane.width - 16),
@@ -1071,9 +1074,6 @@ function renderEdge(
   if (edge.label !== undefined) {
     const hasLayoutPosition = edge.labelPosition !== undefined;
     const pos = edge.labelPosition ?? midpoint(edge.waypoints);
-    const maxWidth = hasLayoutPosition
-      ? undefined
-      : availableEdgeLabelWidth(edge.waypoints, pos, style.fontSize);
     const yAdjust = hasLayoutPosition ? style.fontSize * 0.35 : -Math.max(8, style.fontSize * 0.5);
     const theme = resolveTheme(options.theme);
     labels.push(
@@ -1086,8 +1086,7 @@ function renderEdge(
         style,
         anchor: "middle",
         backgroundFill: theme.background,
-        truncate: !hasLayoutPosition,
-        ...(maxWidth === undefined ? {} : { maxWidth }),
+        truncate: false,
       })
     );
   }
@@ -1182,33 +1181,6 @@ function midpoint(points: Point[]): Point {
     return current;
   }
   return { x: (current.x + next.x) / 2, y: (current.y + next.y) / 2 };
-}
-
-function availableEdgeLabelWidth(
-  points: Point[],
-  mid: Point,
-  fontSize: number
-): number | undefined {
-  if (points.length < 2) {
-    return undefined;
-  }
-  const horizontalSegments = points
-    .slice(0, -1)
-    .map((point, index) => ({ current: point, next: points[index + 1] }))
-    .filter((segment): segment is { current: Point; next: Point } => segment.next !== undefined)
-    .filter((segment) => Math.abs(segment.current.y - segment.next.y) <= fontSize);
-
-  const containingSegment = horizontalSegments.find(
-    (segment) =>
-      mid.x >= Math.min(segment.current.x, segment.next.x) &&
-      mid.x <= Math.max(segment.current.x, segment.next.x)
-  );
-  const segment = containingSegment ?? horizontalSegments[0];
-  if (segment === undefined) {
-    return undefined;
-  }
-  const width = Math.abs(segment.next.x - segment.current.x) - fontSize * 2;
-  return Math.max(fontSize * 2, width);
 }
 
 function renderActivation(
