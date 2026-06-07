@@ -74,8 +74,8 @@
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-person_494a4f7dfd392f13-0768usz">
     <rect fill="#f0fdf4" height="56" rx="12" ry="12" stroke="#15803d" stroke-width="1.5" width="120" x="240" y="40" />
-    <circle cx="258" cy="56" fill="none" r="6" stroke="#15803d" />
-    <path d="M 258 62 v 15 M 249 70 h 18" fill="none" stroke="#15803d" />
+    <circle cx="300" cy="56" fill="none" r="6" stroke="#15803d" />
+    <path d="M 300 62 v 15 M 291 70 H 309" fill="none" stroke="#15803d" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-softwaresystem_e27ada29a9783f1d-052iwmf">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="216" />
@@ -90,13 +90,13 @@
         Manages store
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-1ln6x9p-bg-0mmq1i2" transform="translate(0 49.2)">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-1ln6x9p-bg-0mmq1i2" transform="translate(0 53.2)">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="117.06" x="41.47" y="220.8" />
       <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_254078794ac1a113-1ln6x9p" text-anchor="middle" x="100" y="236">
         Validates tokens
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-01dj40p-bg-1w1q8qx" transform="translate(0 16)">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-01dj40p-bg-1w1q8qx" transform="translate(0 24)">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="121.82" x="339.09" y="132.8" />
       <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-01dj40p" text-anchor="middle" x="400" y="148">
         Authenticates via
@@ -114,7 +114,7 @@
         Persists settings
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-0o8o97b-bg-0rochd8" transform="translate(0 16)">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-0o8o97b-bg-0rochd8" transform="translate(0 24)">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="177.4" x="111.3" y="132.8" />
       <text data-width="169.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-0o8o97b" text-anchor="middle" x="200" y="148">
         Configures payment rules

@@ -73,6 +73,8 @@
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-node-seq_f0d7723a-1jc1glf">
     <rect fill="#eef2ff" height="56" rx="3" ry="3" stroke="#4338ca" stroke-width="1.5" width="120" x="40" y="40" />
+    <circle cx="100" cy="56" fill="none" r="6" stroke="#4338ca" />
+    <path d="M 100 62 v 15 M 91 70 H 109" fill="none" stroke="#4338ca" />
   </g>
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_148fcc18-activation-0cuym3z" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="95" y="324" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_32d78e47-activation-1bchdjl" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="95" y="436" />

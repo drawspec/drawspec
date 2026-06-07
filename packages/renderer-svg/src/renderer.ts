@@ -464,6 +464,7 @@ function renderNode(
       style,
       anchor: "middle",
       maxWidth: Math.max(0, node.width - style.fontSize),
+      truncate: false,
       clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
     })
   );
@@ -512,20 +513,21 @@ function shapeForNode(
     },
     selfClosing: true,
   };
-  if (node.kind !== "person") {
+  if (node.kind !== "person" && node.kind !== "actor") {
     return [rect];
   }
+  const centerX = node.x + node.width / 2;
   return [
     rect,
     {
       name: "circle",
-      attrs: { cx: node.x + 18, cy: node.y + 16, fill: "none", r: 6, stroke: style.stroke },
+      attrs: { cx: centerX, cy: node.y + 16, fill: "none", r: 6, stroke: style.stroke },
       selfClosing: true,
     },
     {
       name: "path",
       attrs: {
-        d: `M ${formatNumber(node.x + 18)} ${formatNumber(node.y + 22)} v 15 M ${formatNumber(node.x + 9)} ${formatNumber(node.y + 30)} h 18`,
+        d: `M ${formatNumber(centerX)} ${formatNumber(node.y + 22)} v 15 M ${formatNumber(centerX - 9)} ${formatNumber(node.y + 30)} H ${formatNumber(centerX + 9)}`,
         fill: "none",
         stroke: style.stroke,
       },
@@ -587,6 +589,7 @@ function renderEdge(
         style,
         anchor: "middle",
         backgroundFill: theme.background,
+        truncate: true,
         ...(maxWidth === undefined ? {} : { maxWidth }),
       })
     );
@@ -749,13 +752,28 @@ interface TextElementOptions {
   maxWidth?: number;
   clipBounds?: LabelBounds;
   backgroundFill?: string;
+  truncate?: boolean;
 }
 
 function textElement(options: TextElementOptions): SvgLabelSpec {
-  const { anchor, backgroundFill, clipBounds, id, label, maxWidth, ownerId, style, x, y } = options;
+  const {
+    anchor,
+    backgroundFill,
+    clipBounds,
+    id,
+    label,
+    maxWidth,
+    ownerId,
+    style,
+    truncate = true,
+    x,
+    y,
+  } = options;
   const constrainedWidth = maxWidth === undefined ? undefined : Math.max(0, maxWidth);
   const displayLabel =
-    constrainedWidth === undefined ? label : truncateText(label, constrainedWidth, style.fontSize);
+    truncate && constrainedWidth !== undefined
+      ? truncateText(label, constrainedWidth, style.fontSize)
+      : label;
   const width = measureText(displayLabel, style.fontSize);
   const shouldClip = constrainedWidth !== undefined && width > constrainedWidth;
   let text: SvgElementSpec = {
@@ -775,6 +793,7 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
   };
   const textBounds = labelBounds(x, y, width, style.fontSize, anchor);
   const bgPadding = backgroundFill === undefined ? 0 : 4;
+  const visualTextBounds = labelBounds(x, y, width, style.fontSize, anchor, bgPadding);
   const bgRect: SvgElementSpec | undefined =
     backgroundFill === undefined
       ? undefined
@@ -792,7 +811,12 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
           selfClosing: true,
         };
   if (!shouldClip && bgRect === undefined) {
-    return { id, ...(ownerId === undefined ? {} : { ownerId }), element: text, bounds: textBounds };
+    return {
+      id,
+      ...(ownerId === undefined ? {} : { ownerId }),
+      element: text,
+      bounds: visualTextBounds,
+    };
   }
   const bounds = clipBounds ?? textBounds;
   const children: SvgElementSpec[] = [];
@@ -828,7 +852,16 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
       attrs: { id: stableSvgId(id, shouldClip ? "clipped" : "bg") },
       children,
     },
-    bounds: intersectBounds(textBounds, bounds),
+    bounds: intersectBounds(visualTextBounds, expandBounds(bounds, bgPadding)),
+  };
+}
+
+function expandBounds(bounds: LabelBounds, padding: number): LabelBounds {
+  return {
+    x: bounds.x - padding,
+    y: bounds.y - padding,
+    width: bounds.width + padding * 2,
+    height: bounds.height + padding * 2,
   };
 }
 
@@ -837,10 +870,16 @@ function labelBounds(
   y: number,
   width: number,
   fontSize: number,
-  anchor: "start" | "middle"
+  anchor: "start" | "middle",
+  padding = 0
 ): LabelBounds {
   const left = anchor === "middle" ? x - width / 2 : x;
-  return { x: left, y: y - fontSize * 0.8, width, height: fontSize };
+  return {
+    x: left - padding,
+    y: y - fontSize * 0.8 - padding,
+    width: width + padding * 2,
+    height: fontSize + padding * 2,
+  };
 }
 
 function intersectBounds(left: LabelBounds, right: LabelBounds): LabelBounds {

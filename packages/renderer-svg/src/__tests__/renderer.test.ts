@@ -436,7 +436,7 @@ describe("SvgRenderer", () => {
     expect(svg).not.toContain("stroke-dasharray");
   });
 
-  test("truncates long node labels with an ellipsis", () => {
+  test("renders node labels without truncating", () => {
     const doc = document({
       id: "truncate-test",
       nodes: [
@@ -467,11 +467,11 @@ describe("SvgRenderer", () => {
       height: 80,
     };
     const svg = renderSvgSync(doc, { positionedDiagram });
-    expect(svg).toContain("…");
-    expect(svg).not.toContain("Extremely long service label that cannot fit");
+    expect(svg).toContain("Extremely long service label that cannot fit");
+    expect(svg).not.toContain("…");
   });
 
-  test("keeps measured node text width within the node width", () => {
+  test("keeps raw node label width available to the SVG output", () => {
     const doc = document({
       id: "node-width-test",
       nodes: [{ id: "node", kind: "component", label: "WWWWWWWWWWWWWWWW" }],
@@ -498,7 +498,8 @@ describe("SvgRenderer", () => {
     const svg = renderSvgSync(doc, { positionedDiagram });
     const widthMatch = svg.match(/data-width="([0-9.]+)"/);
     expect(widthMatch).not.toBeNull();
-    expect(Number(widthMatch?.[1])).toBeLessThanOrEqual(84);
+    expect(Number(widthMatch?.[1])).toBeGreaterThan(84);
+    expect(svg).toContain("WWWWWWWWWWWWWWWW");
   });
 
   test("clips labels when even an ellipsis exceeds the text bounds", () => {
@@ -642,7 +643,9 @@ describe("SvgRenderer", () => {
       height: 160,
     };
     const svg = renderSvgSync(doc, { positionedDiagram });
-    expect(svg).toMatch(/<g id="[^"]*label-edge-outside[^"]*" transform="translate\(0 71\.2\)">/);
+    expect(svg).toMatch(
+      /<g id="[^"]*label-edge-outside[^"]*bg[^"]*" transform="translate\(0 75\.2\)">/
+    );
   });
 
   test("measures narrow and wide text differently", () => {

@@ -33,7 +33,7 @@ function positionedDiagram(
 }
 
 describe("Text quality", () => {
-  test("truncates long node labels with ellipsis", () => {
+  test("renders long node labels without ellipsis truncation", () => {
     const doc = document({
       id: "truncate",
       nodes: [{ id: "n", kind: "component", label: "ExtremelyLongLabelThatCannotFitInSmallBox" }],
@@ -52,8 +52,8 @@ describe("Text quality", () => {
       ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
-    expect(svg).toContain("…");
-    expect(svg).not.toContain("ExtremelyLongLabelThatCannotFitInSmallBox");
+    expect(svg).toContain("ExtremelyLongLabelThatCannotFitInSmallBox");
+    expect(svg).not.toContain("…");
   });
 
   test("renders short labels completely", () => {
