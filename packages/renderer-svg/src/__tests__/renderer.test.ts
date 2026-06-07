@@ -1609,6 +1609,112 @@ describe("SvgRenderer", () => {
       expect(rects.length).toBe(1);
     });
 
+    // Regression test for PR #286: edgeYInXRange incorrectly included p0.y/p1.y in min/max Y
+    // calculation, causing diagonal edge labels to shift 10-200x too far from the edge.
+    // For an edge from (0,0) to (100,200) with label at X=[40,60], the Y range was
+    // incorrectly {minY:0, maxY:200} instead of {minY:80, maxY:120}.
+    test("steep diagonal edge label is positioned near the edge center, not at the extremes", () => {
+      // Edge from (0,0) to (100,200) — steep diagonal with large Y-span
+      // Label "XY" centered at X=50, where the edge Y is exactly 100
+      const doc = document({
+        id: "steep-diagonal-regression",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "XY" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "XY",
+            waypoints: [
+              { x: 0, y: 0 },
+              { x: 100, y: 200 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 120,
+        height: 220,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+      const rect = rects[0];
+      expect(rect).toBeDefined();
+      if (rect === undefined) throw new Error("expected label rect");
+
+      // The edge Y at the label's X position (X=50) is 100.
+      // With the bug, the Y range would be [0, 200], causing the label to shift ~100 pixels.
+      // Without the bug, the Y range is [80, 120], causing only a ~24 pixel shift.
+      // The label should be near Y=69 (edge Y100 minus ~31 pixels for font/padding).
+      // With the bug, it would be near Y=-30 (shifted 130 pixels too far upward).
+      // We verify the label is NOT shifted by a huge amount (which would indicate the bug).
+      const labelCenterY = rect.y + rect.height / 2;
+      // Label should be between Y=40 and Y=100 (near the edge center at Y=100)
+      // With the bug, labelCenterY would be near -30, which is way outside this range
+      expect(labelCenterY).toBeGreaterThan(40);
+      expect(labelCenterY).toBeLessThan(100);
+    });
+
+    // Verify near-horizontal edge label positioning is unchanged by the fix
+    test("near-horizontal edge label stays positioned near the edge without excessive shift", () => {
+      // Edge from (0,100) to (100,100) — nearly flat, Y span is tiny
+      // Label centered at X=50, edge Y is 100 everywhere
+      const doc = document({
+        id: "near-horizontal-regression",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 0, y: 100 },
+              { x: 100, y: 100 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 120,
+        height: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+      const rect = rects[0];
+      expect(rect).toBeDefined();
+      if (rect === undefined) throw new Error("expected label rect");
+
+      // For a near-horizontal edge, the edge Y range is essentially [100, 100]
+      // The label should be positioned near the edge (around Y=92 before any small shift)
+      // With the bug fix, the Y range is correctly [100, 100], so shiftUp ≈ shiftDown ≈ 22.8
+      // Without the bug, label center should be around Y=69
+      const labelCenterY = rect.y + rect.height / 2;
+      // Label should be between Y=55 and Y=105 (near the edge at Y=100)
+      expect(labelCenterY).toBeGreaterThan(55);
+      expect(labelCenterY).toBeLessThan(105);
+    });
+
     test("multi-segment edge midpoint is at path-length center, not segment index center", () => {
       // L-shaped edge: short vertical segment (10 units), then long horizontal segment (100 units)
       // Path-length midpoint = 55 units along 110-unit path = 45 units into horizontal = x=55
