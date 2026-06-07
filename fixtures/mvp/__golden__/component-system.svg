@@ -91,38 +91,50 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="440" y="392" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-text-layer-1yke4f0">
-    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-1sz8mdh-bg-1c73qq7">
+    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-line0-1hgnqza-bg-0x1ok8r">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="132.18" x="33.91" y="308.8" />
-      <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-1sz8mdh" text-anchor="middle" x="100" y="324">
+      <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-line0-1hgnqza" text-anchor="middle" x="100" y="324">
         Authorize payment
       </text>
     </g>
-    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-0xw7air-bg-0zy8pdo">
+    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-line0-0tvqs2w-bg-0uu196k">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="121.82" x="39.09" y="132.8" />
-      <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-0xw7air" text-anchor="middle" x="100" y="148">
+      <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-line0-0tvqs2w" text-anchor="middle" x="100" y="148">
         HTTP commands
       </text>
     </g>
-    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-1xfy3nt-bg-0ci2n8l" transform="translate(0 24)">
+    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-line0-0svewze-bg-0oxobq9" transform="translate(0 24)">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="101.66" x="149.17" y="308.8" />
-      <text data-width="93.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-1xfy3nt" text-anchor="middle" x="200" y="324">
+      <text data-width="93.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-line0-0svewze" text-anchor="middle" x="200" y="324">
         Reserve stock
       </text>
     </g>
-    <text data-width="85.26" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_301fa988-line0-0rg2bml" text-anchor="middle" x="100" y="248.9">
-      Order Serv…
+    <text data-width="38.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_301fa988-line0-0rg2bml" text-anchor="middle" x="100" y="239.8">
+      Order
+    </text>
+    <text data-width="48.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_301fa988-line1-0r62pxm" text-anchor="middle" x="100" y="258">
+      Service
     </text>
     <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_3611b529-line0-0qkfprs" text-anchor="middle" x="100" y="72.9">
       Web App
     </text>
-    <text data-width="83.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_3b1de8f3-line0-0gfjts1" text-anchor="middle" x="100" y="424.9">
-      Payment S…
+    <text data-width="57.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_3b1de8f3-line0-0gfjts1" text-anchor="middle" x="100" y="415.8">
+      Payment
     </text>
-    <text data-width="79.1" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_ff803cd6-line0-0pg0vzz" text-anchor="middle" x="300" y="424.9">
-      Inventory …
+    <text data-width="48.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_3b1de8f3-line1-0g5k832" text-anchor="middle" x="100" y="434">
+      Service
     </text>
-    <text data-width="79.1" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_487bdfd7-line0-0gihg4d" text-anchor="middle" x="300" y="600.9">
-      Inventory …
+    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_ff803cd6-line0-0pg0vzz" text-anchor="middle" x="300" y="415.8">
+      Inventory
+    </text>
+    <text data-width="48.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-cmp_ff803cd6-line1-0p61ab0" text-anchor="middle" x="300" y="434">
+      Service
+    </text>
+    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_487bdfd7-line0-0gihg4d" text-anchor="middle" x="300" y="591.8">
+      Inventory
+    </text>
+    <text data-width="23.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_487bdfd7-line1-0g8hufe" text-anchor="middle" x="300" y="610">
+      API
     </text>
     <text data-width="85.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-node-ifc_66670299-line0-1uw8i0c" text-anchor="middle" x="100" y="600.9">
       Payment API

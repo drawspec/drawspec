@@ -112,38 +112,47 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="744" />
   </g>
   <g id="drawspec-actdoc_82f445ff-1mt87vt-text-layer-1jl0137">
-    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-0fhp7r0-bg-1eqwo0c">
+    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-line0-13utghn-bg-0ac3512">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="93.26" x="153.37" y="836.8" />
-      <text data-width="85.26" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-0fhp7r0" text-anchor="middle" x="200" y="852">
+      <text data-width="85.26" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-line0-13utghn" text-anchor="middle" x="200" y="852">
         stock branch
       </text>
     </g>
-    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_133a2f91-15cg4fm-bg-0uk10sq">
+    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_133a2f91-line0-1v65f31-bg-0onpmfw">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="32.64" x="83.68" y="660.8" />
-      <text data-width="24.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_133a2f91-15cg4fm" text-anchor="middle" x="100" y="676">
+      <text data-width="24.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_133a2f91-line0-1v65f31" text-anchor="middle" x="100" y="676">
         Yes
       </text>
     </g>
-    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_66b8ad36-0khgcfq-bg-13zfbwp">
+    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_66b8ad36-line0-0pllmhd-bg-18w27cx">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="96.34" x="51.83" y="836.8" />
-      <text data-width="88.34" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_66b8ad36-0khgcfq" text-anchor="middle" x="100" y="852">
+      <text data-width="88.34" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_66b8ad36-line0-0pllmhd" text-anchor="middle" x="100" y="852">
         billing branch
       </text>
     </g>
-    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-0jlvs8z-bg-1elt04v">
+    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-line0-1yb5qw8-bg-0f1fgfk">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="27.04" x="186.48" y="660.8" />
-      <text data-width="19.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-0jlvs8z" text-anchor="middle" x="200" y="676">
+      <text data-width="19.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-line0-1yb5qw8" text-anchor="middle" x="200" y="676">
         No
       </text>
     </g>
-    <text data-width="82.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_00df9ea6-line0-05xkhzd" text-anchor="middle" x="100" y="600.9">
-      Payment a…
+    <text data-width="57.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_00df9ea6-line0-05xkhzd" text-anchor="middle" x="100" y="591.8">
+      Payment
+    </text>
+    <text data-width="69.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_00df9ea6-line1-05nkwae" text-anchor="middle" x="100" y="610">
+      approved?
     </text>
     <text data-width="29.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_2b198005-line0-09ltli7" text-anchor="middle" x="100" y="72.9">
       start
     </text>
-    <text data-width="86.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_46da180c-line0-1ihj17r" text-anchor="middle" x="100" y="1128.9">
-      Join fulfillm…
+    <text data-width="26.32" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_46da180c-line0-1ihj17r" text-anchor="middle" x="100" y="1110.7">
+      Join
+    </text>
+    <text data-width="63.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_46da180c-line1-1i7jfis" text-anchor="middle" x="100" y="1128.9">
+      fulfillment
+    </text>
+    <text data-width="31.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_46da180c-line2-1j1i8lp" text-anchor="middle" x="100" y="1147.1">
+      work
     </text>
     <text data-width="59.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_55d5a232-line0-0v6gydx" text-anchor="middle" x="100" y="1480.9">
       complete
@@ -154,20 +163,38 @@
     <text data-width="85.54" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_613ba680-line0-1bq5uj9" text-anchor="middle" x="100" y="248.9">
       Submit order
     </text>
-    <text data-width="77.98" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_7e353611-line0-177jnpl" text-anchor="middle" x="100" y="776.9">
-      Fork fulfill…
+    <text data-width="29.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_7e353611-line0-177jnpl" text-anchor="middle" x="100" y="758.7">
+      Fork
     </text>
-    <text data-width="82.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_8d116489-line0-1yqynch" text-anchor="middle" x="300" y="952.9">
-      Reserve in…
+    <text data-width="63.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_7e353611-line1-16xk20m" text-anchor="middle" x="100" y="776.9">
+      fulfillment
+    </text>
+    <text data-width="31.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_7e353611-line2-16nkgbn" text-anchor="middle" x="100" y="795.1">
+      work
+    </text>
+    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_8d116489-line0-1yqynch" text-anchor="middle" x="300" y="943.8">
+      Reserve
+    </text>
+    <text data-width="60.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_8d116489-line1-1ygz1ni" text-anchor="middle" x="300" y="962">
+      inventory
     </text>
     <text data-width="68.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_9bf0904e-line0-1qmz0qd" text-anchor="middle" x="100" y="1304.9">
       Ship order
     </text>
-    <text data-width="80.22" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_d94bcd38-line0-07n9ofz" text-anchor="middle" x="100" y="424.9">
-      Authorize …
+    <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_d94bcd38-line0-07n9ofz" text-anchor="middle" x="100" y="415.8">
+      Authorize
     </text>
-    <text data-width="80.5" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_f9a5a4c8-line0-0prom9f" text-anchor="middle" x="300" y="776.9">
-      Notify pay…
+    <text data-width="56.56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_d94bcd38-line1-07da2r0" text-anchor="middle" x="100" y="434">
+      payment
+    </text>
+    <text data-width="39.48" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_f9a5a4c8-line0-0prom9f" text-anchor="middle" x="300" y="758.7">
+      Notify
+    </text>
+    <text data-width="56.56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_f9a5a4c8-line1-0php0kg" text-anchor="middle" x="300" y="776.9">
+      payment
+    </text>
+    <text data-width="40.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-node-act_f9a5a4c8-line2-0qbntnd" text-anchor="middle" x="300" y="795.1">
+      failure
     </text>
   </g>
 </svg>

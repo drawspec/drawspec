@@ -60,15 +60,15 @@
     <rect fill="#dbeafe" height="56" rx="12" ry="12" stroke="#1d4ed8" stroke-width="1.5" width="120" x="40" y="40" />
   </g>
   <g id="drawspec-architecture-demo-1o08l38-text-layer-19mhc8u">
-    <g id="drawspec-architecture-demo-1o08l38-label-edge-calls-16kzib9-bg-0p8saow">
+    <g id="drawspec-architecture-demo-1o08l38-label-edge-calls-line0-08f709y-bg-02vnxhc">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="37.4" x="201.3" y="44.8" />
-      <text data-width="29.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-edge-calls-16kzib9" text-anchor="middle" x="220" y="60">
+      <text data-width="29.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-edge-calls-line0-08f709y" text-anchor="middle" x="220" y="60">
         calls
       </text>
     </g>
-    <g id="drawspec-architecture-demo-1o08l38-label-edge-stores-1uzghjm-bg-115mknf">
+    <g id="drawspec-architecture-demo-1o08l38-label-edge-stores-line0-1sn3qwt-bg-1ckzk9f">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="48.6" x="435.7" y="44.8" />
-      <text data-width="40.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-edge-stores-1uzghjm" text-anchor="middle" x="460" y="60">
+      <text data-width="40.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-edge-stores-line0-1sn3qwt" text-anchor="middle" x="460" y="60">
         stores
       </text>
     </g>

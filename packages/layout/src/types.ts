@@ -69,7 +69,7 @@ export interface NodeSizingOptions {
   maxSize?: Partial<Size>;
   /** Padding around label text. Default: { x: 16, y: 10 }. */
   padding?: { x: number; y: number };
-  /** Global label wrapping. Default: "none". */
+  /** Global label wrapping. Default: "auto". */
   labelWrap?: "none" | "auto" | number;
   /** Text style for measurement. Default: { fontSize: 14, fontFamily: "Arial, sans-serif" }. */
   typography?: TextStyle;
@@ -103,11 +103,13 @@ export interface PositionedEdge extends DiagramEdge {
 
 export interface PositionedGroup extends DiagramGroup, Size, Point {
   lanes?: PositionedGroupLane[];
+  labelLines?: string[];
 }
 
 export interface PositionedGroupLane extends Size, Point {
   id: string;
   label?: string;
+  labelLines?: string[];
   childIds: string[];
 }
 

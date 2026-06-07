@@ -232,6 +232,9 @@ export interface StyleSheet {
   rules?: Record<string, Record<string, StyleTokenValue>>;
 }
 
+/** How labels behave when they exceed their container width. */
+export type LabelOverflow = "wrap" | "truncate" | "clip" | "overflow";
+
 /** Root DrawSpec intermediate representation for a diagram. */
 export interface DiagramDocument {
   schemaVersion: string;
@@ -243,6 +246,8 @@ export interface DiagramDocument {
   groups: DiagramGroup[];
   annotations: DiagramAnnotation[];
   layout?: LayoutSpec;
+  /** Label overflow behavior. Default: "wrap". */
+  labelOverflow?: LabelOverflow;
   styles?: StyleSheet;
   metadata?: Record<string, unknown>;
   diagnostics?: Diagnostic[];
@@ -389,6 +394,8 @@ export interface NodeLayoutOptions {
   padding?: Partial<{ x: number; y: number }>;
   /** Label wrapping behavior. Defaults to global setting. */
   labelWrap?: "none" | "auto" | number;
+  /** Label overflow behavior. Defaults to document-level setting. */
+  labelOverflow?: LabelOverflow;
 }
 
 /** Edge element in a diagram document. */
@@ -403,6 +410,7 @@ export interface DiagramEdge {
   metadata?: Record<string, unknown>;
   style?: StyleRef;
   source?: SourceRef;
+  labelOverflow?: LabelOverflow;
 }
 
 /** Group element in a diagram document. */
@@ -417,6 +425,7 @@ export interface DiagramGroup {
   metadata?: Record<string, unknown>;
   style?: StyleRef;
   source?: SourceRef;
+  labelOverflow?: LabelOverflow;
 }
 
 /** Annotation element in a diagram document. */

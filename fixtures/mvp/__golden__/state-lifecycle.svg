@@ -76,33 +76,33 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="392" />
   </g>
   <g id="drawspec-statedoc_fd39935e9e-18zqhd5-text-layer-016i7s5">
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-0wp149v-bg-1vtjrmd">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk-bg-0gphoig">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="176.28" x="11.86" y="308.8" />
-      <text data-width="168.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-0wp149v" text-anchor="middle" x="100" y="324">
+      <text data-width="168.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk" text-anchor="middle" x="100" y="324">
         pay [payment authorized]
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-03fo84m-bg-14e92la">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp-bg-0xxd95g">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="81.78" x="59.11" y="836.8" />
-      <text data-width="73.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-03fo84m" text-anchor="middle" x="100" y="852">
+      <text data-width="73.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp" text-anchor="middle" x="100" y="852">
         close order
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-0zgdbk0-bg-047xdh5">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-line0-0glk77z-bg-12b3nbi">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="173.76" x="13.12" y="484.8" />
-      <text data-width="165.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-0zgdbk0" text-anchor="middle" x="100" y="500">
+      <text data-width="165.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-line0-0glk77z" text-anchor="middle" x="100" y="500">
         ship [inventory allocated]
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-0srzivt-bg-01g70ya">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm-bg-1dkbntc">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="189.72" x="5.14" y="660.8" />
-      <text data-width="181.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-0srzivt" text-anchor="middle" x="100" y="676">
+      <text data-width="181.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm" text-anchor="middle" x="100" y="676">
         deliver [signature captured]
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-0bh22we-bg-1tcjsn7">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix-bg-03cknd3">
       <rect fill="#ffffff" height="22" rx="3" ry="3" width="88.78" x="55.61" y="132.8" />
-      <text data-width="80.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-0bh22we" text-anchor="middle" x="100" y="148">
+      <text data-width="80.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix" text-anchor="middle" x="100" y="148">
         create order
       </text>
     </g>

@@ -18,7 +18,7 @@ import type {
   PositionedIcon,
   PositionedNode,
 } from "@drawspec/layout";
-import { measureText, truncateText } from "@drawspec/text-measure";
+import { measureText, truncateText, wrapText } from "@drawspec/text-measure";
 import { darkTheme, renderThemeStyleBlock, resolveStyle, resolveTheme } from "./styles";
 import {
   compareStable,
@@ -408,18 +408,23 @@ function renderGroup(
     },
   ];
   if (group.label !== undefined) {
+    const groupLabelLines =
+      group.labelLines ?? wrapText(group.label, Math.max(0, group.width - 24), style.fontSize);
+    const groupLineHeight = style.fontSize * 1.3;
+    const groupStartY = group.y + 16;
     labels.push(
-      textElement({
-        id: stableSvgId(idPrefix, "label", "group", group.id),
-        ownerId: group.id,
-        label: group.label,
-        x: group.x + 12,
-        y: group.y + 16,
-        style,
-        anchor: "start",
-        maxWidth: Math.max(0, group.width - 24),
-        clipBounds: { x: group.x, y: group.y, width: group.width, height: group.height },
-      })
+      ...groupLabelLines.map((line, index) =>
+        textElement({
+          id: stableSvgId(idPrefix, "label", "group", `${group.id}-line${index}`),
+          ownerId: group.id,
+          label: line,
+          x: group.x + 12,
+          y: groupStartY + index * groupLineHeight,
+          style,
+          anchor: "start",
+          clipBounds: { x: group.x, y: group.y, width: group.width, height: group.height },
+        })
+      )
     );
   }
   for (const lane of sortById(group.lanes ?? [])) {
@@ -439,18 +444,23 @@ function renderGroup(
       });
     }
     if (lane.label !== undefined) {
+      const laneLabelLines =
+        lane.labelLines ?? wrapText(lane.label, Math.max(0, lane.width - 16), style.fontSize);
+      const laneLineHeight = style.fontSize * 1.3;
+      const laneStartY = isFirstLane ? group.y + 34 : lane.y + 18;
       labels.push(
-        textElement({
-          id: stableSvgId(idPrefix, "label", "lane", lane.id),
-          ownerId: lane.id,
-          label: lane.label,
-          x: lane.x + 8,
-          y: isFirstLane ? group.y + 34 : lane.y + 18,
-          style,
-          anchor: "start",
-          maxWidth: Math.max(0, lane.width - 16),
-          clipBounds: { x: lane.x, y: lane.y, width: lane.width, height: lane.height },
-        })
+        ...laneLabelLines.map((line, index) =>
+          textElement({
+            id: stableSvgId(idPrefix, "label", "lane", `${lane.id}-line${index}`),
+            ownerId: lane.id,
+            label: line,
+            x: lane.x + 8,
+            y: laneStartY + index * laneLineHeight,
+            style,
+            anchor: "start",
+            clipBounds: { x: lane.x, y: lane.y, width: lane.width, height: lane.height },
+          })
+        )
       );
     }
   }
@@ -1072,22 +1082,29 @@ function renderEdge(
   ];
   const labels: SvgLabelSpec[] = [];
   if (edge.label !== undefined) {
+    const labelOverflow = edge.labelOverflow ?? document.labelOverflow ?? "wrap";
     const hasLayoutPosition = edge.labelPosition !== undefined;
     const pos = edge.labelPosition ?? midpoint(edge.waypoints);
     const yAdjust = hasLayoutPosition ? style.fontSize * 0.35 : -Math.max(8, style.fontSize * 0.5);
     const theme = resolveTheme(options.theme);
+    const edgeLines =
+      labelOverflow === "truncate"
+        ? [truncateText(edge.label, 240, style.fontSize)]
+        : wrapText(edge.label, 240, style.fontSize);
+    const edgeLineHeight = style.fontSize * 1.3;
     labels.push(
-      textElement({
-        id: stableSvgId(idPrefix, "label", "edge", edge.id),
-        ownerId: edge.id,
-        label: edge.label,
-        x: pos.x,
-        y: pos.y + yAdjust,
-        style,
-        anchor: "middle",
-        backgroundFill: theme.background,
-        truncate: false,
-      })
+      ...edgeLines.map((line, index) =>
+        textElement({
+          id: stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`),
+          ownerId: edge.id,
+          label: line,
+          x: pos.x,
+          y: pos.y + yAdjust + index * edgeLineHeight,
+          style,
+          anchor: "middle",
+          backgroundFill: theme.background,
+        })
+      )
     );
   }
   return {
@@ -1234,7 +1251,7 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
     maxWidth,
     ownerId,
     style,
-    truncate = true,
+    truncate = false,
     x,
     y,
   } = options;
