@@ -61,12 +61,16 @@ export const serveDocsCommand: DrawspecCommand = {
         [contentDir],
         debounceArg(() => {
           void (async () => {
-            manifest = await rebuild();
-            console.log(
-              green(
-                `rebuilt docs with ${manifest.pages.length} page${manifest.pages.length === 1 ? "" : "s"}`
-              )
-            );
+            try {
+              manifest = await rebuild();
+              console.log(
+                green(
+                  `rebuilt docs with ${manifest.pages.length} page${manifest.pages.length === 1 ? "" : "s"}`
+                )
+              );
+            } catch (error) {
+              console.error(red(error instanceof Error ? error.message : String(error)));
+            }
           })();
         }, debounceMs)
       );

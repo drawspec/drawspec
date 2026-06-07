@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
-import { join, resolve, relative } from "node:path";
+import { resolve, relative } from "node:path";
 
 declare const Bun: {
   Glob: new (pattern: string) => {
