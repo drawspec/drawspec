@@ -1,5 +1,4 @@
-/** Per-character width factors for deterministic text measurement. */
-export const CHARACTER_WIDTH_FACTORS: Record<string, number> = {
+export const CHARACTER_WIDTH_FACTORS: Readonly<Record<string, number>> = Object.freeze({
   " ": 0.33,
   "!": 0.32,
   '"': 0.42,
@@ -95,7 +94,7 @@ export const CHARACTER_WIDTH_FACTORS: Record<string, number> = {
   "|": 0.28,
   "}": 0.4,
   "~": 0.68,
-};
+} as const);
 
 /** Interface for measuring text width. Deterministic, no DOM dependency. */
 export interface TextMeasurer {
