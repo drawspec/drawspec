@@ -248,6 +248,111 @@ export interface DiagramDocument {
   diagnostics?: Diagnostic[];
 }
 
+/** Named built-in icon shapes provided by DrawSpec. */
+export type BuiltinIconName =
+  | "person"
+  | "actor"
+  | "component"
+  | "database"
+  | "queue"
+  | "browser"
+  | "mobile"
+  | "cloud"
+  | "cylinder"
+  | "hexagon";
+
+/** Size of an icon in pixels. */
+export interface IconSize {
+  /** Width in pixels. */
+  width: number;
+  /** Height in pixels. */
+  height: number;
+}
+
+/** Visual appearance overrides for an icon. */
+export interface IconAppearance {
+  /** Fill color. Overrides kind-based defaults. */
+  fill?: string;
+  /** Stroke color. Overrides kind-based defaults. */
+  stroke?: string;
+  /** Stroke width in pixels. */
+  strokeWidth?: number;
+  /** Text color for text-based icons. */
+  color?: string;
+  /** Opacity (0–1). */
+  opacity?: number;
+}
+
+/** Placement of an icon relative to the node label. */
+export type IconPlacement =
+  | "top"
+  | "bottom"
+  | "left"
+  | "right"
+  | {
+      /** Side placement with optional alignment and offset. */
+      side: "top" | "bottom" | "left" | "right";
+      /** Horizontal alignment within the side lane. Default: "center". */
+      align?: "start" | "center" | "end";
+      /** Fine-grained pixel offset from the computed position. */
+      offset?: { x: number; y: number };
+    };
+
+/** Source for an external image. */
+export type ImageSource =
+  | { type: "url"; href: string }
+  | { type: "data"; mimeType: string; data: string }
+  | { type: "asset"; id: string; href: string };
+
+/** Base properties shared by all icon types. */
+interface BaseIconSpec {
+  /** Optional identifier for the icon within the node. */
+  id?: string;
+  /** Placement relative to the label. Default: "top". */
+  placement?: IconPlacement;
+  /** Explicit size. Defaults vary by icon type. */
+  size?: IconSize;
+  /** Visual appearance overrides. */
+  style?: IconAppearance;
+}
+
+/** A built-in vector icon provided by DrawSpec. */
+export interface BuiltinIconSpec extends BaseIconSpec {
+  type: "builtin";
+  /** Name of the built-in icon shape. */
+  name: BuiltinIconName;
+}
+
+/** An external image icon (SVG, PNG, etc.). */
+export interface ImageIconSpec extends BaseIconSpec {
+  type: "image";
+  /** Image source. */
+  src: ImageSource;
+  /** Required: explicit size for deterministic layout. */
+  size: IconSize;
+}
+
+/** A text-based icon (emoji, letter badge, etc.). */
+export interface TextIconSpec extends BaseIconSpec {
+  type: "text";
+  /** Text content to render as the icon. */
+  text: string;
+  /** Font family for rendering. Default: inherit from theme. */
+  fontFamily?: string;
+  /** Font size in pixels. Default: 24. */
+  fontSize?: number;
+}
+
+/** Icon specification attached to a diagram node. */
+export type IconSpec = BuiltinIconSpec | TextIconSpec | ImageIconSpec;
+
+/** Shape of a node's outer geometry. */
+export type NodeShapeSpec =
+  | { type: "rounded-rect"; radius?: number }
+  | { type: "rect" }
+  | { type: "cylinder"; curve?: number }
+  | { type: "none" };
+
 /** Node element in a diagram document. */
 export interface DiagramNode {
   id: string;
@@ -260,6 +365,10 @@ export interface DiagramNode {
   style?: StyleRef;
   source?: SourceRef;
   layout?: NodeLayoutOptions;
+  /** Icons attached to this node. When undefined, defaults are derived from `kind` during normalization. */
+  icons?: IconSpec[];
+  /** Explicit node shape. When undefined, derived from `kind` during normalization. */
+  shape?: NodeShapeSpec;
 }
 
 /** Layout sizing options for an individual node. */

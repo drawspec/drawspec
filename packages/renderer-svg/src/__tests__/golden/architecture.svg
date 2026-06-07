@@ -50,8 +50,8 @@
   </g>
   <g id="drawspec-architecture-demo-1o08l38-node-api-0k9ctg4">
     <rect fill="#f0fdf4" height="56" rx="12" ry="12" stroke="#15803d" stroke-width="1.5" width="120" x="280" y="40" />
-    <circle cx="340" cy="56" fill="none" r="6" stroke="#15803d" />
-    <path d="M 340 62 v 15 M 331 70 H 349" fill="none" stroke="#15803d" />
+    <circle cx="340" cy="56.9" fill="none" r="6" stroke="#15803d" />
+    <path d="M 340 62.9 v 15 M 331 70.9 H 349" fill="none" stroke="#15803d" />
   </g>
   <g id="drawspec-architecture-demo-1o08l38-node-db-1lbhtwe">
     <path d="M 520 54 C 520 35.333 640 35.333 640 54 L 640 82 C 640 100.667 520 100.667 520 82 Z" fill="#fef3c7" stroke="#b45309" stroke-width="1.5" />
@@ -72,7 +72,7 @@
         stores
       </text>
     </g>
-    <text data-width="23.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-api-line0-1pqkv86" text-anchor="middle" x="340" y="72.9">
+    <text data-width="23.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-api-line0-1pqkv86" text-anchor="middle" x="340" y="90.9">
       API
     </text>
     <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-db-line0-02oxbx6" text-anchor="middle" x="580" y="72.9">

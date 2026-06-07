@@ -1,4 +1,10 @@
-import type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode } from "@drawspec/core";
+import type {
+  DiagramDocument,
+  DiagramEdge,
+  DiagramGroup,
+  DiagramNode,
+  IconSpec,
+} from "@drawspec/core";
 import type { TextMeasurer } from "@drawspec/text-measure";
 import type { NormalizedNodeSizingOptions } from "./sizing";
 
@@ -18,6 +24,22 @@ export interface Point {
 export interface Size {
   width: number;
   height: number;
+}
+
+/** Icon positioned inside a node content box. */
+export interface PositionedIcon extends Size, Point {
+  /** Stable icon layout identifier scoped to the node. */
+  id: string;
+  /** Original icon specification. */
+  spec: IconSpec;
+}
+
+/** Computed content positions within a node, relative to the node origin. */
+export interface NodeContentLayout {
+  /** Label anchor and wrapped/truncated lines, relative to the node origin. */
+  label?: { x: number; y: number; lines: string[] };
+  /** Icons positioned relative to the node origin. */
+  icons: readonly PositionedIcon[];
 }
 
 export interface LayoutSpacing {
@@ -69,6 +91,8 @@ export interface LayoutOptions {
 export interface PositionedNode extends DiagramNode, Size, Point {
   /** Pre-computed label lines from auto-sizing. Present when sizing mode is "auto". */
   labelLines?: string[];
+  /** Pre-computed label and icon positions inside this node. */
+  contentLayout?: NodeContentLayout;
 }
 
 export interface PositionedEdge extends DiagramEdge {

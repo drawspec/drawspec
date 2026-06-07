@@ -65,8 +65,8 @@
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-person_bc8335d0874d8bfb-0xe2p25">
     <rect fill="#f0fdf4" height="56" rx="12" ry="12" stroke="#15803d" stroke-width="1.5" width="120" x="40" y="40" />
-    <circle cx="100" cy="56" fill="none" r="6" stroke="#15803d" />
-    <path d="M 100 62 v 15 M 91 70 H 109" fill="none" stroke="#15803d" />
+    <circle cx="100" cy="56.9" fill="none" r="6" stroke="#15803d" />
+    <path d="M 100 62.9 v 15 M 91 70.9 H 109" fill="none" stroke="#15803d" />
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-node-softwaresystem_47a27c87ada29e42-0cene4k">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="176" />
@@ -105,7 +105,7 @@
     <text data-width="46.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-database_2e2143da83454bad-line0-1c4kr8h" text-anchor="middle" x="820" y="72.9">
       Ledger
     </text>
-    <text data-width="63.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-person_bc8335d0874d8bfb-line0-0z9ira7" text-anchor="middle" x="100" y="72.9">
+    <text data-width="63.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-person_bc8335d0874d8bfb-line0-0z9ira7" text-anchor="middle" x="100" y="90.9">
       Customer
     </text>
     <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-node-softwaresystem_47a27c87ada29e42-line0-05ko4uu" text-anchor="middle" x="340" y="208.9">

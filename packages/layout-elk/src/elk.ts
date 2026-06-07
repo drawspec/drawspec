@@ -8,7 +8,7 @@ import type {
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { LayoutCache, normalizeLayoutOptions } from "@drawspec/layout";
+import { LayoutCache, normalizeLayoutOptions, sizeGraphNodes } from "@drawspec/layout";
 import { measureText } from "@drawspec/text-measure";
 import type { ElkExtendedEdge, ElkNode } from "elkjs/lib/elk-api";
 import ELKConstructor from "elkjs/lib/elk-api.js";
@@ -52,10 +52,11 @@ function getElkInstance(): InstanceType<typeof ELKConstructor> {
 }
 
 function buildElkGraph(document: DiagramDocument, normalized: NormalizedLayoutOptions): ElkNode {
-  const children: ElkNode[] = sortedNodes(document).map((node) => ({
+  const sizedNodes = sizeGraphNodes(sortedNodes(document), normalized.sizing);
+  const children: ElkNode[] = sizedNodes.map((node) => ({
     id: node.id,
-    width: normalized.nodeSize.width,
-    height: normalized.nodeSize.height,
+    width: node.computedWidth,
+    height: node.computedHeight,
   }));
 
   const edges: ElkExtendedEdge[] = sortedEdges(document)
@@ -112,28 +113,32 @@ function positionNodes(
   normalized: NormalizedLayoutOptions,
   elkResult: ElkNode
 ): PositionedNode[] {
+  const sizedNodesById = new Map(
+    sizeGraphNodes(sortedNodes(document), normalized.sizing).map((node) => [node.id, node])
+  );
   const elkNodesById: Record<string, ElkNode> = {};
   for (const child of elkResult.children ?? []) {
     elkNodesById[child.id] = child;
   }
 
   return sortedNodes(document).map((node) => {
+    const sizedNode = sizedNodesById.get(node.id);
     const elkNode = elkNodesById[node.id];
     if (elkNode === undefined || elkNode.x === undefined || elkNode.y === undefined) {
       return {
-        ...node,
+        ...(sizedNode ?? node),
         x: normalized.padding,
         y: normalized.padding,
-        width: normalized.nodeSize.width,
-        height: normalized.nodeSize.height,
+        width: sizedNode?.computedWidth ?? normalized.nodeSize.width,
+        height: sizedNode?.computedHeight ?? normalized.nodeSize.height,
       };
     }
     return {
-      ...node,
+      ...(sizedNode ?? node),
       x: elkNode.x,
       y: elkNode.y,
-      width: elkNode.width ?? normalized.nodeSize.width,
-      height: elkNode.height ?? normalized.nodeSize.height,
+      width: elkNode.width ?? sizedNode?.computedWidth ?? normalized.nodeSize.width,
+      height: elkNode.height ?? sizedNode?.computedHeight ?? normalized.nodeSize.height,
     };
   });
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg aria-describedby="drawspec-checkout-sequence-1nkmrpb-desc-0331j8r" aria-labelledby="drawspec-checkout-sequence-1nkmrpb-title-0j3l0qk" height="332" id="drawspec-checkout-sequence-1nkmrpb" role="img" viewBox="0 0 544 332" width="544" xmlns="http://www.w3.org/2000/svg">
+<svg aria-describedby="drawspec-checkout-sequence-1nkmrpb-desc-0331j8r" aria-labelledby="drawspec-checkout-sequence-1nkmrpb-title-0j3l0qk" height="350.2" id="drawspec-checkout-sequence-1nkmrpb" role="img" viewBox="0 0 544 350.2" width="544" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
     --ds-activation-fill: #e0f2fe;
@@ -21,7 +21,7 @@
   <desc id="drawspec-checkout-sequence-1nkmrpb-desc-0331j8r">
     sequence diagram checkout-sequence
   </desc>
-  <rect fill="#ffffff" height="332" width="544" x="0" y="0" />
+  <rect fill="#ffffff" height="350.2" width="544" x="0" y="0" />
   <defs>
     <marker id="drawspec-checkout-sequence-1nkmrpb-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <circle cx="4" cy="4" fill="#475569" r="3" />
@@ -43,18 +43,18 @@
     </marker>
   </defs>
   <g id="drawspec-checkout-sequence-1nkmrpb-group-payment-alt-0uev8vs">
-    <rect fill="#f8fafc" height="112" rx="8" ry="8" stroke="#94a3b8" stroke-dasharray="6 4" stroke-width="1.5" width="328" x="176" y="180" />
-    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="176" x2="504" y1="180" y2="180" />
-    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="176" x2="504" y1="236" y2="236" />
+    <rect fill="#f8fafc" height="112" rx="8" ry="8" stroke="#94a3b8" stroke-dasharray="6 4" stroke-width="1.5" width="328" x="176" y="198.2" />
+    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="176" x2="504" y1="198.2" y2="198.2" />
+    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="176" x2="504" y1="254.2" y2="254.2" />
   </g>
   <g id="drawspec-checkout-sequence-1nkmrpb-edge-charge-0mlrezu">
-    <path d="M 260 208 L 420 208" fill="none" marker-end="url(#drawspec-checkout-sequence-1nkmrpb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 260 226.2 L 420 226.2" fill="none" marker-end="url(#drawspec-checkout-sequence-1nkmrpb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-checkout-sequence-1nkmrpb-edge-ok-1hq68yk">
-    <path d="M 420 264 L 260 264" fill="none" marker-end="url(#drawspec-checkout-sequence-1nkmrpb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 420 282.2 L 260 282.2" fill="none" marker-end="url(#drawspec-checkout-sequence-1nkmrpb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-checkout-sequence-1nkmrpb-edge-start-1w3wcnm">
-    <path d="M 100 152 L 260 152" fill="none" marker-end="url(#drawspec-checkout-sequence-1nkmrpb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 170.2 L 260 170.2" fill="none" marker-end="url(#drawspec-checkout-sequence-1nkmrpb-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-checkout-sequence-1nkmrpb-node-payments-098ud36">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="360" y="40" />
@@ -63,39 +63,39 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="200" y="40" />
   </g>
   <g id="drawspec-checkout-sequence-1nkmrpb-node-user-0yqlzi6">
-    <rect fill="#eef2ff" height="56" rx="3" ry="3" stroke="#4338ca" stroke-width="1.5" width="120" x="40" y="40" />
-    <circle cx="100" cy="56" fill="none" r="6" stroke="#4338ca" />
-    <path d="M 100 62 v 15 M 91 70 H 109" fill="none" stroke="#4338ca" />
+    <rect fill="#eef2ff" height="74.2" rx="12" ry="12" stroke="#4338ca" stroke-width="1.5" width="120" x="40" y="40" />
+    <circle cx="100" cy="66" fill="none" r="6" stroke="#4338ca" />
+    <path d="M 100 72 v 15 M 91 80 H 109" fill="none" stroke="#4338ca" />
   </g>
-  <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-charge-activation-0x66tht" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="415" y="212" />
-  <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-ok-activation-1j1jwdr" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="268" />
-  <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-start-activation-1qkvb8f" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="156" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-charge-activation-0x66tht" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="415" y="230.2" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-ok-activation-1j1jwdr" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="286.2" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-start-activation-1qkvb8f" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="174.2" />
   <g id="drawspec-checkout-sequence-1nkmrpb-text-layer-1qywb69">
     <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-1ndsu0p-bg-00g51u3">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="53.08" x="313.46" y="184.8" />
-      <text data-width="45.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-1ndsu0p" text-anchor="middle" x="340" y="200">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="53.08" x="313.46" y="203" />
+      <text data-width="45.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-1ndsu0p" text-anchor="middle" x="340" y="218.2">
         charge
       </text>
     </g>
     <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-0g0r43r-bg-0rzp5sq">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="23.68" x="328.16" y="240.8" />
-      <text data-width="15.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-0g0r43r" text-anchor="middle" x="340" y="256">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="23.68" x="328.16" y="259" />
+      <text data-width="15.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-0g0r43r" text-anchor="middle" x="340" y="274.2">
         ok
       </text>
     </g>
     <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-1p9y2p3-bg-1ryphwo">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="67.64" x="146.18" y="128.8" />
-      <text data-width="59.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-1p9y2p3" text-anchor="middle" x="180" y="144">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="67.64" x="146.18" y="147" />
+      <text data-width="59.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-1p9y2p3" text-anchor="middle" x="180" y="162.2">
         checkout
       </text>
     </g>
-    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-1y49qfv" text-anchor="start" x="188" y="200">
+    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-1y49qfv" text-anchor="start" x="188" y="218.2">
       Payment result
     </text>
-    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-1efqdl5" text-anchor="start" x="184" y="198">
+    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-1efqdl5" text-anchor="start" x="184" y="216.2">
       authorized
     </text>
-    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-1e5qrw6" text-anchor="start" x="184" y="254">
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-1e5qrw6" text-anchor="start" x="184" y="272.2">
       declined
     </text>
     <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-payments-line0-1cbqhmm" text-anchor="middle" x="420" y="72.9">
@@ -104,7 +104,7 @@
     <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-shop-line0-0ycwolp" text-anchor="middle" x="260" y="72.9">
       Shop
     </text>
-    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-user-line0-0k5i1mq" text-anchor="middle" x="100" y="72.9">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-user-line0-0k5i1mq" text-anchor="middle" x="100" y="100">
       User
     </text>
   </g>

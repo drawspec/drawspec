@@ -1,6 +1,6 @@
-import { createTextMeasurer, wrapText } from "@drawspec/text-measure";
 import { LayoutCache } from "./cache";
 import { normalizeLayoutOptions } from "./options";
+import { sizeNode } from "./sizing";
 import type {
   ActivationBar,
   DiagramDocument,
@@ -9,6 +9,7 @@ import type {
   DiagramNode,
   LayoutEngine,
   LayoutOptions,
+  NodeContentLayout,
   Point,
   PositionedDiagram,
   PositionedEdge,
@@ -26,6 +27,7 @@ interface SizedSequenceNode extends DiagramNode {
   computedWidth: number;
   computedHeight: number;
   labelLines: string[];
+  contentLayout: NodeContentLayout;
 }
 
 const SEQUENCE_LABEL_MAX_WIDTH = 240;
@@ -36,40 +38,22 @@ function nodeCenter(node: PositionedNode): Point {
 
 function sizeSequenceNodes(document: DiagramDocument, options: LayoutOptions): SizedSequenceNode[] {
   const normalized = normalizeLayoutOptions(document, options);
-  const measurer = options.sizing?.measurer ?? createTextMeasurer();
-  const labelPadding = normalized.sizing.padding;
-  const fontSize = normalized.sizing.fontSize;
   const maxWidth = Math.max(
     normalized.nodeSize.width,
     normalized.sizing.maxSize.width === Infinity
       ? SEQUENCE_LABEL_MAX_WIDTH
       : normalized.sizing.maxSize.width
   );
-  const contentMaxWidth = Math.max(0, maxWidth - labelPadding.x * 2);
 
-  return document.nodes.map((node) => {
-    const label = node.label ?? node.id;
-    const unwrappedLines = label
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0);
-    const unwrappedWidth = Math.max(
-      0,
-      ...unwrappedLines.map((line) => measurer.measure(line, fontSize))
-    );
-    const width = Math.min(
-      maxWidth,
-      Math.max(normalized.nodeSize.width, unwrappedWidth + labelPadding.x * 2)
-    );
-    const labelLines =
-      unwrappedWidth > contentMaxWidth
-        ? wrapText(label, contentMaxWidth, fontSize)
-        : unwrappedLines;
-    const contentHeight = labelLines.length * normalized.sizing.lineHeight;
-    const height = Math.max(normalized.nodeSize.height, contentHeight + labelPadding.y * 2);
-
-    return { ...node, computedWidth: width, computedHeight: height, labelLines };
-  });
+  return document.nodes.map((node) =>
+    sizeNode(node, {
+      ...normalized.sizing,
+      mode: "auto",
+      defaultSize: normalized.nodeSize,
+      maxSize: { ...normalized.sizing.maxSize, width: maxWidth },
+      labelWrap: "auto",
+    })
+  );
 }
 
 function positionLifelines(document: DiagramDocument, options: LayoutOptions): PositionedNode[] {
@@ -88,6 +72,7 @@ function positionLifelines(document: DiagramDocument, options: LayoutOptions): P
       width: node.computedWidth,
       height: node.computedHeight,
       labelLines: node.labelLines,
+      contentLayout: node.contentLayout,
     };
   });
 }
