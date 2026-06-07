@@ -10,6 +10,7 @@
     { "path": "./packages/uml-activity" },
     { "path": "./packages/uml-deployment" },
     { "path": "./packages/uml-er" },
+    { "path": "./packages/gantt" },
     { "path": "./packages/uml-sequence" },
     { "path": "./packages/uml-usecase" },
     { "path": "./packages/uml-object" },

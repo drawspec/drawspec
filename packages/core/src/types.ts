@@ -14,6 +14,7 @@ export type DiagramKind =
   | "object"
   | "timing"
   | "er"
+  | "gantt"
   | "graph";
 
 /** Source location for an element produced from author code. */
