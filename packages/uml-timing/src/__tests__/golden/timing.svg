@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-timdoc_1d8f4c1e-1ablusc-desc-0ca9t4a" aria-labelledby="drawspec-timdoc_1d8f4c1e-1ablusc-title-0cdxgxj" height="272" id="drawspec-timdoc_1d8f4c1e-1ablusc" role="img" viewBox="0 0 680 272" width="680" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
+  <title id="drawspec-timdoc_1d8f4c1e-1ablusc-title-0cdxgxj">
+    Timing Diagram
+  </title>
+  <desc id="drawspec-timdoc_1d8f4c1e-1ablusc-desc-0ca9t4a">
+    timing diagram timdoc_1d8f4c1e
+  </desc>
+  <rect fill="#ffffff" height="272" width="680" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-timdoc_1d8f4c1e-1ablusc-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-timdoc_1d8f4c1e-1ablusc-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-timdoc_1d8f4c1e-1ablusc-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-timdoc_1d8f4c1e-1ablusc-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-timdoc_1d8f4c1e-1ablusc-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-timdoc_1d8f4c1e-1ablusc-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-edge-tmsg_e98ebefa-1tarduc">
+    <path d="M 100 68 L 340 68" fill="none" marker-end="url(#drawspec-timdoc_1d8f4c1e-1ablusc-marker-filled-triangle)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-edge-ttrans_6bd494f2-1hoydup">
+    <path d="M 100 204 L 580 68" fill="none" marker-end="url(#drawspec-timdoc_1d8f4c1e-1ablusc-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-edge-ttrans_6c1b6f3c-0phnrhy">
+    <path d="M 340 204 L 580 68" fill="none" marker-end="url(#drawspec-timdoc_1d8f4c1e-1ablusc-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-edge-ttrans_72c7c24e-17angc5">
+    <path d="M 100 204 L 340 204" fill="none" marker-end="url(#drawspec-timdoc_1d8f4c1e-1ablusc-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-node-tpart_60c370f3-0q6bkoc">
+    <rect fill="#f8fafc" height="56" rx="0" ry="0" stroke="#334155" stroke-width="1.5" width="120" x="280" y="40" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-node-tpart_bdb966d0-03tm8aj">
+    <rect fill="#f8fafc" height="56" rx="0" ry="0" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-node-tstate_6be0aecd-0282ah4">
+    <rect fill="#ecfdf5" height="56" rx="8" ry="8" stroke="#059669" stroke-width="1.5" width="120" x="520" y="40" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-node-tstate_96d476fb-12vvugm">
+    <rect fill="#ecfdf5" height="56" rx="8" ry="8" stroke="#059669" stroke-width="1.5" width="120" x="40" y="176" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-node-tstate_ff27aecd-1lx3seu">
+    <rect fill="#ecfdf5" height="56" rx="8" ry="8" stroke="#059669" stroke-width="1.5" width="120" x="280" y="176" />
+  </g>
+  <g id="drawspec-timdoc_1d8f4c1e-1ablusc-text-layer-0u47834">
+    <g id="drawspec-timdoc_1d8f4c1e-1ablusc-label-edge-tmsg_e98ebefa-line0-13m0bpu-bg-04ws0n7">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="42.36" x="198.82" y="45.8" />
+      <text data-width="38.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-timdoc_1d8f4c1e-1ablusc-label-edge-tmsg_e98ebefa-line0-13m0bpu" text-anchor="middle" x="220" y="60">
+        signal
+      </text>
+    </g>
+    <g id="drawspec-timdoc_1d8f4c1e-1ablusc-label-edge-ttrans_72c7c24e-line0-0xtjo4z-bg-1mzsvtx">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="53.56" x="193.22" y="181.8" />
+      <text data-width="49.56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-timdoc_1d8f4c1e-1ablusc-label-edge-ttrans_72c7c24e-line0-0xtjo4z" text-anchor="middle" x="220" y="196">
+        request
+      </text>
+    </g>
+    <text data-width="26.32" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-timdoc_1d8f4c1e-1ablusc-label-node-tpart_60c370f3-line0-160xkfw" text-anchor="middle" x="340" y="72.9">
+      Bob
+    </text>
+    <text data-width="32.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-timdoc_1d8f4c1e-1ablusc-label-node-tpart_bdb966d0-line0-1gowc83" text-anchor="middle" x="100" y="72.9">
+      Alice
+    </text>
+    <text data-width="41.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-timdoc_1d8f4c1e-1ablusc-label-node-tstate_6be0aecd-line0-0k2f1bq" text-anchor="middle" x="580" y="72.9">
+      Active
+    </text>
+    <text data-width="24.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-timdoc_1d8f4c1e-1ablusc-label-node-tstate_96d476fb-line0-0gycjcs" text-anchor="middle" x="100" y="208.9">
+      Idle
+    </text>
+    <text data-width="49.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-timdoc_1d8f4c1e-1ablusc-label-node-tstate_ff27aecd-line0-1q2lt0o" text-anchor="middle" x="340" y="208.9">
+      Waiting
+    </text>
+  </g>
+</svg>

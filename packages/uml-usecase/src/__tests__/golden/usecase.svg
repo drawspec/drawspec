@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-ucdoc_99e56c17-02ao2fr-desc-0qz2ons" aria-labelledby="drawspec-ucdoc_99e56c17-02ao2fr-title-0iaasup" height="312" id="drawspec-ucdoc_99e56c17-02ao2fr" role="img" viewBox="0 0 600 312" width="600" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
+  <title id="drawspec-ucdoc_99e56c17-02ao2fr-title-0iaasup">
+    Use Case Diagram
+  </title>
+  <desc id="drawspec-ucdoc_99e56c17-02ao2fr-desc-0qz2ons">
+    use-case diagram ucdoc_99e56c17
+  </desc>
+  <rect fill="#ffffff" height="312" width="600" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-ucdoc_99e56c17-02ao2fr-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-ucdoc_99e56c17-02ao2fr-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-ucdoc_99e56c17-02ao2fr-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-ucdoc_99e56c17-02ao2fr-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-ucdoc_99e56c17-02ao2fr-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-ucdoc_99e56c17-02ao2fr-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-edge-rel_1ad68363-1mlbxmh">
+    <path d="M 300 68 L 300 244" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-edge-rel_b5c53f30-17jprzc">
+    <path d="M 300 68 L 100 244" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-edge-rel_eaf490ee-0krmqj0">
+    <path d="M 100 68 L 100 244" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-node-actor_a8f541a3-09xawut">
+    <rect fill="#eef2ff" height="56" rx="12" ry="12" stroke="#4338ca" stroke-width="1.5" width="120" x="40" y="40" />
+    <circle cx="100" cy="56.9" fill="none" r="6" stroke="#4338ca" />
+    <path d="M 100 62.9 v 15 M 91 70.9 H 109" fill="none" stroke="#4338ca" />
+  </g>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-node-actor_b8e1a18f-0aayi4i">
+    <rect fill="#eef2ff" height="56" rx="12" ry="12" stroke="#4338ca" stroke-width="1.5" width="120" x="240" y="40" />
+    <circle cx="300" cy="56.9" fill="none" r="6" stroke="#4338ca" />
+    <path d="M 300 62.9 v 15 M 291 70.9 H 309" fill="none" stroke="#4338ca" />
+  </g>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-node-boundary_0352012a-1pg71vj">
+    <rect fill="#faf5ff" height="56" rx="0" ry="0" stroke="#7c3aed" stroke-width="1.5" width="120" x="440" y="40" />
+  </g>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-node-uc_2f6e3ac5-1kvjk1k">
+    <ellipse cx="100" cy="244" fill="#f5f3ff" rx="60" ry="28" stroke="#7c3aed" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-node-uc_563407ce-0zklt3c">
+    <ellipse cx="300" cy="244" fill="#f5f3ff" rx="60" ry="28" stroke="#7c3aed" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-ucdoc_99e56c17-02ao2fr-text-layer-0ucdzu2">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-ucdoc_99e56c17-02ao2fr-label-node-actor_a8f541a3-line0-0bqfpc9" text-anchor="middle" x="100" y="90.9">
+      User
+    </text>
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-ucdoc_99e56c17-02ao2fr-label-node-actor_b8e1a18f-line0-1jruh5m" text-anchor="middle" x="300" y="90.9">
+      Admin
+    </text>
+    <text data-width="48.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-ucdoc_99e56c17-02ao2fr-label-node-boundary_0352012a-line0-1cqf2lt" text-anchor="middle" x="500" y="72.9">
+      System
+    </text>
+    <text data-width="36.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-ucdoc_99e56c17-02ao2fr-label-node-uc_2f6e3ac5-line0-1146v9a" text-anchor="middle" x="100" y="248.9">
+      Login
+    </text>
+    <text data-width="52.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-ucdoc_99e56c17-02ao2fr-label-node-uc_563407ce-line0-116z3ny" text-anchor="middle" x="300" y="239.8">
+      Manage
+    </text>
+    <text data-width="38.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-ucdoc_99e56c17-02ao2fr-label-node-uc_563407ce-line1-11gypcx" text-anchor="middle" x="300" y="258">
+      Users
+    </text>
+  </g>
+</svg>

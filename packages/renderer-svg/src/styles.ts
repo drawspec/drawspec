@@ -117,9 +117,13 @@ const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
   join: { fill: "#0f172a", stroke: "#0f172a" },
   note: { fill: "#fef9c3", stroke: "#ca8a04" },
   interface: { fill: "#f8fafc", stroke: "#334155" },
+  object: { fill: "#f0f9ff", stroke: "#0369a1" },
   person: { fill: "#f0fdf4", stroke: "#15803d" },
   participant: { fill: "#f8fafc", stroke: "#334155" },
   sequence: { fill: "#f8fafc", stroke: "#334155" },
+  "system-boundary": { fill: "#faf5ff", stroke: "#7c3aed" },
+  "timing-participant": { fill: "#f8fafc", stroke: "#334155" },
+  "timing-state": { fill: "#ecfdf5", stroke: "#059669" },
   "use-case": { fill: "#f5f3ff", stroke: "#7c3aed" },
   "gantt-task": { fill: "#dbeafe", stroke: "#2563eb" },
   "gantt-milestone": { fill: "#fef3c7", stroke: "#d97706" },
@@ -139,9 +143,13 @@ const darkKindDefaults: Record<string, Partial<ResolvedStyle>> = {
   join: { fill: "#f8fafc", stroke: "#f8fafc" },
   note: { fill: "#422006", stroke: "#facc15" },
   interface: { fill: "#1e293b", stroke: "#94a3b8" },
+  object: { fill: "#0c4a6e", stroke: "#38bdf8" },
   person: { fill: "#14532d", stroke: "#4ade80" },
   participant: { fill: "#1e293b", stroke: "#94a3b8" },
   sequence: { fill: "#1e293b", stroke: "#94a3b8" },
+  "system-boundary": { fill: "#3b0764", stroke: "#c084fc" },
+  "timing-participant": { fill: "#1e293b", stroke: "#94a3b8" },
+  "timing-state": { fill: "#064e3b", stroke: "#34d399" },
   "use-case": { fill: "#2e1065", stroke: "#c4b5fd" },
   "gantt-task": { fill: "#1e3a5f", stroke: "#60a5fa" },
   "gantt-milestone": { fill: "#713f12", stroke: "#fbbf24" },
@@ -172,6 +180,16 @@ const edgeKindStyleMap: Record<
   communication: { lineStyle: "solid", arrowEnd: "open-arrow" },
   // Activity diagram
   flow: { lineStyle: "solid", arrowEnd: "filled-triangle" },
+  // Use case diagram
+  include: { lineStyle: "dashed", arrowEnd: "open-arrow" },
+  extend: { lineStyle: "dashed", arrowEnd: "open-arrow" },
+  associate: { lineStyle: "solid", arrowEnd: "none" },
+  generalize: { lineStyle: "solid", arrowEnd: "open-triangle" },
+  // Object diagram
+  link: { lineStyle: "solid", arrowEnd: "none" },
+  // Timing diagram
+  "timing-transition": { lineStyle: "solid", arrowEnd: "filled-triangle" },
+  "timing-message": { lineStyle: "dashed", arrowEnd: "filled-triangle" },
 };
 
 type StyledEntity = DiagramNode | DiagramEdge | DiagramGroup;

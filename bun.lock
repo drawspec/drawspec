@@ -394,6 +394,18 @@
         "typescript": "latest",
       },
     },
+    "packages/uml-object": {
+      "name": "@drawspec/uml-object",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
     "packages/uml-sequence": {
       "name": "@drawspec/uml-sequence",
       "version": "0.0.1",
@@ -406,6 +418,30 @@
     },
     "packages/uml-state": {
       "name": "@drawspec/uml-state",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
+    "packages/uml-timing": {
+      "name": "@drawspec/uml-timing",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
+    "packages/uml-usecase": {
+      "name": "@drawspec/uml-usecase",
       "version": "0.0.1",
       "dependencies": {
         "@drawspec/core": "workspace:*",
@@ -546,9 +582,15 @@
 
     "@drawspec/uml-er": ["@drawspec/uml-er@workspace:packages/uml-er"],
 
+    "@drawspec/uml-object": ["@drawspec/uml-object@workspace:packages/uml-object"],
+
     "@drawspec/uml-sequence": ["@drawspec/uml-sequence@workspace:packages/uml-sequence"],
 
     "@drawspec/uml-state": ["@drawspec/uml-state@workspace:packages/uml-state"],
+
+    "@drawspec/uml-timing": ["@drawspec/uml-timing@workspace:packages/uml-timing"],
+
+    "@drawspec/uml-usecase": ["@drawspec/uml-usecase@workspace:packages/uml-usecase"],
 
     "@drawspec/validation": ["@drawspec/validation@workspace:packages/validation"],
 
