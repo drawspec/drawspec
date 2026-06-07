@@ -1,11 +1,21 @@
-import type { DiagramDocument, SourceRef } from "@drawspec/core";
+import type {
+  BuiltinIconSpec,
+  DiagramDocument,
+  IconAppearance,
+  ImageIconSpec,
+  NodeShapeSpec,
+  SourceRef,
+  TextIconSpec,
+} from "@drawspec/core";
 import type {
   ActivationBar,
   LayoutRouting,
+  NodeContentLayout,
   Point,
   PositionedDiagram,
   PositionedEdge,
   PositionedGroup,
+  PositionedIcon,
   PositionedNode,
 } from "@drawspec/layout";
 import { measureText, truncateText } from "@drawspec/text-measure";
@@ -17,7 +27,14 @@ import {
   type SvgElementSpec,
   stableSvgId,
 } from "./svg";
-import type { ArrowMarkerShape, Renderer, SvgOutput, SvgRenderOptions, SvgViewport } from "./types";
+import type {
+  ArrowMarkerShape,
+  Renderer,
+  ResolvedStyle,
+  SvgOutput,
+  SvgRenderOptions,
+  SvgViewport,
+} from "./types";
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
 const DEFAULT_AUTO_FIT_PADDING = 20;
@@ -29,6 +46,10 @@ interface OcclusionRect {
   width: number;
   height: number;
 }
+
+type PositionedNodeWithContentLayout = PositionedNode & {
+  contentLayout?: NodeContentLayout;
+};
 
 /** Check if a rectangle overlaps with the viewport. Returns true if there is overlap. */
 function rectInViewport(
@@ -442,32 +463,47 @@ function renderGroup(
 
 function renderNode(
   document: DiagramDocument,
-  node: PositionedNode,
+  node: PositionedNodeWithContentLayout,
   options: SvgRenderOptions,
   idPrefix: string,
   themeName: string
 ): RenderedElement {
   const style = resolveStyle(document, node, options.theme, "node", themeName);
   const children = shapeForNode(node, style);
+  const contentLayout = node.contentLayout;
+  if (contentLayout !== undefined) {
+    children.push(
+      ...sortById(contentLayout.icons).flatMap((icon) =>
+        renderIcon(positionIconFromNodeOrigin(node, icon), style)
+      )
+    );
+  }
+  const labelLayout = contentLayout?.label;
   const label = node.label ?? node.id;
-  const lines = node.labelLines ?? [label];
+  const lines = labelLayout?.lines ?? node.labelLines ?? [label];
   const lineHeight = style.fontSize * 1.3;
   const startY =
-    node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2;
-  const labels: SvgLabelSpec[] = lines.map((line, index) =>
-    textElement({
-      id: stableSvgId(idPrefix, "label", "node", `${node.id}-line${index}`),
-      ownerId: node.id,
-      label: line,
-      x: node.x + node.width / 2,
-      y: startY + index * lineHeight,
-      style,
-      anchor: "middle",
-      maxWidth: Math.max(0, node.width - style.fontSize),
-      truncate: false,
-      clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
-    })
-  );
+    labelLayout === undefined
+      ? node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2
+      : node.y + labelLayout.y;
+  const anchorX = labelLayout === undefined ? node.x + node.width / 2 : node.x + labelLayout.x;
+  const labels: SvgLabelSpec[] =
+    contentLayout !== undefined && labelLayout === undefined
+      ? []
+      : lines.map((line, index) =>
+          textElement({
+            id: stableSvgId(idPrefix, "label", "node", `${node.id}-line${index}`),
+            ownerId: node.id,
+            label: line,
+            x: anchorX,
+            y: startY + index * lineHeight,
+            style,
+            anchor: "middle",
+            maxWidth: Math.max(0, node.width - style.fontSize),
+            truncate: false,
+            clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
+          })
+        );
   return {
     element: {
       name: "g",
@@ -478,23 +514,27 @@ function renderNode(
   };
 }
 
+function positionIconFromNodeOrigin(node: PositionedNode, icon: PositionedIcon): PositionedIcon {
+  return { ...icon, x: node.x + icon.x, y: node.y + icon.y };
+}
+
 function shapeForNode(
-  node: PositionedNode,
-  style: ReturnType<typeof resolveStyle>
+  node: PositionedNodeWithContentLayout,
+  style: ResolvedStyle
 ): SvgElementSpec[] {
+  if (node.contentLayout !== undefined) {
+    return outerShapeForNode(node, style);
+  }
   if (node.kind === "database") {
-    const curve = Math.min(18, node.height / 4);
     return [
-      {
-        name: "path",
-        attrs: {
-          d: `M ${formatNumber(node.x)} ${formatNumber(node.y + curve)} C ${formatNumber(node.x)} ${formatNumber(node.y - curve / 3)} ${formatNumber(node.x + node.width)} ${formatNumber(node.y - curve / 3)} ${formatNumber(node.x + node.width)} ${formatNumber(node.y + curve)} L ${formatNumber(node.x + node.width)} ${formatNumber(node.y + node.height - curve)} C ${formatNumber(node.x + node.width)} ${formatNumber(node.y + node.height + curve / 3)} ${formatNumber(node.x)} ${formatNumber(node.y + node.height + curve / 3)} ${formatNumber(node.x)} ${formatNumber(node.y + node.height - curve)} Z`,
-          fill: style.fill,
-          stroke: style.stroke,
-          "stroke-width": style.strokeWidth,
-        },
-        selfClosing: true,
-      },
+      renderCylinderShape(
+        node.x,
+        node.y,
+        node.width,
+        node.height,
+        style,
+        Math.min(18, node.height / 4)
+      ),
     ];
   }
   const rounded = node.kind === "container" || node.kind === "person" ? 12 : 3;
@@ -534,6 +574,459 @@ function shapeForNode(
       selfClosing: true,
     },
   ];
+}
+
+function outerShapeForNode(
+  node: PositionedNodeWithContentLayout,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const shape = node.shape ?? shapeFromNodeKind(node.kind);
+  return shapeForBounds(shape, node.x, node.y, node.width, node.height, style);
+}
+
+function shapeFromNodeKind(kind: string): NodeShapeSpec {
+  if (kind === "database") {
+    return { type: "cylinder" };
+  }
+  if (kind === "container" || kind === "person") {
+    return { type: "rounded-rect", radius: 12 };
+  }
+  return { type: "rounded-rect", radius: 3 };
+}
+
+function shapeForBounds(
+  shape: NodeShapeSpec,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  switch (shape.type) {
+    case "none":
+      return [];
+    case "cylinder":
+      return [
+        renderCylinderShape(x, y, width, height, style, Math.min(shape.curve ?? 18, height / 4)),
+      ];
+    case "rect":
+      return [renderRectShape(x, y, width, height, style, 0)];
+    case "rounded-rect":
+      return [renderRectShape(x, y, width, height, style, shape.radius ?? 3)];
+  }
+}
+
+function renderRectShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle,
+  radius: number
+): SvgElementSpec {
+  return {
+    name: "rect",
+    attrs: {
+      fill: style.fill,
+      height,
+      rx: radius,
+      ry: radius,
+      stroke: style.stroke,
+      "stroke-width": style.strokeWidth,
+      width,
+      x,
+      y,
+    },
+    selfClosing: true,
+  };
+}
+
+function renderCylinderShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle,
+  curve: number
+): SvgElementSpec {
+  return {
+    name: "path",
+    attrs: {
+      d: cylinderPath(x, y, width, height, curve),
+      fill: style.fill,
+      stroke: style.stroke,
+      "stroke-width": style.strokeWidth,
+    },
+    selfClosing: true,
+  };
+}
+
+function cylinderPath(x: number, y: number, width: number, height: number, curve: number): string {
+  return `M ${formatNumber(x)} ${formatNumber(y + curve)} C ${formatNumber(x)} ${formatNumber(y - curve / 3)} ${formatNumber(x + width)} ${formatNumber(y - curve / 3)} ${formatNumber(x + width)} ${formatNumber(y + curve)} L ${formatNumber(x + width)} ${formatNumber(y + height - curve)} C ${formatNumber(x + width)} ${formatNumber(y + height + curve / 3)} ${formatNumber(x)} ${formatNumber(y + height + curve / 3)} ${formatNumber(x)} ${formatNumber(y + height - curve)} Z`;
+}
+
+function renderIcon(icon: PositionedIcon, style: ResolvedStyle): SvgElementSpec[] {
+  const spec = icon.spec;
+  const appearance = spec.style;
+
+  switch (spec.type) {
+    case "builtin":
+      return renderBuiltinIcon(icon, spec, appearance, style);
+    case "text":
+      return renderTextIcon(icon, spec, appearance, style);
+    case "image":
+      return renderImageIcon(icon, spec, appearance);
+  }
+}
+
+function renderBuiltinIcon(
+  icon: PositionedIcon,
+  spec: BuiltinIconSpec,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  switch (spec.name) {
+    case "person":
+    case "actor":
+      return renderPersonIcon(icon, appearance, style);
+    case "database":
+    case "cylinder":
+      return renderCylinderIcon(icon, appearance, style);
+    case "component":
+      return renderComponentIcon(icon, appearance, style);
+    case "queue":
+      return renderQueueIcon(icon, appearance, style);
+    case "browser":
+      return renderBrowserIcon(icon, appearance, style);
+    case "mobile":
+      return renderMobileIcon(icon, appearance, style);
+    case "cloud":
+      return renderCloudIcon(icon, appearance, style);
+    case "hexagon":
+      return renderHexagonIcon(icon, appearance, style);
+  }
+}
+
+function renderPersonIcon(
+  icon: PositionedIcon,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const centerX = icon.x + icon.width / 2;
+  const paint = lineIconAttrs(appearance, style);
+  return [
+    {
+      name: "circle",
+      attrs: { ...paint, cx: centerX, cy: icon.y + 16, r: 6 },
+      selfClosing: true,
+    },
+    {
+      name: "path",
+      attrs: {
+        ...paint,
+        d: `M ${formatNumber(centerX)} ${formatNumber(icon.y + 22)} v 15 M ${formatNumber(centerX - 9)} ${formatNumber(icon.y + 30)} H ${formatNumber(centerX + 9)}`,
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderCylinderIcon(
+  icon: PositionedIcon,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const curve = Math.min(8, icon.height / 4);
+  return [
+    {
+      name: "path",
+      attrs: {
+        ...filledIconAttrs(appearance, style),
+        d: cylinderPath(icon.x, icon.y, icon.width, icon.height, curve),
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderComponentIcon(
+  icon: PositionedIcon,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const tabWidth = Math.max(4, icon.width * 0.18);
+  const tabHeight = Math.max(3, icon.height * 0.16);
+  const tabX = icon.x - tabWidth * 0.25;
+  const paint = filledIconAttrs(appearance, style);
+  return [
+    {
+      name: "rect",
+      attrs: {
+        ...paint,
+        height: icon.height,
+        rx: 3,
+        ry: 3,
+        width: icon.width,
+        x: icon.x,
+        y: icon.y,
+      },
+      selfClosing: true,
+    },
+    {
+      name: "rect",
+      attrs: {
+        ...paint,
+        height: tabHeight,
+        width: tabWidth,
+        x: tabX,
+        y: icon.y + icon.height * 0.25,
+      },
+      selfClosing: true,
+    },
+    {
+      name: "rect",
+      attrs: {
+        ...paint,
+        height: tabHeight,
+        width: tabWidth,
+        x: tabX,
+        y: icon.y + icon.height * 0.6,
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderQueueIcon(
+  icon: PositionedIcon,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const paint = lineIconAttrs(appearance, style);
+  const gap = Math.max(3, icon.width * 0.12);
+  return [0, 1, 2].map((index) => ({
+    name: "rect",
+    attrs: {
+      ...paint,
+      height: icon.height - gap * 2,
+      rx: 3,
+      ry: 3,
+      width: icon.width - gap * 2,
+      x: icon.x + gap * index,
+      y: icon.y + gap * (2 - index),
+    },
+    selfClosing: true,
+  }));
+}
+
+function renderBrowserIcon(
+  icon: PositionedIcon,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const paint = filledIconAttrs(appearance, style);
+  const barY = icon.y + Math.max(6, icon.height * 0.22);
+  return [
+    {
+      name: "rect",
+      attrs: {
+        ...paint,
+        height: icon.height,
+        rx: 3,
+        ry: 3,
+        width: icon.width,
+        x: icon.x,
+        y: icon.y,
+      },
+      selfClosing: true,
+    },
+    {
+      name: "line",
+      attrs: {
+        ...strokeOnlyAttrs(appearance, style),
+        x1: icon.x,
+        x2: icon.x + icon.width,
+        y1: barY,
+        y2: barY,
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderMobileIcon(
+  icon: PositionedIcon,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const paint = filledIconAttrs(appearance, style);
+  const buttonRadius = Math.max(1, Math.min(icon.width, icon.height) * 0.04);
+  return [
+    {
+      name: "rect",
+      attrs: {
+        ...paint,
+        height: icon.height,
+        rx: 4,
+        ry: 4,
+        width: icon.width,
+        x: icon.x,
+        y: icon.y,
+      },
+      selfClosing: true,
+    },
+    {
+      name: "circle",
+      attrs: {
+        fill: appearance?.stroke ?? style.stroke,
+        cx: icon.x + icon.width / 2,
+        cy: icon.y + icon.height - Math.max(3, icon.height * 0.1),
+        opacity: appearance?.opacity,
+        r: buttonRadius,
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderCloudIcon(
+  icon: PositionedIcon,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const x = icon.x;
+  const y = icon.y;
+  const width = icon.width;
+  const height = icon.height;
+  return [
+    {
+      name: "path",
+      attrs: {
+        ...filledIconAttrs(appearance, style),
+        d: [
+          `M ${fmt(x + width * 0.2)} ${fmt(y + height * 0.72)}`,
+          `C ${fmt(x + width * 0.05)} ${fmt(y + height * 0.72)} ${fmt(x)} ${fmt(y + height * 0.48)} ${fmt(x + width * 0.18)} ${fmt(y + height * 0.42)}`,
+          `C ${fmt(x + width * 0.22)} ${fmt(y + height * 0.22)} ${fmt(x + width * 0.48)} ${fmt(y + height * 0.18)} ${fmt(x + width * 0.6)} ${fmt(y + height * 0.34)}`,
+          `C ${fmt(x + width * 0.78)} ${fmt(y + height * 0.3)} ${fmt(x + width * 0.95)} ${fmt(y + height * 0.44)} ${fmt(x + width * 0.92)} ${fmt(y + height * 0.62)}`,
+          `C ${fmt(x + width * 0.9)} ${fmt(y + height * 0.72)} ${fmt(x + width * 0.8)} ${fmt(y + height * 0.72)} ${fmt(x + width * 0.2)} ${fmt(y + height * 0.72)}`,
+          "Z",
+        ].join(" "),
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderHexagonIcon(
+  icon: PositionedIcon,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const points = [
+    `${fmt(icon.x + icon.width * 0.25)},${fmt(icon.y)}`,
+    `${fmt(icon.x + icon.width * 0.75)},${fmt(icon.y)}`,
+    `${fmt(icon.x + icon.width)},${fmt(icon.y + icon.height / 2)}`,
+    `${fmt(icon.x + icon.width * 0.75)},${fmt(icon.y + icon.height)}`,
+    `${fmt(icon.x + icon.width * 0.25)},${fmt(icon.y + icon.height)}`,
+    `${fmt(icon.x)},${fmt(icon.y + icon.height / 2)}`,
+  ].join(" ");
+  return [
+    {
+      name: "polygon",
+      attrs: { ...filledIconAttrs(appearance, style), points },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderTextIcon(
+  icon: PositionedIcon,
+  spec: TextIconSpec,
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const fontSize = spec.fontSize ?? 24;
+  return [
+    {
+      name: "text",
+      attrs: {
+        fill: appearance?.color ?? style.stroke,
+        "font-family": spec.fontFamily ?? style.fontFamily,
+        "font-size": fontSize,
+        opacity: appearance?.opacity,
+        "text-anchor": "middle",
+        x: icon.x + icon.width / 2,
+        y: icon.y + icon.height / 2 + fontSize * 0.35,
+      },
+      children: [spec.text],
+    },
+  ];
+}
+
+function renderImageIcon(
+  icon: PositionedIcon,
+  spec: ImageIconSpec,
+  appearance: IconAppearance | undefined
+): SvgElementSpec[] {
+  const attrs: Record<string, string | number | undefined> = {
+    height: icon.height,
+    width: icon.width,
+    x: icon.x,
+    y: icon.y,
+  };
+
+  switch (spec.src.type) {
+    case "url":
+      attrs["href"] = spec.src.href;
+      break;
+    case "data":
+      attrs["href"] = `data:${spec.src.mimeType};base64,${spec.src.data}`;
+      break;
+    case "asset":
+      attrs["href"] = spec.src.href;
+      break;
+  }
+
+  if (appearance?.opacity !== undefined) {
+    attrs["opacity"] = appearance.opacity;
+  }
+
+  return [{ name: "image", attrs, selfClosing: true }];
+}
+
+function filledIconAttrs(
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): Record<string, string | number | undefined> {
+  return {
+    fill: appearance?.fill ?? "none",
+    opacity: appearance?.opacity,
+    stroke: appearance?.stroke ?? style.stroke,
+    "stroke-width": appearance?.strokeWidth ?? style.strokeWidth,
+  };
+}
+
+function lineIconAttrs(
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): Record<string, string | number | undefined> {
+  return {
+    fill: appearance?.fill ?? "none",
+    opacity: appearance?.opacity,
+    stroke: appearance?.stroke ?? style.stroke,
+    "stroke-width": appearance?.strokeWidth,
+  };
+}
+
+function strokeOnlyAttrs(
+  appearance: IconAppearance | undefined,
+  style: ResolvedStyle
+): Record<string, string | number | undefined> {
+  return {
+    opacity: appearance?.opacity,
+    stroke: appearance?.stroke ?? style.stroke,
+    "stroke-width": appearance?.strokeWidth ?? style.strokeWidth,
+  };
 }
 
 function renderEdge(

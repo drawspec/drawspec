@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg aria-describedby="drawspec-seqdoc_50f5132c-13xu4za-desc-1q2l0qr" aria-labelledby="drawspec-seqdoc_50f5132c-13xu4za-title-0s80gkk" height="500" id="drawspec-seqdoc_50f5132c-13xu4za" role="img" viewBox="0 0 544 500" width="544" xmlns="http://www.w3.org/2000/svg">
+<svg aria-describedby="drawspec-seqdoc_50f5132c-13xu4za-desc-1q2l0qr" aria-labelledby="drawspec-seqdoc_50f5132c-13xu4za-title-0s80gkk" height="518.2" id="drawspec-seqdoc_50f5132c-13xu4za" role="img" viewBox="0 0 544 518.2" width="544" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
     --ds-activation-fill: #e0f2fe;
@@ -21,7 +21,7 @@
   <desc id="drawspec-seqdoc_50f5132c-13xu4za-desc-1q2l0qr">
     sequence diagram seqdoc_50f5132c
   </desc>
-  <rect fill="#ffffff" height="500" width="544" x="0" y="0" />
+  <rect fill="#ffffff" height="518.2" width="544" x="0" y="0" />
   <defs>
     <marker id="drawspec-seqdoc_50f5132c-13xu4za-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <circle cx="4" cy="4" fill="#475569" r="3" />
@@ -43,27 +43,27 @@
     </marker>
   </defs>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-group-frag_a7e3f9f2-1i63q5w">
-    <rect fill="#f8fafc" height="224" rx="8" ry="8" stroke="#94a3b8" stroke-dasharray="6 4" stroke-width="1.5" width="488" x="16" y="236" />
-    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="16" x2="504" y1="236" y2="236" />
-    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="16" x2="504" y1="348" y2="348" />
+    <rect fill="#f8fafc" height="224" rx="8" ry="8" stroke="#94a3b8" stroke-dasharray="6 4" stroke-width="1.5" width="488" x="16" y="254.2" />
+    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="16" x2="504" y1="254.2" y2="254.2" />
+    <line stroke="#94a3b8" stroke-dasharray="3 3" x1="16" x2="504" y1="366.2" y2="366.2" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-edge-msg_148fcc18-19lnabc">
-    <path d="M 260 320 L 100 320" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 260 338.2 L 100 338.2" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-edge-msg_32d78e47-17dikey">
-    <path d="M 260 432 L 100 432" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 260 450.2 L 100 450.2" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-edge-msg_41a3117b-07xcbqs">
-    <path d="M 260 208 L 420 208" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 260 226.2 L 420 226.2" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-edge-msg_84a91499-0wek0i9">
-    <path d="M 100 152 L 260 152" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 100 170.2 L 260 170.2" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-edge-msg_a6ff72df-1fkrz3s">
-    <path d="M 420 264 L 260 264" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 420 282.2 L 260 282.2" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-edge-msg_d73b174f-1tu5ruu">
-    <path d="M 420 376 L 260 376" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 420 394.2 L 260 394.2" fill="none" marker-end="url(#drawspec-seqdoc_50f5132c-13xu4za-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-node-seq_6d48fc82-1eg1516">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="200" y="40" />
@@ -72,60 +72,60 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="360" y="40" />
   </g>
   <g id="drawspec-seqdoc_50f5132c-13xu4za-node-seq_f0d7723a-1jc1glf">
-    <rect fill="#eef2ff" height="56" rx="3" ry="3" stroke="#4338ca" stroke-width="1.5" width="120" x="40" y="40" />
-    <circle cx="100" cy="56" fill="none" r="6" stroke="#4338ca" />
-    <path d="M 100 62 v 15 M 91 70 H 109" fill="none" stroke="#4338ca" />
+    <rect fill="#eef2ff" height="74.2" rx="12" ry="12" stroke="#4338ca" stroke-width="1.5" width="120" x="40" y="40" />
+    <circle cx="100" cy="66" fill="none" r="6" stroke="#4338ca" />
+    <path d="M 100 72 v 15 M 91 80 H 109" fill="none" stroke="#4338ca" />
   </g>
-  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_148fcc18-activation-0cuym3z" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="95" y="324" />
-  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_32d78e47-activation-1bchdjl" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="95" y="436" />
-  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_41a3117b-activation-01irq2b" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="415" y="212" />
-  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_84a91499-activation-1wtvsmk" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="156" />
-  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_a6ff72df-activation-1uck5db" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="268" />
-  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_d73b174f-activation-0oib66h" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="380" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_148fcc18-activation-0cuym3z" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="95" y="342.2" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_32d78e47-activation-1bchdjl" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="95" y="454.2" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_41a3117b-activation-01irq2b" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="415" y="230.2" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_84a91499-activation-1wtvsmk" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="174.2" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_a6ff72df-activation-1uck5db" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="286.2" />
+  <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_d73b174f-activation-0oib66h" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="398.2" />
   <g id="drawspec-seqdoc_50f5132c-13xu4za-text-layer-1k1cz49">
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-159i9uf-bg-1p8md9a">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="57.84" x="151.08" y="296.8" />
-      <text data-width="49.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-159i9uf" text-anchor="middle" x="180" y="312">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="57.84" x="151.08" y="315" />
+      <text data-width="49.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-159i9uf" text-anchor="middle" x="180" y="330.2">
         Receipt
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl-bg-13dw392">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="134.28" x="112.86" y="408.8" />
-      <text data-width="126.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl" text-anchor="middle" x="180" y="424">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="134.28" x="112.86" y="427" />
+      <text data-width="126.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-1pm0zpl" text-anchor="middle" x="180" y="442.2">
         Request another …
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-1364xyj-bg-0i94ngp">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="71" x="304.5" y="184.8" />
-      <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-1364xyj" text-anchor="middle" x="340" y="200">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="71" x="304.5" y="203" />
+      <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-1364xyj" text-anchor="middle" x="340" y="218.2">
         Authorize
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-0d7cwmm-bg-1m68aoy">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="87.66" x="136.17" y="128.8" />
-      <text data-width="79.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-0d7cwmm" text-anchor="middle" x="180" y="144">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="87.66" x="136.17" y="147" />
+      <text data-width="79.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-0d7cwmm" text-anchor="middle" x="180" y="162.2">
         Submit card
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-071fuaf-bg-1thhogw">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="103.62" x="288.19" y="240.8" />
-      <text data-width="95.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-071fuaf" text-anchor="middle" x="340" y="256">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="103.62" x="288.19" y="259" />
+      <text data-width="95.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-071fuaf" text-anchor="middle" x="340" y="274.2">
         Approval code
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-183zkvl-bg-0ckb9vx">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="105.86" x="287.07" y="352.8" />
-      <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-183zkvl" text-anchor="middle" x="340" y="368">
+      <rect fill="#ffffff" height="22" rx="3" ry="3" width="105.86" x="287.07" y="371" />
+      <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-183zkvl" text-anchor="middle" x="340" y="386.2">
         Decline reason
       </text>
     </g>
-    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-0tj9xvf" text-anchor="start" x="28" y="256">
+    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-0tj9xvf" text-anchor="start" x="28" y="274.2">
       alt
     </text>
-    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-1mt7tad" text-anchor="start" x="24" y="254">
+    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-1mt7tad" text-anchor="start" x="24" y="272.2">
       approved
     </text>
-    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-1-1mj87le" text-anchor="start" x="24" y="366">
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-1-1mj87le" text-anchor="start" x="24" y="384.2">
       declined
     </text>
     <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_6d48fc82-line0-1oyq7q2" text-anchor="middle" x="260" y="72.9">
@@ -134,7 +134,7 @@
     <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_75aa37ac-line0-18d7xux" text-anchor="middle" x="420" y="72.9">
       Payments
     </text>
-    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_f0d7723a-line0-1guewmf" text-anchor="middle" x="100" y="72.9">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_f0d7723a-line0-1guewmf" text-anchor="middle" x="100" y="100">
       User
     </text>
   </g>

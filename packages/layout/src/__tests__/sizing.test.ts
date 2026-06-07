@@ -101,4 +101,53 @@ describe("sizeGraphNodes", () => {
     const result = sizeGraphNodes(nodes, defaultOptions);
     expect(result[0]?.labelLines[0]).toBe("nodeA");
   });
+
+  test("default top icons contribute to auto height", () => {
+    const nodes: DiagramNode[] = [{ id: "a", kind: "actor", label: "Hi" }];
+    const result = sizeGraphNodes(nodes, defaultOptions);
+    expect(result[0]?.computedHeight).toBe(74.2);
+    expect(result[0]?.contentLayout.icons).toEqual([
+      {
+        id: "a:icon:0",
+        spec: { type: "builtin", name: "actor", placement: "top", size: { width: 24, height: 30 } },
+        x: 48,
+        y: 10,
+        width: 24,
+        height: 30,
+      },
+    ]);
+    expect(result[0]?.contentLayout.label?.y).toBe(60);
+  });
+
+  test("empty icons opt out of default icon sizing", () => {
+    const nodes: DiagramNode[] = [{ id: "a", kind: "actor", label: "Hi", icons: [] }];
+    const result = sizeGraphNodes(nodes, defaultOptions);
+    expect(result[0]?.computedHeight).toBe(56);
+    expect(result[0]?.contentLayout.icons).toEqual([]);
+  });
+
+  test("left and right icons contribute to auto width", () => {
+    const nodes: DiagramNode[] = [
+      {
+        id: "a",
+        kind: "component",
+        label: "Hi",
+        icons: [
+          { type: "builtin", name: "cloud", placement: "left" },
+          {
+            type: "builtin",
+            name: "database",
+            placement: { side: "right", offset: { x: 2, y: 3 } },
+          },
+        ],
+        layout: { minWidth: 0 },
+      },
+    ];
+    const result = sizeGraphNodes(nodes, defaultOptions);
+    expect(result[0]?.computedWidth).toBe(120);
+    expect(result[0]?.contentLayout.icons.map((icon) => [icon.id, icon.x, icon.y])).toEqual([
+      ["a:icon:0", 23, 13],
+      ["a:icon:1", 75, 16],
+    ]);
+  });
 });

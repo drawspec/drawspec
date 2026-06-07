@@ -74,8 +74,8 @@
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-person_494a4f7dfd392f13-0768usz">
     <rect fill="#f0fdf4" height="56" rx="12" ry="12" stroke="#15803d" stroke-width="1.5" width="120" x="240" y="40" />
-    <circle cx="300" cy="56" fill="none" r="6" stroke="#15803d" />
-    <path d="M 300 62 v 15 M 291 70 H 309" fill="none" stroke="#15803d" />
+    <circle cx="300" cy="56.9" fill="none" r="6" stroke="#15803d" />
+    <path d="M 300 62.9 v 15 M 291 70.9 H 309" fill="none" stroke="#15803d" />
   </g>
   <g id="drawspec-view_49b744c8cc155f25-15h7gpi-node-softwaresystem_e27ada29a9783f1d-052iwmf">
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="216" />
@@ -132,7 +132,7 @@
     <text data-width="85.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-database_03ab52d399de1e70-line0-0zx7806" text-anchor="middle" x="100" y="600.9">
       Configurati…
     </text>
-    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-person_494a4f7dfd392f13-line0-1ftlae9" text-anchor="middle" x="300" y="72.9">
+    <text data-width="58.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-person_494a4f7dfd392f13-line0-1ftlae9" text-anchor="middle" x="300" y="90.9">
       Operator
     </text>
     <text data-width="71.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-node-softwaresystem_e27ada29a9783f1d-line0-0jfqzop" text-anchor="middle" x="300" y="248.9">

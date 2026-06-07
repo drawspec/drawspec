@@ -75,12 +75,12 @@ describe("sequence layout", () => {
 
   test("positions messages at sequential vertical intervals", async () => {
     const positioned = await sequenceLayout().layout(sequenceDoc);
-    expect(positioned.edges.map((edge) => edge.waypoints[0]?.y)).toEqual([152, 208, 264]);
+    expect(positioned.edges.map((edge) => edge.waypoints[0]?.y)).toEqual([170.2, 226.2, 282.2]);
   });
 
   test("creates fragment boxes and operand lanes", async () => {
     const [fragment] = (await sequenceLayout().layout(sequenceDoc)).groups;
-    expect(fragment).toMatchObject({ id: "alt1", x: 176, y: 180, width: 328, height: 112 });
+    expect(fragment).toMatchObject({ id: "alt1", x: 176, y: 198.2, width: 328, height: 112 });
     expect(fragment?.lanes?.map((lane) => [lane.label, lane.childIds])).toEqual([
       ["Approved", ["m3"]],
       ["Declined", []],
@@ -92,9 +92,9 @@ describe("sequence layout", () => {
     expect(
       positioned.activations.map((bar) => [bar.nodeId, bar.edgeId, bar.x, bar.y, bar.height])
     ).toEqual([
-      ["api", "m1", 255, 156, 48],
-      ["bank", "m2", 415, 212, 48],
-      ["api", "m3", 255, 268, 48],
+      ["api", "m1", 255, 174.2, 48],
+      ["bank", "m2", 415, 230.2, 48],
+      ["api", "m3", 255, 286.2, 48],
     ]);
   });
 
