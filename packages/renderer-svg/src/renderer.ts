@@ -1960,8 +1960,8 @@ function segmentOverlapsRect(
   const dy = p1.y - p0.y;
   const y0 = p0.y + tMin * dy;
   const y1 = p0.y + tMax * dy;
-  const segMinY = Math.min(y0, y1, p0.y, p1.y);
-  const segMaxY = Math.max(y0, y1, p0.y, p1.y);
+  const segMinY = Math.min(y0, y1);
+  const segMaxY = Math.max(y0, y1);
 
   return segMaxY >= rect.top && segMinY <= rect.bottom;
 }
@@ -1993,8 +1993,8 @@ function edgeYInXRange(
     const y0 = p0.y + tMin * dy;
     const y1 = p0.y + tMax * dy;
 
-    minY = Math.min(minY, y0, y1, p0.y, p1.y);
-    maxY = Math.max(maxY, y0, y1, p0.y, p1.y);
+    minY = Math.min(minY, y0, y1);
+    maxY = Math.max(maxY, y0, y1);
   }
 
   return { minY, maxY };
