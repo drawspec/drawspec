@@ -920,6 +920,60 @@ describe("SvgRenderer", () => {
 
       expect(edgeLabelRotationTransform(svg)).toBe("rotate(45 100 100)");
     });
+
+    test("rotated labels use expanded bounds for overlap avoidance", () => {
+      const doc = document({
+        id: "rotated-overlap-test",
+        labelRotation: "auto",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+          { id: "c", kind: "component", label: "C" },
+          { id: "d", kind: "component", label: "D" },
+        ],
+        edges: [
+          { id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "alpha" },
+          { id: "e2", kind: "calls", sourceId: "c", targetId: "d", label: "beta" },
+        ],
+      });
+      const e1 = doc.edges[0];
+      const e2 = doc.edges[1];
+      if (e1 === undefined || e2 === undefined) {
+        throw new Error("test document must have two edges");
+      }
+      const svg = renderSvgSync(doc, {
+        positionedDiagram: positionedDiagram({
+          document: doc,
+          edges: [
+            {
+              ...e1,
+              waypoints: [
+                { x: 40, y: 35 },
+                { x: 160, y: 155 },
+              ],
+            },
+            {
+              ...e2,
+              waypoints: [
+                { x: 40, y: 45 },
+                { x: 160, y: 165 },
+              ],
+            },
+          ],
+          height: 240,
+          width: 240,
+        }),
+      });
+
+      const rotationTransforms = [...svg.matchAll(/transform="rotate\(45 [^"]+\)"/g)];
+      expect(rotationTransforms.length).toBe(2);
+
+      const labelGroupsWithTranslate = svg.match(
+        /<g id="[^"]*label-edge-e[12][^"]*"[^>]*transform="translate\([^"]+\)"/g
+      );
+      expect(labelGroupsWithTranslate).not.toBeNull();
+      expect(labelGroupsWithTranslate?.length).toBeGreaterThanOrEqual(1);
+    });
   });
 
   describe("edge label overlap prevention", () => {
