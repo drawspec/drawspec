@@ -9,8 +9,13 @@ import type {
   PositionedNode,
 } from "@drawspec/layout";
 import { LayoutCache, normalizeLayoutOptions } from "@drawspec/layout";
+import { measureText } from "@drawspec/text-measure";
 import type { ElkExtendedEdge, ElkNode } from "elkjs/lib/elk-api";
 import ELKConstructor from "elkjs/lib/elk-api.js";
+
+const EDGE_LABEL_FONT_SIZE = 14;
+const EDGE_LABEL_HORIZONTAL_PADDING = 8;
+const EDGE_LABEL_VERTICAL_PADDING = 4;
 
 const ELK_DIRECTION_MAP: Record<string, string> = {
   TB: "DOWN",
@@ -60,11 +65,25 @@ function buildElkGraph(document: DiagramDocument, normalized: NormalizedLayoutOp
         document.nodes.some((n: DiagramNode) => n.id === edge.sourceId) &&
         document.nodes.some((n: DiagramNode) => n.id === edge.targetId)
     )
-    .map((edge) => ({
-      id: edge.id,
-      sources: [edge.sourceId],
-      targets: [edge.targetId],
-    }));
+    .map((edge) => {
+      const elkEdge: ElkExtendedEdge = {
+        id: edge.id,
+        sources: [edge.sourceId],
+        targets: [edge.targetId],
+      };
+
+      if (edge.label !== undefined) {
+        elkEdge.labels = [
+          {
+            text: edge.label,
+            width: measureText(edge.label, EDGE_LABEL_FONT_SIZE) + EDGE_LABEL_HORIZONTAL_PADDING,
+            height: EDGE_LABEL_FONT_SIZE * 1.2 + EDGE_LABEL_VERTICAL_PADDING,
+          },
+        ];
+      }
+
+      return elkEdge;
+    });
 
   const elkDirection = ELK_DIRECTION_MAP[normalized.direction] ?? "DOWN";
 
@@ -81,6 +100,7 @@ function buildElkGraph(document: DiagramDocument, normalized: NormalizedLayoutOp
       "elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
       "elk.layered.nodePlacement.strategy": "BRANDES_KOEPF",
       "elk.layered.crossingMinimization.semiInteractive": "true",
+      "elk.edgeLabels.inline": "true",
     },
     children,
     edges,
@@ -160,6 +180,25 @@ function edgeWaypoints(
   ];
 }
 
+function edgeLabelPosition(
+  edge: DiagramEdge,
+  elkEdge: ElkExtendedEdge | undefined
+): Point | undefined {
+  if (edge.label === undefined) {
+    return undefined;
+  }
+
+  const elkLabel = elkEdge?.labels?.[0];
+  if (elkLabel?.x === undefined || elkLabel.y === undefined) {
+    return undefined;
+  }
+
+  return {
+    x: Math.round((elkLabel.x + (elkLabel.width ?? 0) / 2) * 1000) / 1000,
+    y: Math.round((elkLabel.y + (elkLabel.height ?? 0) / 2) * 1000) / 1000,
+  };
+}
+
 function computeBounds(
   nodes: PositionedNode[],
   edges: PositionedEdge[],
@@ -177,6 +216,10 @@ function computeBounds(
     for (const wp of edge.waypoints) {
       allX.push(wp.x);
       allY.push(wp.y);
+    }
+    if (edge.label !== undefined && edge.labelPosition !== undefined) {
+      allX.push(edge.labelPosition.x + measureText(edge.label, EDGE_LABEL_FONT_SIZE) / 2);
+      allY.push(edge.labelPosition.y + (EDGE_LABEL_FONT_SIZE * 1.2) / 2);
     }
   }
 
@@ -219,10 +262,15 @@ async function createElkLayout(
     elkEdgesById[e.id] = e;
   }
 
-  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => ({
-    ...edge,
-    waypoints: edgeWaypoints(edge, nodesById, elkEdgesById),
-  }));
+  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => {
+    const elkEdge = elkEdgesById[edge.id];
+    const labelPosition = edgeLabelPosition(edge, elkEdge);
+    return {
+      ...edge,
+      waypoints: edgeWaypoints(edge, nodesById, elkEdgesById),
+      ...(labelPosition === undefined ? {} : { labelPosition }),
+    };
+  });
 
   const { width, height } = computeBounds(nodes, edges, normalized.padding);
 

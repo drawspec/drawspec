@@ -108,6 +108,31 @@ describe("elk layout", () => {
     }
   });
 
+  test("positions edge labels from ELK output", async () => {
+    const positioned = await elkLayout().layout(
+      doc({
+        nodes: [
+          { id: "source", kind: "component", label: "Source" },
+          { id: "target", kind: "component", label: "Target" },
+        ],
+        edges: [
+          {
+            id: "labeled-edge",
+            kind: "depends-on",
+            sourceId: "source",
+            targetId: "target",
+            label: "long descriptive edge label",
+          },
+        ],
+      })
+    );
+
+    const edge = positioned.edges.find((candidate) => candidate.id === "labeled-edge");
+    expect(edge?.labelPosition).toBeDefined();
+    expect(Number.isFinite(edge?.labelPosition?.x)).toBe(true);
+    expect(Number.isFinite(edge?.labelPosition?.y)).toBe(true);
+  });
+
   test("computes diagram dimensions", async () => {
     const positioned = await elkLayout().layout(graphDoc);
     expect(positioned.width).toBeGreaterThan(0);
