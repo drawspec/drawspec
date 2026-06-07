@@ -1089,5 +1089,23 @@ describe("SvgRenderer", () => {
       expect(distanceFromEdge(strokeBelowRect, edgeY)).toBe(distanceFromEdge(fillBelowRect, edgeY));
       expect(distanceFromEdge(fillAboveRect, edgeY)).toBeGreaterThan(0);
     });
+
+    // The symmetric overlap logic has two branches. With yAdjust = -max(8, fontSize * 0.5),
+    // labels always start above the edge. For wrapped labels, the second line overlaps with
+    // bgTop above and bgBottom below. Since textTopOffset > textBottomOffset, bgTop is always
+    // closer to edge than bgBottom, making shiftDown < shiftUp. The shiftUp < shiftDown branch
+    // is therefore unreachable with default settings. This test documents that reality.
+    test("wrapped edge labels always shift down when overlapping", () => {
+      const longLabel = "this is a wrapped edge label that should shift down";
+      const { doc, positionedDiagram } = edgeLabelDoc(longLabel, 100, 60);
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const edgeY = 100;
+      const rects = extractLabelRects(svg, "e1");
+      const firstBelowEdge = rects.find((r) => r.y >= edgeY);
+      expect(firstBelowEdge).toBeDefined();
+      if (firstBelowEdge) {
+        expect(firstBelowEdge.y).toBeGreaterThan(edgeY);
+      }
+    });
   });
 });

@@ -1117,6 +1117,12 @@ function renderEdge(
         const overlapsEdge = bgTop <= pos.y && bgBottom >= pos.y;
         let extraGap = 0;
         if (overlapsEdge) {
+          // shiftUp = how far bg extends below edge + gap (positive = shift up = move label up)
+          // shiftDown = how far bg extends above edge + gap (positive = shift down = move label down)
+          // With yAdjust always negative (label starts above edge), wrapped labels have bgTop above
+          // edge and bgBottom below edge. Since textTopOffset > textBottomOffset, bgTop is always
+          // closer to edge than bgBottom, making shiftDown < shiftUp. The shiftUp < shiftDown branch
+          // is unreachable with current defaults (yAdjust = -max(8, fontSize * 0.5)).
           const shiftUp = bgBottom - pos.y + EDGE_LABEL_LINE_GAP;
           const shiftDown = pos.y - bgTop + EDGE_LABEL_LINE_GAP;
           extraGap = shiftUp <= shiftDown ? -shiftUp : shiftDown;
