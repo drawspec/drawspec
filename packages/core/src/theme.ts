@@ -148,6 +148,10 @@ export const DIAGRAM_KIND_THEME_DEFAULTS: Record<DiagramKind, DiagramTheme> = {
     colors: { primary: "#4338ca", accent: "#818cf8" },
     nodes: { borderRadius: 3 },
   }),
+  gantt: mergeDiagramTheme(DEFAULT_DIAGRAM_THEME, {
+    colors: { primary: "#2563eb", accent: "#60a5fa" },
+    nodes: { borderRadius: 4 },
+  }),
   graph: DEFAULT_DIAGRAM_THEME,
 };
 
