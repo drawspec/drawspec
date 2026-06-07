@@ -6,6 +6,7 @@
     { "path": "./packages/uml-class" },
     { "path": "./packages/uml-component" },
     { "path": "./packages/uml-state" },
+    { "path": "./packages/flowchart" },
     { "path": "./packages/uml-activity" },
     { "path": "./packages/uml-deployment" },
     { "path": "./packages/uml-sequence" },
