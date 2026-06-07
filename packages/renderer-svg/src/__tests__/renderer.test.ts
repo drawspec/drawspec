@@ -1264,5 +1264,176 @@ describe("SvgRenderer", () => {
         expect(firstBelowEdge.y).toBeGreaterThan(edgeY);
       }
     });
+
+    test("diagonal edge label detects overlap and shifts fully clear of the edge", () => {
+      const doc = document({
+        id: "diagonal-overlap-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 20, y: 100 },
+              { x: 180, y: 140 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 200,
+        height: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+      const rect = rects[0];
+      expect(rect).toBeDefined();
+      if (rect === undefined) throw new Error("expected label rect");
+      const midX = 100;
+      const halfLabelWidth = measureText("calls", 14) / 2;
+      const labelLeft = midX - halfLabelWidth;
+      const labelRight = midX + halfLabelWidth;
+      const edgeYAtLabelLeft = 100 + ((labelLeft - 20) / 160) * 40;
+      const edgeYAtLabelRight = 100 + ((labelRight - 20) / 160) * 40;
+      const overlapsLeft = edgeYAtLabelLeft >= rect.y && edgeYAtLabelLeft <= rect.y + rect.height;
+      const overlapsRight =
+        edgeYAtLabelRight >= rect.y && edgeYAtLabelRight <= rect.y + rect.height;
+      expect(overlapsLeft).toBe(false);
+      expect(overlapsRight).toBe(false);
+    });
+
+    test("steep diagonal edge label shifts fully clear of the edge", () => {
+      const doc = document({
+        id: "steep-diagonal-overlap-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 60, y: 60 },
+              { x: 140, y: 140 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 200,
+        height: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+      const rect = rects[0];
+      expect(rect).toBeDefined();
+      if (rect === undefined) throw new Error("expected label rect");
+      const midX = 100;
+      const halfLabelWidth = measureText("calls", 14) / 2;
+      const labelLeft = midX - halfLabelWidth;
+      const labelRight = midX + halfLabelWidth;
+      const edgeYAtLabelLeft = 60 + ((labelLeft - 60) / 80) * 80;
+      const edgeYAtLabelRight = 60 + ((labelRight - 60) / 80) * 80;
+      const overlapsLeft = edgeYAtLabelLeft >= rect.y && edgeYAtLabelLeft <= rect.y + rect.height;
+      const overlapsRight =
+        edgeYAtLabelRight >= rect.y && edgeYAtLabelRight <= rect.y + rect.height;
+      expect(overlapsLeft).toBe(false);
+      expect(overlapsRight).toBe(false);
+    });
+
+    test("vertical edge label is shifted away from the vertical line", () => {
+      const doc = document({
+        id: "vertical-overlap-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 100, y: 20 },
+              { x: 100, y: 180 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 200,
+        height: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      expect(svg).toContain("calls");
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+    });
+
+    test("multi-segment edge midpoint is at path-length center, not segment index center", () => {
+      // L-shaped edge: short vertical segment (10 units), then long horizontal segment (100 units)
+      // Path-length midpoint = 55 units along 110-unit path = 45 units into horizontal = x=55
+      const doc = document({
+        id: "midpoint-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 10, y: 20 },
+              { x: 10, y: 30 },
+              { x: 110, y: 30 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 140,
+        height: 80,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      expect(svg).toContain('x="55"');
+    });
   });
 });
