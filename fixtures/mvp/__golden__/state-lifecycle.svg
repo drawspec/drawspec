@@ -77,31 +77,43 @@
   </g>
   <g id="drawspec-statedoc_fd39935e9e-18zqhd5-text-layer-016i7s5">
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk-bg-0gphoig">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="176.28" x="11.86" y="308.8" />
-      <text data-width="168.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk" text-anchor="middle" x="100" y="324">
-        pay [payment authorized]
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="93.74" x="53.13" y="309.8" />
+      <text data-width="89.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk" text-anchor="middle" x="100" y="324">
+        pay [payment
+      </text>
+    </g>
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line1-1a8zcij-bg-1p89clk" transform="translate(0 3.8)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="77.92" x="61.04" y="328" />
+      <text data-width="73.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line1-1a8zcij" text-anchor="middle" x="100" y="342.2">
+        authorized]
       </text>
     </g>
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp-bg-0xxd95g">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="81.78" x="59.11" y="836.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="77.78" x="61.11" y="837.8" />
       <text data-width="73.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp" text-anchor="middle" x="100" y="852">
         close order
       </text>
     </g>
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-line0-0glk77z-bg-12b3nbi">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="173.76" x="13.12" y="484.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="169.76" x="15.12" y="485.8" />
       <text data-width="165.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-line0-0glk77z" text-anchor="middle" x="100" y="500">
         ship [inventory allocated]
       </text>
     </g>
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm-bg-1dkbntc">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="189.72" x="5.14" y="660.8" />
-      <text data-width="181.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm" text-anchor="middle" x="100" y="676">
-        deliver [signature captured]
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="118.1" x="40.95" y="661.8" />
+      <text data-width="114.1" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm" text-anchor="middle" x="100" y="676">
+        deliver [signature
+      </text>
+    </g>
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line1-1198i2l-bg-0eq6les" transform="translate(0 3.8)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="67" x="66.5" y="680" />
+      <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line1-1198i2l" text-anchor="middle" x="100" y="694.2">
+        captured]
       </text>
     </g>
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix-bg-03cknd3">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="88.78" x="55.61" y="132.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="84.78" x="57.61" y="133.8" />
       <text data-width="80.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix" text-anchor="middle" x="100" y="148">
         create order
       </text>

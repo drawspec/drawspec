@@ -151,6 +151,7 @@ interface StyleRule {
   fontFamily?: string | number;
   fontSize?: string | number;
   lineStyle?: string | number;
+  labelBg?: string | number;
   stroke?: string | number;
   strokeDasharray?: string | number;
   strokeWidth?: string | number;
@@ -219,6 +220,7 @@ function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedS
     fontSize: asNumber(rule.fontSize) ?? style.fontSize,
     stroke: asString(rule.stroke) ?? style.stroke,
     strokeWidth: asNumber(rule.strokeWidth) ?? style.strokeWidth,
+    labelBg: asString(rule.labelBg) ?? style.labelBg,
     text: asString(rule.text) ?? style.text,
   };
   if (lineStyle !== undefined) {
@@ -247,6 +249,7 @@ export function resolveStyle(
     fill: elementType === "edge" ? "none" : theme.nodeFill,
     fontFamily: theme.fontFamily,
     fontSize: theme.fontSize,
+    labelBg: theme.background,
     stroke: elementType === "edge" ? theme.edgeStroke : theme.nodeStroke,
     strokeWidth: 1.5,
     text: theme.text,

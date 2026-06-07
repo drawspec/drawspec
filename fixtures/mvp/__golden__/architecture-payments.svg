@@ -73,25 +73,25 @@
   </g>
   <g id="drawspec-view_dcd46170de182cc6-05bzavs-text-layer-0a2fs7c">
     <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_1119936806011451-line0-05aee11-bg-1qgehmi">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="117.06" x="161.47" y="112.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="113.06" x="163.47" y="113.8" />
       <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_1119936806011451-line0-05aee11" text-anchor="middle" x="220" y="128">
         Browses catalog
       </text>
     </g>
-    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-line0-07l6pj2-bg-1wfjk2e" transform="translate(0 53.2)">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="130.78" x="394.61" y="44.8" />
+    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-line0-07l6pj2-bg-1wfjk2e" transform="translate(0 52.2)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="126.78" x="396.61" y="45.8" />
       <text data-width="122.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_3093dfff7a08d97f-line0-07l6pj2" text-anchor="middle" x="460" y="60">
         Requests payment
       </text>
     </g>
     <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-line0-0svq5o9-bg-05n9zzh">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="90.74" x="174.63" y="44.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="86.74" x="176.63" y="45.8" />
       <text data-width="82.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_51b9312d0f5b5c39-line0-0svq5o9" text-anchor="middle" x="220" y="60">
         Places order
       </text>
     </g>
-    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-line0-0m4wq1m-bg-0reqwmo" transform="translate(0 53.2)">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="140.3" x="629.85" y="44.8" />
+    <g id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-line0-0m4wq1m-bg-0reqwmo" transform="translate(0 52.2)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="136.3" x="631.85" y="45.8" />
       <text data-width="132.3" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_dcd46170de182cc6-05bzavs-label-edge-rel_d0f8539ad07ce354-line0-0m4wq1m" text-anchor="middle" x="700" y="60">
         Stores authorization
       </text>

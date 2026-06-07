@@ -86,31 +86,31 @@
   </g>
   <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-text-layer-0ba9ryy">
     <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-line0-1izayge-bg-077jjlj">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="572.48" y="220.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="51.04" x="574.48" y="221.8" />
       <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_00a0dfc55cca58d1-line0-1izayge" text-anchor="middle" x="600" y="236">
         HTTPS
       </text>
     </g>
     <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-line0-0cv7f35-bg-03m2wqo">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="34.6" x="182.7" y="308.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="30.6" x="184.7" y="309.8" />
       <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_41bc03ecce28756a-line0-0cv7f35" text-anchor="middle" x="200" y="324">
         TLS
       </text>
     </g>
     <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-line0-0t1xlyd-bg-0st7omi">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="34.6" x="682.7" y="220.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="30.6" x="684.7" y="221.8" />
       <text data-width="26.6" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_6538027809983808-line0-0t1xlyd" text-anchor="middle" x="700" y="236">
         TLS
       </text>
     </g>
     <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-line0-0c2xrml-bg-0k3yi6e">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="472.48" y="132.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="51.04" x="474.48" y="133.8" />
       <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_83fbea01a9641f7f-line0-0c2xrml" text-anchor="middle" x="500" y="148">
         HTTPS
       </text>
     </g>
     <g id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-line0-1g8u6xq-bg-1v3nmst">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="55.04" x="72.48" y="308.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="51.04" x="74.48" y="309.8" />
       <text data-width="47.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-dep_ed17095a9bc0fb10-0p8m8kw-label-edge-cp_a9b924760b6d296b-line0-1g8u6xq" text-anchor="middle" x="100" y="324">
         HTTPS
       </text>

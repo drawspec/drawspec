@@ -234,6 +234,9 @@ export interface StyleSheet {
 
 export type LabelOverflow = "wrap" | "truncate";
 
+/** Visual style for edge label containers. */
+export type EdgeLabelStyle = "fill" | "stroke" | "both" | "none";
+
 /** Root DrawSpec intermediate representation for a diagram. */
 export interface DiagramDocument {
   schemaVersion: string;
@@ -247,6 +250,8 @@ export interface DiagramDocument {
   layout?: LayoutSpec;
   /** Label overflow behavior. Default: "wrap". */
   labelOverflow?: LabelOverflow;
+  /** Default edge label container style. Default: "fill". */
+  edgeLabelStyle?: EdgeLabelStyle;
   styles?: StyleSheet;
   metadata?: Record<string, unknown>;
   diagnostics?: Diagnostic[];
@@ -410,6 +415,8 @@ export interface DiagramEdge {
   style?: StyleRef;
   source?: SourceRef;
   labelOverflow?: LabelOverflow;
+  /** Override edge label container style for this edge. */
+  labelStyle?: EdgeLabelStyle;
 }
 
 /** Group element in a diagram document. */

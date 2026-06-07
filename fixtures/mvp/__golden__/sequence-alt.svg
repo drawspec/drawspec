@@ -83,37 +83,43 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_d73b174f-activation-0oib66h" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="398.2" />
   <g id="drawspec-seqdoc_50f5132c-13xu4za-text-layer-1k1cz49">
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-line0-1kbb4jg-bg-1lgcy46">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="57.84" x="151.08" y="315" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="53.84" x="153.08" y="316" />
       <text data-width="49.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-line0-1kbb4jg" text-anchor="middle" x="180" y="330.2">
         Receipt
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line0-008h9h6-bg-1ra9y6y">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="232.14" x="63.93" y="427" />
-      <text data-width="224.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line0-008h9h6" text-anchor="middle" x="180" y="442.2">
-        Request another payment method
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="113.06" x="123.47" y="428" />
+      <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line0-008h9h6" text-anchor="middle" x="180" y="442.2">
+        Request another
+      </text>
+    </g>
+    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line1-00igv65-bg-0aivygh" transform="translate(0 3.8)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="114.46" x="122.77" y="446.2" />
+      <text data-width="110.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line1-00igv65" text-anchor="middle" x="180" y="460.4">
+        payment method
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-line0-1da2pww-bg-1xm5mn3">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="71" x="304.5" y="203" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="67" x="306.5" y="204" />
       <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-line0-1da2pww" text-anchor="middle" x="340" y="218.2">
         Authorize
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-line0-1or64g9-bg-19wb0wo">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="87.66" x="136.17" y="147" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="83.66" x="138.17" y="148" />
       <text data-width="79.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_84a91499-line0-1or64g9" text-anchor="middle" x="180" y="162.2">
         Submit card
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-line0-0q5zfjw-bg-1ip22hw">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="103.62" x="288.19" y="259" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="99.62" x="290.19" y="260" />
       <text data-width="95.62" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_a6ff72df-line0-0q5zfjw" text-anchor="middle" x="340" y="274.2">
         Approval code
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-line0-101mx4y-bg-1ac0i0f">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="105.86" x="287.07" y="371" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="101.86" x="289.07" y="372" />
       <text data-width="97.86" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_d73b174f-line0-101mx4y" text-anchor="middle" x="340" y="386.2">
         Decline reason
       </text>
