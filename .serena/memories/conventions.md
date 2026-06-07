@@ -65,6 +65,13 @@ export interface LayoutEngine { ... }
 - Sub-agents use git worktrees at `/tmp/drawspec-{slug}/`
 - Track work via [project board](https://github.com/orgs/drawspec/projects/1), NOT standalone GH issues
 
+## Label Rendering Conventions
+- `LabelOverflow = "wrap" | "truncate"` — per-element (`labelOverflow`) and per-document (`DiagramDocument.labelOverflow`)
+- `EdgeLabelStyle = "fill" | "stroke" | "both" | "none"` — per-edge (`labelStyle`) and per-document (`DiagramDocument.edgeLabelStyle`)
+- Edge label max width derived from path length minus arrow marker space (8px per marker), clamped 80–300px
+- Layout owns geometry (wrapping, sizing, icon positions). Renderer owns drawing. No re-positioning in renderer.
+- Single source of truth: `wrapText`/`truncateText` from `@drawspec/text-measure`
+
 ## Cross-Package Changes
 When a change affects multiple packages/apps/docs, all updates go in the same PR.
 
