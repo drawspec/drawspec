@@ -1612,10 +1612,9 @@ describe("SvgRenderer", () => {
     // Regression test for PR #286: edgeYInXRange incorrectly included p0.y/p1.y in min/max Y
     // calculation, causing diagonal edge labels to shift 10-200x too far from the edge.
     test("steep diagonal edge: label avoids edge and stays within reasonable distance", () => {
-      // Edge from (0,0) to (100,200) — steep 2:1 diagonal
-      // Midpoint (path-length) = (50, 100). Edge Y at X=50 is exactly 100.
-      // With the fix, edgeYInXRange returns {minY:83, maxY:117} (clipped to label X range),
-      // causing a ~20px shift. With the bug, it returns {minY:0, maxY:200}, causing ~103px shift.
+      // Edge (0,0)→(100,200) — steep 2:1 diagonal. Midpoint = (50, 100).
+      // With fix: edgeYInXRange clips to label X range → {minY:83, maxY:117}, ~20px shift.
+      // With bug: includes endpoints → {minY:0, maxY:200}, ~103px shift.
       const doc = document({
         id: "steep-diagonal-regression",
         nodes: [
@@ -1652,27 +1651,25 @@ describe("SvgRenderer", () => {
       expect(rect).toBeDefined();
       if (rect === undefined) throw new Error("expected label rect");
 
-      // The edge at the label's X position (X≈50) has Y=100.
-      // Label bg center should be at approximately Y≈68 (20px above edge after shift).
-      // With the bug, bg center would be at Y≈-16 (103px above edge).
-      // Tight bounds: label bg center Y should be 55–80 (within ~25px of Y=68).
+      // Edge Y at label center X (≈50) is 100. Label bg center ≈ 66.4 (20px shift up).
+      // With bug, bg center would be ≈ -16 (103px shift up).
       const labelCenterY = rect.y + rect.height / 2;
-      expect(labelCenterY).toBeGreaterThan(55);
-      expect(labelCenterY).toBeLessThan(80);
+      expect(labelCenterY).toBeGreaterThan(60);
+      expect(labelCenterY).toBeLessThan(75);
 
-      // The label must not visually overlap the edge (Y=100 at label X).
-      const edgeY = 100;
-      expect(distanceFromEdge(rect, edgeY)).toBeGreaterThan(0);
+      expect(distanceFromEdge(rect, 100)).toBeGreaterThan(0);
     });
 
-    // Regression test for PR #286: multi-segment diagonal edge label positioning.
-    // Verifies edgeYInXRange correctly clips each segment independently.
-    test("multi-segment diagonal edge: label avoids edge segments near the label X", () => {
-      // Two-segment polyline: (0,0)→(50,100)→(100,0) — V shape
-      // Midpoint (path-length) is at X=50, Y=100 (the apex).
-      // Only the segment containing the label's X range should contribute to the Y range.
+    // Regression test for PR #286: per-segment clipping in edgeYInXRange.
+    // The label is on segment 2 only — segment 1's endpoints (Y=0, Y=20) must not
+    // inflate the Y range. With the bug, all segment endpoints were included,
+    // giving {minY:0, maxY:220} instead of the correct clipped range on seg 2 only.
+    test("multi-segment edge: Y range excludes segments outside the label X range", () => {
+      // (0,0)→(40,20)→(140,220): shallow seg 1, steep seg 2.
+      // Midpoint ≈ (80, 100) — on segment 2 only. Label X range ≈ [68, 92].
+      // Seg 1 (X: 0–40) is entirely outside label X range → must not contribute Y values.
       const doc = document({
-        id: "multi-diagonal-regression",
+        id: "multi-segment-regression",
         nodes: [
           { id: "a", kind: "component", label: "A" },
           { id: "b", kind: "component", label: "B" },
@@ -1691,8 +1688,56 @@ describe("SvgRenderer", () => {
             label: "XY",
             waypoints: [
               { x: 0, y: 0 },
-              { x: 50, y: 100 },
-              { x: 100, y: 0 },
+              { x: 40, y: 20 },
+              { x: 140, y: 220 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 160,
+        height: 240,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+      const rect = rects[0];
+      expect(rect).toBeDefined();
+      if (rect === undefined) throw new Error("expected label rect");
+
+      // Edge Y at label center X (≈80) on seg 2 is 100. Label bg center ≈ 66.4.
+      // With bug (Y range includes seg 1 endpoints: minY=0), shiftUp would be ~96px
+      // instead of ~20px, pushing label bg center to ≈ -30.
+      const labelCenterY = rect.y + rect.height / 2;
+      expect(labelCenterY).toBeGreaterThan(60);
+      expect(labelCenterY).toBeLessThan(75);
+
+      expect(distanceFromEdge(rect, 100)).toBeGreaterThan(0);
+    });
+
+    // Regression guard: horizontal edge (p0.y == p1.y) label positioning must not regress.
+    test("horizontal edge: label is positioned close to the edge", () => {
+      const doc = document({
+        id: "horizontal-regression",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "XY" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "XY",
+            waypoints: [
+              { x: 0, y: 100 },
+              { x: 100, y: 100 },
             ],
           },
         ],
@@ -1708,15 +1753,12 @@ describe("SvgRenderer", () => {
       expect(rect).toBeDefined();
       if (rect === undefined) throw new Error("expected label rect");
 
-      // The edge Y at the label center is near 100 (the V apex).
-      // With the bug, both segments' full endpoints (Y=0 and Y=100) would inflate the range
-      // to {minY:0, maxY:100}, causing a large shift. With the fix, only the clipped
-      // portions near X=50 contribute, keeping the label near the edge.
+      // Horizontal edge Y=100 everywhere. yAdjust=-8, small overlap shift ~3px.
+      // Label bg center ≈ 87.8, distance from edge ≈ 2.2px.
       const labelCenterY = rect.y + rect.height / 2;
-      // Label bg center should be well above Y=0 (near the apex, not at the base)
-      expect(labelCenterY).toBeGreaterThan(40);
+      expect(labelCenterY).toBeGreaterThan(80);
+      expect(labelCenterY).toBeLessThan(95);
 
-      // The label must not visually overlap the edge at the apex (Y≈100)
       expect(distanceFromEdge(rect, 100)).toBeGreaterThan(0);
     });
 
