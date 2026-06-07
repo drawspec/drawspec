@@ -92,19 +92,19 @@
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-text-layer-1yke4f0">
     <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-line0-1hgnqza-bg-0x1ok8r">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="132.18" x="33.91" y="308.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="128.18" x="35.91" y="309.8" />
       <text data-width="124.18" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-line0-1hgnqza" text-anchor="middle" x="100" y="324">
         Authorize payment
       </text>
     </g>
     <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-line0-0tvqs2w-bg-0uu196k">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="121.82" x="39.09" y="132.8" />
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="117.82" x="41.09" y="133.8" />
       <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_4c457b48-line0-0tvqs2w" text-anchor="middle" x="100" y="148">
         HTTP commands
       </text>
     </g>
-    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-line0-0svewze-bg-0oxobq9" transform="translate(0 24)">
-      <rect fill="#ffffff" height="22" rx="3" ry="3" width="101.66" x="149.17" y="308.8" />
+    <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-line0-0svewze-bg-0oxobq9" transform="translate(0 22)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="97.66" x="151.17" y="309.8" />
       <text data-width="93.66" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_f4db1c54-line0-0svewze" text-anchor="middle" x="200" y="324">
         Reserve stock
       </text>

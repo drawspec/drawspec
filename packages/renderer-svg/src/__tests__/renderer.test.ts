@@ -644,7 +644,7 @@ describe("SvgRenderer", () => {
     };
     const svg = renderSvgSync(doc, { positionedDiagram });
     expect(svg).toMatch(
-      /<g id="[^"]*label-edge-outside[^"]*bg[^"]*" transform="translate\(0 75\.2\)">/
+      /<g id="[^"]*label-edge-outside[^"]*bg[^"]*" transform="translate\(0 74\.2\)">/
     );
   });
 

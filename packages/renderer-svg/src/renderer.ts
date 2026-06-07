@@ -1,6 +1,7 @@
 import type {
   BuiltinIconSpec,
   DiagramDocument,
+  EdgeLabelStyle,
   IconAppearance,
   ImageIconSpec,
   NodeShapeSpec,
@@ -38,6 +39,10 @@ import type {
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
 const DEFAULT_AUTO_FIT_PADDING = 20;
+const EDGE_LABEL_FALLBACK_WIDTH = 240;
+const EDGE_LABEL_BG_PADDING_X = 2;
+const EDGE_LABEL_BG_PADDING_Y = 3;
+const MARKER_SIZE = 8;
 
 interface OcclusionRect {
   id: string;
@@ -1086,11 +1091,19 @@ function renderEdge(
     const hasLayoutPosition = edge.labelPosition !== undefined;
     const pos = edge.labelPosition ?? midpoint(edge.waypoints);
     const yAdjust = hasLayoutPosition ? style.fontSize * 0.35 : -Math.max(8, style.fontSize * 0.5);
-    const theme = resolveTheme(options.theme);
+    const edgeMaxWidth = edgeLabelMaxWidth(
+      edge.waypoints,
+      markerStart !== undefined,
+      markerEnd !== undefined
+    );
+    const labelContainer = edgeLabelContainerAttrs(
+      edge.labelStyle ?? document.edgeLabelStyle ?? "fill",
+      style
+    );
     const edgeLines =
       labelOverflow === "truncate"
-        ? [truncateText(edge.label, 240, style.fontSize)]
-        : wrapText(edge.label, 240, style.fontSize);
+        ? [truncateText(edge.label, edgeMaxWidth, style.fontSize)]
+        : wrapText(edge.label, edgeMaxWidth, style.fontSize);
     const edgeLineHeight = style.fontSize * 1.3;
     labels.push(
       ...edgeLines.map((line, index) =>
@@ -1102,7 +1115,7 @@ function renderEdge(
           y: pos.y + yAdjust + index * edgeLineHeight,
           style,
           anchor: "middle",
-          backgroundFill: theme.background,
+          ...labelContainer,
         })
       )
     );
@@ -1115,6 +1128,49 @@ function renderEdge(
     },
     labels,
   };
+}
+
+function edgeLabelContainerAttrs(
+  labelStyle: EdgeLabelStyle,
+  style: ResolvedStyle
+): Pick<TextElementOptions, "backgroundFill" | "backgroundStroke" | "backgroundStrokeWidth"> {
+  switch (labelStyle) {
+    case "fill":
+      return { backgroundFill: style.labelBg };
+    case "stroke":
+      return { backgroundStroke: style.stroke, backgroundStrokeWidth: 1 };
+    case "both":
+      return {
+        backgroundFill: style.labelBg,
+        backgroundStroke: style.stroke,
+        backgroundStrokeWidth: 1,
+      };
+    case "none":
+      return {};
+  }
+}
+
+function edgeLabelMaxWidth(
+  waypoints: readonly Point[],
+  hasStartMarker: boolean,
+  hasEndMarker: boolean
+): number {
+  if (waypoints.length < 2) {
+    return EDGE_LABEL_FALLBACK_WIDTH;
+  }
+  let pathLength = 0;
+  for (let i = 0; i < waypoints.length - 1; i++) {
+    const current = waypoints[i];
+    const next = waypoints[i + 1];
+    if (current === undefined || next === undefined) {
+      continue;
+    }
+    const dx = next.x - current.x;
+    const dy = next.y - current.y;
+    pathLength += Math.sqrt(dx * dx + dy * dy);
+  }
+  const markerSpace = (hasStartMarker ? MARKER_SIZE : 0) + (hasEndMarker ? MARKER_SIZE : 0);
+  return Math.max(80, Math.min(300, pathLength - markerSpace));
 }
 
 function edgePath(points: Point[], routing?: LayoutRouting): string {
@@ -1238,6 +1294,8 @@ interface TextElementOptions {
   maxWidth?: number;
   clipBounds?: LabelBounds;
   backgroundFill?: string;
+  backgroundStroke?: string;
+  backgroundStrokeWidth?: number;
   truncate?: boolean;
 }
 
@@ -1245,6 +1303,8 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
   const {
     anchor,
     backgroundFill,
+    backgroundStroke,
+    backgroundStrokeWidth,
     clipBounds,
     id,
     label,
@@ -1255,6 +1315,7 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
     x,
     y,
   } = options;
+  const hasBackground = backgroundFill !== undefined || backgroundStroke !== undefined;
   const constrainedWidth = maxWidth === undefined ? undefined : Math.max(0, maxWidth);
   const displayLabel =
     truncate && constrainedWidth !== undefined
@@ -1278,24 +1339,26 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
     children: [displayLabel],
   };
   const textBounds = labelBounds(x, y, width, style.fontSize, anchor);
-  const bgPadding = backgroundFill === undefined ? 0 : 4;
-  const visualTextBounds = labelBounds(x, y, width, style.fontSize, anchor, bgPadding);
-  const bgRect: SvgElementSpec | undefined =
-    backgroundFill === undefined
-      ? undefined
-      : {
-          name: "rect",
-          attrs: {
-            fill: backgroundFill,
-            height: textBounds.height + bgPadding * 2,
-            rx: 3,
-            ry: 3,
-            width: width + bgPadding * 2,
-            x: textBounds.x - bgPadding,
-            y: textBounds.y - bgPadding,
-          },
-          selfClosing: true,
-        };
+  const bgPaddingX = hasBackground ? EDGE_LABEL_BG_PADDING_X : 0;
+  const bgPaddingY = hasBackground ? EDGE_LABEL_BG_PADDING_Y : 0;
+  const visualTextBounds = expandBoundsXY(textBounds, bgPaddingX, bgPaddingY);
+  const bgRect: SvgElementSpec | undefined = !hasBackground
+    ? undefined
+    : {
+        name: "rect",
+        attrs: {
+          fill: backgroundFill ?? "none",
+          height: textBounds.height + bgPaddingY * 2,
+          rx: 3,
+          ry: 3,
+          stroke: backgroundStroke,
+          "stroke-width": backgroundStrokeWidth,
+          width: width + bgPaddingX * 2,
+          x: textBounds.x - bgPaddingX,
+          y: textBounds.y - bgPaddingY,
+        },
+        selfClosing: true,
+      };
   if (!shouldClip && bgRect === undefined) {
     return {
       id,
@@ -1314,10 +1377,10 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
         {
           name: "rect",
           attrs: {
-            height: bounds.height + bgPadding * 2,
-            width: bounds.width + bgPadding * 2,
-            x: bounds.x - bgPadding,
-            y: bounds.y - bgPadding,
+            height: bounds.height + bgPaddingY * 2,
+            width: bounds.width + bgPaddingX * 2,
+            x: bounds.x - bgPaddingX,
+            y: bounds.y - bgPaddingY,
           },
           selfClosing: true,
         },
@@ -1338,16 +1401,16 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
       attrs: { id: stableSvgId(id, shouldClip ? "clipped" : "bg") },
       children,
     },
-    bounds: intersectBounds(visualTextBounds, expandBounds(bounds, bgPadding)),
+    bounds: intersectBounds(visualTextBounds, expandBoundsXY(bounds, bgPaddingX, bgPaddingY)),
   };
 }
 
-function expandBounds(bounds: LabelBounds, padding: number): LabelBounds {
+function expandBoundsXY(bounds: LabelBounds, paddingX: number, paddingY: number): LabelBounds {
   return {
-    x: bounds.x - padding,
-    y: bounds.y - padding,
-    width: bounds.width + padding * 2,
-    height: bounds.height + padding * 2,
+    x: bounds.x - paddingX,
+    y: bounds.y - paddingY,
+    width: bounds.width + paddingX * 2,
+    height: bounds.height + paddingY * 2,
   };
 }
 

@@ -43,6 +43,7 @@ export type {
   DiagramNode,
   DiagramTheme,
   DiagramThemeOverride,
+  EdgeLabelStyle,
   EdgeStyleConfig,
   IconAppearance,
   IconPlacement,

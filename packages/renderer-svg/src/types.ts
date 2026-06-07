@@ -86,7 +86,7 @@ export interface ResolvedStyle {
   fontFamily: string;
   fontSize: number;
   /** Background color for edge labels. Defaults to theme background (invisible line interruption). */
-  labelBg?: string;
+  labelBg: string;
   lineStyle?: LineStyle;
   strokeDasharray?: string;
 }
