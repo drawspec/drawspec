@@ -1,3 +1,4 @@
+import { createTextMeasurer, wrapText } from "@drawspec/text-measure";
 import { LayoutCache } from "./cache";
 import { normalizeLayoutOptions } from "./options";
 import type {
@@ -5,6 +6,7 @@ import type {
   DiagramDocument,
   DiagramEdge,
   DiagramGroup,
+  DiagramNode,
   LayoutEngine,
   LayoutOptions,
   Point,
@@ -20,29 +22,90 @@ interface SequenceOperand {
   childIds?: unknown;
 }
 
+interface SizedSequenceNode extends DiagramNode {
+  computedWidth: number;
+  computedHeight: number;
+  labelLines: string[];
+}
+
+const SEQUENCE_LABEL_MAX_WIDTH = 240;
+
 function nodeCenter(node: PositionedNode): Point {
   return { x: node.x + node.width / 2, y: node.y + node.height / 2 };
 }
 
-function positionLifelines(document: DiagramDocument, options: LayoutOptions): PositionedNode[] {
+function sizeSequenceNodes(document: DiagramDocument, options: LayoutOptions): SizedSequenceNode[] {
   const normalized = normalizeLayoutOptions(document, options);
-  return document.nodes.map((node, index) => ({
-    ...node,
-    x: normalized.padding + index * normalized.spacing.lifeline,
-    y: normalized.padding,
-    width: normalized.nodeSize.width,
-    height: normalized.nodeSize.height,
-  }));
+  const measurer = options.sizing?.measurer ?? createTextMeasurer();
+  const labelPadding = normalized.sizing.padding;
+  const fontSize = normalized.sizing.fontSize;
+  const maxWidth = Math.max(
+    normalized.nodeSize.width,
+    normalized.sizing.maxSize.width === Infinity
+      ? SEQUENCE_LABEL_MAX_WIDTH
+      : normalized.sizing.maxSize.width
+  );
+  const contentMaxWidth = Math.max(0, maxWidth - labelPadding.x * 2);
+
+  return document.nodes.map((node) => {
+    const label = node.label ?? node.id;
+    const unwrappedLines = label
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0);
+    const unwrappedWidth = Math.max(
+      0,
+      ...unwrappedLines.map((line) => measurer.measure(line, fontSize))
+    );
+    const width = Math.min(
+      maxWidth,
+      Math.max(normalized.nodeSize.width, unwrappedWidth + labelPadding.x * 2)
+    );
+    const labelLines =
+      unwrappedWidth > contentMaxWidth
+        ? wrapText(label, contentMaxWidth, fontSize)
+        : unwrappedLines;
+    const contentHeight = labelLines.length * normalized.sizing.lineHeight;
+    const height = Math.max(normalized.nodeSize.height, contentHeight + labelPadding.y * 2);
+
+    return { ...node, computedWidth: width, computedHeight: height, labelLines };
+  });
 }
 
-function messageY(index: number, document: DiagramDocument, options: LayoutOptions): number {
+function positionLifelines(document: DiagramDocument, options: LayoutOptions): PositionedNode[] {
   const normalized = normalizeLayoutOptions(document, options);
-  return normalized.padding + normalized.nodeSize.height + normalized.spacing.message * (index + 1);
+  const sizedNodes = sizeSequenceNodes(document, options);
+  const lifelineGap = Math.max(0, normalized.spacing.lifeline - normalized.nodeSize.width);
+  let nextX = normalized.padding;
+
+  return sizedNodes.map((node) => {
+    const x = nextX;
+    nextX += node.computedWidth + lifelineGap;
+    return {
+      ...node,
+      x,
+      y: normalized.padding,
+      width: node.computedWidth,
+      height: node.computedHeight,
+      labelLines: node.labelLines,
+    };
+  });
+}
+
+function messageY(
+  index: number,
+  headerHeight: number,
+  document: DiagramDocument,
+  options: LayoutOptions
+): number {
+  const normalized = normalizeLayoutOptions(document, options);
+  return normalized.padding + headerHeight + normalized.spacing.message * (index + 1);
 }
 
 function sequenceWaypoints(
   edge: DiagramEdge,
   edgeIndex: number,
+  headerHeight: number,
   document: DiagramDocument,
   nodesById: Record<string, PositionedNode>,
   options: LayoutOptions
@@ -54,7 +117,7 @@ function sequenceWaypoints(
     return [];
   }
 
-  const y = messageY(edgeIndex, document, options);
+  const y = messageY(edgeIndex, headerHeight, document, options);
   const sourceCenter = nodeCenter(source);
   const targetCenter = nodeCenter(target);
   if (edge.sourceId === edge.targetId) {
@@ -76,11 +139,12 @@ function sequenceWaypoints(
 function positionMessages(
   document: DiagramDocument,
   nodesById: Record<string, PositionedNode>,
+  headerHeight: number,
   options: LayoutOptions
 ): PositionedEdge[] {
   return document.edges.map((edge, index) => ({
     ...edge,
-    waypoints: sequenceWaypoints(edge, index, document, nodesById, options),
+    waypoints: sequenceWaypoints(edge, index, headerHeight, document, nodesById, options),
   }));
 }
 
@@ -127,22 +191,23 @@ function groupXBounds(
   edgesById: Record<string, PositionedEdge>,
   nodesById: Record<string, PositionedNode>
 ): { x: number; width: number } {
-  const xs = childIds
+  const nodeBounds = childIds
     .flatMap((id) => {
       const edge = edgesById[id];
       if (edge === undefined) {
         return [];
       }
-      return [nodesById[edge.sourceId]?.x, nodesById[edge.targetId]?.x].filter(
-        (x): x is number => typeof x === "number"
+      return [nodesById[edge.sourceId], nodesById[edge.targetId]].filter(
+        (node): node is PositionedNode => node !== undefined
       );
     })
-    .sort((left, right) => left - right);
+    .sort((left, right) => left.x - right.x);
 
-  const first = xs[0] ?? 0;
-  const last = xs[xs.length - 1] ?? first;
-  const width = last - first + (Object.values(nodesById)[0]?.width ?? 120);
-  return { x: first - 24, width: width + 48 };
+  const first = nodeBounds[0];
+  const last = nodeBounds[nodeBounds.length - 1] ?? first;
+  const x = first?.x ?? 0;
+  const right = last === undefined ? x : last.x + last.width;
+  return { x: x - 24, width: right - x + 48 };
 }
 
 function positionedLane(
@@ -165,6 +230,7 @@ function positionGroups(
   document: DiagramDocument,
   edges: PositionedEdge[],
   nodesById: Record<string, PositionedNode>,
+  headerHeight: number,
   options: LayoutOptions
 ): PositionedGroup[] {
   const normalized = normalizeLayoutOptions(document, options);
@@ -177,9 +243,7 @@ function positionGroups(
     const childIds = childIdsFrom(group.childIds);
     const bounds = edgeYRange(childIds, edgesById);
     const xBounds = groupXBounds(childIds, edgesById, nodesById);
-    const top =
-      (bounds?.top ?? normalized.padding + normalized.nodeSize.height) -
-      normalized.spacing.message / 2;
+    const top = (bounds?.top ?? normalized.padding + headerHeight) - normalized.spacing.message / 2;
     const bottom = (bounds?.bottom ?? top) + normalized.spacing.message / 2;
     const operands = operandsOf(group);
     const laneHeight = operands.length > 0 ? (bottom - top) / operands.length : bottom - top;
@@ -208,6 +272,7 @@ function positionGroups(
 function activationsFor(
   document: DiagramDocument,
   nodesById: Record<string, PositionedNode>,
+  headerHeight: number,
   options: LayoutOptions
 ): ActivationBar[] {
   const normalized = normalizeLayoutOptions(document, options);
@@ -218,7 +283,7 @@ function activationsFor(
         return undefined;
       }
 
-      const y = messageY(index, document, options) + 4;
+      const y = messageY(index, headerHeight, document, options) + 4;
       return {
         id: `${edge.id}:activation`,
         nodeId: edge.targetId,
@@ -238,26 +303,26 @@ function createSequenceLayout(
 ): PositionedDiagram {
   const normalized = normalizeLayoutOptions(document, options);
   const nodes = positionLifelines(document, options);
+  const headerHeight = Math.max(normalized.nodeSize.height, ...nodes.map((node) => node.height));
   const nodesById: Record<string, PositionedNode> = {};
   for (const node of nodes) {
     nodesById[node.id] = node;
   }
 
-  const edges = positionMessages(document, nodesById, options);
-  const groups = positionGroups(document, edges, nodesById, options);
-  const activations = activationsFor(document, nodesById, options);
+  const edges = positionMessages(document, nodesById, headerHeight, options);
+  const groups = positionGroups(document, edges, nodesById, headerHeight, options);
+  const activations = activationsFor(document, nodesById, headerHeight, options);
   const maxNodeX = Math.max(0, ...nodes.map((node) => node.x + node.width));
   const maxMessageY =
     document.edges.length === 0
       ? normalized.padding
-      : messageY(document.edges.length - 1, document, options);
+      : messageY(document.edges.length - 1, headerHeight, document, options);
   const maxGroupBottom = Math.max(0, ...groups.map((group) => group.y + group.height));
   const width =
     Math.max(maxNodeX, ...groups.map((group) => group.x + group.width), normalized.padding) +
     normalized.padding;
   const height =
-    Math.max(maxMessageY, maxGroupBottom, normalized.padding + normalized.nodeSize.height) +
-    normalized.padding;
+    Math.max(maxMessageY, maxGroupBottom, normalized.padding + headerHeight) + normalized.padding;
 
   return { document, nodes, edges, groups, activations, width, height };
 }

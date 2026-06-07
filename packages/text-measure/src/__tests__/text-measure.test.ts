@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { CHARACTER_WIDTH_FACTORS, createTextMeasurer, measureText } from "../measure";
 import { truncateText } from "../truncate";
+import { wrapText } from "../wrap";
 
 describe("measureText", () => {
   test("returns 0 for empty string", () => {
@@ -14,7 +15,10 @@ describe("measureText", () => {
   });
 
   test("uses CHARACTER_WIDTH_FACTORS for known characters", () => {
-    const factor = CHARACTER_WIDTH_FACTORS["W"]!;
+    const factor = CHARACTER_WIDTH_FACTORS["W"];
+    if (factor === undefined) {
+      throw new Error("Expected W to have a deterministic width factor");
+    }
     expect(measureText("W", 10)).toBeCloseTo(factor * 10, 10);
   });
 
@@ -69,5 +73,28 @@ describe("truncateText", () => {
 
   test("handles empty string", () => {
     expect(truncateText("", 100, 14)).toBe("");
+  });
+});
+
+describe("wrapText", () => {
+  test("returns an empty array for empty input", () => {
+    expect(wrapText("", 100, 14)).toEqual([]);
+  });
+
+  test("returns an empty array for whitespace-only input", () => {
+    expect(wrapText("  \t\n  ", 100, 14)).toEqual([]);
+  });
+
+  test("keeps text on one line when it fits", () => {
+    expect(wrapText("short label", measureText("short label", 14), 14)).toEqual(["short label"]);
+  });
+
+  test("wraps text at word boundaries", () => {
+    const result = wrapText("alpha beta gamma", measureText("alpha beta", 14), 14);
+    expect(result).toEqual(["alpha beta", "gamma"]);
+  });
+
+  test("keeps a single word wider than wrapWidth intact", () => {
+    expect(wrapText("extraordinarilylongword", 10, 14)).toEqual(["extraordinarilylongword"]);
   });
 });
