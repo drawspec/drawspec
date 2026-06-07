@@ -102,8 +102,21 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
   }
 
   if (mode === "fixed") {
-    const width = clamp(explicitWidth ?? global.defaultSize.width, minWidth, maxWidth);
-    const height = clamp(explicitHeight ?? global.defaultSize.height, minHeight, maxHeight);
+    const baseWidth = clamp(explicitWidth ?? global.defaultSize.width, minWidth, maxWidth);
+    const baseHeight = clamp(explicitHeight ?? global.defaultSize.height, minHeight, maxHeight);
+    const shapedSize = applyShapeSizing(
+      visuals.shape,
+      baseWidth,
+      baseHeight,
+      explicitWidth,
+      explicitHeight,
+      minWidth,
+      minHeight,
+      maxWidth,
+      maxHeight
+    );
+    const width = shapedSize.width;
+    const height = shapedSize.height;
     const labelLines =
       labelOverflow === "truncate"
         ? truncateLabelLines(label, width - padding.x * 2, global.fontSize)
@@ -170,8 +183,19 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
     height = maxHeight;
   }
 
-  width = clamp(width, minWidth, maxWidth);
-  height = clamp(height, minHeight, maxHeight);
+  const shapedSize = applyShapeSizing(
+    visuals.shape,
+    width,
+    height,
+    explicitWidth,
+    explicitHeight,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight
+  );
+  width = shapedSize.width;
+  height = shapedSize.height;
 
   const contentLayout = layoutContent(labelLines, iconItems, width, height, global);
 
@@ -547,6 +571,58 @@ function layoutContent(
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
+}
+
+function applyShapeSizing(
+  shape: NodeShapeSpec,
+  width: number,
+  height: number,
+  explicitWidth: number | undefined,
+  explicitHeight: number | undefined,
+  minWidth: number,
+  minHeight: number,
+  maxWidth: number,
+  maxHeight: number
+): Size {
+  if (shape.type === "diamond") {
+    return {
+      width: clamp(width * 1.4, minWidth, maxWidth),
+      height: clamp(height * 1.4, minHeight, maxHeight),
+    };
+  }
+  if (shape.type === "circle" || shape.type === "bullseye") {
+    const size = clamp(
+      Math.max(width, height),
+      Math.max(minWidth, minHeight),
+      Math.min(maxWidth, maxHeight)
+    );
+    return { width: size, height: size };
+  }
+  if (shape.type === "sync-bar") {
+    return {
+      width: clamp(explicitWidth ?? Math.max(width, 96), minWidth, maxWidth),
+      height: clamp(explicitHeight ?? Math.min(height, 18), 8, maxHeight),
+    };
+  }
+  if (shape.type === "parallelogram") {
+    return {
+      width: clamp(width + 24, minWidth, maxWidth),
+      height: clamp(height, minHeight, maxHeight),
+    };
+  }
+  if (shape.type === "document" || shape.type === "tabbed-rect" || shape.type === "note") {
+    return {
+      width: clamp(width + 12, minWidth, maxWidth),
+      height: clamp(height + 8, minHeight, maxHeight),
+    };
+  }
+  if (shape.type === "hexagon") {
+    return {
+      width: clamp(width * 1.15, minWidth, maxWidth),
+      height: clamp(height, minHeight, maxHeight),
+    };
+  }
+  return { width: clamp(width, minWidth, maxWidth), height: clamp(height, minHeight, maxHeight) };
 }
 
 function wrapLabelLines(

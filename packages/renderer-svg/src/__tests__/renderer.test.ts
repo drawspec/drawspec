@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { DiagramDocument, LabelRotation } from "@drawspec/core";
+import type { DiagramDocument, LabelRotation, NodeShapeSpec } from "@drawspec/core";
 import { type PositionedDiagram, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import {
   computeContentBounds,
@@ -76,6 +76,25 @@ const sequenceDoc = document({
       },
     },
   ],
+});
+
+const shapeFixtures: Array<{ id: string; shape: NodeShapeSpec }> = [
+  { id: "diamond", shape: { type: "diamond" } },
+  { id: "circle", shape: { type: "circle" } },
+  { id: "bullseye", shape: { type: "bullseye" } },
+  { id: "sync-bar", shape: { type: "sync-bar" } },
+  { id: "ellipse", shape: { type: "ellipse" } },
+  { id: "parallelogram", shape: { type: "parallelogram" } },
+  { id: "document", shape: { type: "document" } },
+  { id: "tabbed-rect", shape: { type: "tabbed-rect" } },
+  { id: "note", shape: { type: "note" } },
+  { id: "hexagon", shape: { type: "hexagon" } },
+];
+
+const shapeLibraryDoc = document({
+  id: "shape-library",
+  kind: "graph",
+  nodes: shapeFixtures.map(({ id, shape }) => ({ id, kind: id, label: id, shape })),
 });
 
 async function architectureSvg(): Promise<string> {
@@ -293,6 +312,26 @@ describe("SvgRenderer", () => {
     });
 
     expect(computeContentBounds(diagram)).toEqual({ x: -20, y: -30, width: 220, height: 230 });
+  });
+
+  test("renders the expanded node shape library", async () => {
+    const positionedDiagram: PositionedDiagram = {
+      activations: [],
+      document: shapeLibraryDoc,
+      edges: [],
+      groups: [],
+      height: 300,
+      nodes: shapeLibraryDoc.nodes.map((node, index) => ({
+        ...node,
+        x: 20 + (index % 5) * 150,
+        y: 20 + Math.floor(index / 5) * 130,
+        width: node.shape?.type === "sync-bar" ? 120 : 100,
+        height: node.shape?.type === "sync-bar" ? 18 : 72,
+      })),
+      width: 760,
+    };
+    const svg = renderSvgSync(shapeLibraryDoc, { positionedDiagram });
+    await expectGolden("shape-library", svg);
   });
 
   test("auto-fit viewBox encompasses all positioned content", () => {

@@ -391,9 +391,33 @@ export type IconSpec = BuiltinIconSpec | TextIconSpec | ImageIconSpec;
 
 /** Shape of a node's outer geometry. */
 export type NodeShapeSpec =
+  /** Rounded rectangle with an optional corner radius. */
   | { type: "rounded-rect"; radius?: number }
+  /** Plain rectangle. */
   | { type: "rect" }
+  /** Database-style cylinder with an optional top/bottom curve height. */
   | { type: "cylinder"; curve?: number }
+  /** Decision or choice diamond. */
+  | { type: "diamond" }
+  /** Circular state or event marker. */
+  | { type: "circle" }
+  /** UML final-state marker rendered as concentric circles. */
+  | { type: "bullseye" }
+  /** Activity fork/join synchronization bar. */
+  | { type: "sync-bar" }
+  /** Ellipse for use cases and oval nodes. */
+  | { type: "ellipse" }
+  /** Skewed rectangle used for flowchart input/output nodes. */
+  | { type: "parallelogram" }
+  /** Document shape with a waved bottom edge. */
+  | { type: "document" }
+  /** UML component-style rectangle with a top-right tab. */
+  | { type: "tabbed-rect" }
+  /** UML note with a folded corner. */
+  | { type: "note" }
+  /** General six-sided polygon node. */
+  | { type: "hexagon" }
+  /** No visible outer geometry. */
   | { type: "none" };
 
 /** Semantic role for a text line rendered inside a node compartment. */
