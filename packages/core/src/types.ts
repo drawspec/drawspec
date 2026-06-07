@@ -232,8 +232,7 @@ export interface StyleSheet {
   rules?: Record<string, Record<string, StyleTokenValue>>;
 }
 
-/** How labels behave when they exceed their container width. */
-export type LabelOverflow = "wrap" | "truncate" | "clip" | "overflow";
+export type LabelOverflow = "wrap" | "truncate";
 
 /** Root DrawSpec intermediate representation for a diagram. */
 export interface DiagramDocument {
@@ -386,7 +385,7 @@ export interface NodeLayoutOptions {
   minWidth?: number;
   /** Minimum height. Defaults to global minSize.height. */
   minHeight?: number;
-  /** Maximum width. When hit, enables wrapping then truncation. */
+  /** Maximum width. When hit, wrapping or truncation depends on labelOverflow. */
   maxWidth?: number;
   /** Maximum height. When hit, truncates visible lines. */
   maxHeight?: number;

@@ -6,6 +6,7 @@ import type {
   NodeLayoutOptions,
 } from "@drawspec/core";
 import type { TextMeasurer } from "@drawspec/text-measure";
+import { truncateText } from "@drawspec/text-measure";
 import { normalizeNodeVisuals } from "./normalize";
 import type { NodeContentLayout, PositionedIcon, Size } from "./types";
 
@@ -444,32 +445,11 @@ function wrapSingleLine(
 function truncateLabelLines(
   label: string,
   maxWidth: number | undefined,
-  measurer: TextMeasurer,
+  _measurer: TextMeasurer,
   fontSize: number
 ): string[] {
   if (maxWidth === undefined) {
     return label.split("\n");
   }
-  return label.split("\n").map((line) => {
-    if (measurer.measure(line, fontSize) <= maxWidth) {
-      return line;
-    }
-    const ELLIPSIS = "…";
-    if (measurer.measure(ELLIPSIS, fontSize) >= maxWidth) {
-      return ELLIPSIS;
-    }
-    const chars = [...line];
-    let lo = 0;
-    let hi = chars.length;
-    while (lo < hi) {
-      const mid = Math.ceil((lo + hi) / 2);
-      const candidate = `${chars.slice(0, mid).join("")}${ELLIPSIS}`;
-      if (measurer.measure(candidate, fontSize) <= maxWidth) {
-        lo = mid;
-      } else {
-        hi = mid - 1;
-      }
-    }
-    return `${chars.slice(0, lo).join("")}${ELLIPSIS}`;
-  });
+  return label.split("\n").map((line) => truncateText(line, maxWidth, fontSize));
 }
