@@ -99,6 +99,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       : `${document.kind} diagram ${document.id}`);
   const labels: SvgLabelSpec[] = [];
   const occlusionRects = buildOcclusionRects(positionedDiagram);
+  const groupBounds = buildGroupBounds(positionedDiagram);
   const children: SvgElementSpec[] = [
     { name: "title", attrs: { id: stableSvgId(idPrefix, "title") }, children: [title] },
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
@@ -135,7 +136,9 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       .map((bar) => renderActivation(document, bar, options, idPrefix, themeName)),
   ];
   if (labels.length > 0) {
-    const adjustedLabels = avoidLabelOverlaps(labels, occlusionRects).map((label) => label.element);
+    const adjustedLabels = avoidLabelOverlaps(labels, occlusionRects, groupBounds).map(
+      (label) => label.element
+    );
     children.push({
       name: "g",
       attrs: { id: stableSvgId(idPrefix, "text-layer") },
@@ -244,6 +247,16 @@ function buildOcclusionRects(positionedDiagram: PositionedDiagram): OcclusionRec
       height: node.height,
     })),
   ];
+}
+
+function buildGroupBounds(positionedDiagram: PositionedDiagram): OcclusionRect[] {
+  return sortById(positionedDiagram.groups).map((group) => ({
+    id: group.id,
+    x: group.x,
+    y: group.y,
+    width: group.width,
+    height: group.height,
+  }));
 }
 
 function sourceDataAttrs(source: SourceRef | undefined): Record<string, string | number> {
@@ -840,7 +853,8 @@ function intersectBounds(left: LabelBounds, right: LabelBounds): LabelBounds {
 
 function avoidLabelOverlaps(
   labels: readonly SvgLabelSpec[],
-  occlusionRects: readonly OcclusionRect[] = []
+  occlusionRects: readonly OcclusionRect[] = [],
+  groupBounds: readonly OcclusionRect[] = []
 ): SvgLabelSpec[] {
   const placed: SvgLabelSpec[] = [];
   const adjusted: SvgLabelSpec[] = [];
@@ -848,7 +862,16 @@ function avoidLabelOverlaps(
     let bounds = { ...label.bounds };
     let offsetX = 0;
     let offsetY = 0;
+    const containingGroup = findContainingGroup(label.bounds, groupBounds);
+    if (isStructuralLabel(label)) {
+      placed.push(label);
+      adjusted.push(label);
+      continue;
+    }
     for (const previous of placed) {
+      if (shouldSkipStructuralLabelOverlap(label, previous, containingGroup)) {
+        continue;
+      }
       if (!boundsOverlap(bounds, previous.bounds, 2)) {
         continue;
       }
@@ -861,7 +884,12 @@ function avoidLabelOverlaps(
       }
     }
     for (const rect of occlusionRects) {
-      if (rect.id === label.ownerId || !boundsOverlap(bounds, rect, 2)) {
+      if (
+        rect.id === label.ownerId ||
+        rect.id === containingGroup?.id ||
+        startedInsideGroup(label.bounds, rect, groupBounds) ||
+        !boundsOverlap(bounds, rect, 2)
+      ) {
         continue;
       }
       const shiftY = rect.y + rect.height - bounds.y + 2;
@@ -871,6 +899,12 @@ function avoidLabelOverlaps(
         offsetX += rect.x + rect.width - bounds.x + 2;
         bounds = { ...bounds, x: bounds.x + offsetX };
       }
+    }
+    if (containingGroup !== undefined) {
+      const clamped = clampBoundsToRect(bounds, containingGroup);
+      offsetX += clamped.x - bounds.x;
+      offsetY += clamped.y - bounds.y;
+      bounds = clamped;
     }
     const element =
       offsetX === 0 && offsetY === 0
@@ -884,6 +918,64 @@ function avoidLabelOverlaps(
     adjusted.push(shifted);
   }
   return adjusted;
+}
+
+function findContainingGroup(
+  bounds: LabelBounds,
+  groupBounds: readonly OcclusionRect[]
+): OcclusionRect | undefined {
+  const containingGroups = groupBounds.filter((group) => boundsCenterInside(bounds, group));
+  return containingGroups.sort(
+    (left, right) =>
+      left.width * left.height - right.width * right.height || compareStable(left.id, right.id)
+  )[0];
+}
+
+function boundsCenterInside(bounds: LabelBounds, rect: OcclusionRect): boolean {
+  const centerX = bounds.x + bounds.width / 2;
+  const centerY = bounds.y + bounds.height / 2;
+  return (
+    centerX >= rect.x &&
+    centerX <= rect.x + rect.width &&
+    centerY >= rect.y &&
+    centerY <= rect.y + rect.height
+  );
+}
+
+function shouldSkipStructuralLabelOverlap(
+  label: SvgLabelSpec,
+  previous: SvgLabelSpec,
+  containingGroup: OcclusionRect | undefined
+): boolean {
+  return (
+    containingGroup !== undefined &&
+    label.id.includes("-label-edge-") &&
+    isStructuralLabel(previous)
+  );
+}
+
+function isStructuralLabel(label: SvgLabelSpec): boolean {
+  return label.id.includes("-label-group-") || label.id.includes("-label-lane-");
+}
+
+function startedInsideGroup(
+  bounds: LabelBounds,
+  rect: OcclusionRect,
+  groupBounds: readonly OcclusionRect[]
+): boolean {
+  return groupBounds.some((group) => group.id === rect.id && boundsCenterInside(bounds, group));
+}
+
+function clampBoundsToRect(bounds: LabelBounds, rect: OcclusionRect): LabelBounds {
+  return {
+    ...bounds,
+    x: clamp(bounds.x, rect.x, rect.x + Math.max(0, rect.width - bounds.width)),
+    y: clamp(bounds.y, rect.y, rect.y + Math.max(0, rect.height - bounds.height)),
+  };
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), Math.max(min, max));
 }
 
 function boundsOverlap(left: LabelBounds, right: LabelBounds, padding: number): boolean {
