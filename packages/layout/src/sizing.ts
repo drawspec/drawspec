@@ -6,7 +6,7 @@ import type {
   NodeLayoutOptions,
 } from "@drawspec/core";
 import type { TextMeasurer } from "@drawspec/text-measure";
-import { truncateText } from "@drawspec/text-measure";
+import { truncateText, wrapText } from "@drawspec/text-measure";
 import { normalizeNodeVisuals } from "./normalize";
 import type { NodeContentLayout, PositionedIcon, Size } from "./types";
 
@@ -395,51 +395,13 @@ function clamp(value: number, min: number, max: number): number {
 function wrapLabelLines(
   label: string,
   wrapWidth: number | undefined,
-  measurer: TextMeasurer,
+  _measurer: TextMeasurer,
   fontSize: number
 ): string[] {
-  const hardLines = label.split("\n");
-  if (hardLines.length > 1) {
-    return hardLines.flatMap((line) =>
-      wrapWidth !== undefined ? wrapSingleLine(line, wrapWidth, measurer, fontSize) : [line]
-    );
-  }
-
   if (wrapWidth === undefined) {
-    return [label];
+    return label.split("\n");
   }
-  return wrapSingleLine(label, wrapWidth, measurer, fontSize);
-}
-
-function wrapSingleLine(
-  text: string,
-  wrapWidth: number,
-  measurer: TextMeasurer,
-  fontSize: number
-): string[] {
-  if (measurer.measure(text, fontSize) <= wrapWidth) {
-    return [text];
-  }
-
-  const words = text.split(/\s+/);
-  const lines: string[] = [];
-  let currentLine = "";
-
-  for (const word of words) {
-    const candidate = currentLine.length === 0 ? word : `${currentLine} ${word}`;
-    if (measurer.measure(candidate, fontSize) <= wrapWidth) {
-      currentLine = candidate;
-    } else {
-      if (currentLine.length > 0) {
-        lines.push(currentLine);
-      }
-      currentLine = word;
-    }
-  }
-  if (currentLine.length > 0) {
-    lines.push(currentLine);
-  }
-  return lines;
+  return wrapText(label, wrapWidth, fontSize);
 }
 
 function truncateLabelLines(

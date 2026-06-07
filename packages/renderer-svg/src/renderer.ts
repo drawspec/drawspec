@@ -38,6 +38,8 @@ import type {
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
 const DEFAULT_AUTO_FIT_PADDING = 20;
+const EDGE_LABEL_MAX_WIDTH = 240;
+const EDGE_LABEL_BG_PADDING = 4;
 
 interface OcclusionRect {
   id: string;
@@ -1089,8 +1091,8 @@ function renderEdge(
     const theme = resolveTheme(options.theme);
     const edgeLines =
       labelOverflow === "truncate"
-        ? [truncateText(edge.label, 240, style.fontSize)]
-        : wrapText(edge.label, 240, style.fontSize);
+        ? [truncateText(edge.label, EDGE_LABEL_MAX_WIDTH, style.fontSize)]
+        : wrapText(edge.label, EDGE_LABEL_MAX_WIDTH, style.fontSize);
     const edgeLineHeight = style.fontSize * 1.3;
     labels.push(
       ...edgeLines.map((line, index) =>
@@ -1278,7 +1280,7 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
     children: [displayLabel],
   };
   const textBounds = labelBounds(x, y, width, style.fontSize, anchor);
-  const bgPadding = backgroundFill === undefined ? 0 : 4;
+  const bgPadding = backgroundFill === undefined ? 0 : EDGE_LABEL_BG_PADDING;
   const visualTextBounds = labelBounds(x, y, width, style.fontSize, anchor, bgPadding);
   const bgRect: SvgElementSpec | undefined =
     backgroundFill === undefined
