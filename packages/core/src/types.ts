@@ -14,7 +14,7 @@ export type DiagramKind =
   | "object"
   | "timing"
   | "er"
-| "gantt"
+  | "gantt"
   | "graph"
   | "mindmap";
 
