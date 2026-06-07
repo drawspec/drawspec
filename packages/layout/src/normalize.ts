@@ -9,10 +9,19 @@ export interface NormalizedNodeVisuals {
 }
 
 const KIND_SHAPE_DEFAULTS: Record<string, NodeShapeSpec> = {
-  person: { type: "rounded-rect", radius: 12 },
   actor: { type: "rounded-rect", radius: 12 },
+  artifact: { type: "document" },
+  choice: { type: "diamond" },
   container: { type: "rounded-rect", radius: 12 },
   database: { type: "cylinder", curve: 18 },
+  decision: { type: "diamond" },
+  final: { type: "bullseye" },
+  fork: { type: "sync-bar" },
+  initial: { type: "circle" },
+  join: { type: "sync-bar" },
+  note: { type: "note" },
+  person: { type: "rounded-rect", radius: 12 },
+  "use-case": { type: "ellipse" },
   component: { type: "rounded-rect", radius: 3 },
 };
 

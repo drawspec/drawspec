@@ -106,20 +106,38 @@ const lineStylePresets: Record<LineStyle, string> = {
 
 const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
   actor: { fill: "#eef2ff", stroke: "#4338ca" },
+  artifact: { fill: "#fefce8", stroke: "#a16207" },
+  choice: { fill: "#fff7ed", stroke: "#c2410c" },
   container: { fill: "#ecfeff", stroke: "#0891b2" },
   database: { fill: "#fef3c7", stroke: "#b45309" },
+  decision: { fill: "#fff7ed", stroke: "#c2410c" },
+  final: { fill: "#f8fafc", stroke: "#0f172a" },
+  fork: { fill: "#0f172a", stroke: "#0f172a" },
+  initial: { fill: "#0f172a", stroke: "#0f172a" },
+  join: { fill: "#0f172a", stroke: "#0f172a" },
+  note: { fill: "#fef9c3", stroke: "#ca8a04" },
   person: { fill: "#f0fdf4", stroke: "#15803d" },
   participant: { fill: "#f8fafc", stroke: "#334155" },
   sequence: { fill: "#f8fafc", stroke: "#334155" },
+  "use-case": { fill: "#f5f3ff", stroke: "#7c3aed" },
 };
 
 const darkKindDefaults: Record<string, Partial<ResolvedStyle>> = {
   actor: { fill: "#312e81", stroke: "#818cf8" },
+  artifact: { fill: "#422006", stroke: "#facc15" },
+  choice: { fill: "#431407", stroke: "#fb923c" },
   container: { fill: "#164e63", stroke: "#22d3ee" },
   database: { fill: "#713f12", stroke: "#f59e0b" },
+  decision: { fill: "#431407", stroke: "#fb923c" },
+  final: { fill: "#1e293b", stroke: "#f8fafc" },
+  fork: { fill: "#f8fafc", stroke: "#f8fafc" },
+  initial: { fill: "#f8fafc", stroke: "#f8fafc" },
+  join: { fill: "#f8fafc", stroke: "#f8fafc" },
+  note: { fill: "#422006", stroke: "#facc15" },
   person: { fill: "#14532d", stroke: "#4ade80" },
   participant: { fill: "#1e293b", stroke: "#94a3b8" },
   sequence: { fill: "#1e293b", stroke: "#94a3b8" },
+  "use-case": { fill: "#2e1065", stroke: "#c4b5fd" },
 };
 
 /** Per-edge-kind visual defaults for line style and arrowhead markers. */

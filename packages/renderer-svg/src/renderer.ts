@@ -693,7 +693,7 @@ function outerShapeForNode(
   style: ResolvedStyle
 ): SvgElementSpec[] {
   const shape = node.shape ?? shapeFromNodeKind(node.kind);
-  return shapeForBounds(shape, node.x, node.y, node.width, node.height, style);
+  return renderNodeShape(shape, node.x, node.y, node.width, node.height, style);
 }
 
 function shapeFromNodeKind(kind: string): NodeShapeSpec {
@@ -706,7 +706,8 @@ function shapeFromNodeKind(kind: string): NodeShapeSpec {
   return { type: "rounded-rect", radius: 3 };
 }
 
-function shapeForBounds(
+/** Renders a DrawSpec node shape into one or more SVG element specifications. */
+export function renderNodeShape(
   shape: NodeShapeSpec,
   x: number,
   y: number,
@@ -721,11 +722,273 @@ function shapeForBounds(
       return [
         renderCylinderShape(x, y, width, height, style, Math.min(shape.curve ?? 18, height / 4)),
       ];
+    case "diamond":
+      return [renderDiamondShape(x, y, width, height, style)];
+    case "circle":
+      return [renderCircleShape(x, y, width, height, style)];
+    case "bullseye":
+      return renderBullseyeShape(x, y, width, height, style);
+    case "sync-bar":
+      return [renderSyncBarShape(x, y, width, height, style)];
+    case "ellipse":
+      return [renderEllipseShape(x, y, width, height, style)];
+    case "parallelogram":
+      return [renderParallelogramShape(x, y, width, height, style)];
+    case "document":
+      return [renderDocumentShape(x, y, width, height, style)];
+    case "tabbed-rect":
+      return renderTabbedRectShape(x, y, width, height, style);
+    case "note":
+      return renderNoteShape(x, y, width, height, style);
+    case "hexagon":
+      return [renderHexagonShape(x, y, width, height, style)];
     case "rect":
       return [renderRectShape(x, y, width, height, style, 0)];
     case "rounded-rect":
       return [renderRectShape(x, y, width, height, style, shape.radius ?? 3)];
   }
+}
+
+function pointsAttr(points: readonly Point[]): string {
+  return points.map((point) => `${formatNumber(point.x)},${formatNumber(point.y)}`).join(" ");
+}
+
+function shapePaintAttrs(style: ResolvedStyle): Record<string, string | number> {
+  return { fill: style.fill, stroke: style.stroke, "stroke-width": style.strokeWidth };
+}
+
+function renderDiamondShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const midX = x + width / 2;
+  const midY = y + height / 2;
+  return {
+    name: "polygon",
+    attrs: {
+      ...shapePaintAttrs(style),
+      points: pointsAttr([
+        { x: midX, y },
+        { x: x + width, y: midY },
+        { x: midX, y: y + height },
+        { x, y: midY },
+      ]),
+    },
+    selfClosing: true,
+  };
+}
+
+function renderCircleShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  return {
+    name: "circle",
+    attrs: {
+      ...shapePaintAttrs(style),
+      cx: x + width / 2,
+      cy: y + height / 2,
+      r: Math.min(width, height) / 2,
+    },
+    selfClosing: true,
+  };
+}
+
+function renderBullseyeShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+  const radius = Math.min(width, height) / 2;
+  return [
+    renderCircleShape(x, y, width, height, style),
+    {
+      name: "circle",
+      attrs: {
+        cx,
+        cy,
+        fill: "none",
+        r: Math.max(1, radius * 0.55),
+        stroke: style.stroke,
+        "stroke-width": style.strokeWidth,
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderSyncBarShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const horizontal = width >= height;
+  const thickness = Math.min(horizontal ? height : width, 16);
+  const barWidth = horizontal ? width : thickness;
+  const barHeight = horizontal ? thickness : height;
+  return renderRectShape(
+    x + (width - barWidth) / 2,
+    y + (height - barHeight) / 2,
+    barWidth,
+    barHeight,
+    { ...style, fill: style.stroke },
+    1
+  );
+}
+
+function renderEllipseShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  return {
+    name: "ellipse",
+    attrs: {
+      ...shapePaintAttrs(style),
+      cx: x + width / 2,
+      cy: y + height / 2,
+      rx: width / 2,
+      ry: height / 2,
+    },
+    selfClosing: true,
+  };
+}
+
+function renderParallelogramShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const skew = Math.min(width * 0.18, 24);
+  return {
+    name: "polygon",
+    attrs: {
+      ...shapePaintAttrs(style),
+      points: pointsAttr([
+        { x: x + skew, y },
+        { x: x + width, y },
+        { x: x + width - skew, y: y + height },
+        { x, y: y + height },
+      ]),
+    },
+    selfClosing: true,
+  };
+}
+
+function renderDocumentShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const wave = Math.min(12, height * 0.18);
+  const bottom = y + height - wave;
+  const half = width / 2;
+  return {
+    name: "path",
+    attrs: {
+      ...shapePaintAttrs(style),
+      d: `M ${formatNumber(x)} ${formatNumber(y)} H ${formatNumber(x + width)} V ${formatNumber(bottom)} C ${formatNumber(x + width - width * 0.25)} ${formatNumber(bottom - wave)} ${formatNumber(x + half + width * 0.25)} ${formatNumber(bottom + wave)} ${formatNumber(x + half)} ${formatNumber(bottom)} C ${formatNumber(x + width * 0.25)} ${formatNumber(bottom - wave)} ${formatNumber(x + width * 0.25)} ${formatNumber(bottom + wave)} ${formatNumber(x)} ${formatNumber(bottom)} Z`,
+    },
+    selfClosing: true,
+  };
+}
+
+function renderTabbedRectShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const tabWidth = Math.min(36, width * 0.32);
+  const tabHeight = Math.min(16, height * 0.28);
+  const paint = shapePaintAttrs(style);
+  return [
+    renderRectShape(x, y, width, height, style, 3),
+    {
+      name: "path",
+      attrs: {
+        ...paint,
+        d: `M ${formatNumber(x + width - tabWidth)} ${formatNumber(y)} v ${formatNumber(tabHeight)} h ${formatNumber(tabWidth)}`,
+        fill: "none",
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderNoteShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const fold = Math.min(18, width * 0.22, height * 0.32);
+  const paint = shapePaintAttrs(style);
+  return [
+    {
+      name: "path",
+      attrs: {
+        ...paint,
+        d: `M ${formatNumber(x)} ${formatNumber(y)} H ${formatNumber(x + width - fold)} L ${formatNumber(x + width)} ${formatNumber(y + fold)} V ${formatNumber(y + height)} H ${formatNumber(x)} Z`,
+      },
+      selfClosing: true,
+    },
+    {
+      name: "path",
+      attrs: {
+        d: `M ${formatNumber(x + width - fold)} ${formatNumber(y)} V ${formatNumber(y + fold)} H ${formatNumber(x + width)}`,
+        fill: "none",
+        stroke: style.stroke,
+        "stroke-width": style.strokeWidth,
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderHexagonShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const inset = width * 0.22;
+  return {
+    name: "polygon",
+    attrs: {
+      ...shapePaintAttrs(style),
+      points: pointsAttr([
+        { x: x + inset, y },
+        { x: x + width - inset, y },
+        { x: x + width, y: y + height / 2 },
+        { x: x + width - inset, y: y + height },
+        { x: x + inset, y: y + height },
+        { x, y: y + height / 2 },
+      ]),
+    },
+    selfClosing: true,
+  };
 }
 
 function renderRectShape(

@@ -177,6 +177,40 @@ describe("sizeGraphNodes", () => {
     expect(result[0]?.contentLayout.icons).toEqual([]);
   });
 
+  test("diamond nodes reserve extra geometry for label space", () => {
+    const base = sizeGraphNodes(
+      [{ id: "a", kind: "actor", label: "Decision", icons: [] }],
+      defaultOptions
+    );
+    const diamond = sizeGraphNodes(
+      [{ id: "a", kind: "decision", label: "Decision", shape: { type: "diamond" } }],
+      defaultOptions
+    );
+    expect(diamond[0]?.computedWidth).toBe(base[0]?.computedWidth * 1.4);
+    expect(diamond[0]?.computedHeight).toBe(base[0]?.computedHeight * 1.4);
+  });
+
+  test("circle and bullseye nodes use square bounds", () => {
+    const result = sizeGraphNodes(
+      [
+        { id: "start", kind: "initial", shape: { type: "circle" }, layout: { width: 64 } },
+        { id: "done", kind: "final", shape: { type: "bullseye" }, layout: { height: 80 } },
+      ],
+      defaultOptions
+    );
+    expect(result[0]?.computedWidth).toBe(result[0]?.computedHeight);
+    expect(result[1]?.computedWidth).toBe(result[1]?.computedHeight);
+  });
+
+  test("sync bars size wide and thin by default", () => {
+    const result = sizeGraphNodes(
+      [{ id: "fork", kind: "fork", label: "", shape: { type: "sync-bar" } }],
+      defaultOptions
+    );
+    expect(result[0]?.computedWidth).toBeGreaterThanOrEqual(96);
+    expect(result[0]?.computedHeight).toBe(18);
+  });
+
   test("left and right icons contribute to auto width", () => {
     const nodes: DiagramNode[] = [
       {
