@@ -231,6 +231,8 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
     const line = extractDirectiveText(node);
 
     if (line) {
+      const remaining = extractRemainingDirectiveLines(node, line);
+
       const diagramMatch = DIAGRAM_RE.exec(line);
       if (diagramMatch) {
         const block: DocBlock = {
@@ -241,7 +243,9 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
           (block as { caption?: string }).caption = diagramMatch[2];
         }
         result.push(block);
-        i++;
+        if (remaining === null) {
+          i++;
+        }
         continue;
       }
 
@@ -253,7 +257,9 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
           source: sourceMatch[2],
           value: "",
         });
-        i++;
+        if (remaining === null) {
+          i++;
+        }
         continue;
       }
 
@@ -268,7 +274,9 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
           (block as { variant?: BadgeVariant }).variant = variant;
         }
         result.push(block);
-        i++;
+        if (remaining === null) {
+          i++;
+        }
         continue;
       }
 
@@ -373,6 +381,29 @@ function extractDirectiveText(node: RemarkNode): string | null {
     if (firstLine.startsWith("@")) {
       return firstLine;
     }
+  }
+  return null;
+}
+
+function extractRemainingDirectiveLines(node: RemarkNode, matchedLine: string): string | null {
+  if (
+    node.type === "paragraph" &&
+    "children" in node &&
+    Array.isArray(node.children) &&
+    node.children[0]?.type === "text"
+  ) {
+    const firstChild = node.children[0] as { type: "text"; value?: string };
+    if (typeof firstChild.value !== "string") return null;
+    const lines = firstChild.value.split("\n");
+    const matchIdx = lines.findIndex((l) => l.trim() === matchedLine);
+    if (matchIdx === -1) return null;
+    const remaining = lines
+      .slice(matchIdx + 1)
+      .map((l) => l.trim())
+      .filter((l) => l.startsWith("@"));
+    if (remaining.length === 0) return null;
+    firstChild.value = remaining.join("\n");
+    return remaining[0] ?? null;
   }
   return null;
 }
