@@ -13,6 +13,7 @@ import type {
   LayoutRouting,
   NodeContentLayout,
   Point,
+  PositionedCompartment,
   PositionedDiagram,
   PositionedEdge,
   PositionedGroup,
@@ -496,6 +497,17 @@ function renderNode(
         renderIcon(positionIconFromNodeOrigin(node, icon), style)
       )
     );
+    if (contentLayout.compartments !== undefined) {
+      children.push(...renderCompartmentDividers(node, contentLayout.compartments, style));
+      return {
+        element: {
+          name: "g",
+          attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
+          children,
+        },
+        labels: renderCompartmentLabels(node, contentLayout.compartments, style, idPrefix),
+      };
+    }
   }
   const labelLayout = contentLayout?.label;
   const label = node.label ?? node.id;
@@ -531,6 +543,78 @@ function renderNode(
     },
     labels,
   };
+}
+
+function renderCompartmentDividers(
+  node: PositionedNodeWithContentLayout,
+  compartments: readonly PositionedCompartment[],
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  return compartments
+    .filter((compartment) => compartment.dividerY !== undefined)
+    .map((compartment) => ({
+      name: "line",
+      attrs: {
+        stroke: style.dividerStroke,
+        "stroke-width": 1,
+        x1: node.x,
+        x2: node.x + node.width,
+        y1: node.y + (compartment.dividerY ?? 0),
+        y2: node.y + (compartment.dividerY ?? 0),
+      },
+      selfClosing: true,
+    }));
+}
+
+function renderCompartmentLabels(
+  node: PositionedNodeWithContentLayout,
+  compartments: readonly PositionedCompartment[],
+  style: ResolvedStyle,
+  idPrefix: string
+): SvgLabelSpec[] {
+  return compartments.flatMap((compartment) => {
+    const lines = [compartment.header, ...compartment.lines].filter(
+      (line): line is NonNullable<typeof line> => line !== undefined
+    );
+    return lines.map((line) =>
+      textElement({
+        id: stableSvgId(idPrefix, "label", "compartment", line.id),
+        ownerId: node.id,
+        label: line.text,
+        x: node.x + line.x,
+        y: node.y + line.y,
+        style,
+        anchor: line.align ?? "start",
+        maxWidth: Math.max(0, node.width - 16),
+        truncate: false,
+        clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
+        ...optionalTextStyle({
+          fontFamily: line.fontFamily ?? compartmentLineFontFamily(line.role, style),
+          fontStyle: line.fontStyle ?? (line.role === "stereotype" ? "italic" : undefined),
+          fontWeight: line.fontWeight ?? (line.role === "name" ? 700 : undefined),
+        }),
+      })
+    );
+  });
+}
+
+function optionalTextStyle(style: {
+  fontFamily: string | undefined;
+  fontStyle: "normal" | "italic" | undefined;
+  fontWeight: string | number | undefined;
+}): Pick<TextElementOptions, "fontFamily" | "fontStyle" | "fontWeight"> {
+  return {
+    ...(style.fontFamily === undefined ? {} : { fontFamily: style.fontFamily }),
+    ...(style.fontStyle === undefined ? {} : { fontStyle: style.fontStyle }),
+    ...(style.fontWeight === undefined ? {} : { fontWeight: style.fontWeight }),
+  };
+}
+
+function compartmentLineFontFamily(
+  role: PositionedCompartment["lines"][number]["role"],
+  style: ResolvedStyle
+): string | undefined {
+  return role === "member" || role === "value" ? style.memberFontFamily : undefined;
 }
 
 function positionIconFromNodeOrigin(node: PositionedNode, icon: PositionedIcon): PositionedIcon {
@@ -1306,6 +1390,9 @@ interface TextElementOptions {
   backgroundStroke?: string;
   backgroundStrokeWidth?: number;
   truncate?: boolean;
+  fontFamily?: string;
+  fontStyle?: "normal" | "italic";
+  fontWeight?: string | number;
 }
 
 function textElement(options: TextElementOptions): SvgLabelSpec {
@@ -1321,6 +1408,9 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
     ownerId,
     style,
     truncate = false,
+    fontFamily,
+    fontStyle,
+    fontWeight,
     x,
     y,
   } = options;
@@ -1338,8 +1428,10 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
       "clip-path": shouldClip ? `url(#${stableSvgId(id, "clip")})` : undefined,
       "data-width": width,
       fill: style.text,
-      "font-family": style.fontFamily,
+      "font-family": fontFamily ?? style.fontFamily,
       "font-size": style.fontSize,
+      "font-style": fontStyle,
+      "font-weight": fontWeight,
       id,
       "text-anchor": anchor,
       x,

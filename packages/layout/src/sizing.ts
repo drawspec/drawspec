@@ -3,12 +3,15 @@ import type {
   IconPlacement,
   IconSpec,
   LabelOverflow,
+  NodeCompartment,
+  NodeCompartmentLine,
   NodeLayoutOptions,
+  NodeShapeSpec,
 } from "@drawspec/core";
 import type { TextMeasurer } from "@drawspec/text-measure";
 import { truncateText, wrapText } from "@drawspec/text-measure";
 import { normalizeNodeVisuals } from "./normalize";
-import type { NodeContentLayout, PositionedIcon, Size } from "./types";
+import type { NodeContentLayout, PositionedCompartmentLine, PositionedIcon, Size } from "./types";
 
 /** Fully resolved node sizing options used by graph layout. */
 export interface NormalizedNodeSizingOptions {
@@ -46,6 +49,7 @@ const ICON_GAP = 4;
 const ICON_LABEL_GAP = 6;
 const DEFAULT_BUILTIN_ICON_SIZE: Size = { width: 24, height: 30 };
 const DEFAULT_TEXT_ICON_FONT_SIZE = 24;
+const COMPARTMENT_DIVIDER_SPACE = 1;
 type IconSide = "top" | "bottom" | "left" | "right";
 
 interface IconLayoutItem extends PositionedIcon {
@@ -85,6 +89,10 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
   const label = node.label ?? node.id;
   const visuals = normalizeNodeVisuals(node);
   const iconItems = visuals.icons.map((icon, index) => measureIcon(node.id, icon, index, global));
+
+  if (node.compartments !== undefined && node.compartments.length > 0) {
+    return sizeCompartmentNode(node, visuals.shape, visuals.icons, global);
+  }
 
   if (mode === "fixed") {
     const width = clamp(explicitWidth ?? global.defaultSize.width, minWidth, maxWidth);
@@ -168,6 +176,155 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
     computedHeight: height,
     labelLines,
     contentLayout,
+  };
+}
+
+function sizeCompartmentNode(
+  node: DiagramNode,
+  shape: NodeShapeSpec,
+  icons: IconSpec[],
+  global: NormalizedNodeSizingOptions
+): SizedNode {
+  const layout: NodeLayoutOptions | undefined = node.layout;
+  const minWidth = layout?.minWidth ?? global.minSize.width;
+  const minHeight = layout?.minHeight ?? global.minSize.height;
+  const maxWidth = layout?.maxWidth ?? global.maxSize.width;
+  const maxHeight = layout?.maxHeight ?? global.maxSize.height;
+  const defaultPadding = {
+    x: layout?.padding?.x ?? global.padding.x,
+    y: layout?.padding?.y ?? global.padding.y,
+  };
+  const compartments = node.compartments ?? [];
+  const measuredCompartments = compartments.map((compartment, index) =>
+    measureCompartment(node.id, compartment, index, defaultPadding, global)
+  );
+  const contentWidth = Math.max(0, ...measuredCompartments.map((section) => section.width));
+  const contentHeight = measuredCompartments.reduce(
+    (sum, section, index) => sum + section.height + (index === 0 ? 0 : COMPARTMENT_DIVIDER_SPACE),
+    0
+  );
+  const width = clamp(layout?.width ?? contentWidth, minWidth, maxWidth);
+  const height = clamp(layout?.height ?? contentHeight, minHeight, maxHeight);
+  const positioned = positionCompartments(measuredCompartments, width, height, global);
+
+  return {
+    ...node,
+    shape,
+    icons,
+    computedWidth: width,
+    computedHeight: height,
+    labelLines: [],
+    contentLayout: { compartments: positioned, icons: [] },
+  };
+}
+
+interface MeasuredCompartment {
+  compartment: NodeCompartment;
+  id: string;
+  padding: { x: number; y: number };
+  lineHeight: number;
+  width: number;
+  height: number;
+}
+
+function measureCompartment(
+  nodeId: string,
+  compartment: NodeCompartment,
+  index: number,
+  defaultPadding: { x: number; y: number },
+  global: NormalizedNodeSizingOptions
+): MeasuredCompartment {
+  const padding = {
+    x: compartment.padding?.x ?? defaultPadding.x,
+    y: compartment.padding?.y ?? defaultPadding.y,
+  };
+  const lineHeight = compartment.lineHeight ?? global.lineHeight;
+  const headerLines = compartment.header === undefined ? [] : [compartment.header];
+  const textLines = [...headerLines, ...compartment.lines.map((line) => line.text)];
+  const textWidth = Math.max(
+    0,
+    ...textLines.map((line) => global.measurer.measure(line, global.fontSize))
+  );
+  const lineCount = textLines.length;
+  return {
+    compartment,
+    id: compartment.id ?? `${nodeId}:compartment:${index}`,
+    padding,
+    lineHeight,
+    width: textWidth + padding.x * 2,
+    height: lineCount * lineHeight + padding.y * 2,
+  };
+}
+
+function positionCompartments(
+  compartments: readonly MeasuredCompartment[],
+  width: number,
+  height: number,
+  global: NormalizedNodeSizingOptions
+): NonNullable<NodeContentLayout["compartments"]> {
+  const totalContentHeight = compartments.reduce(
+    (sum, section, index) => sum + section.height + (index === 0 ? 0 : COMPARTMENT_DIVIDER_SPACE),
+    0
+  );
+  let y = Math.max(0, (height - totalContentHeight) / 2);
+  return compartments.map((section, index) => {
+    const sectionY = y + (index === 0 ? 0 : COMPARTMENT_DIVIDER_SPACE);
+    const linesStartY = sectionY + section.padding.y + global.fontSize * 0.85;
+    let nextLineIndex = 0;
+    const header =
+      section.compartment.header === undefined
+        ? undefined
+        : positionCompartmentLine(
+            `${section.id}:header`,
+            { text: section.compartment.header, role: "header", align: "middle" },
+            width,
+            section.padding.x,
+            linesStartY,
+            section.lineHeight,
+            nextLineIndex++
+          );
+    const lines = section.compartment.lines.map((line, lineIndex) =>
+      positionCompartmentLine(
+        `${section.id}:line:${lineIndex}`,
+        line,
+        width,
+        section.padding.x,
+        linesStartY,
+        section.lineHeight,
+        nextLineIndex++
+      )
+    );
+    y = sectionY + section.height;
+    return {
+      id: section.id,
+      x: 0,
+      y: sectionY,
+      width,
+      height: section.height,
+      ...(index === 0 ? {} : { dividerY: sectionY - COMPARTMENT_DIVIDER_SPACE / 2 }),
+      ...(header === undefined ? {} : { header }),
+      lines,
+    };
+  });
+}
+
+function positionCompartmentLine(
+  id: string,
+  line: NodeCompartmentLine,
+  width: number,
+  paddingX: number,
+  startY: number,
+  lineHeight: number,
+  lineIndex: number
+): PositionedCompartmentLine {
+  const align =
+    line.align ?? (line.role === "member" || line.role === "value" ? "start" : "middle");
+  return {
+    ...line,
+    align,
+    id,
+    x: align === "middle" ? width / 2 : paddingX,
+    y: startY + lineIndex * lineHeight,
   };
 }
 
