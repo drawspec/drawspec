@@ -547,6 +547,104 @@ describe("SvgRenderer", () => {
     expect(svg).toContain('transform="translate(0 28.3)"');
   });
 
+  test("keeps edge labels inside sequence fragment bounds", () => {
+    const doc = document({
+      id: "fragment-label-test",
+      kind: "sequence",
+      nodes: [
+        { id: "client", kind: "participant", label: "Client" },
+        { id: "service", kind: "participant", label: "Service" },
+      ],
+      edges: [
+        {
+          id: "inside",
+          kind: "message",
+          sourceId: "client",
+          targetId: "service",
+          label: "inside",
+        },
+      ],
+      groups: [{ id: "frag", kind: "loop", childIds: ["inside"], label: "retry" }],
+    });
+    const positionedDiagram: PositionedDiagram = {
+      document: doc,
+      nodes: [],
+      edges: [
+        {
+          id: "inside",
+          kind: "message",
+          sourceId: "client",
+          targetId: "service",
+          label: "inside",
+          waypoints: [
+            { x: 220, y: 216 },
+            { x: 620, y: 216 },
+          ],
+        },
+      ],
+      groups: [
+        {
+          id: "frag",
+          kind: "loop",
+          childIds: ["inside"],
+          label: "retry",
+          x: 176,
+          y: 180,
+          width: 488,
+          height: 224,
+        },
+      ],
+      activations: [],
+      width: 720,
+      height: 520,
+    };
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    const edgeLabelGroup = svg.match(/<g id="[^"]*label-edge-inside[^"]*"([^>]*)>/);
+    expect(edgeLabelGroup?.[1] ?? "").not.toContain("transform");
+    expect(svg).toContain('y="208"');
+  });
+
+  test("still shifts edge labels outside fragments away from occlusion rects", () => {
+    const doc = document({
+      id: "outside-edge-label-test",
+      nodes: [{ id: "blocker", kind: "component", label: "Blocker" }],
+      edges: [{ id: "outside", kind: "calls", sourceId: "a", targetId: "b", label: "outside" }],
+    });
+    const positionedDiagram: PositionedDiagram = {
+      document: doc,
+      nodes: [
+        {
+          id: "blocker",
+          kind: "component",
+          label: "Blocker",
+          x: 80,
+          y: 40,
+          width: 100,
+          height: 80,
+        },
+      ],
+      edges: [
+        {
+          id: "outside",
+          kind: "calls",
+          sourceId: "a",
+          targetId: "b",
+          label: "outside",
+          waypoints: [
+            { x: 40, y: 70 },
+            { x: 220, y: 70 },
+          ],
+        },
+      ],
+      groups: [],
+      activations: [],
+      width: 260,
+      height: 160,
+    };
+    const svg = renderSvgSync(doc, { positionedDiagram });
+    expect(svg).toMatch(/<g id="[^"]*label-edge-outside[^"]*" transform="translate\(0 71\.2\)">/);
+  });
+
   test("measures narrow and wide text differently", () => {
     expect(measureText("iiii", 10)).toBeLessThan(measureText("mmmm", 10));
     expect(measureText("WWWW", 10)).toBeGreaterThan(measureText("iiii", 10) * 3);
