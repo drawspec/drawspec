@@ -709,6 +709,12 @@ async function layoutFor(document: DiagramDocument): Promise<LayoutEngine> {
   if (engine === "wasm") {
     return await tryLoadWasmLayout();
   }
+  if (engine === "force") {
+    return await tryLoadForceLayout();
+  }
+  if (engine === "tree") {
+    return await tryLoadTreeLayout();
+  }
   if (engine === "auto") {
     const elk = await tryImportElk();
     if (elk) return elk;
@@ -751,6 +757,30 @@ async function tryLoadWasmLayout(): Promise<LayoutEngine> {
   } catch {
     console.warn(
       "Layout engine 'wasm' requested but @drawspec/layout-wasm is not available, falling back to simple"
+    );
+    return simpleGraphLayout();
+  }
+}
+
+async function tryLoadForceLayout(): Promise<LayoutEngine> {
+  try {
+    const { forceLayout } = await import("@drawspec/layout-force");
+    return forceLayout();
+  } catch {
+    console.warn(
+      "Layout engine 'force' requested but @drawspec/layout-force is not available, falling back to simple"
+    );
+    return simpleGraphLayout();
+  }
+}
+
+async function tryLoadTreeLayout(): Promise<LayoutEngine> {
+  try {
+    const { treeLayout } = await import("@drawspec/layout-tree");
+    return treeLayout();
+  } catch {
+    console.warn(
+      "Layout engine 'tree' requested but @drawspec/layout-tree is not available, falling back to simple"
     );
     return simpleGraphLayout();
   }
