@@ -1,6 +1,7 @@
 import type {
   BuiltinIconSpec,
   DiagramDocument,
+  DiagramEdge,
   EdgeLabelStyle,
   IconAppearance,
   ImageIconSpec,
@@ -498,7 +499,7 @@ function renderNode(
   themeName: string
 ): RenderedElement {
   const style = resolveStyle(document, node, options.theme, "node", themeName);
-  const children = shapeForNode(node, style);
+  const children = shapeForNode(node, style, document.edges);
   const contentLayout = node.contentLayout;
   if (contentLayout !== undefined) {
     children.push(
@@ -522,9 +523,14 @@ function renderNode(
   const label = node.label ?? node.id;
   const lines = labelLayout?.lines ?? node.labelLines ?? [label];
   const lineHeight = style.fontSize * 1.3;
+  const isInterface = node.kind === "interface";
+  const interfaceCircleRadius = isInterface ? lollipopRadius(node) : 0;
+  const interfaceCy = isInterface ? node.y + node.height / 2 - interfaceCircleRadius : 0;
   const startY =
     labelLayout === undefined
-      ? node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2
+      ? isInterface
+        ? interfaceCy + interfaceCircleRadius + 4 + style.fontSize * 0.35
+        : node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2
       : node.y + labelLayout.y;
   const anchorX = labelLayout === undefined ? node.x + node.width / 2 : node.x + labelLayout.x;
   const labels: SvgLabelSpec[] =
@@ -630,12 +636,40 @@ function positionIconFromNodeOrigin(node: PositionedNode, icon: PositionedIcon):
   return { ...icon, x: node.x + icon.x, y: node.y + icon.y };
 }
 
+/** Radius for lollipop/socket circles on interface nodes. */
+const LOLLIPOP_DEFAULT_RADIUS = 8;
+
+/** Computes the lollipop circle radius for an interface node based on its bounds. */
+function lollipopRadius(node: PositionedNode): number {
+  return Math.min(LOLLIPOP_DEFAULT_RADIUS, node.width / 3, node.height / 3);
+}
+
+/** Determines whether an interface node is required (socket) or provided (lollipop). */
+function isRequiredInterface(nodeId: string, documentEdges: readonly DiagramEdge[]): boolean {
+  for (const edge of documentEdges) {
+    if (edge.kind === "requires" && edge.targetId === nodeId) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function shapeForNode(
   node: PositionedNodeWithContentLayout,
-  style: ResolvedStyle
+  style: ResolvedStyle,
+  documentEdges: readonly DiagramEdge[] = []
 ): SvgElementSpec[] {
   if (node.contentLayout !== undefined) {
     return outerShapeForNode(node, style);
+  }
+  if (node.kind === "interface") {
+    const radius = lollipopRadius(node);
+    const cx = node.x + node.width / 2;
+    const cy = node.y + node.height / 2 - radius;
+    if (isRequiredInterface(node.id, documentEdges)) {
+      return [renderSocketShape(cx, cy, radius, style)];
+    }
+    return [renderLollipopShape(cx, cy, radius, style)];
   }
   if (node.kind === "database") {
     return [
@@ -1038,6 +1072,49 @@ function renderCylinderShape(
 
 function cylinderPath(x: number, y: number, width: number, height: number, curve: number): string {
   return `M ${formatNumber(x)} ${formatNumber(y + curve)} C ${formatNumber(x)} ${formatNumber(y - curve / 3)} ${formatNumber(x + width)} ${formatNumber(y - curve / 3)} ${formatNumber(x + width)} ${formatNumber(y + curve)} L ${formatNumber(x + width)} ${formatNumber(y + height - curve)} C ${formatNumber(x + width)} ${formatNumber(y + height + curve / 3)} ${formatNumber(x)} ${formatNumber(y + height + curve / 3)} ${formatNumber(x)} ${formatNumber(y + height - curve)} Z`;
+}
+
+/** Renders a lollipop (provided interface) as a filled circle with stroke. */
+function renderLollipopShape(
+  cx: number,
+  cy: number,
+  radius: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  return {
+    name: "circle",
+    attrs: {
+      cx: formatNumber(cx),
+      cy: formatNumber(cy),
+      fill: style.fill,
+      r: radius,
+      stroke: style.stroke,
+      "stroke-width": style.strokeWidth,
+    },
+    selfClosing: true,
+  };
+}
+
+/** Renders a socket (required interface) as a semicircle arc open to the right. */
+function renderSocketShape(
+  cx: number,
+  cy: number,
+  radius: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const startX = cx;
+  const startY = cy - radius;
+  const endY = cy + radius;
+  return {
+    name: "path",
+    attrs: {
+      d: `M ${formatNumber(startX)} ${formatNumber(startY)} A ${radius} ${radius} 0 0 1 ${formatNumber(startX)} ${formatNumber(endY)}`,
+      fill: "none",
+      stroke: style.stroke,
+      "stroke-width": style.strokeWidth,
+    },
+    selfClosing: true,
+  };
 }
 
 function renderIcon(icon: PositionedIcon, style: ResolvedStyle): SvgElementSpec[] {

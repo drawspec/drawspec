@@ -1646,4 +1646,148 @@ describe("SvgRenderer", () => {
       expect(svg).toContain('x="55"');
     });
   });
+
+  describe("lollipop interface rendering", () => {
+    function interfaceDocument(
+      interfaceKind: "provides" | "requires" | undefined = undefined
+    ): DiagramDocument {
+      const edges: DiagramDocument["edges"] = [];
+      if (interfaceKind !== undefined) {
+        edges.push({
+          id: "edge",
+          kind: interfaceKind,
+          sourceId: "comp",
+          targetId: "iface",
+          direction: "forward",
+        });
+      }
+      return document({
+        id: "lollipop-test",
+        kind: "component",
+        nodes: [
+          { id: "comp", kind: "component", label: "Service" },
+          { id: "iface", kind: "interface", label: "IUserRepo" },
+        ],
+        edges,
+      });
+    }
+
+    function interfaceDiagram(doc: DiagramDocument): PositionedDiagram {
+      return {
+        activations: [],
+        document: doc,
+        edges: [],
+        groups: [],
+        height: 120,
+        nodes: [
+          { id: "comp", kind: "component", label: "Service", x: 10, y: 20, width: 100, height: 50 },
+          {
+            id: "iface",
+            kind: "interface",
+            label: "IUserRepo",
+            x: 140,
+            y: 20,
+            width: 80,
+            height: 40,
+          },
+        ],
+        width: 240,
+      };
+    }
+
+    test("renders a provided interface as a filled circle (lollipop)", () => {
+      const doc = interfaceDocument("provides");
+      const svg = renderSvgSync(doc, { positionedDiagram: interfaceDiagram(doc) });
+      expect(svg).toContain("<circle ");
+      expect(svg).toMatch(/r="8"/);
+      expect(svg).toContain("IUserRepo");
+    });
+
+    test("renders a required interface as a semicircle arc (socket)", () => {
+      const doc = interfaceDocument("requires");
+      const svg = renderSvgSync(doc, { positionedDiagram: interfaceDiagram(doc) });
+      const nodeGroup = svg.match(/<g id="[^"]*node-iface[^"]*">[\s\S]*?<\/g>/);
+      expect(nodeGroup).not.toBeNull();
+      const groupContent = nodeGroup?.[0] ?? "";
+      expect(groupContent).toContain("<path ");
+      expect(groupContent).toMatch(/A 8 8/);
+      expect(groupContent).toContain('fill="none"');
+    });
+
+    test("renders an interface without edges as a lollipop (provided by default)", () => {
+      const doc = interfaceDocument();
+      const svg = renderSvgSync(doc, { positionedDiagram: interfaceDiagram(doc) });
+      const nodeGroup = svg.match(/<g id="[^"]*node-iface[^"]*">[\s\S]*?<\/g>/);
+      expect(nodeGroup).not.toBeNull();
+      expect(nodeGroup?.[0]).toContain("<circle ");
+    });
+
+    test("positions interface label below the circle", () => {
+      const doc = interfaceDocument("provides");
+      const svg = renderSvgSync(doc, { positionedDiagram: interfaceDiagram(doc) });
+      const labelMatch = svg.match(/<text[^>]*id="[^"]*label-node-iface[^"]*"[^>]*y="([^"]*)"/);
+      expect(labelMatch).not.toBeNull();
+      const labelY = Number(labelMatch?.[1]);
+      // cy=24, r=8 → circle bottom=32, label must clear it
+      expect(labelY).toBeGreaterThan(32);
+    });
+
+    test("uses interface kind fill and stroke defaults", () => {
+      const doc = interfaceDocument("provides");
+      const svg = renderSvgSync(doc, { positionedDiagram: interfaceDiagram(doc) });
+      const nodeGroup = svg.match(/<g id="[^"]*node-iface[^"]*">[\s\S]*?<\/g>/);
+      expect(nodeGroup).not.toBeNull();
+      expect(nodeGroup?.[0]).toContain('stroke="#334155"');
+    });
+
+    test("matches the component lollipop golden fixture", async () => {
+      const doc = document({
+        id: "component-lollipop",
+        kind: "component",
+        nodes: [
+          { id: "comp", kind: "component", label: "AuthService" },
+          { id: "iface", kind: "interface", label: "IAuth" },
+        ],
+        edges: [
+          {
+            id: "prov",
+            kind: "provides",
+            sourceId: "comp",
+            targetId: "iface",
+            direction: "forward",
+          },
+        ],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [],
+        groups: [],
+        height: 100,
+        nodes: [
+          {
+            id: "comp",
+            kind: "component",
+            label: "AuthService",
+            x: 10,
+            y: 20,
+            width: 120,
+            height: 50,
+          },
+          {
+            id: "iface",
+            kind: "interface",
+            label: "IAuth",
+            x: 160,
+            y: 25,
+            width: 60,
+            height: 40,
+          },
+        ],
+        width: 240,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      await expectGolden("component-lollipop", svg);
+    });
+  });
 });
