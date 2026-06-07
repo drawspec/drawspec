@@ -1,4 +1,4 @@
-import { workspace, softwareSystem, person } from "../../../packages/architecture/src/index.js";
+import { workspace, softwareSystem, person } from "@drawspec/architecture";
 
 export default workspace("Chat Platform", (ws) => {
   const mobileUser = ws.model.add(person("Mobile User", { description: "User on iOS/Android app" }));

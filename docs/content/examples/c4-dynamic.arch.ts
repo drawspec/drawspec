@@ -1,4 +1,4 @@
-import { container, person, softwareSystem, workspace } from "../../../packages/architecture/src/index.js";
+import { container, person, softwareSystem, workspace } from "@drawspec/architecture";
 
 export default workspace("Order processing scoped container view", (ws) => {
   const customer = ws.model.add(

@@ -1,4 +1,4 @@
-import { activityDiagram } from "../../../packages/uml-activity/src/index.js";
+import { activityDiagram } from "@drawspec/uml-activity";
 
 export default activityDiagram("Data processing pipeline", ({ start, action, decision, end }) => {
   const ingest = action("Ingest Data");

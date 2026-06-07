@@ -1,4 +1,4 @@
-import { classDiagram } from "../../../packages/uml-class/src/index.js";
+import { classDiagram } from "@drawspec/uml-class";
 
 export default classDiagram("User management", ({ class_, interface_, enum_, implements_, uses }) => [
   class_("User", (c) => {

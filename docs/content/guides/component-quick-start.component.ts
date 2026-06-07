@@ -1,4 +1,4 @@
-import { componentDiagram, interface_ } from "../../../packages/uml-component/src/index.js";
+import { componentDiagram, interface_ } from "@drawspec/uml-component";
 
 export default componentDiagram("Microservices", ({ component, dependency, add }) => {
   add(interface_("HTTP API"));

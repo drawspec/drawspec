@@ -1,4 +1,4 @@
-import { container, database, person, softwareSystem, workspace } from "../../../packages/architecture/src/index.js";
+import { container, database, person, softwareSystem, workspace } from "@drawspec/architecture";
 
 export default workspace("Payments platform", (ws) => {
   const customer = ws.model.add(

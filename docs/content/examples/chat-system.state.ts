@@ -1,4 +1,4 @@
-import { stateDiagram } from "../../../packages/uml-state/src/index.js";
+import { stateDiagram } from "@drawspec/uml-state";
 
 export default stateDiagram("Message Delivery", ({ state, initial, final }) => {
   const start = initial("start");

@@ -1,4 +1,4 @@
-import { workspace, softwareSystem, person } from "../../../packages/architecture/src/index.js";
+import { workspace, softwareSystem, person } from "@drawspec/architecture";
 
 export default workspace("AWS App", (ws) => {
   const user = ws.model.add(person("User", { description: "End user of the application" }));

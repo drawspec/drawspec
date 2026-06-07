@@ -1,4 +1,4 @@
-import { stateDiagram } from "../../../packages/uml-state/src/index.js";
+import { stateDiagram } from "@drawspec/uml-state";
 
 export default stateDiagram("Traffic light", ({ state, initial, final }) => [
   initial(),

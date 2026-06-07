@@ -1,4 +1,4 @@
-import { person, softwareSystem, workspace } from "../../../packages/architecture/src/index.js";
+import { person, softwareSystem, workspace } from "@drawspec/architecture";
 
 export default workspace("Shipping platform", (ws) => {
   const customer = ws.model.add(
