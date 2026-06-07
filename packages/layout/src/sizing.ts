@@ -114,7 +114,7 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
     ...labelLines.map((line) => global.measurer.measure(line, global.fontSize))
   );
   const labelHeight = labelLines.length * global.lineHeight;
-  let contentMetrics = measureSlotMetrics(labelWidth, labelHeight, iconItems);
+  const contentMetrics = measureSlotMetrics(labelWidth, labelHeight, iconItems);
 
   let width =
     explicitWidth ??
@@ -132,15 +132,6 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
       global.measurer,
       global.fontSize
     );
-    const truncatedLabelWidth = Math.max(
-      0,
-      ...labelLines.map((line) => global.measurer.measure(line, global.fontSize))
-    );
-    contentMetrics = measureSlotMetrics(
-      truncatedLabelWidth,
-      labelLines.length * global.lineHeight,
-      iconItems
-    );
   }
 
   if (maxHeight !== Infinity && height > maxHeight) {
@@ -156,15 +147,6 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
     }
     labelLines = visibleLines;
     height = maxHeight;
-    const truncatedLabelWidth = Math.max(
-      0,
-      ...labelLines.map((line) => global.measurer.measure(line, global.fontSize))
-    );
-    contentMetrics = measureSlotMetrics(
-      truncatedLabelWidth,
-      labelLines.length * global.lineHeight,
-      iconItems
-    );
   }
 
   width = clamp(width, minWidth, maxWidth);
