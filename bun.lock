@@ -192,6 +192,18 @@
         "typescript": "latest",
       },
     },
+    "packages/flowchart": {
+      "name": "@drawspec/flowchart",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
     "packages/layout": {
       "name": "@drawspec/layout",
       "version": "0.0.1",
@@ -485,6 +497,8 @@
     "@drawspec/exporter-mermaid": ["@drawspec/exporter-mermaid@workspace:packages/exporter-mermaid"],
 
     "@drawspec/exporter-plantuml": ["@drawspec/exporter-plantuml@workspace:packages/exporter-plantuml"],
+
+    "@drawspec/flowchart": ["@drawspec/flowchart@workspace:packages/flowchart"],
 
     "@drawspec/layout": ["@drawspec/layout@workspace:packages/layout"],
 
