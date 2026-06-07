@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-rich-text-golden-0ya0e7r-desc-05imyoc" aria-labelledby="drawspec-rich-text-golden-0ya0e7r-title-0kl3hsd" height="136" id="drawspec-rich-text-golden-0ya0e7r" role="img" viewBox="0 0 440 136" width="440" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
+  <title id="drawspec-rich-text-golden-0ya0e7r-title-0kl3hsd">
+    rich-text-golden
+  </title>
+  <desc id="drawspec-rich-text-golden-0ya0e7r-desc-05imyoc">
+    graph diagram rich-text-golden
+  </desc>
+  <rect fill="#ffffff" height="136" width="440" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-rich-text-golden-0ya0e7r-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-rich-text-golden-0ya0e7r-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-rich-text-golden-0ya0e7r-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-rich-text-golden-0ya0e7r-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-rich-text-golden-0ya0e7r-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-rich-text-golden-0ya0e7r-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-rich-text-golden-0ya0e7r-edge-api-worker-1ei2fpy">
+    <path d="M 100 68 L 340 68" fill="none" marker-end="url(#drawspec-rich-text-golden-0ya0e7r-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-rich-text-golden-0ya0e7r-node-api-0lanyjo">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+  </g>
+  <g id="drawspec-rich-text-golden-0ya0e7r-node-worker-0lqeple">
+    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="40" />
+  </g>
+  <g id="drawspec-rich-text-golden-0ya0e7r-text-layer-125tci6">
+    <g id="drawspec-rich-text-golden-0ya0e7r-label-edge-api-worker-line0-0rrecju-bg-1e40v56">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="112.595" x="163.702" y="45.8" />
+      <text data-width="108.595" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-edge-api-worker-line0-0rrecju" text-anchor="middle" x="220" y="60">
+        <tspan font-weight="700">
+          publishes
+        </tspan>
+        <tspan>
+           
+        </tspan>
+        <tspan font-style="italic">
+          event
+        </tspan>
+      </text>
+    </g>
+    <text data-width="59.724" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line0-1orhp8m" text-anchor="middle" x="100" y="63.8">
+      <tspan font-weight="700">
+        API
+      </tspan>
+      <tspan>
+         calls
+      </tspan>
+    </text>
+    <text data-width="69.44" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line1-1p1haxl" text-anchor="middle" x="100" y="82">
+      <tspan font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
+        checkout
+      </tspan>
+    </text>
+    <text data-width="45.982" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-worker-line0-1lectm6" text-anchor="middle" x="340" y="72.9">
+      <tspan font-style="italic">
+        worker
+      </tspan>
+    </text>
+  </g>
+</svg>

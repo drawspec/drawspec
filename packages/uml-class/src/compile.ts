@@ -5,12 +5,15 @@ import {
   type DiagramEdge,
   type DiagramNode,
   IdRegistry,
+  type NodeCompartment,
+  type NodeCompartmentLine,
 } from "@drawspec/core";
 import type {
   ClassDiagramDocument,
   ClassDiagramElement,
   ClassDomainModel,
   ClassElement,
+  ClassField,
   ClassMethod,
   ClassRelationship,
   EnumElement,
@@ -43,6 +46,97 @@ function register(registry: IdRegistry, id: string, diagnostics: Diagnostic[]): 
   if (diagnostic) {
     diagnostics.push(diagnostic);
   }
+}
+
+const visibilityMarkers = {
+  package: "~",
+  private: "-",
+  protected: "#",
+  public: "+",
+} as const;
+
+function visibilityMarker(visibility: ClassMethod["visibility"]): string {
+  return visibility === undefined ? "" : visibilityMarkers[visibility];
+}
+
+function stereotypeLine(stereotype: string): NodeCompartmentLine {
+  return { text: `<<${stereotype}>>`, role: "stereotype", align: "middle", fontStyle: "italic" };
+}
+
+function nameLine(name: string, isAbstract = false): NodeCompartmentLine {
+  return {
+    text: name,
+    role: "name",
+    align: "middle",
+    ...(isAbstract ? { fontStyle: "italic" as const } : {}),
+    fontWeight: 700,
+  };
+}
+
+function fieldLine(field: ClassField): NodeCompartmentLine {
+  const modifiers = [field.static ? "static" : undefined, field.readonly ? "readonly" : undefined]
+    .filter((modifier): modifier is string => modifier !== undefined)
+    .join(" ");
+  const prefix = modifiers.length === 0 ? "" : `{${modifiers}} `;
+  return {
+    text: `${visibilityMarker(field.visibility)} ${prefix}${field.name}: ${field.type}`.trim(),
+    role: "member",
+  };
+}
+
+function methodLine(method: ClassMethod): NodeCompartmentLine {
+  const parameters = method.parameters
+    .map((parameter) => `${parameter.name}: ${parameter.type}`)
+    .join(", ");
+  const returnType = method.returnType === undefined ? "" : `: ${method.returnType}`;
+  const prefix = method.static ? "{static} " : "";
+  return {
+    text: `${visibilityMarker(method.visibility)} ${prefix}${method.name}(${parameters})${returnType}`.trim(),
+    role: "member",
+    ...(method.abstract ? { fontStyle: "italic" as const } : {}),
+  };
+}
+
+function valueLine(value: string): NodeCompartmentLine {
+  return { text: value, role: "value" };
+}
+
+function nameCompartment(
+  element: ClassDiagramElement,
+  stereotypes: readonly string[] = [],
+  isAbstract = false
+): NodeCompartment {
+  return {
+    id: `${element.id}:name`,
+    lines: [...stereotypes.map(stereotypeLine), nameLine(element.name, isAbstract)],
+  };
+}
+
+function compileCompartments(element: ClassDiagramElement): NodeCompartment[] {
+  if (element.kind === "class") {
+    const compartments = [
+      nameCompartment(element, element.abstract ? ["abstract"] : [], element.abstract),
+    ];
+    if (element.fields.length > 0) {
+      compartments.push({ id: `${element.id}:fields`, lines: element.fields.map(fieldLine) });
+    }
+    if (element.methods.length > 0) {
+      compartments.push({ id: `${element.id}:methods`, lines: element.methods.map(methodLine) });
+    }
+    return compartments;
+  }
+  if (element.kind === "interface") {
+    const compartments = [nameCompartment(element, ["interface"])];
+    if (element.methods.length > 0) {
+      compartments.push({ id: `${element.id}:methods`, lines: element.methods.map(methodLine) });
+    }
+    return compartments;
+  }
+  const compartments = [nameCompartment(element, ["enum"])];
+  if (element.values.length > 0) {
+    compartments.push({ id: `${element.id}:values`, lines: element.values.map(valueLine) });
+  }
+  return compartments;
 }
 
 function validateDuplicateMembers(element: ClassElement, diagnostics: Diagnostic[]): void {
@@ -180,6 +274,7 @@ function compileNode(element: ClassDiagramElement): DiagramNode {
     id: element.id,
     kind: element.kind,
     label: element.name,
+    compartments: compileCompartments(element),
     metadata,
   };
 }

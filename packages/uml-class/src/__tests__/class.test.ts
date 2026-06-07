@@ -71,6 +71,74 @@ describe("@drawspec/uml-class", () => {
     });
   });
 
+  test("compiles class fields and methods into three UML compartments", () => {
+    const document = compile("Compartment Class", [
+      class_("User", (c) =>
+        c.field("id", "string", { visibility: "private" }).method("rename", {
+          visibility: "public",
+          parameters: [{ name: "name", type: "string" }],
+          returnType: "void",
+        })
+      ),
+    ]);
+    const user = document.nodes[0];
+
+    expect(user?.compartments?.map((compartment) => compartment.id)).toEqual([
+      `${user?.id}:name`,
+      `${user?.id}:fields`,
+      `${user?.id}:methods`,
+    ]);
+    expect(user?.compartments?.[1]?.lines.map((line) => line.text)).toEqual(["- id: string"]);
+    expect(user?.compartments?.[2]?.lines.map((line) => line.text)).toEqual([
+      "+ rename(name: string): void",
+    ]);
+  });
+
+  test("compiles interfaces with stereotype and methods compartments", () => {
+    const document = compile("Interface Compartments", [
+      interface_("Repository", (i) => i.method("save", { visibility: "public" })),
+    ]);
+    const repository = document.nodes[0];
+
+    expect(repository?.compartments?.length).toBe(2);
+    expect(repository?.compartments?.[0]?.lines.map((line) => line.text)).toEqual([
+      "<<interface>>",
+      "Repository",
+    ]);
+    expect(repository?.compartments?.[1]?.lines.map((line) => line.text)).toEqual(["+ save()"]);
+  });
+
+  test("compiles enums with stereotype and values compartments", () => {
+    const document = compile("Enum Compartments", [enum_("Status", (e) => e.value("Open"))]);
+    const status = document.nodes[0];
+
+    expect(status?.compartments?.length).toBe(2);
+    expect(status?.compartments?.[0]?.lines.map((line) => line.text)).toEqual([
+      "<<enum>>",
+      "Status",
+    ]);
+    expect(status?.compartments?.[1]?.lines.map((line) => line.text)).toEqual(["Open"]);
+  });
+
+  test("omits empty member compartments for empty classes", () => {
+    const document = compile("Empty Class", [class_("Empty")]);
+    const empty = document.nodes[0];
+
+    expect(empty?.compartments).toHaveLength(1);
+    expect(empty?.compartments?.[0]?.lines.map((line) => line.text)).toEqual(["Empty"]);
+  });
+
+  test("compiles abstract class stereotype", () => {
+    const document = compile("Abstract Class", [class_("Base", (c) => c.abstract())]);
+    const base = document.nodes[0];
+
+    expect(base?.compartments?.[0]?.lines.map((line) => line.text)).toEqual([
+      "<<abstract>>",
+      "Base",
+    ]);
+    expect(base?.compartments?.[0]?.lines[1]).toMatchObject({ fontStyle: "italic" });
+  });
+
   test("supports classDiagram and top-level relationship builders", () => {
     const document = classDiagram("Relationships", ({ class_, interface_, uses }) => [
       interface_("Repository", (i) => i.method("save", { visibility: "public" })),

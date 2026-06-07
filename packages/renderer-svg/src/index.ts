@@ -1,4 +1,10 @@
-export { computeContentBounds, renderSvg, renderSvgSync, SvgRenderer } from "./renderer";
+export {
+  computeContentBounds,
+  renderNodeShape,
+  renderSvg,
+  renderSvgSync,
+  SvgRenderer,
+} from "./renderer";
 export {
   darkTheme,
   defaultTheme,

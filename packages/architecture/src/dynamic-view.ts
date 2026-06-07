@@ -5,6 +5,7 @@ import {
   type DiagramDocument,
   type DiagramEdge,
   type DiagramNode,
+  labelToPlainText,
 } from "@drawspec/core";
 import type {
   ArchitectureElement,
@@ -123,7 +124,7 @@ export function generateDynamicView(
     if (element === undefined) {
       diagnostics.push(
         invalidReference(
-          `Sequence participant '${node.label ?? node.id}' references missing architecture element '${modelRef}'.`,
+          `Sequence participant '${node.label === undefined ? node.id : labelToPlainText(node.label)}' references missing architecture element '${modelRef}'.`,
           node.id
         )
       );
@@ -142,7 +143,7 @@ export function generateDynamicView(
     if (source === undefined || target === undefined) {
       diagnostics.push(
         invalidReference(
-          `Sequence message '${sequenceEdge.label ?? sequenceEdge.id}' cannot be mapped because both participants need modelRef values.`,
+          `Sequence message '${sequenceEdge.label === undefined ? sequenceEdge.id : labelToPlainText(sequenceEdge.label)}' cannot be mapped because both participants need modelRef values.`,
           sequenceEdge.id
         )
       );
@@ -161,7 +162,7 @@ export function generateDynamicView(
     if (relationship === undefined) {
       diagnostics.push(
         invalidReference(
-          `Sequence message '${sequenceEdge.label ?? sequenceEdge.id}' has no matching architecture relationship from '${source.modelRef}' to '${target.modelRef}'.`,
+          `Sequence message '${sequenceEdge.label === undefined ? sequenceEdge.id : labelToPlainText(sequenceEdge.label)}' has no matching architecture relationship from '${source.modelRef}' to '${target.modelRef}'.`,
           sequenceEdge.id
         )
       );

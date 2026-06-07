@@ -231,6 +231,8 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
     const line = extractDirectiveText(node);
 
     if (line) {
+      const hasNext = hasRemainingDirectiveLines(node, line);
+
       const diagramMatch = DIAGRAM_RE.exec(line);
       if (diagramMatch) {
         const block: DocBlock = {
@@ -241,7 +243,9 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
           (block as { caption?: string }).caption = diagramMatch[2];
         }
         result.push(block);
-        i++;
+        if (!hasNext) {
+          i++;
+        }
         continue;
       }
 
@@ -253,7 +257,9 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
           source: sourceMatch[2],
           value: "",
         });
-        i++;
+        if (!hasNext) {
+          i++;
+        }
         continue;
       }
 
@@ -268,7 +274,9 @@ function convertBlocks(nodes: RemarkNode[]): DocBlock[] {
           (block as { variant?: BadgeVariant }).variant = variant;
         }
         result.push(block);
-        i++;
+        if (!hasNext) {
+          i++;
+        }
         continue;
       }
 
@@ -375,6 +383,29 @@ function extractDirectiveText(node: RemarkNode): string | null {
     }
   }
   return null;
+}
+
+function hasRemainingDirectiveLines(node: RemarkNode, matchedLine: string): boolean {
+  if (
+    node.type === "paragraph" &&
+    "children" in node &&
+    Array.isArray(node.children) &&
+    node.children[0]?.type === "text"
+  ) {
+    const firstChild = node.children[0] as { type: "text"; value?: string };
+    if (typeof firstChild.value !== "string") return false;
+    const lines = firstChild.value.split("\n");
+    const matchIdx = lines.findIndex((l) => l.trim() === matchedLine);
+    if (matchIdx === -1) return false;
+    const remaining = lines
+      .slice(matchIdx + 1)
+      .map((l) => l.trim())
+      .filter((l) => l.startsWith("@"));
+    if (remaining.length === 0) return false;
+    firstChild.value = remaining.join("\n");
+    return true;
+  }
+  return false;
 }
 
 function convertBlock(node: RemarkNode): DocBlock | null {

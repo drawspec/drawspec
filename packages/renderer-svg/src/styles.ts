@@ -7,12 +7,14 @@ export const lightTheme: SvgTheme = {
   background: "#ffffff",
   edgeStroke: "#475569",
   fontFamily: "Arial, sans-serif",
+  monospaceFontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   fontSize: 14,
   groupFill: "#f8fafc",
   groupStroke: "#94a3b8",
   nodeFill: "#f8fafc",
   nodeStroke: "#334155",
   text: "#0f172a",
+  link: "#2563eb",
 };
 
 /** @deprecated Use `lightTheme` instead. Kept for backward compatibility. */
@@ -24,12 +26,14 @@ export const darkTheme: SvgTheme = {
   background: "#0f172a",
   edgeStroke: "#94a3b8",
   fontFamily: "Arial, sans-serif",
+  monospaceFontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   fontSize: 14,
   groupFill: "#1e293b",
   groupStroke: "#475569",
   nodeFill: "#1e293b",
   nodeStroke: "#94a3b8",
   text: "#f8fafc",
+  link: "#60a5fa",
 };
 
 export const highContrastTheme: SvgTheme = {
@@ -38,12 +42,14 @@ export const highContrastTheme: SvgTheme = {
   background: "#ffffff",
   edgeStroke: "#000000",
   fontFamily: "Arial, sans-serif",
+  monospaceFontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   fontSize: 14,
   groupFill: "#ffffff",
   groupStroke: "#000000",
   nodeFill: "#ffffff",
   nodeStroke: "#000000",
   text: "#000000",
+  link: "#0000ee",
 };
 
 const themePresets: Record<string, SvgTheme> = {
@@ -62,7 +68,7 @@ export function resolveTheme(input: SvgThemeInput | undefined): SvgTheme {
   return { ...lightTheme, ...input };
 }
 
-const cssVariableMap: Record<keyof SvgTheme, string> = {
+const cssVariableMap: Partial<Record<keyof SvgTheme, string>> = {
   activationFill: "--ds-activation-fill",
   activationStroke: "--ds-activation-stroke",
   background: "--ds-background",
@@ -100,20 +106,38 @@ const lineStylePresets: Record<LineStyle, string> = {
 
 const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
   actor: { fill: "#eef2ff", stroke: "#4338ca" },
+  artifact: { fill: "#fefce8", stroke: "#a16207" },
+  choice: { fill: "#fff7ed", stroke: "#c2410c" },
   container: { fill: "#ecfeff", stroke: "#0891b2" },
   database: { fill: "#fef3c7", stroke: "#b45309" },
+  decision: { fill: "#fff7ed", stroke: "#c2410c" },
+  final: { fill: "#f8fafc", stroke: "#0f172a" },
+  fork: { fill: "#0f172a", stroke: "#0f172a" },
+  initial: { fill: "#0f172a", stroke: "#0f172a" },
+  join: { fill: "#0f172a", stroke: "#0f172a" },
+  note: { fill: "#fef9c3", stroke: "#ca8a04" },
   person: { fill: "#f0fdf4", stroke: "#15803d" },
   participant: { fill: "#f8fafc", stroke: "#334155" },
   sequence: { fill: "#f8fafc", stroke: "#334155" },
+  "use-case": { fill: "#f5f3ff", stroke: "#7c3aed" },
 };
 
 const darkKindDefaults: Record<string, Partial<ResolvedStyle>> = {
   actor: { fill: "#312e81", stroke: "#818cf8" },
+  artifact: { fill: "#422006", stroke: "#facc15" },
+  choice: { fill: "#431407", stroke: "#fb923c" },
   container: { fill: "#164e63", stroke: "#22d3ee" },
   database: { fill: "#713f12", stroke: "#f59e0b" },
+  decision: { fill: "#431407", stroke: "#fb923c" },
+  final: { fill: "#1e293b", stroke: "#f8fafc" },
+  fork: { fill: "#f8fafc", stroke: "#f8fafc" },
+  initial: { fill: "#f8fafc", stroke: "#f8fafc" },
+  join: { fill: "#f8fafc", stroke: "#f8fafc" },
+  note: { fill: "#422006", stroke: "#facc15" },
   person: { fill: "#14532d", stroke: "#4ade80" },
   participant: { fill: "#1e293b", stroke: "#94a3b8" },
   sequence: { fill: "#1e293b", stroke: "#94a3b8" },
+  "use-case": { fill: "#2e1065", stroke: "#c4b5fd" },
 };
 
 /** Per-edge-kind visual defaults for line style and arrowhead markers. */
@@ -150,6 +174,7 @@ interface StyleRule {
   fill?: string | number;
   fontFamily?: string | number;
   fontSize?: string | number;
+  link?: string | number;
   lineStyle?: string | number;
   labelBg?: string | number;
   stroke?: string | number;
@@ -218,6 +243,7 @@ function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedS
     fill: asString(rule.fill) ?? style.fill,
     fontFamily: asString(rule.fontFamily) ?? style.fontFamily,
     fontSize: asNumber(rule.fontSize) ?? style.fontSize,
+    link: asString(rule.link) ?? style.link,
     stroke: asString(rule.stroke) ?? style.stroke,
     strokeWidth: asNumber(rule.strokeWidth) ?? style.strokeWidth,
     labelBg: asString(rule.labelBg) ?? style.labelBg,
@@ -247,9 +273,13 @@ export function resolveStyle(
       ? { arrowEnd: "filled-triangle" as const, arrowStart: "filled-triangle" as const }
       : {}),
     fill: elementType === "edge" ? "none" : theme.nodeFill,
+    dividerStroke: theme.nodeStroke,
     fontFamily: theme.fontFamily,
     fontSize: theme.fontSize,
+    link: theme.link,
+    monospaceFontFamily: theme.monospaceFontFamily,
     labelBg: theme.background,
+    memberFontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
     stroke: elementType === "edge" ? theme.edgeStroke : theme.nodeStroke,
     strokeWidth: 1.5,
     text: theme.text,

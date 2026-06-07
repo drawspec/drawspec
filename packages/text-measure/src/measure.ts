@@ -96,10 +96,34 @@ export const CHARACTER_WIDTH_FACTORS: Readonly<Record<string, number>> = Object.
   "~": 0.68,
 } as const);
 
+const BOLD_WIDTH_MULTIPLIER = 1.08;
+const ITALIC_WIDTH_MULTIPLIER = 1.02;
+const MONOSPACE_WIDTH_FACTOR = 0.62;
+
+/** Formatted text segment accepted by deterministic rich text measurement helpers. */
+export interface RichTextSegment {
+  /** Segment text content. */
+  readonly text: string;
+  /** Whether this segment uses bold weight. */
+  readonly bold?: boolean;
+  /** Whether this segment uses italic style. */
+  readonly italic?: boolean;
+  /** Whether this segment uses monospace code metrics. */
+  readonly code?: boolean;
+  /** Link target carried through measurement-preserving transforms. */
+  readonly href?: string;
+}
+
+/** Rich text label content measured as a sequence of formatted segments. */
+export type RichText = readonly RichTextSegment[];
+
+/** Text content accepted by deterministic text measurement helpers. */
+export type TextContent = string | RichText;
+
 /** Interface for measuring text width. Deterministic, no DOM dependency. */
 export interface TextMeasurer {
   /** Measure label width in pixels for the provided font size. */
-  measure(label: string, fontSize: number): number;
+  measure(label: TextContent, fontSize: number): number;
 }
 
 /** Measure label width in pixels using deterministic per-character width factors. */
@@ -111,11 +135,31 @@ export function measureText(label: string, fontSize: number): number {
   return width * fontSize;
 }
 
+/** Measure rich text width in pixels using deterministic segment style multipliers. */
+export function measureRichText(label: RichText, fontSize: number): number {
+  return label.reduce((sum, segment) => sum + measureSegment(segment, fontSize), 0);
+}
+
+/** Measure plain or rich text content in pixels. */
+export function measureTextContent(label: TextContent, fontSize: number): number {
+  return typeof label === "string"
+    ? measureText(label, fontSize)
+    : measureRichText(label, fontSize);
+}
+
 /** Create the default deterministic text measurer. */
 export function createTextMeasurer(): TextMeasurer {
   return {
-    measure(label: string, fontSize: number): number {
-      return measureText(label, fontSize);
+    measure(label: TextContent, fontSize: number): number {
+      return measureTextContent(label, fontSize);
     },
   };
+}
+
+function measureSegment(segment: RichTextSegment, fontSize: number): number {
+  const baseWidth = segment.code
+    ? [...segment.text].length * MONOSPACE_WIDTH_FACTOR * fontSize
+    : measureText(segment.text, fontSize);
+  const boldWidth = segment.bold ? baseWidth * BOLD_WIDTH_MULTIPLIER : baseWidth;
+  return segment.italic ? boldWidth * ITALIC_WIDTH_MULTIPLIER : boldWidth;
 }

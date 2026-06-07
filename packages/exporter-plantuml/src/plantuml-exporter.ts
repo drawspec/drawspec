@@ -1,7 +1,8 @@
 import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
+import { labelToPlainText } from "@drawspec/core";
 
 function nodeLabel(node: DiagramNode): string {
-  return node.label ?? node.id;
+  return node.label === undefined ? node.id : labelToPlainText(node.label);
 }
 
 function arrowOp(direction?: "forward" | "backward" | "bidirectional" | "none"): string {
@@ -27,7 +28,7 @@ function exportSequence(doc: DiagramDocument): string[] {
   for (const node of doc.nodes) {
     if (node.kind === "participant" || node.kind === "actor") {
       const kw = node.kind === "actor" ? "actor" : "participant";
-      lines.push(`${kw} "${esc(node.label ?? node.id)}" as ${esc(node.id)}`);
+      lines.push(`${kw} "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
     }
   }
 
@@ -38,12 +39,14 @@ function exportSequence(doc: DiagramDocument): string[] {
       group.kind === "loop" ||
       group.kind === "par"
     ) {
-      lines.push(`${group.kind} ${esc(group.label ?? group.id)}`);
+      lines.push(
+        `${group.kind} ${esc(group.label === undefined ? group.id : labelToPlainText(group.label))}`
+      );
       const childEdges = (group.childIds ?? [])
         .map((cid) => doc.edges.find((e) => e.id === cid))
         .filter((e): e is DiagramEdge => e !== undefined);
       for (const edge of childEdges) {
-        const label = edge.label ? ` : ${esc(edge.label)}` : "";
+        const label = edge.label ? ` : ${esc(labelToPlainText(edge.label))}` : "";
         lines.push(
           `${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`
         );
@@ -55,7 +58,7 @@ function exportSequence(doc: DiagramDocument): string[] {
   const groupedEdgeIds = new Set(doc.groups.flatMap((g) => g.childIds ?? []));
   for (const edge of doc.edges) {
     if (!groupedEdgeIds.has(edge.id)) {
-      const label = edge.label ? ` : ${esc(edge.label)}` : "";
+      const label = edge.label ? ` : ${esc(labelToPlainText(edge.label))}` : "";
       lines.push(`${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`);
     }
   }
@@ -111,7 +114,7 @@ function exportClass(doc: DiagramDocument): string[] {
     else if (edge.kind === "aggregation") rel = "o--";
     else if (edge.kind === "dependency") rel = "..>";
     else if (edge.kind === "association") rel = "-->";
-    const label = edge.label ? ` ${esc(edge.label)}` : "";
+    const label = edge.label ? ` ${esc(labelToPlainText(edge.label))}` : "";
     const left = reverse ? tgt : src;
     const right = reverse ? src : tgt;
     lines.push(`"${esc(nodeLabel(left))}" ${rel} "${esc(nodeLabel(right))}"${label}`);
@@ -140,7 +143,9 @@ function exportState(doc: DiagramDocument): string[] {
         .map((cid) => doc.nodes.find((n) => n.id === cid))
         .filter((n): n is DiagramNode => n !== undefined);
       if (children.length > 0) {
-        lines.push(`state "${esc(group.label ?? group.id)}" {`);
+        lines.push(
+          `state "${esc(group.label === undefined ? group.id : labelToPlainText(group.label))}" {`
+        );
         for (const child of children) {
           if (child.kind === "start" || child.kind === "end") continue;
           lines.push(`  state "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
@@ -161,7 +166,7 @@ function exportState(doc: DiagramDocument): string[] {
     const src = doc.nodes.find((n) => n.id === edge.sourceId);
     const tgt = doc.nodes.find((n) => n.id === edge.targetId);
     if (!src || !tgt) continue;
-    const trigger = edge.label ? ` : ${esc(edge.label)}` : "";
+    const trigger = edge.label ? ` : ${esc(labelToPlainText(edge.label))}` : "";
     lines.push(`${stateRef(src.id)} --> ${stateRef(tgt.id)}${trigger}`);
   }
 
@@ -211,10 +216,10 @@ function exportActivity(doc: DiagramDocument): string[] {
       const children = (group.childIds ?? [])
         .map((cid) => nodeMap.get(cid))
         .filter((n): n is DiagramNode => n !== undefined);
-      const condition = group.label ?? group.id;
+      const condition = group.label === undefined ? group.id : labelToPlainText(group.label);
       lines.push(`if (${esc(condition)}) then (yes)`);
       for (const child of children) {
-        lines.push(`  :${esc(child.label ?? child.id)};`);
+        lines.push(`  :${esc(nodeLabel(child))};`);
       }
       lines.push("else (no)");
       lines.push("endif");
@@ -246,7 +251,7 @@ function exportComponent(doc: DiagramDocument): string[] {
     if (edge.kind === "uses" || edge.kind === "dependency") rel = "..>";
     else if (edge.kind === "provides") rel = "<..";
     else if (edge.kind === "composition") rel = "*--";
-    const label = edge.label ? ` ${esc(edge.label)}` : "";
+    const label = edge.label ? ` ${esc(labelToPlainText(edge.label))}` : "";
     const srcRef = src.kind === "interface" ? `"${esc(nodeLabel(src))}"` : esc(src.id);
     const tgtRef = tgt.kind === "interface" ? `"${esc(nodeLabel(tgt))}"` : esc(tgt.id);
     lines.push(`${srcRef} ${rel} ${tgtRef}${label}`);
@@ -283,7 +288,9 @@ function exportArchitecture(doc: DiagramDocument): string[] {
         .map((cid) => nodeMap.get(cid))
         .filter((n): n is DiagramNode => n !== undefined);
       if (children.length > 0) {
-        lines.push(`System(${esc(group.id)}, "${esc(group.label ?? group.id)}") {`);
+        lines.push(
+          `System(${esc(group.id)}, "${esc(group.label === undefined ? group.id : labelToPlainText(group.label))}") {`
+        );
         for (const child of children) {
           groupedNodeIds.add(child.id);
           const macro = c4Macro(child.kind);
@@ -303,7 +310,7 @@ function exportArchitecture(doc: DiagramDocument): string[] {
   }
 
   for (const edge of doc.edges) {
-    const label = edge.label ? `"${esc(edge.label)}"` : "";
+    const label = edge.label ? `"${esc(labelToPlainText(edge.label))}"` : "";
     lines.push(`Rel(${esc(edge.sourceId)}, ${esc(edge.targetId)}, ${label})`);
   }
 
@@ -357,7 +364,7 @@ function exportDeployment(doc: DiagramDocument): string[] {
   }
 
   for (const edge of doc.edges) {
-    const label = edge.label ? ` : ${esc(edge.label)}` : "";
+    const label = edge.label ? ` : ${esc(labelToPlainText(edge.label))}` : "";
     lines.push(`${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`);
   }
 
@@ -397,7 +404,9 @@ function exportGraph(doc: DiagramDocument): string[] {
       groupedNodeIds.add(child.id);
     }
 
-    lines.push(`${indent}package "${esc(group.label ?? group.id)}" {`);
+    lines.push(
+      `${indent}package "${esc(group.label === undefined ? group.id : labelToPlainText(group.label))}" {`
+    );
     for (const child of childNodes) {
       lines.push(`${indent}  rectangle "${esc(nodeLabel(child))}" as ${esc(child.id)}`);
     }
@@ -417,7 +426,7 @@ function exportGraph(doc: DiagramDocument): string[] {
   }
 
   for (const edge of doc.edges) {
-    const label = edge.label ? ` : ${esc(edge.label)}` : "";
+    const label = edge.label ? ` : ${esc(labelToPlainText(edge.label))}` : "";
     lines.push(`${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`);
   }
 
@@ -453,7 +462,7 @@ function exportGeneric(doc: DiagramDocument): string[] {
     lines.push(`rectangle "${esc(nodeLabel(node))}" as ${esc(node.id)}`);
   }
   for (const edge of doc.edges) {
-    const label = edge.label ? ` : ${esc(edge.label)}` : "";
+    const label = edge.label ? ` : ${esc(labelToPlainText(edge.label))}` : "";
     lines.push(`${esc(edge.sourceId)} ${arrowOp(edge.direction)} ${esc(edge.targetId)}${label}`);
   }
   return lines;

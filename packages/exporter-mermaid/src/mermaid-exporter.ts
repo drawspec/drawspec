@@ -5,6 +5,7 @@ import type {
   DiagramKind,
   DiagramNode,
 } from "@drawspec/core";
+import { labelToPlainText } from "@drawspec/core";
 
 const DIRECTION_MAP: Record<string, string> = {
   tb: "TD",
@@ -127,7 +128,7 @@ function renderGraphNodes(nodes: DiagramNode[], idMap: IdMap, indent: string): s
   return nodes.map((n) => {
     const id = nodeId(n, idMap);
     if (n.label) {
-      return `${indent}${id}["${escapeLabel(n.label)}"]`;
+      return `${indent}${id}["${escapeLabel(labelToPlainText(n.label))}"]`;
     }
     return `${indent}${id}`;
   });
@@ -146,7 +147,7 @@ function renderGraphEdges(
       const [src, tgt] = edgeEndpointIds(e, idMap);
       const arrow = edgeArrow(e);
       if (e.label) {
-        return `${indent}${src} ${arrow}|${escapeLabel(e.label)}| ${tgt}`;
+        return `${indent}${src} ${arrow}|${escapeLabel(labelToPlainText(e.label))}| ${tgt}`;
       }
       return `${indent}${src} ${arrow} ${tgt}`;
     });
@@ -154,7 +155,7 @@ function renderGraphEdges(
 
 function renderGroupDeclaration(group: DiagramGroup, idMap: IdMap, indent: string): string {
   const gid = idMap.get(group.id) ?? sanitizeId(group.id);
-  const label = group.label ? `["${escapeLabel(group.label)}"]` : "";
+  const label = group.label ? `["${escapeLabel(labelToPlainText(group.label))}"]` : "";
   return `${indent}subgraph ${gid}${label}`;
 }
 
@@ -210,7 +211,7 @@ function renderSequence(doc: DiagramDocument): string {
   const nodeIds = new Set(doc.nodes.map((n) => n.id));
 
   for (const node of doc.nodes) {
-    const label = node.label ?? node.id;
+    const label = node.label === undefined ? node.id : labelToPlainText(node.label);
     lines.push(`  participant ${nodeId(node, idMap)} as ${escapeLabel(label)}`);
   }
 
@@ -224,7 +225,7 @@ function renderSequence(doc: DiagramDocument): string {
     const tgt = idMap.get(edge.targetId) ?? sanitizeId(edge.targetId);
     const arrow = edge.kind === "dashed" || edge.kind === "return" ? "-->>" : "->>";
     if (edge.label) {
-      lines.push(`  ${src}${arrow}${tgt}: ${escapeLabel(edge.label)}`);
+      lines.push(`  ${src}${arrow}${tgt}: ${escapeLabel(labelToPlainText(edge.label))}`);
     } else {
       lines.push(`  ${src}${arrow}${tgt}`);
     }
@@ -272,8 +273,9 @@ function renderStateDiagram(doc: DiagramDocument): string {
 
   for (const node of doc.nodes) {
     const id = nodeId(node, idMap);
-    if (node.label && node.label !== node.id) {
-      lines.push(`  state "${escapeLabel(node.label)}" as ${id}`);
+    const label = node.label === undefined ? undefined : labelToPlainText(node.label);
+    if (label !== undefined && label !== node.id) {
+      lines.push(`  state "${escapeLabel(label)}" as ${id}`);
     } else {
       lines.push(`  state ${id}`);
     }
@@ -283,7 +285,7 @@ function renderStateDiagram(doc: DiagramDocument): string {
     const src = idMap.get(edge.sourceId) ?? sanitizeId(edge.sourceId);
     const tgt = idMap.get(edge.targetId) ?? sanitizeId(edge.targetId);
     if (edge.label) {
-      lines.push(`  ${src} --> ${tgt}: ${escapeLabel(edge.label)}`);
+      lines.push(`  ${src} --> ${tgt}: ${escapeLabel(labelToPlainText(edge.label))}`);
     } else {
       lines.push(`  ${src} --> ${tgt}`);
     }
@@ -308,7 +310,7 @@ function renderErDiagram(doc: DiagramDocument): string {
             ? "}o--o{"
             : "||--o{";
     if (edge.label) {
-      lines.push(`  ${src} ${rel} ${tgt}: "${escapeLabel(edge.label)}"`);
+      lines.push(`  ${src} ${rel} ${tgt}: "${escapeLabel(labelToPlainText(edge.label))}"`);
     } else {
       lines.push(`  ${src} ${rel} ${tgt}`);
     }

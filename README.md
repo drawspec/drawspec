@@ -55,6 +55,8 @@ bunx drawspec serve .
 | [@drawspec/layout](packages/layout) | Layout engine interfaces and sequence layout |
 | [@drawspec/layout-dagre](packages/layout-dagre) | Dagre-based graph layout (dagrejs) |
 | [@drawspec/layout-elk](packages/layout-elk) | ELK-based graph layout (Eclipse Layout Kernel) |
+| [@drawspec/layout-force](packages/layout-force) | Deterministic force-directed graph layout |
+| [@drawspec/layout-tree](packages/layout-tree) | Deterministic rooted-forest tree layout |
 | [@drawspec/layout-wasm](packages/layout-wasm) | WASM layout adapter with TypeScript fallback |
 | [@drawspec/renderer-svg](packages/renderer-svg) | Deterministic SVG rendering |
 | [@drawspec/cache](packages/cache) | Persistent cache (filesystem + SQLite backends) |

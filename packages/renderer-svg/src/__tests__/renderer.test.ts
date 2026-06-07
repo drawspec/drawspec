@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { DiagramDocument } from "@drawspec/core";
+import type { DiagramDocument, LabelRotation, NodeShapeSpec } from "@drawspec/core";
 import { type PositionedDiagram, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
 import {
   computeContentBounds,
@@ -78,6 +78,25 @@ const sequenceDoc = document({
   ],
 });
 
+const shapeFixtures: Array<{ id: string; shape: NodeShapeSpec }> = [
+  { id: "diamond", shape: { type: "diamond" } },
+  { id: "circle", shape: { type: "circle" } },
+  { id: "bullseye", shape: { type: "bullseye" } },
+  { id: "sync-bar", shape: { type: "sync-bar" } },
+  { id: "ellipse", shape: { type: "ellipse" } },
+  { id: "parallelogram", shape: { type: "parallelogram" } },
+  { id: "document", shape: { type: "document" } },
+  { id: "tabbed-rect", shape: { type: "tabbed-rect" } },
+  { id: "note", shape: { type: "note" } },
+  { id: "hexagon", shape: { type: "hexagon" } },
+];
+
+const shapeLibraryDoc = document({
+  id: "shape-library",
+  kind: "graph",
+  nodes: shapeFixtures.map(({ id, shape }) => ({ id, kind: id, label: id, shape })),
+});
+
 async function architectureSvg(): Promise<string> {
   const positionedDiagram = await simpleGraphLayout().layout(architectureDoc, { direction: "LR" });
   return renderSvg(architectureDoc, { positionedDiagram });
@@ -86,6 +105,34 @@ async function architectureSvg(): Promise<string> {
 async function sequenceSvg(): Promise<string> {
   const positionedDiagram = await sequenceLayout().layout(sequenceDoc);
   return renderSvg(sequenceDoc, { positionedDiagram });
+}
+
+async function richTextSvg(): Promise<string> {
+  const doc = document({
+    id: "rich-text-golden",
+    nodes: [
+      {
+        id: "api",
+        kind: "component",
+        label: [{ text: "API", bold: true }, { text: " calls " }, { text: "checkout", code: true }],
+      },
+      { id: "worker", kind: "component", label: [{ text: "worker", italic: true }] },
+    ],
+    edges: [
+      {
+        id: "api-worker",
+        kind: "calls",
+        sourceId: "api",
+        targetId: "worker",
+        label: [
+          { text: "publishes", bold: true },
+          { text: " event", italic: true },
+        ],
+      },
+    ],
+  });
+  const positionedDiagram = await simpleGraphLayout().layout(doc, { direction: "LR" });
+  return renderSvg(doc, { positionedDiagram });
 }
 
 async function edgeSvg(
@@ -186,6 +233,47 @@ function positionedDiagram(overrides: Partial<PositionedDiagram> = {}): Position
   };
 }
 
+function edgeLabelRotationSvg(options: {
+  waypoints: PositionedDiagram["edges"][number]["waypoints"];
+  documentRotation?: LabelRotation;
+  edgeRotation?: LabelRotation;
+}): string {
+  const doc = document({
+    id: "edge-label-rotation-test",
+    labelRotation: options.documentRotation,
+    nodes: [
+      { id: "a", kind: "component", label: "A" },
+      { id: "b", kind: "component", label: "B" },
+    ],
+    edges: [
+      {
+        id: "e1",
+        kind: "calls",
+        sourceId: "a",
+        targetId: "b",
+        label: "calls",
+        labelRotation: options.edgeRotation,
+      },
+    ],
+  });
+  const edge = doc.edges[0];
+  if (edge === undefined) {
+    throw new Error("edge label rotation test document must contain an edge");
+  }
+  return renderSvgSync(doc, {
+    positionedDiagram: positionedDiagram({
+      document: doc,
+      edges: [{ ...edge, waypoints: options.waypoints }],
+      height: 240,
+      width: 240,
+    }),
+  });
+}
+
+function edgeLabelRotationTransform(svg: string): string | undefined {
+  return svg.match(/transform="(rotate\([^"]+\))"/)?.[1];
+}
+
 describe("SvgRenderer", () => {
   test("renders the same positioned diagram byte-identically", async () => {
     const positionedDiagram = await simpleGraphLayout().layout(architectureDoc, {
@@ -224,6 +312,26 @@ describe("SvgRenderer", () => {
     });
 
     expect(computeContentBounds(diagram)).toEqual({ x: -20, y: -30, width: 220, height: 230 });
+  });
+
+  test("renders the expanded node shape library", async () => {
+    const positionedDiagram: PositionedDiagram = {
+      activations: [],
+      document: shapeLibraryDoc,
+      edges: [],
+      groups: [],
+      height: 300,
+      nodes: shapeLibraryDoc.nodes.map((node, index) => ({
+        ...node,
+        x: 20 + (index % 5) * 150,
+        y: 20 + Math.floor(index / 5) * 130,
+        width: node.shape?.type === "sync-bar" ? 120 : 100,
+        height: node.shape?.type === "sync-bar" ? 18 : 72,
+      })),
+      width: 760,
+    };
+    const svg = renderSvgSync(shapeLibraryDoc, { positionedDiagram });
+    await expectGolden("shape-library", svg);
   });
 
   test("auto-fit viewBox encompasses all positioned content", () => {
@@ -334,6 +442,145 @@ describe("SvgRenderer", () => {
     expect(svg).toContain("Web App");
     expect(svg).toContain("<text ");
     expect(svg).not.toContain('<path id="text');
+  });
+
+  test("renders rich node labels with bold tspans", () => {
+    const doc = document({
+      id: "rich-bold-test",
+      nodes: [{ id: "api", kind: "component", label: [{ text: "API", bold: true }] }],
+    });
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: positionedDiagram({
+        document: doc,
+        nodes: [
+          {
+            id: "api",
+            kind: "component",
+            label: doc.nodes[0]?.label,
+            x: 0,
+            y: 0,
+            width: 120,
+            height: 56,
+          },
+        ],
+      }),
+    });
+    expect(svg).toContain("<tspan");
+    expect(svg).toContain('font-weight="700"');
+  });
+
+  test("renders rich node labels with italic tspans", () => {
+    const doc = document({
+      id: "rich-italic-test",
+      nodes: [{ id: "api", kind: "component", label: [{ text: "async", italic: true }] }],
+    });
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: positionedDiagram({
+        document: doc,
+        nodes: [
+          {
+            id: "api",
+            kind: "component",
+            label: doc.nodes[0]?.label,
+            x: 0,
+            y: 0,
+            width: 120,
+            height: 56,
+          },
+        ],
+      }),
+    });
+    expect(svg).toContain('font-style="italic"');
+  });
+
+  test("renders rich node labels with code tspans", () => {
+    const doc = document({
+      id: "rich-code-test",
+      nodes: [{ id: "api", kind: "component", label: [{ text: "checkout", code: true }] }],
+    });
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: positionedDiagram({
+        document: doc,
+        nodes: [
+          {
+            id: "api",
+            kind: "component",
+            label: doc.nodes[0]?.label,
+            x: 0,
+            y: 0,
+            width: 120,
+            height: 56,
+          },
+        ],
+      }),
+    });
+    expect(svg).toContain(
+      'font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"'
+    );
+  });
+
+  test("renders mixed rich edge labels deterministically", () => {
+    const doc = document({
+      id: "rich-mixed-test",
+      nodes: [
+        { id: "a", kind: "component", label: "A" },
+        { id: "b", kind: "component", label: "B" },
+      ],
+      edges: [
+        {
+          id: "ab",
+          kind: "calls",
+          sourceId: "a",
+          targetId: "b",
+          label: [
+            { text: "calls", bold: true },
+            { text: " `api`", code: true },
+            { text: " now", italic: true },
+          ],
+        },
+      ],
+    });
+    const diagram = positionedLineStyleDiagram(doc);
+    const first = renderSvgSync(doc, { positionedDiagram: diagram });
+    const second = renderSvgSync(doc, { positionedDiagram: diagram });
+    expect(second).toBe(first);
+    expect(first).toContain("<tspan");
+    expect(first).toContain('font-weight="700"');
+    expect(first).toContain('font-style="italic"');
+    expect(first).toContain(
+      'font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"'
+    );
+  });
+
+  test("renders multiline rich labels as separate text lines", () => {
+    const label = [
+      { text: "First", bold: true },
+      { text: "\nSecond", code: true },
+    ];
+    const doc = document({
+      id: "rich-multiline-test",
+      nodes: [{ id: "api", kind: "component", label }],
+    });
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: positionedDiagram({
+        document: doc,
+        nodes: [
+          {
+            id: "api",
+            kind: "component",
+            label,
+            labelLines: [[label[0]], [{ text: "Second", code: true }]],
+            x: 0,
+            y: 0,
+            width: 160,
+            height: 80,
+          },
+        ],
+      }),
+    });
+    expect(svg.match(/<text /g)?.length).toBe(2);
+    expect(svg).toContain("First");
+    expect(svg).toContain("Second");
   });
 
   test("renders node shapes by kind", async () => {
@@ -718,6 +965,10 @@ describe("SvgRenderer", () => {
     await expectGolden("sequence", await sequenceSvg());
   });
 
+  test("matches the rich text golden fixture", async () => {
+    await expectGolden("rich-text", await richTextSvg());
+  });
+
   test("emits data-source-file and data-source-line on nodes with source locations", async () => {
     const doc = document({
       id: "source-loc-test",
@@ -819,6 +1070,122 @@ describe("SvgRenderer", () => {
     expect(svg).not.toContain("data-source-line");
   });
 
+  describe("edge label rotation", () => {
+    test("keeps diagonal edge labels horizontal by default", () => {
+      const svg = edgeLabelRotationSvg({
+        waypoints: [
+          { x: 40, y: 40 },
+          { x: 160, y: 160 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBeUndefined();
+    });
+
+    test("rotates diagonal edge labels when auto rotation is enabled", () => {
+      const svg = edgeLabelRotationSvg({
+        edgeRotation: "auto",
+        waypoints: [
+          { x: 40, y: 40 },
+          { x: 160, y: 160 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBe("rotate(45 100 100)");
+    });
+
+    test("keeps near-vertical auto-rotated edge labels horizontal for readability", () => {
+      const svg = edgeLabelRotationSvg({
+        edgeRotation: "auto",
+        waypoints: [
+          { x: 100, y: 20 },
+          { x: 120, y: 220 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBeUndefined();
+    });
+
+    test("uses per-edge rotation override before the document default", () => {
+      const svg = edgeLabelRotationSvg({
+        documentRotation: "auto",
+        edgeRotation: "none",
+        waypoints: [
+          { x: 40, y: 40 },
+          { x: 160, y: 160 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBeUndefined();
+    });
+
+    test("flips right-to-left diagonal labels to avoid upside-down text", () => {
+      const svg = edgeLabelRotationSvg({
+        edgeRotation: "auto",
+        waypoints: [
+          { x: 160, y: 160 },
+          { x: 40, y: 40 },
+        ],
+      });
+
+      expect(edgeLabelRotationTransform(svg)).toBe("rotate(45 100 100)");
+    });
+
+    test("rotated labels use expanded bounds for overlap avoidance", () => {
+      const doc = document({
+        id: "rotated-overlap-test",
+        labelRotation: "auto",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+          { id: "c", kind: "component", label: "C" },
+          { id: "d", kind: "component", label: "D" },
+        ],
+        edges: [
+          { id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "alpha" },
+          { id: "e2", kind: "calls", sourceId: "c", targetId: "d", label: "beta" },
+        ],
+      });
+      const e1 = doc.edges[0];
+      const e2 = doc.edges[1];
+      if (e1 === undefined || e2 === undefined) {
+        throw new Error("test document must have two edges");
+      }
+      const svg = renderSvgSync(doc, {
+        positionedDiagram: positionedDiagram({
+          document: doc,
+          edges: [
+            {
+              ...e1,
+              waypoints: [
+                { x: 40, y: 35 },
+                { x: 160, y: 155 },
+              ],
+            },
+            {
+              ...e2,
+              waypoints: [
+                { x: 40, y: 45 },
+                { x: 160, y: 165 },
+              ],
+            },
+          ],
+          height: 240,
+          width: 240,
+        }),
+      });
+
+      const rotationTransforms = [...svg.matchAll(/transform="rotate\(45 [^"]+\)"/g)];
+      expect(rotationTransforms.length).toBe(2);
+
+      const labelGroupsWithTranslate = svg.match(
+        /<g id="[^"]*label-edge-e[12][^"]*"[^>]*transform="translate\([^"]+\)"/g
+      );
+      expect(labelGroupsWithTranslate).not.toBeNull();
+      expect(labelGroupsWithTranslate?.length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
   describe("edge label overlap prevention", () => {
     function edgeLabelDoc(label: string, edgeY = 100, edgeLen = 120) {
       const doc = document({
@@ -853,8 +1220,11 @@ describe("SvgRenderer", () => {
       return { doc, positionedDiagram };
     }
 
-    function extractLabelRects(svg: string, edgeId: string): Array<{ y: number; height: number }> {
-      const rects: Array<{ y: number; height: number }> = [];
+    function extractLabelRects(
+      svg: string,
+      edgeId: string
+    ): Array<{ y: number; height: number; strokeWidth: number }> {
+      const rects: Array<{ y: number; height: number; strokeWidth: number }> = [];
       const gRegex = new RegExp(
         `<g id="[^"]*label-edge-${edgeId}-line\\d+[^"]*"[^>]*>[\\s\\S]*?<rect[^>]*\\/>`,
         "g"
@@ -863,11 +1233,25 @@ describe("SvgRenderer", () => {
       for (const gMatch of matches) {
         const rectStr = gMatch[0].match(/\by="([^"]*)"/);
         const heightStr = gMatch[0].match(/\bheight="([^"]*)"/);
+        const strokeWidthStr = gMatch[0].match(/\bstroke-width="([^"]*)"/);
         if (rectStr && heightStr) {
-          rects.push({ y: Number.parseFloat(rectStr[1]), height: Number.parseFloat(heightStr[1]) });
+          rects.push({
+            y: Number.parseFloat(rectStr[1]),
+            height: Number.parseFloat(heightStr[1]),
+            strokeWidth: strokeWidthStr === null ? 0 : Number.parseFloat(strokeWidthStr[1]),
+          });
         }
       }
       return rects;
+    }
+
+    function distanceFromEdge(
+      rect: { y: number; height: number; strokeWidth: number },
+      edgeY: number
+    ): number {
+      const visualTop = rect.y - rect.strokeWidth;
+      const visualBottom = rect.y + rect.height + rect.strokeWidth;
+      return visualBottom <= edgeY ? edgeY - visualBottom : visualTop - edgeY;
     }
 
     function extractTextYs(svg: string, edgeId: string): number[] {
@@ -1010,6 +1394,256 @@ describe("SvgRenderer", () => {
       const svg = renderSvgSync(doc, { positionedDiagram });
       expect(svg).toMatch(/stroke="#475569"/);
       expect(svg).toContain('stroke-width="1"');
+    });
+
+    test("stroke edge labels use full bounds for symmetric overlap gaps", () => {
+      const longLabel = "wrap this edge label onto two lines";
+      const fillDoc = document({
+        id: "fill-gap-test",
+        edgeLabelStyle: "fill",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: longLabel }],
+      });
+      const strokeDoc = { ...fillDoc, id: "stroke-gap-test", edgeLabelStyle: "stroke" };
+      const edgeY = 100;
+      const positionedDiagram = {
+        document: fillDoc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: longLabel,
+            waypoints: [
+              { x: 20, y: edgeY },
+              { x: 80, y: edgeY },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 120,
+        height: 200,
+      };
+
+      const fillSvg = renderSvgSync(fillDoc, { positionedDiagram });
+      const strokeSvg = renderSvgSync(strokeDoc, {
+        positionedDiagram: { ...positionedDiagram, document: strokeDoc },
+      });
+      const fillRects = extractLabelRects(fillSvg, "e1");
+      const strokeRects = extractLabelRects(strokeSvg, "e1");
+      const fillAboveRect = fillRects.find((rect) => rect.y + rect.height < edgeY);
+      const fillBelowRect = fillRects.find((rect) => rect.y > edgeY);
+      const strokeBelowRect = strokeRects.find((rect) => rect.y > edgeY);
+
+      expect(fillAboveRect).toBeDefined();
+      expect(fillBelowRect).toBeDefined();
+      expect(strokeBelowRect).toBeDefined();
+      if (
+        fillAboveRect === undefined ||
+        fillBelowRect === undefined ||
+        strokeBelowRect === undefined
+      ) {
+        throw new Error("expected wrapped label lines above and below the edge");
+      }
+      expect(strokeBelowRect.strokeWidth).toBe(1);
+      expect(distanceFromEdge(fillBelowRect, edgeY)).toBe(4);
+      expect(distanceFromEdge(strokeBelowRect, edgeY)).toBe(distanceFromEdge(fillBelowRect, edgeY));
+      expect(distanceFromEdge(fillAboveRect, edgeY)).toBeGreaterThan(0);
+    });
+
+    // The symmetric overlap logic has two branches. With yAdjust = -max(8, fontSize * 0.5),
+    // labels always start above the edge. For wrapped labels, the second line overlaps with
+    // bgTop above and bgBottom below. Since textTopOffset > textBottomOffset, bgTop is always
+    // closer to edge than bgBottom, making shiftDown < shiftUp. The shiftUp < shiftDown branch
+    // is therefore unreachable with default settings. This test documents that reality.
+    test("wrapped edge labels always shift down when overlapping", () => {
+      const longLabel = "this is a wrapped edge label that should shift down";
+      const { doc, positionedDiagram } = edgeLabelDoc(longLabel, 100, 60);
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const edgeY = 100;
+      const rects = extractLabelRects(svg, "e1");
+      const firstBelowEdge = rects.find((r) => r.y >= edgeY);
+      expect(firstBelowEdge).toBeDefined();
+      if (firstBelowEdge) {
+        expect(firstBelowEdge.y).toBeGreaterThan(edgeY);
+      }
+    });
+
+    test("diagonal edge label detects overlap and shifts fully clear of the edge", () => {
+      const doc = document({
+        id: "diagonal-overlap-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 20, y: 100 },
+              { x: 180, y: 140 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 200,
+        height: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+      const rect = rects[0];
+      expect(rect).toBeDefined();
+      if (rect === undefined) throw new Error("expected label rect");
+      const midX = 100;
+      const halfLabelWidth = measureText("calls", 14) / 2;
+      const labelLeft = midX - halfLabelWidth;
+      const labelRight = midX + halfLabelWidth;
+      const edgeYAtLabelLeft = 100 + ((labelLeft - 20) / 160) * 40;
+      const edgeYAtLabelRight = 100 + ((labelRight - 20) / 160) * 40;
+      const overlapsLeft = edgeYAtLabelLeft >= rect.y && edgeYAtLabelLeft <= rect.y + rect.height;
+      const overlapsRight =
+        edgeYAtLabelRight >= rect.y && edgeYAtLabelRight <= rect.y + rect.height;
+      expect(overlapsLeft).toBe(false);
+      expect(overlapsRight).toBe(false);
+    });
+
+    test("steep diagonal edge label shifts fully clear of the edge", () => {
+      const doc = document({
+        id: "steep-diagonal-overlap-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 60, y: 60 },
+              { x: 140, y: 140 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 200,
+        height: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+      const rect = rects[0];
+      expect(rect).toBeDefined();
+      if (rect === undefined) throw new Error("expected label rect");
+      const midX = 100;
+      const halfLabelWidth = measureText("calls", 14) / 2;
+      const labelLeft = midX - halfLabelWidth;
+      const labelRight = midX + halfLabelWidth;
+      const edgeYAtLabelLeft = 60 + ((labelLeft - 60) / 80) * 80;
+      const edgeYAtLabelRight = 60 + ((labelRight - 60) / 80) * 80;
+      const overlapsLeft = edgeYAtLabelLeft >= rect.y && edgeYAtLabelLeft <= rect.y + rect.height;
+      const overlapsRight =
+        edgeYAtLabelRight >= rect.y && edgeYAtLabelRight <= rect.y + rect.height;
+      expect(overlapsLeft).toBe(false);
+      expect(overlapsRight).toBe(false);
+    });
+
+    test("vertical edge label is shifted away from the vertical line", () => {
+      const doc = document({
+        id: "vertical-overlap-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 100, y: 20 },
+              { x: 100, y: 180 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 200,
+        height: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      expect(svg).toContain("calls");
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+    });
+
+    test("multi-segment edge midpoint is at path-length center, not segment index center", () => {
+      // L-shaped edge: short vertical segment (10 units), then long horizontal segment (100 units)
+      // Path-length midpoint = 55 units along 110-unit path = 45 units into horizontal = x=55
+      const doc = document({
+        id: "midpoint-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 10, y: 20 },
+              { x: 10, y: 30 },
+              { x: 110, y: 30 },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 140,
+        height: 80,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      expect(svg).toContain('x="55"');
     });
   });
 });

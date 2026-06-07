@@ -1,5 +1,10 @@
 import type { LabelOverflow } from "@drawspec/core";
-import { truncateText, wrapText } from "@drawspec/text-measure";
+import {
+  truncateText,
+  truncateTextContent,
+  wrapText,
+  wrapTextContent,
+} from "@drawspec/text-measure";
 import { LayoutCache } from "./cache";
 import { normalizeLayoutOptions } from "./options";
 import { sizeNode } from "./sizing";
@@ -9,6 +14,7 @@ import type {
   DiagramEdge,
   DiagramGroup,
   DiagramNode,
+  LabelLine,
   LayoutEngine,
   LayoutOptions,
   NodeContentLayout,
@@ -28,7 +34,7 @@ interface SequenceOperand {
 interface SizedSequenceNode extends DiagramNode {
   computedWidth: number;
   computedHeight: number;
-  labelLines: string[];
+  labelLines: LabelLine[];
   contentLayout: NodeContentLayout;
 }
 
@@ -257,8 +263,8 @@ function positionGroups(
     const groupLabelLines =
       group.label !== undefined
         ? groupOverflow === "truncate"
-          ? [truncateText(group.label, xBounds.width - 24, 14)]
-          : wrapText(group.label, xBounds.width - 24, 14)
+          ? [truncateTextContent(group.label, xBounds.width - 24, 14)]
+          : wrapTextContent(group.label, xBounds.width - 24, 14)
         : undefined;
 
     return {

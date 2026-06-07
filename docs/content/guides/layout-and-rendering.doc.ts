@@ -90,6 +90,20 @@ const positioned = await engine.layout(document, {
 });
 \`\`\`
 
+### Node Shapes
+
+DrawSpec nodes can carry an explicit \`shape\` in the core IR. The SVG renderer supports the standard rectangle family plus UML and flowchart shapes for richer diagrams:
+
+- \`diamond\` for decisions and choices
+- \`circle\` and \`bullseye\` for initial and final states
+- \`sync-bar\` for activity forks and joins
+- \`ellipse\` for use cases
+- \`parallelogram\` for input/output steps
+- \`document\`, \`tabbed-rect\`, and \`note\` for artifacts, components, and notes
+- \`hexagon\` for general six-sided nodes
+
+Layout normalizes common UML node kinds to these shapes automatically, and auto-sizing reserves extra bounds for geometry such as diamonds, circles, and synchronization bars.
+
 ## SVG Rendering
 
 Render positioned diagrams to SVG using the SVG renderer:

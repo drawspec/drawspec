@@ -4,11 +4,16 @@ import type {
   DiagramGroup,
   DiagramNode,
   IconSpec,
+  LabelContent,
+  NodeCompartmentLine,
 } from "@drawspec/core";
-import type { TextMeasurer } from "@drawspec/text-measure";
+import type { RichText, TextMeasurer } from "@drawspec/text-measure";
 import type { NormalizedNodeSizingOptions } from "./sizing";
 
-export type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode, TextMeasurer };
+export type { DiagramDocument, DiagramEdge, DiagramGroup, DiagramNode, LabelContent, TextMeasurer };
+
+/** A single measured label line, preserving rich text segments when provided. */
+export type LabelLine = string | RichText;
 
 /** Direction in which graph ranks progress. */
 export type LayoutDirection = "TB" | "BT" | "LR" | "RL";
@@ -37,9 +42,33 @@ export interface PositionedIcon extends Size, Point {
 /** Computed content positions within a node, relative to the node origin. */
 export interface NodeContentLayout {
   /** Label anchor and wrapped/truncated lines, relative to the node origin. */
-  label?: { x: number; y: number; lines: string[] };
+  label?: { x: number; y: number; lines: LabelLine[] };
   /** Icons positioned relative to the node origin. */
   icons: readonly PositionedIcon[];
+  /** Compartment geometry and text positions, relative to the node origin. */
+  compartments?: readonly PositionedCompartment[];
+}
+
+/** Text line positioned inside a node compartment. */
+export interface PositionedCompartmentLine extends NodeCompartmentLine {
+  /** Stable text line identifier scoped to the node. */
+  id: string;
+  /** X coordinate relative to the node origin. */
+  x: number;
+  /** Baseline Y coordinate relative to the node origin. */
+  y: number;
+}
+
+/** Compartment section positioned inside a node. */
+export interface PositionedCompartment extends Size, Point {
+  /** Stable compartment identifier scoped to the node. */
+  id: string;
+  /** Optional section heading rendered before content lines. */
+  header?: PositionedCompartmentLine;
+  /** Positioned text lines in deterministic render order. */
+  lines: readonly PositionedCompartmentLine[];
+  /** Divider Y coordinate relative to the node origin, omitted for the first compartment. */
+  dividerY?: number;
 }
 
 export interface LayoutSpacing {
@@ -90,7 +119,7 @@ export interface LayoutOptions {
 
 export interface PositionedNode extends DiagramNode, Size, Point {
   /** Pre-computed label lines from auto-sizing. Present when sizing mode is "auto". */
-  labelLines?: string[];
+  labelLines?: LabelLine[];
   /** Pre-computed label and icon positions inside this node. */
   contentLayout?: NodeContentLayout;
 }
@@ -103,7 +132,7 @@ export interface PositionedEdge extends DiagramEdge {
 
 export interface PositionedGroup extends DiagramGroup, Size, Point {
   lanes?: PositionedGroupLane[];
-  labelLines?: string[];
+  labelLines?: LabelLine[];
 }
 
 export interface PositionedGroupLane extends Size, Point {

@@ -71,6 +71,10 @@ export interface ColorPalette {
   divider: string;
   /** Disabled element color. */
   disabled: string;
+  /** Background color for inline code labels. */
+  codeBackground: string;
+  /** Link text color for formatted labels. */
+  link: string;
 }
 
 /** Font size tokens for diagram labels and captions. */
@@ -99,6 +103,8 @@ export interface TypographyWeightConfig {
 export interface TypographyConfig {
   /** CSS font-family value used for diagram text. */
   fontFamily: string;
+  /** CSS monospace font-family value used for inline code label segments. */
+  monospaceFontFamily: string;
   /** Semantic font sizes. */
   sizes: TypographySizeConfig;
   /** Semantic font weights. */
@@ -234,6 +240,32 @@ export interface StyleSheet {
 
 export type LabelOverflow = "wrap" | "truncate";
 
+/** Controls how edge labels are rotated relative to the edge angle.
+ * - "none" — Always horizontal (default)
+ * - "auto" — Rotate to follow edge angle, flip if upside-down
+ */
+export type LabelRotation = "none" | "auto";
+
+/** A segment of formatted text within a label. */
+export interface TextSegment {
+  /** Segment text content. */
+  readonly text: string;
+  /** Render this segment with the theme bold font weight. */
+  readonly bold?: boolean;
+  /** Render this segment with italic font style. */
+  readonly italic?: boolean;
+  /** Render this segment with the theme monospace font family. */
+  readonly code?: boolean;
+  /** Link target for future interactive renderers. */
+  readonly href?: string;
+}
+
+/** Rich text label content represented as ordered formatted text segments. */
+export type RichText = readonly TextSegment[];
+
+/** Label content accepted by diagram elements. Strings remain fully backward compatible. */
+export type LabelContent = string | RichText;
+
 /** Visual style for edge label containers. */
 export type EdgeLabelStyle = "fill" | "stroke" | "both" | "none";
 
@@ -252,6 +284,8 @@ export interface DiagramDocument {
   labelOverflow?: LabelOverflow;
   /** Default edge label container style. Default: "fill". */
   edgeLabelStyle?: EdgeLabelStyle;
+  /** Default label rotation mode for all edges. Default: "none". */
+  labelRotation?: LabelRotation;
   styles?: StyleSheet;
   metadata?: Record<string, unknown>;
   diagnostics?: Diagnostic[];
@@ -357,16 +391,73 @@ export type IconSpec = BuiltinIconSpec | TextIconSpec | ImageIconSpec;
 
 /** Shape of a node's outer geometry. */
 export type NodeShapeSpec =
+  /** Rounded rectangle with an optional corner radius. */
   | { type: "rounded-rect"; radius?: number }
+  /** Plain rectangle. */
   | { type: "rect" }
+  /** Database-style cylinder with an optional top/bottom curve height. */
   | { type: "cylinder"; curve?: number }
+  /** Decision or choice diamond. */
+  | { type: "diamond" }
+  /** Circular state or event marker. */
+  | { type: "circle" }
+  /** UML final-state marker rendered as concentric circles. */
+  | { type: "bullseye" }
+  /** Activity fork/join synchronization bar. */
+  | { type: "sync-bar" }
+  /** Ellipse for use cases and oval nodes. */
+  | { type: "ellipse" }
+  /** Skewed rectangle used for flowchart input/output nodes. */
+  | { type: "parallelogram" }
+  /** Document shape with a waved bottom edge. */
+  | { type: "document" }
+  /** UML component-style rectangle with a top-right tab. */
+  | { type: "tabbed-rect" }
+  /** UML note with a folded corner. */
+  | { type: "note" }
+  /** General six-sided polygon node. */
+  | { type: "hexagon" }
+  /** No visible outer geometry. */
   | { type: "none" };
+
+/** Semantic role for a text line rendered inside a node compartment. */
+export type NodeCompartmentTextRole = "name" | "stereotype" | "header" | "member" | "value";
+
+/** Inline text entry rendered inside a node compartment. */
+export interface NodeCompartmentLine {
+  /** Text content to render. */
+  text: string;
+  /** Semantic role used by renderers for deterministic styling. */
+  role?: NodeCompartmentTextRole;
+  /** Horizontal alignment within the compartment. Defaults to `start` for members and `middle` otherwise. */
+  align?: "start" | "middle";
+  /** CSS font family override for this line. */
+  fontFamily?: string;
+  /** CSS font style override for this line. */
+  fontStyle?: "normal" | "italic";
+  /** CSS font weight override for this line. */
+  fontWeight?: string | number;
+}
+
+/** Content section rendered inside a node with horizontal dividers between adjacent sections. */
+export interface NodeCompartment {
+  /** Stable compartment identifier scoped to the node. */
+  id?: string;
+  /** Optional section heading rendered before content lines. */
+  header?: string;
+  /** Text lines in deterministic render order. */
+  lines: readonly NodeCompartmentLine[];
+  /** Optional per-section padding override in pixels. */
+  padding?: Partial<{ x: number; y: number }>;
+  /** Optional per-section line height in pixels. */
+  lineHeight?: number;
+}
 
 /** Node element in a diagram document. */
 export interface DiagramNode {
   id: string;
   kind: string;
-  label?: string;
+  label?: LabelContent;
   description?: string;
   parentId?: string;
   tags?: string[];
@@ -378,6 +469,8 @@ export interface DiagramNode {
   icons?: IconSpec[];
   /** Explicit node shape. When undefined, derived from `kind` during normalization. */
   shape?: NodeShapeSpec;
+  /** Optional compartment sections rendered inside the node body. */
+  compartments?: NodeCompartment[];
 }
 
 /** Layout sizing options for an individual node. */
@@ -408,7 +501,7 @@ export interface DiagramEdge {
   kind: string;
   sourceId: string;
   targetId: string;
-  label?: string;
+  label?: LabelContent;
   direction?: "forward" | "backward" | "bidirectional" | "none";
   tags?: string[];
   metadata?: Record<string, unknown>;
@@ -417,13 +510,15 @@ export interface DiagramEdge {
   labelOverflow?: LabelOverflow;
   /** Override edge label container style for this edge. */
   labelStyle?: EdgeLabelStyle;
+  /** Override label rotation for this edge. */
+  labelRotation?: LabelRotation;
 }
 
 /** Group element in a diagram document. */
 export interface DiagramGroup {
   id: string;
   kind: string;
-  label?: string;
+  label?: LabelContent;
   description?: string;
   parentId?: string;
   childIds?: string[];
@@ -438,7 +533,7 @@ export interface DiagramGroup {
 export interface DiagramAnnotation {
   id: string;
   kind: string;
-  label?: string;
+  label?: LabelContent;
   description?: string;
   targetId?: string;
   tags?: string[];
