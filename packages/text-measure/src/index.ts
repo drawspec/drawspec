@@ -1,4 +1,10 @@
-export type { TextMeasurer } from "./measure";
-export { CHARACTER_WIDTH_FACTORS, createTextMeasurer, measureText } from "./measure";
-export { truncateText } from "./truncate";
-export { wrapText } from "./wrap";
+export type { RichText, RichTextSegment, TextContent, TextMeasurer } from "./measure";
+export {
+  CHARACTER_WIDTH_FACTORS,
+  createTextMeasurer,
+  measureRichText,
+  measureText,
+  measureTextContent,
+} from "./measure";
+export { truncateRichText, truncateText, truncateTextContent } from "./truncate";
+export { wrapRichText, wrapText, wrapTextContent } from "./wrap";

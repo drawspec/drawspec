@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg aria-describedby="drawspec-classdoc_5f8ebd7c-0zw98uq-desc-1h5f75j" aria-labelledby="drawspec-classdoc_5f8ebd7c-0zw98uq-title-0g8n4yo" height="488" id="drawspec-classdoc_5f8ebd7c-0zw98uq" role="img" viewBox="0 0 400 488" width="400" xmlns="http://www.w3.org/2000/svg">
+<svg aria-describedby="drawspec-classdoc_5f8ebd7c-0zw98uq-desc-1h5f75j" aria-labelledby="drawspec-classdoc_5f8ebd7c-0zw98uq-title-0g8n4yo" height="648.8" id="drawspec-classdoc_5f8ebd7c-0zw98uq" role="img" viewBox="0 0 658 648.8" width="658" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
     --ds-activation-fill: #e0f2fe;
@@ -21,7 +21,7 @@
   <desc id="drawspec-classdoc_5f8ebd7c-0zw98uq-desc-1h5f75j">
     class diagram classdoc_5f8ebd7c
   </desc>
-  <rect fill="#ffffff" height="488" width="400" x="0" y="0" />
+  <rect fill="#ffffff" height="648.8" width="658" x="0" y="0" />
   <defs>
     <marker id="drawspec-classdoc_5f8ebd7c-0zw98uq-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <circle cx="4" cy="4" fill="#475569" r="3" />
@@ -43,49 +43,83 @@
     </marker>
   </defs>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_3fadb85a-1cmn0xq">
-    <path d="M 100 244 L 100 420" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 144.41 315.3 L 168.35 541.4" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_6e640145-01jfq59">
-    <path d="M 300 68 L 100 244" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 488.25 78.7 L 144.41 315.3" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_9b7d9d88-0mz6jv7">
-    <path d="M 300 68 L 300 420" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 488.25 78.7 L 481.11 521.8" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-arrow)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_b9b438e0-072b35j">
-    <path d="M 100 68 L 100 420" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 159.25 98.3 L 168.35 541.4" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-edge-rel_c46f18b6-0m084uw">
-    <path d="M 100 244 L 300 420" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-triangle)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
+    <path d="M 144.41 315.3 L 481.11 521.8" fill="none" marker-end="url(#drawspec-classdoc_5f8ebd7c-0zw98uq-marker-open-triangle)" stroke="#475569" stroke-dasharray="8 4" stroke-width="1.5" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-class_218a0a80-18byy0d">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="392" />
+    <rect fill="#f8fafc" height="134.8" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="256.7" x="40" y="474" />
+    <line stroke="#334155" stroke-width="1" x1="40" x2="296.7" y1="512.7" y2="512.7" />
+    <line stroke="#334155" stroke-width="1" x1="40" x2="296.7" y1="570.1" y2="570.1" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-class_39413e10-1io802a">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <rect fill="#f8fafc" height="116.6" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="238.5" x="40" y="40" />
+    <line stroke="#334155" stroke-width="1" x1="40" x2="278.5" y1="78.7" y2="78.7" />
+    <line stroke="#334155" stroke-width="1" x1="40" x2="278.5" y1="117.9" y2="117.9" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-class_8dfe10a2-1rry55f">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="40" />
+    <rect fill="#f8fafc" height="77.4" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="259.5" x="358.5" y="40" />
+    <line stroke="#334155" stroke-width="1" x1="358.5" x2="618" y1="78.7" y2="78.7" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-class_b43d4440-1thzd5x">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="216" />
+    <rect fill="#f8fafc" height="77.4" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="208.82" x="40" y="276.6" />
+    <line stroke="#334155" stroke-width="1" x1="40" x2="248.82" y1="315.3" y2="315.3" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-node-iface_79d2fd14-09k1rpf">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="392" />
+    <rect fill="#f8fafc" height="95.6" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="208.82" x="376.7" y="474" />
+    <line stroke="#334155" stroke-width="1" x1="376.7" x2="585.52" y1="530.9" y2="530.9" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-text-layer-1f3znfx">
-    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-node-class_218a0a80-line0-0sw0cat" text-anchor="middle" x="100" y="424.9">
+    <text data-width="139.86" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_218a0a80-fields-line-0-1gpjjyf" text-anchor="start" x="56" y="535.1">
+      - {readonly} id: string
+    </text>
+    <text data-width="90.16" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_218a0a80-fields-line-1-1gfjy9g" text-anchor="start" x="56" y="553.3">
+      - email: string
+    </text>
+    <text data-width="224.7" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_218a0a80-methods-line-0-161sop6" text-anchor="start" x="56" y="592.5">
+      + changeEmail(email: string): void
+    </text>
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_218a0a80-name-line-0-1knlvu1" text-anchor="middle" x="168.35" y="495.9">
       User
     </text>
-    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-node-class_39413e10-line0-15zgbcm" text-anchor="middle" x="100" y="72.9">
+    <text data-width="134.12" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_39413e10-fields-line-0-0zxefp4" text-anchor="start" x="56" y="101.1">
+      - permissions: string
+    </text>
+    <text data-width="206.5" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_39413e10-methods-line-0-02kqrrv" text-anchor="start" x="56" y="140.3">
+      + disableUser(user: User): void
+    </text>
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_39413e10-name-line-0-0lsecf2" text-anchor="middle" x="159.25" y="61.9">
       Admin
     </text>
-    <text data-width="79.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-node-class_8dfe10a2-line0-1muyrsf" text-anchor="middle" x="300" y="72.9">
+    <text data-width="227.5" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_8dfe10a2-methods-line-0-06od0vk" text-anchor="start" x="374.5" y="101.1">
+      + authenticate(token: string): User
+    </text>
+    <text data-width="79.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_8dfe10a2-name-line-0-0eo6s6n" text-anchor="middle" x="488.25" y="61.9">
       AuthService
     </text>
-    <text data-width="101.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-node-class_b43d4440-line0-1h71v51" text-anchor="middle" x="100" y="248.9">
+    <text data-width="176.82" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_b43d4440-methods-line-0-11ofey6" text-anchor="start" x="56" y="337.7">
+      + findById(id: string): User
+    </text>
+    <text data-width="101.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_b43d4440-name-line-0-0lzygxx" text-anchor="middle" x="144.41" y="298.5">
       UserRepository
     </text>
-    <text data-width="70.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-node-iface_79d2fd14-line0-1348v8b" text-anchor="middle" x="300" y="424.9">
+    <text data-width="176.82" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-iface_79d2fd14-methods-line-0-1ksq1ks" text-anchor="start" x="392.7" y="553.3">
+      + findById(id: string): User
+    </text>
+    <text data-width="95.48" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-style="italic" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-iface_79d2fd14-name-line-0-07xluhf" text-anchor="middle" x="481.11" y="495.9">
+      &lt;&lt;interface&gt;&gt;
+    </text>
+    <text data-width="70.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-iface_79d2fd14-name-line-1-07nm8sg" text-anchor="middle" x="481.11" y="514.1">
       Repository
     </text>
   </g>

@@ -43,6 +43,41 @@
   "kind": "class",
   "nodes": [
     {
+      "compartments": [
+        {
+          "id": "class_218a0a80:name",
+          "lines": [
+            {
+              "align": "middle",
+              "fontWeight": 700,
+              "role": "name",
+              "text": "User"
+            }
+          ]
+        },
+        {
+          "id": "class_218a0a80:fields",
+          "lines": [
+            {
+              "role": "member",
+              "text": "- {readonly} id: string"
+            },
+            {
+              "role": "member",
+              "text": "- email: string"
+            }
+          ]
+        },
+        {
+          "id": "class_218a0a80:methods",
+          "lines": [
+            {
+              "role": "member",
+              "text": "+ changeEmail(email: string): void"
+            }
+          ]
+        }
+      ],
       "id": "class_218a0a80",
       "kind": "class",
       "label": "User",
@@ -80,6 +115,37 @@
       }
     },
     {
+      "compartments": [
+        {
+          "id": "class_39413e10:name",
+          "lines": [
+            {
+              "align": "middle",
+              "fontWeight": 700,
+              "role": "name",
+              "text": "Admin"
+            }
+          ]
+        },
+        {
+          "id": "class_39413e10:fields",
+          "lines": [
+            {
+              "role": "member",
+              "text": "- permissions: string"
+            }
+          ]
+        },
+        {
+          "id": "class_39413e10:methods",
+          "lines": [
+            {
+              "role": "member",
+              "text": "+ disableUser(user: User): void"
+            }
+          ]
+        }
+      ],
       "id": "class_39413e10",
       "kind": "class",
       "label": "Admin",
@@ -110,6 +176,28 @@
       }
     },
     {
+      "compartments": [
+        {
+          "id": "class_8dfe10a2:name",
+          "lines": [
+            {
+              "align": "middle",
+              "fontWeight": 700,
+              "role": "name",
+              "text": "AuthService"
+            }
+          ]
+        },
+        {
+          "id": "class_8dfe10a2:methods",
+          "lines": [
+            {
+              "role": "member",
+              "text": "+ authenticate(token: string): User"
+            }
+          ]
+        }
+      ],
       "id": "class_8dfe10a2",
       "kind": "class",
       "label": "AuthService",
@@ -133,6 +221,28 @@
       }
     },
     {
+      "compartments": [
+        {
+          "id": "class_b43d4440:name",
+          "lines": [
+            {
+              "align": "middle",
+              "fontWeight": 700,
+              "role": "name",
+              "text": "UserRepository"
+            }
+          ]
+        },
+        {
+          "id": "class_b43d4440:methods",
+          "lines": [
+            {
+              "role": "member",
+              "text": "+ findById(id: string): User"
+            }
+          ]
+        }
+      ],
       "id": "class_b43d4440",
       "kind": "class",
       "label": "UserRepository",
@@ -156,6 +266,34 @@
       }
     },
     {
+      "compartments": [
+        {
+          "id": "iface_79d2fd14:name",
+          "lines": [
+            {
+              "align": "middle",
+              "fontStyle": "italic",
+              "role": "stereotype",
+              "text": "<<interface>>"
+            },
+            {
+              "align": "middle",
+              "fontWeight": 700,
+              "role": "name",
+              "text": "Repository"
+            }
+          ]
+        },
+        {
+          "id": "iface_79d2fd14:methods",
+          "lines": [
+            {
+              "role": "member",
+              "text": "+ findById(id: string): User"
+            }
+          ]
+        }
+      ],
       "id": "iface_79d2fd14",
       "kind": "interface",
       "label": "Repository",

@@ -17,7 +17,9 @@ export interface SvgAccessibilityOptions {
 export interface SvgTheme {
   background: string;
   text: string;
+  link: string;
   fontFamily: string;
+  monospaceFontFamily: string;
   fontSize: number;
   nodeFill: string;
   nodeStroke: string;
@@ -83,8 +85,14 @@ export interface ResolvedStyle {
   stroke: string;
   strokeWidth: number;
   text: string;
+  link: string;
   fontFamily: string;
+  monospaceFontFamily: string;
   fontSize: number;
+  /** Monospace font used for code-like node compartment member lines. */
+  memberFontFamily: string;
+  /** Stroke color used for compartment divider lines. */
+  dividerStroke: string;
   /** Background color for edge labels. Defaults to theme background (invisible line interruption). */
   labelBg: string;
   lineStyle?: LineStyle;

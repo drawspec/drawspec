@@ -1,4 +1,5 @@
 import type { DiagramNode } from "@drawspec/core";
+import { labelToPlainText } from "@drawspec/core";
 import type { Rule } from "../types";
 
 // ---------------------------------------------------------------------------
@@ -173,7 +174,7 @@ export const noUnknownTypeRefRule: Rule = {
         const knownTypes = new Set<string>();
         for (const node of diagram.nodes) {
           if (TYPE_DIAGRAM_KINDS.has(node.kind) && node.label) {
-            knownTypes.add(node.label);
+            knownTypes.add(labelToPlainText(node.label));
           }
         }
 
@@ -195,7 +196,7 @@ export const noUnknownTypeRefRule: Rule = {
           for (const typeName of referencedTypes) {
             if (!PRIMITIVE_TYPES.has(typeName) && !knownTypes.has(typeName)) {
               context.report({
-                message: `Unknown type reference '${typeName}' on '${node.label ?? node.id}'.`,
+                message: `Unknown type reference '${typeName}' on '${node.label === undefined ? node.id : labelToPlainText(node.label)}'.`,
                 target: { kind: "node", id: node.id },
                 help: "Reference another class, interface, enum, or a primitive type.",
               });

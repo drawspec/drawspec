@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-shape-library-1cxw7da-desc-0lohztk" aria-labelledby="drawspec-shape-library-1cxw7da-title-1x3vbgx" height="300" id="drawspec-shape-library-1cxw7da" role="img" viewBox="0 0 760 300" width="760" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
+  <title id="drawspec-shape-library-1cxw7da-title-1x3vbgx">
+    shape-library
+  </title>
+  <desc id="drawspec-shape-library-1cxw7da-desc-0lohztk">
+    graph diagram shape-library
+  </desc>
+  <rect fill="#ffffff" height="300" width="760" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-shape-library-1cxw7da-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-shape-library-1cxw7da-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-shape-library-1cxw7da-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-shape-library-1cxw7da-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-shape-library-1cxw7da-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-shape-library-1cxw7da-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-shape-library-1cxw7da-node-bullseye-0b9uwun">
+    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="320" y="20" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-circle-1lyqiyk">
+    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="170" y="20" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-diamond-0dih6hg">
+    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="20" y="20" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-document-0njcqi9">
+    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="170" y="150" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-ellipse-1tyy212">
+    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="620" y="20" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-hexagon-0v7sz64">
+    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="620" y="150" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-note-1p5erck">
+    <rect fill="#fef9c3" height="72" rx="3" ry="3" stroke="#ca8a04" stroke-width="1.5" width="100" x="470" y="150" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-parallelogram-07bo9gr">
+    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="20" y="150" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-sync-bar-0lb6raz">
+    <rect fill="#f8fafc" height="18" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="470" y="20" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-node-tabbed-rect-0umdvzf">
+    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="320" y="150" />
+  </g>
+  <g id="drawspec-shape-library-1cxw7da-text-layer-0tw78tm">
+    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-bullseye-line0-0uj8awj" text-anchor="middle" x="370" y="60.9">
+      bullseye
+    </text>
+    <text data-width="35" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-circle-line0-1xsrfso" text-anchor="middle" x="220" y="60.9">
+      circle
+    </text>
+    <text data-width="56.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-diamond-line0-1464e4a" text-anchor="middle" x="70" y="60.9">
+      diamond
+    </text>
+    <text data-width="64.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-document-line0-1i6l0mh" text-anchor="middle" x="220" y="190.9">
+      document
+    </text>
+    <text data-width="41.44" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-ellipse-line0-0urgdws" text-anchor="middle" x="670" y="60.9">
+      ellipse
+    </text>
+    <text data-width="56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-hexagon-line0-0h2ptoi" text-anchor="middle" x="670" y="190.9">
+      hexagon
+    </text>
+    <text data-width="28.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-note-line0-02es780" text-anchor="middle" x="520" y="190.9">
+      note
+    </text>
+    <g id="drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9-clipped-0i4j208">
+      <clipPath id="drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9-clip-0ezs3i3">
+        <rect height="72" width="100" x="20" y="150" />
+      </clipPath>
+      <text clip-path="url(#drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9-clip-0ezs3i3)" data-width="89.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9" text-anchor="middle" x="70" y="190.9">
+        parallelogram
+      </text>
+    </g>
+    <text data-width="57.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-sync-bar-line0-0ramcq3" text-anchor="middle" x="530" y="33.9">
+      sync-bar
+    </text>
+    <text data-width="76.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-tabbed-rect-line0-1bhnt1p" text-anchor="middle" x="370" y="190.9">
+      tabbed-rect
+    </text>
+  </g>
+</svg>

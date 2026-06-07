@@ -4,6 +4,7 @@ import type {
   EdgeLabelStyle,
   IconAppearance,
   ImageIconSpec,
+  LabelContent,
   NodeShapeSpec,
   SourceRef,
   TextIconSpec,
@@ -13,13 +14,19 @@ import type {
   LayoutRouting,
   NodeContentLayout,
   Point,
+  PositionedCompartment,
   PositionedDiagram,
   PositionedEdge,
   PositionedGroup,
   PositionedIcon,
   PositionedNode,
 } from "@drawspec/layout";
-import { measureText, truncateText, wrapText } from "@drawspec/text-measure";
+import {
+  measureTextContent,
+  type RichTextSegment,
+  truncateTextContent,
+  wrapTextContent,
+} from "@drawspec/text-measure";
 import { darkTheme, renderThemeStyleBlock, resolveStyle, resolveTheme } from "./styles";
 import {
   compareStable,
@@ -44,6 +51,7 @@ const EDGE_LABEL_BG_PADDING_X = 2;
 const EDGE_LABEL_BG_PADDING_Y = 3;
 const EDGE_LABEL_LINE_GAP = 4;
 const MARKER_SIZE = 8;
+const VERTICAL_LABEL_ROTATION_THRESHOLD = 70;
 
 interface OcclusionRect {
   id: string;
@@ -415,7 +423,8 @@ function renderGroup(
   ];
   if (group.label !== undefined) {
     const groupLabelLines =
-      group.labelLines ?? wrapText(group.label, Math.max(0, group.width - 24), style.fontSize);
+      group.labelLines ??
+      wrapTextContent(group.label, Math.max(0, group.width - 24), style.fontSize);
     const groupLineHeight = style.fontSize * 1.3;
     const groupStartY = group.y + 16;
     labels.push(
@@ -451,7 +460,8 @@ function renderGroup(
     }
     if (lane.label !== undefined) {
       const laneLabelLines =
-        lane.labelLines ?? wrapText(lane.label, Math.max(0, lane.width - 16), style.fontSize);
+        lane.labelLines ??
+        wrapTextContent(lane.label, Math.max(0, lane.width - 16), style.fontSize);
       const laneLineHeight = style.fontSize * 1.3;
       const laneStartY = isFirstLane ? group.y + 34 : lane.y + 18;
       labels.push(
@@ -496,6 +506,17 @@ function renderNode(
         renderIcon(positionIconFromNodeOrigin(node, icon), style)
       )
     );
+    if (contentLayout.compartments !== undefined) {
+      children.push(...renderCompartmentDividers(node, contentLayout.compartments, style));
+      return {
+        element: {
+          name: "g",
+          attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
+          children,
+        },
+        labels: renderCompartmentLabels(node, contentLayout.compartments, style, idPrefix),
+      };
+    }
   }
   const labelLayout = contentLayout?.label;
   const label = node.label ?? node.id;
@@ -531,6 +552,78 @@ function renderNode(
     },
     labels,
   };
+}
+
+function renderCompartmentDividers(
+  node: PositionedNodeWithContentLayout,
+  compartments: readonly PositionedCompartment[],
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  return compartments
+    .filter((compartment) => compartment.dividerY !== undefined)
+    .map((compartment) => ({
+      name: "line",
+      attrs: {
+        stroke: style.dividerStroke,
+        "stroke-width": 1,
+        x1: node.x,
+        x2: node.x + node.width,
+        y1: node.y + (compartment.dividerY ?? 0),
+        y2: node.y + (compartment.dividerY ?? 0),
+      },
+      selfClosing: true,
+    }));
+}
+
+function renderCompartmentLabels(
+  node: PositionedNodeWithContentLayout,
+  compartments: readonly PositionedCompartment[],
+  style: ResolvedStyle,
+  idPrefix: string
+): SvgLabelSpec[] {
+  return compartments.flatMap((compartment) => {
+    const lines = [compartment.header, ...compartment.lines].filter(
+      (line): line is NonNullable<typeof line> => line !== undefined
+    );
+    return lines.map((line) =>
+      textElement({
+        id: stableSvgId(idPrefix, "label", "compartment", line.id),
+        ownerId: node.id,
+        label: line.text,
+        x: node.x + line.x,
+        y: node.y + line.y,
+        style,
+        anchor: line.align ?? "start",
+        maxWidth: Math.max(0, node.width - 16),
+        truncate: false,
+        clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
+        ...optionalTextStyle({
+          fontFamily: line.fontFamily ?? compartmentLineFontFamily(line.role, style),
+          fontStyle: line.fontStyle ?? (line.role === "stereotype" ? "italic" : undefined),
+          fontWeight: line.fontWeight ?? (line.role === "name" ? 700 : undefined),
+        }),
+      })
+    );
+  });
+}
+
+function optionalTextStyle(style: {
+  fontFamily: string | undefined;
+  fontStyle: "normal" | "italic" | undefined;
+  fontWeight: string | number | undefined;
+}): Pick<TextElementOptions, "fontFamily" | "fontStyle" | "fontWeight"> {
+  return {
+    ...(style.fontFamily === undefined ? {} : { fontFamily: style.fontFamily }),
+    ...(style.fontStyle === undefined ? {} : { fontStyle: style.fontStyle }),
+    ...(style.fontWeight === undefined ? {} : { fontWeight: style.fontWeight }),
+  };
+}
+
+function compartmentLineFontFamily(
+  role: PositionedCompartment["lines"][number]["role"],
+  style: ResolvedStyle
+): string | undefined {
+  return role === "member" || role === "value" ? style.memberFontFamily : undefined;
 }
 
 function positionIconFromNodeOrigin(node: PositionedNode, icon: PositionedIcon): PositionedIcon {
@@ -600,7 +693,7 @@ function outerShapeForNode(
   style: ResolvedStyle
 ): SvgElementSpec[] {
   const shape = node.shape ?? shapeFromNodeKind(node.kind);
-  return shapeForBounds(shape, node.x, node.y, node.width, node.height, style);
+  return renderNodeShape(shape, node.x, node.y, node.width, node.height, style);
 }
 
 function shapeFromNodeKind(kind: string): NodeShapeSpec {
@@ -613,7 +706,8 @@ function shapeFromNodeKind(kind: string): NodeShapeSpec {
   return { type: "rounded-rect", radius: 3 };
 }
 
-function shapeForBounds(
+/** Renders a DrawSpec node shape into one or more SVG element specifications. */
+export function renderNodeShape(
   shape: NodeShapeSpec,
   x: number,
   y: number,
@@ -628,11 +722,273 @@ function shapeForBounds(
       return [
         renderCylinderShape(x, y, width, height, style, Math.min(shape.curve ?? 18, height / 4)),
       ];
+    case "diamond":
+      return [renderDiamondShape(x, y, width, height, style)];
+    case "circle":
+      return [renderCircleShape(x, y, width, height, style)];
+    case "bullseye":
+      return renderBullseyeShape(x, y, width, height, style);
+    case "sync-bar":
+      return [renderSyncBarShape(x, y, width, height, style)];
+    case "ellipse":
+      return [renderEllipseShape(x, y, width, height, style)];
+    case "parallelogram":
+      return [renderParallelogramShape(x, y, width, height, style)];
+    case "document":
+      return [renderDocumentShape(x, y, width, height, style)];
+    case "tabbed-rect":
+      return renderTabbedRectShape(x, y, width, height, style);
+    case "note":
+      return renderNoteShape(x, y, width, height, style);
+    case "hexagon":
+      return [renderHexagonShape(x, y, width, height, style)];
     case "rect":
       return [renderRectShape(x, y, width, height, style, 0)];
     case "rounded-rect":
       return [renderRectShape(x, y, width, height, style, shape.radius ?? 3)];
   }
+}
+
+function pointsAttr(points: readonly Point[]): string {
+  return points.map((point) => `${formatNumber(point.x)},${formatNumber(point.y)}`).join(" ");
+}
+
+function shapePaintAttrs(style: ResolvedStyle): Record<string, string | number> {
+  return { fill: style.fill, stroke: style.stroke, "stroke-width": style.strokeWidth };
+}
+
+function renderDiamondShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const midX = x + width / 2;
+  const midY = y + height / 2;
+  return {
+    name: "polygon",
+    attrs: {
+      ...shapePaintAttrs(style),
+      points: pointsAttr([
+        { x: midX, y },
+        { x: x + width, y: midY },
+        { x: midX, y: y + height },
+        { x, y: midY },
+      ]),
+    },
+    selfClosing: true,
+  };
+}
+
+function renderCircleShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  return {
+    name: "circle",
+    attrs: {
+      ...shapePaintAttrs(style),
+      cx: x + width / 2,
+      cy: y + height / 2,
+      r: Math.min(width, height) / 2,
+    },
+    selfClosing: true,
+  };
+}
+
+function renderBullseyeShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+  const radius = Math.min(width, height) / 2;
+  return [
+    renderCircleShape(x, y, width, height, style),
+    {
+      name: "circle",
+      attrs: {
+        cx,
+        cy,
+        fill: "none",
+        r: Math.max(1, radius * 0.55),
+        stroke: style.stroke,
+        "stroke-width": style.strokeWidth,
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderSyncBarShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const horizontal = width >= height;
+  const thickness = Math.min(horizontal ? height : width, 16);
+  const barWidth = horizontal ? width : thickness;
+  const barHeight = horizontal ? thickness : height;
+  return renderRectShape(
+    x + (width - barWidth) / 2,
+    y + (height - barHeight) / 2,
+    barWidth,
+    barHeight,
+    { ...style, fill: style.stroke },
+    1
+  );
+}
+
+function renderEllipseShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  return {
+    name: "ellipse",
+    attrs: {
+      ...shapePaintAttrs(style),
+      cx: x + width / 2,
+      cy: y + height / 2,
+      rx: width / 2,
+      ry: height / 2,
+    },
+    selfClosing: true,
+  };
+}
+
+function renderParallelogramShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const skew = Math.min(width * 0.18, 24);
+  return {
+    name: "polygon",
+    attrs: {
+      ...shapePaintAttrs(style),
+      points: pointsAttr([
+        { x: x + skew, y },
+        { x: x + width, y },
+        { x: x + width - skew, y: y + height },
+        { x, y: y + height },
+      ]),
+    },
+    selfClosing: true,
+  };
+}
+
+function renderDocumentShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const wave = Math.min(12, height * 0.18);
+  const bottom = y + height - wave;
+  const half = width / 2;
+  return {
+    name: "path",
+    attrs: {
+      ...shapePaintAttrs(style),
+      d: `M ${formatNumber(x)} ${formatNumber(y)} H ${formatNumber(x + width)} V ${formatNumber(bottom)} C ${formatNumber(x + width - width * 0.25)} ${formatNumber(bottom - wave)} ${formatNumber(x + half + width * 0.25)} ${formatNumber(bottom + wave)} ${formatNumber(x + half)} ${formatNumber(bottom)} C ${formatNumber(x + width * 0.25)} ${formatNumber(bottom - wave)} ${formatNumber(x + width * 0.25)} ${formatNumber(bottom + wave)} ${formatNumber(x)} ${formatNumber(bottom)} Z`,
+    },
+    selfClosing: true,
+  };
+}
+
+function renderTabbedRectShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const tabWidth = Math.min(36, width * 0.32);
+  const tabHeight = Math.min(16, height * 0.28);
+  const paint = shapePaintAttrs(style);
+  return [
+    renderRectShape(x, y, width, height, style, 3),
+    {
+      name: "path",
+      attrs: {
+        ...paint,
+        d: `M ${formatNumber(x + width - tabWidth)} ${formatNumber(y)} v ${formatNumber(tabHeight)} h ${formatNumber(tabWidth)}`,
+        fill: "none",
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderNoteShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec[] {
+  const fold = Math.min(18, width * 0.22, height * 0.32);
+  const paint = shapePaintAttrs(style);
+  return [
+    {
+      name: "path",
+      attrs: {
+        ...paint,
+        d: `M ${formatNumber(x)} ${formatNumber(y)} H ${formatNumber(x + width - fold)} L ${formatNumber(x + width)} ${formatNumber(y + fold)} V ${formatNumber(y + height)} H ${formatNumber(x)} Z`,
+      },
+      selfClosing: true,
+    },
+    {
+      name: "path",
+      attrs: {
+        d: `M ${formatNumber(x + width - fold)} ${formatNumber(y)} V ${formatNumber(y + fold)} H ${formatNumber(x + width)}`,
+        fill: "none",
+        stroke: style.stroke,
+        "stroke-width": style.strokeWidth,
+      },
+      selfClosing: true,
+    },
+  ];
+}
+
+function renderHexagonShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const inset = width * 0.22;
+  return {
+    name: "polygon",
+    attrs: {
+      ...shapePaintAttrs(style),
+      points: pointsAttr([
+        { x: x + inset, y },
+        { x: x + width - inset, y },
+        { x: x + width, y: y + height / 2 },
+        { x: x + width - inset, y: y + height },
+        { x: x + inset, y: y + height },
+        { x, y: y + height / 2 },
+      ]),
+    },
+    selfClosing: true,
+  };
 }
 
 function renderRectShape(
@@ -1089,9 +1445,18 @@ function renderEdge(
   const labels: SvgLabelSpec[] = [];
   if (edge.label !== undefined) {
     const labelOverflow = edge.labelOverflow ?? document.labelOverflow ?? "wrap";
-    const hasLayoutPosition = edge.labelPosition !== undefined;
     const pos = edge.labelPosition ?? midpoint(edge.waypoints);
-    const yAdjust = hasLayoutPosition ? style.fontSize * 0.35 : -Math.max(8, style.fontSize * 0.5);
+    const rotation = edge.labelRotation ?? document.labelRotation ?? "none";
+    let rotationAngle = 0;
+    if (rotation === "auto") {
+      rotationAngle = edgeAngleAtPoint(edge.waypoints, pos);
+      if (rotationAngle > 90) rotationAngle -= 180;
+      if (rotationAngle < -90) rotationAngle += 180;
+      if (Math.abs(rotationAngle) > VERTICAL_LABEL_ROTATION_THRESHOLD) {
+        rotationAngle = 0;
+      }
+    }
+    const yAdjust = -Math.max(8, style.fontSize * 0.5);
     const edgeMaxWidth = edgeLabelMaxWidth(
       edge.waypoints,
       markerStart !== undefined,
@@ -1103,29 +1468,55 @@ function renderEdge(
     );
     const edgeLines =
       labelOverflow === "truncate"
-        ? [truncateText(edge.label, edgeMaxWidth, style.fontSize)]
-        : wrapText(edge.label, edgeMaxWidth, style.fontSize);
+        ? [truncateTextContent(edge.label, edgeMaxWidth, style.fontSize)]
+        : wrapTextContent(edge.label, edgeMaxWidth, style.fontSize);
     const edgeLineHeight = style.fontSize * 1.3;
     const edgeLabelY = pos.y + yAdjust;
-    const textTopOffset = style.fontSize * 0.8 + EDGE_LABEL_BG_PADDING_Y;
-    const textBottomOffset = style.fontSize * 0.2 + EDGE_LABEL_BG_PADDING_Y;
+    const strokeWidth = labelContainer.backgroundStrokeWidth ?? 0;
+    const textTopOffset = style.fontSize * 0.8 + EDGE_LABEL_BG_PADDING_Y + strokeWidth;
+    const textBottomOffset = style.fontSize * 0.2 + EDGE_LABEL_BG_PADDING_Y + strokeWidth;
     labels.push(
       ...edgeLines.map((line, index) => {
         const baseY = edgeLabelY + index * edgeLineHeight;
         const bgTop = baseY - textTopOffset;
         const bgBottom = baseY + textBottomOffset;
-        const overlapsEdge = bgTop <= pos.y && bgBottom >= pos.y;
-        const extraGap = overlapsEdge ? pos.y - bgTop + EDGE_LABEL_LINE_GAP : 0;
-        return textElement({
-          id: stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`),
-          ownerId: edge.id,
-          label: line,
-          x: pos.x,
-          y: baseY + extraGap,
-          style,
-          anchor: "middle",
-          ...labelContainer,
+        const lineWidth = measureTextContent(line, style.fontSize);
+        const labelLeft = pos.x - lineWidth / 2;
+        const labelRight = pos.x + lineWidth / 2;
+        const overlapsEdge = edgeOverlapsRect(edge.waypoints, {
+          left: labelLeft,
+          top: bgTop,
+          right: labelRight,
+          bottom: bgBottom,
         });
+        let extraGap = 0;
+        if (overlapsEdge) {
+          // shiftUp = how far bg extends below edge + gap (positive = shift up = move label up)
+          // shiftDown = how far bg extends above edge + gap (positive = shift down = move label down)
+          // With yAdjust always negative (label starts above edge), wrapped labels have bgTop above
+          // edge and bgBottom below edge. Since textTopOffset > textBottomOffset, bgTop is always
+          // closer to edge than bgBottom, making shiftDown < shiftUp. The shiftUp < shiftDown branch
+          // is unreachable with current defaults (yAdjust = -max(8, fontSize * 0.5)).
+          const edgeYRange = edgeYInXRange(edge.waypoints, labelLeft, labelRight);
+          const shiftUp = bgBottom - edgeYRange.minY + EDGE_LABEL_LINE_GAP;
+          const shiftDown = edgeYRange.maxY - bgTop + EDGE_LABEL_LINE_GAP;
+          extraGap = shiftUp <= shiftDown ? -shiftUp : shiftDown;
+        }
+        const id = stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`);
+        return rotatedLabel(
+          textElement({
+            id,
+            ownerId: edge.id,
+            label: line,
+            x: pos.x,
+            y: baseY + extraGap,
+            style,
+            anchor: "middle",
+            ...labelContainer,
+          }),
+          rotationAngle,
+          pos
+        );
       })
     );
   }
@@ -1180,6 +1571,108 @@ function edgeLabelMaxWidth(
   }
   const markerSpace = (hasStartMarker ? MARKER_SIZE : 0) + (hasEndMarker ? MARKER_SIZE : 0);
   return Math.max(80, Math.min(300, pathLength - markerSpace));
+}
+
+/** Compute the angle (in degrees) of the edge at the given position along its waypoints. */
+function edgeAngleAtPoint(waypoints: readonly Point[], pos: Point): number {
+  if (waypoints.length < 2) {
+    return 0;
+  }
+
+  if (waypoints.length === 2) {
+    const first = waypoints[0];
+    const second = waypoints[1];
+    if (first === undefined || second === undefined) {
+      return 0;
+    }
+    return segmentAngle(first, second);
+  }
+
+  let closestAngle = 0;
+  let closestDistance = Infinity;
+  for (let index = 0; index < waypoints.length - 1; index++) {
+    const start = waypoints[index];
+    const end = waypoints[index + 1];
+    if (start === undefined || end === undefined) {
+      continue;
+    }
+    const distance = squaredDistanceToSegment(pos, start, end);
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestAngle = segmentAngle(start, end);
+    }
+  }
+  return closestAngle;
+}
+
+function segmentAngle(start: Point, end: Point): number {
+  return Math.atan2(end.y - start.y, end.x - start.x) * (180 / Math.PI);
+}
+
+function squaredDistanceToSegment(pos: Point, start: Point, end: Point): number {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const lengthSquared = dx * dx + dy * dy;
+  if (lengthSquared === 0) {
+    return squaredDistance(pos, start);
+  }
+  const t = Math.max(
+    0,
+    Math.min(1, ((pos.x - start.x) * dx + (pos.y - start.y) * dy) / lengthSquared)
+  );
+  return squaredDistance(pos, { x: start.x + t * dx, y: start.y + t * dy });
+}
+
+function squaredDistance(left: Point, right: Point): number {
+  const dx = left.x - right.x;
+  const dy = left.y - right.y;
+  return dx * dx + dy * dy;
+}
+
+function rotatedBounds(bounds: LabelBounds, angle: number, origin: Point): LabelBounds {
+  if (angle === 0) return bounds;
+  const rad = angle * (Math.PI / 180);
+  const corners = [
+    { x: bounds.x, y: bounds.y },
+    { x: bounds.x + bounds.width, y: bounds.y },
+    { x: bounds.x, y: bounds.y + bounds.height },
+    { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
+  ];
+  const rotated = corners.map(({ x, y }) => {
+    const dx = x - origin.x;
+    const dy = y - origin.y;
+    return {
+      x: origin.x + dx * Math.cos(rad) - dy * Math.sin(rad),
+      y: origin.y + dx * Math.sin(rad) + dy * Math.cos(rad),
+    };
+  });
+  const xs = rotated.map((p) => p.x);
+  const ys = rotated.map((p) => p.y);
+  const minX = Math.min(...xs);
+  const minY = Math.min(...ys);
+  const maxX = Math.max(...xs);
+  const maxY = Math.max(...ys);
+  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+}
+
+function rotatedLabel(label: SvgLabelSpec, angle: number, origin: Point): SvgLabelSpec {
+  if (angle === 0) {
+    return label;
+  }
+  return {
+    ...label,
+    bounds: rotatedBounds(label.bounds, angle, origin),
+    element: {
+      name: "g",
+      attrs: { id: stableSvgId(label.id, "rotation") },
+      children: [
+        withTransform(
+          label.element,
+          `rotate(${formatNumber(angle)} ${formatNumber(origin.x)} ${formatNumber(origin.y)})`
+        ),
+      ],
+    },
+  };
 }
 
 function edgePath(points: Point[], routing?: LayoutRouting): string {
@@ -1250,19 +1743,115 @@ function approachPoint(corner: Point, from: Point, radius: number): Point {
 }
 
 function midpoint(points: Point[]): Point {
-  if (points.length === 0) {
-    return { x: 0, y: 0 };
+  if (points.length === 0) return { x: 0, y: 0 };
+  if (points.length === 1) return points[0] ?? { x: 0, y: 0 };
+
+  let totalLength = 0;
+  const cumulativeLengths: number[] = [0];
+  for (let i = 0; i < points.length - 1; i++) {
+    const current = points[i];
+    const next = points[i + 1];
+    if (current === undefined || next === undefined) continue;
+    const dx = next.x - current.x;
+    const dy = next.y - current.y;
+    totalLength += Math.sqrt(dx * dx + dy * dy);
+    cumulativeLengths.push(totalLength);
   }
-  const index = Math.floor((points.length - 1) / 2);
-  const current = points[index];
-  const next = points[index + 1];
-  if (current === undefined) {
-    return { x: 0, y: 0 };
+
+  if (totalLength === 0) {
+    return points[0] ?? { x: 0, y: 0 };
   }
-  if (next === undefined) {
-    return current;
+
+  const halfLength = totalLength / 2;
+  for (let i = 0; i < cumulativeLengths.length - 1; i++) {
+    const segStart = cumulativeLengths[i] ?? 0;
+    const segEnd = cumulativeLengths[i + 1] ?? segStart;
+    if (segStart === undefined || segEnd === undefined) continue;
+    if (halfLength >= segStart && halfLength <= segEnd) {
+      const segLength = segEnd - segStart;
+      const t = segLength > 0 ? (halfLength - segStart) / segLength : 0;
+      const p0 = points[i];
+      const p1 = points[i + 1];
+      if (p0 === undefined || p1 === undefined) continue;
+      return { x: p0.x + t * (p1.x - p0.x), y: p0.y + t * (p1.y - p0.y) };
+    }
   }
-  return { x: (current.x + next.x) / 2, y: (current.y + next.y) / 2 };
+
+  return points[points.length - 1] ?? { x: 0, y: 0 };
+}
+
+function edgeOverlapsRect(
+  waypoints: readonly Point[],
+  rect: { left: number; top: number; right: number; bottom: number }
+): boolean {
+  for (let i = 0; i < waypoints.length - 1; i++) {
+    const p0 = waypoints[i];
+    const p1 = waypoints[i + 1];
+    if (p0 === undefined || p1 === undefined) continue;
+    if (segmentOverlapsRect(p0, p1, rect)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function segmentOverlapsRect(
+  p0: Point,
+  p1: Point,
+  rect: { left: number; top: number; right: number; bottom: number }
+): boolean {
+  const dx = p1.x - p0.x;
+
+  const segMinX = Math.min(p0.x, p1.x);
+  const segMaxX = Math.max(p0.x, p1.x);
+  if (segMaxX < rect.left || segMinX > rect.right) return false;
+
+  const tLeft = dx !== 0 ? Math.max(0, Math.min(1, (rect.left - p0.x) / dx)) : 0;
+  const tRight = dx !== 0 ? Math.max(0, Math.min(1, (rect.right - p0.x) / dx)) : 1;
+  const tMin = Math.min(tLeft, tRight);
+  const tMax = Math.max(tLeft, tRight);
+
+  const dy = p1.y - p0.y;
+  const y0 = p0.y + tMin * dy;
+  const y1 = p0.y + tMax * dy;
+  const segMinY = Math.min(y0, y1, p0.y, p1.y);
+  const segMaxY = Math.max(y0, y1, p0.y, p1.y);
+
+  return segMaxY >= rect.top && segMinY <= rect.bottom;
+}
+
+function edgeYInXRange(
+  waypoints: readonly Point[],
+  xLeft: number,
+  xRight: number
+): { minY: number; maxY: number } {
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  for (let i = 0; i < waypoints.length - 1; i++) {
+    const p0 = waypoints[i];
+    const p1 = waypoints[i + 1];
+    if (p0 === undefined || p1 === undefined) continue;
+
+    const dx = p1.x - p0.x;
+    const segMinX = Math.min(p0.x, p1.x);
+    const segMaxX = Math.max(p0.x, p1.x);
+    if (segMaxX < xLeft || segMinX > xRight) continue;
+
+    const tLeft = dx !== 0 ? Math.max(0, Math.min(1, (xLeft - p0.x) / dx)) : 0;
+    const tRight = dx !== 0 ? Math.max(0, Math.min(1, (xRight - p0.x) / dx)) : 1;
+    const tMin = Math.min(tLeft, tRight);
+    const tMax = Math.max(tLeft, tRight);
+
+    const dy = p1.y - p0.y;
+    const y0 = p0.y + tMin * dy;
+    const y1 = p0.y + tMax * dy;
+
+    minY = Math.min(minY, y0, y1, p0.y, p1.y);
+    maxY = Math.max(maxY, y0, y1, p0.y, p1.y);
+  }
+
+  return { minY, maxY };
 }
 
 function renderActivation(
@@ -1295,7 +1884,7 @@ function renderActivation(
 interface TextElementOptions {
   id: string;
   ownerId?: string;
-  label: string;
+  label: LabelContent;
   x: number;
   y: number;
   style: ReturnType<typeof resolveStyle>;
@@ -1306,6 +1895,9 @@ interface TextElementOptions {
   backgroundStroke?: string;
   backgroundStrokeWidth?: number;
   truncate?: boolean;
+  fontFamily?: string;
+  fontStyle?: "normal" | "italic";
+  fontWeight?: string | number;
 }
 
 function textElement(options: TextElementOptions): SvgLabelSpec {
@@ -1321,6 +1913,9 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
     ownerId,
     style,
     truncate = false,
+    fontFamily,
+    fontStyle,
+    fontWeight,
     x,
     y,
   } = options;
@@ -1328,9 +1923,9 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
   const constrainedWidth = maxWidth === undefined ? undefined : Math.max(0, maxWidth);
   const displayLabel =
     truncate && constrainedWidth !== undefined
-      ? truncateText(label, constrainedWidth, style.fontSize)
+      ? truncateTextContent(label, constrainedWidth, style.fontSize)
       : label;
-  const width = measureText(displayLabel, style.fontSize);
+  const width = measureTextContent(displayLabel, style.fontSize);
   const shouldClip = constrainedWidth !== undefined && width > constrainedWidth;
   let text: SvgElementSpec = {
     name: "text",
@@ -1338,14 +1933,16 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
       "clip-path": shouldClip ? `url(#${stableSvgId(id, "clip")})` : undefined,
       "data-width": width,
       fill: style.text,
-      "font-family": style.fontFamily,
+      "font-family": fontFamily ?? style.fontFamily,
       "font-size": style.fontSize,
+      "font-style": fontStyle,
+      "font-weight": fontWeight,
       id,
       "text-anchor": anchor,
       x,
       y,
     },
-    children: [displayLabel],
+    children: richTextChildren(displayLabel, style),
   };
   const textBounds = labelBounds(x, y, width, style.fontSize, anchor);
   const bgPaddingX = hasBackground ? EDGE_LABEL_BG_PADDING_X : 0;
@@ -1411,6 +2008,34 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
       children,
     },
     bounds: intersectBounds(visualTextBounds, expandBoundsXY(bounds, bgPaddingX, bgPaddingY)),
+  };
+}
+
+function richTextChildren(
+  label: LabelContent,
+  style: ResolvedStyle
+): Array<string | SvgElementSpec> {
+  if (typeof label === "string") {
+    return [label];
+  }
+  return label.map((segment) => ({
+    name: "tspan",
+    attrs: richTextSegmentAttrs(segment, style),
+    children: [segment.text],
+  }));
+}
+
+function richTextSegmentAttrs(
+  segment: RichTextSegment,
+  style: ResolvedStyle
+): Record<string, string | number | undefined> {
+  return {
+    "data-href": segment.href,
+    fill: segment.href === undefined ? undefined : style.link,
+    "font-family": segment.code ? style.monospaceFontFamily : undefined,
+    "font-style": segment.italic ? "italic" : undefined,
+    "font-weight": segment.bold ? 700 : undefined,
+    "text-decoration": segment.href === undefined ? undefined : "underline",
   };
 }
 
