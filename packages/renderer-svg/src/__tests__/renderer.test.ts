@@ -88,6 +88,34 @@ async function sequenceSvg(): Promise<string> {
   return renderSvg(sequenceDoc, { positionedDiagram });
 }
 
+async function richTextSvg(): Promise<string> {
+  const doc = document({
+    id: "rich-text-golden",
+    nodes: [
+      {
+        id: "api",
+        kind: "component",
+        label: [{ text: "API", bold: true }, { text: " calls " }, { text: "checkout", code: true }],
+      },
+      { id: "worker", kind: "component", label: [{ text: "worker", italic: true }] },
+    ],
+    edges: [
+      {
+        id: "api-worker",
+        kind: "calls",
+        sourceId: "api",
+        targetId: "worker",
+        label: [
+          { text: "publishes", bold: true },
+          { text: " event", italic: true },
+        ],
+      },
+    ],
+  });
+  const positionedDiagram = await simpleGraphLayout().layout(doc, { direction: "LR" });
+  return renderSvg(doc, { positionedDiagram });
+}
+
 async function edgeSvg(
   edgeOverrides: Partial<DiagramDocument["edges"][number]> = {}
 ): Promise<string> {
@@ -375,6 +403,145 @@ describe("SvgRenderer", () => {
     expect(svg).toContain("Web App");
     expect(svg).toContain("<text ");
     expect(svg).not.toContain('<path id="text');
+  });
+
+  test("renders rich node labels with bold tspans", () => {
+    const doc = document({
+      id: "rich-bold-test",
+      nodes: [{ id: "api", kind: "component", label: [{ text: "API", bold: true }] }],
+    });
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: positionedDiagram({
+        document: doc,
+        nodes: [
+          {
+            id: "api",
+            kind: "component",
+            label: doc.nodes[0]?.label,
+            x: 0,
+            y: 0,
+            width: 120,
+            height: 56,
+          },
+        ],
+      }),
+    });
+    expect(svg).toContain("<tspan");
+    expect(svg).toContain('font-weight="700"');
+  });
+
+  test("renders rich node labels with italic tspans", () => {
+    const doc = document({
+      id: "rich-italic-test",
+      nodes: [{ id: "api", kind: "component", label: [{ text: "async", italic: true }] }],
+    });
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: positionedDiagram({
+        document: doc,
+        nodes: [
+          {
+            id: "api",
+            kind: "component",
+            label: doc.nodes[0]?.label,
+            x: 0,
+            y: 0,
+            width: 120,
+            height: 56,
+          },
+        ],
+      }),
+    });
+    expect(svg).toContain('font-style="italic"');
+  });
+
+  test("renders rich node labels with code tspans", () => {
+    const doc = document({
+      id: "rich-code-test",
+      nodes: [{ id: "api", kind: "component", label: [{ text: "checkout", code: true }] }],
+    });
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: positionedDiagram({
+        document: doc,
+        nodes: [
+          {
+            id: "api",
+            kind: "component",
+            label: doc.nodes[0]?.label,
+            x: 0,
+            y: 0,
+            width: 120,
+            height: 56,
+          },
+        ],
+      }),
+    });
+    expect(svg).toContain(
+      'font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"'
+    );
+  });
+
+  test("renders mixed rich edge labels deterministically", () => {
+    const doc = document({
+      id: "rich-mixed-test",
+      nodes: [
+        { id: "a", kind: "component", label: "A" },
+        { id: "b", kind: "component", label: "B" },
+      ],
+      edges: [
+        {
+          id: "ab",
+          kind: "calls",
+          sourceId: "a",
+          targetId: "b",
+          label: [
+            { text: "calls", bold: true },
+            { text: " `api`", code: true },
+            { text: " now", italic: true },
+          ],
+        },
+      ],
+    });
+    const diagram = positionedLineStyleDiagram(doc);
+    const first = renderSvgSync(doc, { positionedDiagram: diagram });
+    const second = renderSvgSync(doc, { positionedDiagram: diagram });
+    expect(second).toBe(first);
+    expect(first).toContain("<tspan");
+    expect(first).toContain('font-weight="700"');
+    expect(first).toContain('font-style="italic"');
+    expect(first).toContain(
+      'font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"'
+    );
+  });
+
+  test("renders multiline rich labels as separate text lines", () => {
+    const label = [
+      { text: "First", bold: true },
+      { text: "\nSecond", code: true },
+    ];
+    const doc = document({
+      id: "rich-multiline-test",
+      nodes: [{ id: "api", kind: "component", label }],
+    });
+    const svg = renderSvgSync(doc, {
+      positionedDiagram: positionedDiagram({
+        document: doc,
+        nodes: [
+          {
+            id: "api",
+            kind: "component",
+            label,
+            labelLines: [[label[0]], [{ text: "Second", code: true }]],
+            x: 0,
+            y: 0,
+            width: 160,
+            height: 80,
+          },
+        ],
+      }),
+    });
+    expect(svg.match(/<text /g)?.length).toBe(2);
+    expect(svg).toContain("First");
+    expect(svg).toContain("Second");
   });
 
   test("renders node shapes by kind", async () => {
@@ -757,6 +924,10 @@ describe("SvgRenderer", () => {
 
   test("matches the sequence golden fixture", async () => {
     await expectGolden("sequence", await sequenceSvg());
+  });
+
+  test("matches the rich text golden fixture", async () => {
+    await expectGolden("rich-text", await richTextSvg());
   });
 
   test("emits data-source-file and data-source-line on nodes with source locations", async () => {

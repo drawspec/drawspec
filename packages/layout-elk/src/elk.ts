@@ -1,4 +1,5 @@
 import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
+import { labelToPlainText } from "@drawspec/core";
 import type {
   LayoutEngine,
   LayoutOptions,
@@ -9,7 +10,7 @@ import type {
   PositionedNode,
 } from "@drawspec/layout";
 import { LayoutCache, normalizeLayoutOptions, sizeGraphNodes } from "@drawspec/layout";
-import { measureText } from "@drawspec/text-measure";
+import { measureTextContent } from "@drawspec/text-measure";
 import type { ElkExtendedEdge, ElkNode } from "elkjs/lib/elk-api";
 import ELKConstructor from "elkjs/lib/elk-api.js";
 
@@ -76,8 +77,9 @@ function buildElkGraph(document: DiagramDocument, normalized: NormalizedLayoutOp
       if (edge.label !== undefined) {
         elkEdge.labels = [
           {
-            text: edge.label,
-            width: measureText(edge.label, EDGE_LABEL_FONT_SIZE) + EDGE_LABEL_HORIZONTAL_PADDING,
+            text: labelToPlainText(edge.label),
+            width:
+              measureTextContent(edge.label, EDGE_LABEL_FONT_SIZE) + EDGE_LABEL_HORIZONTAL_PADDING,
             height: EDGE_LABEL_FONT_SIZE * 1.2 + EDGE_LABEL_VERTICAL_PADDING,
           },
         ];
@@ -223,7 +225,7 @@ function computeBounds(
       allY.push(wp.y);
     }
     if (edge.label !== undefined && edge.labelPosition !== undefined) {
-      allX.push(edge.labelPosition.x + measureText(edge.label, EDGE_LABEL_FONT_SIZE) / 2);
+      allX.push(edge.labelPosition.x + measureTextContent(edge.label, EDGE_LABEL_FONT_SIZE) / 2);
       allY.push(edge.labelPosition.y + (EDGE_LABEL_FONT_SIZE * 1.2) / 2);
     }
   }

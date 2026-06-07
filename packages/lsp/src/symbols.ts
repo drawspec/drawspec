@@ -1,4 +1,5 @@
 import type { DiagramDocument } from "@drawspec/core";
+import { labelToPlainText } from "@drawspec/core";
 import { type DocumentSymbol, type Range, SymbolKind } from "vscode-languageserver/node";
 
 const DEFAULT_RANGE: Range = {
@@ -34,7 +35,7 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
   for (const node of document.nodes) {
     const range = sourceRange(node.source);
     symbols.push({
-      name: node.label ?? node.id,
+      name: node.label === undefined ? node.id : labelToPlainText(node.label),
       kind: SymbolKind.Class,
       range,
       selectionRange: range,
@@ -50,7 +51,7 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
         const childNode = nodeById.get(childId);
         const childRange = childNode !== undefined ? sourceRange(childNode.source) : DEFAULT_RANGE;
         groupChildren.push({
-          name: childNode?.label ?? childId,
+          name: childNode?.label === undefined ? childId : labelToPlainText(childNode.label),
           kind: SymbolKind.Field,
           range: childRange,
           selectionRange: childRange,
@@ -59,7 +60,7 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
     }
     const groupRange = sourceRange(group.source);
     const groupSymbol: DocumentSymbol = {
-      name: group.label ?? group.id,
+      name: group.label === undefined ? group.id : labelToPlainText(group.label),
       kind: SymbolKind.Namespace,
       range: groupRange,
       selectionRange: groupRange,
@@ -73,7 +74,10 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
   for (const edge of document.edges) {
     const range = sourceRange(edge.source);
     symbols.push({
-      name: edge.label ?? `${edge.sourceId} → ${edge.targetId}`,
+      name:
+        edge.label === undefined
+          ? `${edge.sourceId} → ${edge.targetId}`
+          : labelToPlainText(edge.label),
       kind: SymbolKind.Interface,
       range,
       selectionRange: range,
@@ -83,7 +87,7 @@ export function extractDocumentSymbols(document: DiagramDocument): DocumentSymbo
   for (const annotation of document.annotations) {
     const range = sourceRange(annotation.source);
     symbols.push({
-      name: annotation.label ?? annotation.id,
+      name: annotation.label === undefined ? annotation.id : labelToPlainText(annotation.label),
       kind: SymbolKind.Variable,
       range,
       selectionRange: range,

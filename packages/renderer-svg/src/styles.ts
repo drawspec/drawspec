@@ -7,12 +7,14 @@ export const lightTheme: SvgTheme = {
   background: "#ffffff",
   edgeStroke: "#475569",
   fontFamily: "Arial, sans-serif",
+  monospaceFontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   fontSize: 14,
   groupFill: "#f8fafc",
   groupStroke: "#94a3b8",
   nodeFill: "#f8fafc",
   nodeStroke: "#334155",
   text: "#0f172a",
+  link: "#2563eb",
 };
 
 /** @deprecated Use `lightTheme` instead. Kept for backward compatibility. */
@@ -24,12 +26,14 @@ export const darkTheme: SvgTheme = {
   background: "#0f172a",
   edgeStroke: "#94a3b8",
   fontFamily: "Arial, sans-serif",
+  monospaceFontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   fontSize: 14,
   groupFill: "#1e293b",
   groupStroke: "#475569",
   nodeFill: "#1e293b",
   nodeStroke: "#94a3b8",
   text: "#f8fafc",
+  link: "#60a5fa",
 };
 
 export const highContrastTheme: SvgTheme = {
@@ -38,12 +42,14 @@ export const highContrastTheme: SvgTheme = {
   background: "#ffffff",
   edgeStroke: "#000000",
   fontFamily: "Arial, sans-serif",
+  monospaceFontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   fontSize: 14,
   groupFill: "#ffffff",
   groupStroke: "#000000",
   nodeFill: "#ffffff",
   nodeStroke: "#000000",
   text: "#000000",
+  link: "#0000ee",
 };
 
 const themePresets: Record<string, SvgTheme> = {
@@ -62,7 +68,7 @@ export function resolveTheme(input: SvgThemeInput | undefined): SvgTheme {
   return { ...lightTheme, ...input };
 }
 
-const cssVariableMap: Record<keyof SvgTheme, string> = {
+const cssVariableMap: Partial<Record<keyof SvgTheme, string>> = {
   activationFill: "--ds-activation-fill",
   activationStroke: "--ds-activation-stroke",
   background: "--ds-background",
@@ -150,6 +156,7 @@ interface StyleRule {
   fill?: string | number;
   fontFamily?: string | number;
   fontSize?: string | number;
+  link?: string | number;
   lineStyle?: string | number;
   labelBg?: string | number;
   stroke?: string | number;
@@ -218,6 +225,7 @@ function mergeRule(style: ResolvedStyle, rule: StyleRule | undefined): ResolvedS
     fill: asString(rule.fill) ?? style.fill,
     fontFamily: asString(rule.fontFamily) ?? style.fontFamily,
     fontSize: asNumber(rule.fontSize) ?? style.fontSize,
+    link: asString(rule.link) ?? style.link,
     stroke: asString(rule.stroke) ?? style.stroke,
     strokeWidth: asNumber(rule.strokeWidth) ?? style.strokeWidth,
     labelBg: asString(rule.labelBg) ?? style.labelBg,
@@ -250,6 +258,8 @@ export function resolveStyle(
     dividerStroke: theme.nodeStroke,
     fontFamily: theme.fontFamily,
     fontSize: theme.fontSize,
+    link: theme.link,
+    monospaceFontFamily: theme.monospaceFontFamily,
     labelBg: theme.background,
     memberFontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
     stroke: elementType === "edge" ? theme.edgeStroke : theme.nodeStroke,

@@ -5,6 +5,7 @@ import type {
   DiagramNode,
   LayoutSpec,
 } from "@drawspec/core";
+import { labelToPlainText } from "@drawspec/core";
 
 const D2_DIRECTION_MAP: Record<string, string> = {
   tb: "down",
@@ -65,7 +66,7 @@ function formatNode(node: DiagramNode, idMap: Map<string, string>, indent: strin
   const lines: string[] = [];
   const id = idMap.get(node.id) ?? sanitizeIdPart(node.id);
   if (node.label) {
-    lines.push(`${indent}${id}: ${escapeLabel(node.label)}`);
+    lines.push(`${indent}${id}: ${escapeLabel(labelToPlainText(node.label))}`);
   } else {
     lines.push(`${indent}${id}`);
   }
@@ -98,7 +99,7 @@ function formatEdge(edge: DiagramEdge, idMap: Map<string, string>, indent: strin
   const tgt = idMap.get(edge.targetId) ?? sanitizeIdPart(edge.targetId);
   const arrow = d2Arrow(edge.direction);
   if (edge.label) {
-    lines.push(`${indent}${src} ${arrow} ${tgt}: ${escapeLabel(edge.label)}`);
+    lines.push(`${indent}${src} ${arrow} ${tgt}: ${escapeLabel(labelToPlainText(edge.label))}`);
   } else {
     lines.push(`${indent}${src} ${arrow} ${tgt}`);
   }
@@ -120,7 +121,7 @@ function formatGroup(
 ): string[] {
   const lines: string[] = [];
   const id = idMap.get(group.id) ?? sanitizeIdPart(group.id);
-  const label = group.label ? ` ${escapeLabel(group.label)}` : "";
+  const label = group.label ? ` ${escapeLabel(labelToPlainText(group.label))}` : "";
   lines.push(`${indent}${id}:${label} {`);
   const inner = `${indent}  `;
   if (group.description) {
@@ -176,7 +177,7 @@ function formatNodeWithChildren(
   const id = idMap.get(node.id) ?? sanitizeIdPart(node.id);
   const children = getNodeChildren(node.id, nodes);
   if (children.length > 0) {
-    const label = node.label ? ` ${escapeLabel(node.label)}` : "";
+    const label = node.label ? ` ${escapeLabel(labelToPlainText(node.label))}` : "";
     lines.push(`${indent}${id}:${label} {`);
     const inner = `${indent}  `;
     if (node.description) {

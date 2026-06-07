@@ -4,6 +4,7 @@ import type {
   EdgeLabelStyle,
   IconAppearance,
   ImageIconSpec,
+  LabelContent,
   NodeShapeSpec,
   SourceRef,
   TextIconSpec,
@@ -20,7 +21,12 @@ import type {
   PositionedIcon,
   PositionedNode,
 } from "@drawspec/layout";
-import { measureText, truncateText, wrapText } from "@drawspec/text-measure";
+import {
+  measureTextContent,
+  type RichTextSegment,
+  truncateTextContent,
+  wrapTextContent,
+} from "@drawspec/text-measure";
 import { darkTheme, renderThemeStyleBlock, resolveStyle, resolveTheme } from "./styles";
 import {
   compareStable,
@@ -417,7 +423,8 @@ function renderGroup(
   ];
   if (group.label !== undefined) {
     const groupLabelLines =
-      group.labelLines ?? wrapText(group.label, Math.max(0, group.width - 24), style.fontSize);
+      group.labelLines ??
+      wrapTextContent(group.label, Math.max(0, group.width - 24), style.fontSize);
     const groupLineHeight = style.fontSize * 1.3;
     const groupStartY = group.y + 16;
     labels.push(
@@ -453,7 +460,8 @@ function renderGroup(
     }
     if (lane.label !== undefined) {
       const laneLabelLines =
-        lane.labelLines ?? wrapText(lane.label, Math.max(0, lane.width - 16), style.fontSize);
+        lane.labelLines ??
+        wrapTextContent(lane.label, Math.max(0, lane.width - 16), style.fontSize);
       const laneLineHeight = style.fontSize * 1.3;
       const laneStartY = isFirstLane ? group.y + 34 : lane.y + 18;
       labels.push(
@@ -1197,8 +1205,8 @@ function renderEdge(
     );
     const edgeLines =
       labelOverflow === "truncate"
-        ? [truncateText(edge.label, edgeMaxWidth, style.fontSize)]
-        : wrapText(edge.label, edgeMaxWidth, style.fontSize);
+        ? [truncateTextContent(edge.label, edgeMaxWidth, style.fontSize)]
+        : wrapTextContent(edge.label, edgeMaxWidth, style.fontSize);
     const edgeLineHeight = style.fontSize * 1.3;
     const edgeLabelY = pos.y + yAdjust;
     const strokeWidth = labelContainer.backgroundStrokeWidth ?? 0;
@@ -1209,7 +1217,7 @@ function renderEdge(
         const baseY = edgeLabelY + index * edgeLineHeight;
         const bgTop = baseY - textTopOffset;
         const bgBottom = baseY + textBottomOffset;
-        const lineWidth = measureText(line, style.fontSize);
+        const lineWidth = measureTextContent(line, style.fontSize);
         const labelLeft = pos.x - lineWidth / 2;
         const labelRight = pos.x + lineWidth / 2;
         const overlapsEdge = edgeOverlapsRect(edge.waypoints, {
@@ -1613,7 +1621,7 @@ function renderActivation(
 interface TextElementOptions {
   id: string;
   ownerId?: string;
-  label: string;
+  label: LabelContent;
   x: number;
   y: number;
   style: ReturnType<typeof resolveStyle>;
@@ -1652,9 +1660,9 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
   const constrainedWidth = maxWidth === undefined ? undefined : Math.max(0, maxWidth);
   const displayLabel =
     truncate && constrainedWidth !== undefined
-      ? truncateText(label, constrainedWidth, style.fontSize)
+      ? truncateTextContent(label, constrainedWidth, style.fontSize)
       : label;
-  const width = measureText(displayLabel, style.fontSize);
+  const width = measureTextContent(displayLabel, style.fontSize);
   const shouldClip = constrainedWidth !== undefined && width > constrainedWidth;
   let text: SvgElementSpec = {
     name: "text",
@@ -1671,7 +1679,7 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
       x,
       y,
     },
-    children: [displayLabel],
+    children: richTextChildren(displayLabel, style),
   };
   const textBounds = labelBounds(x, y, width, style.fontSize, anchor);
   const bgPaddingX = hasBackground ? EDGE_LABEL_BG_PADDING_X : 0;
@@ -1737,6 +1745,34 @@ function textElement(options: TextElementOptions): SvgLabelSpec {
       children,
     },
     bounds: intersectBounds(visualTextBounds, expandBoundsXY(bounds, bgPaddingX, bgPaddingY)),
+  };
+}
+
+function richTextChildren(
+  label: LabelContent,
+  style: ResolvedStyle
+): Array<string | SvgElementSpec> {
+  if (typeof label === "string") {
+    return [label];
+  }
+  return label.map((segment) => ({
+    name: "tspan",
+    attrs: richTextSegmentAttrs(segment, style),
+    children: [segment.text],
+  }));
+}
+
+function richTextSegmentAttrs(
+  segment: RichTextSegment,
+  style: ResolvedStyle
+): Record<string, string | number | undefined> {
+  return {
+    "data-href": segment.href,
+    fill: segment.href === undefined ? undefined : style.link,
+    "font-family": segment.code ? style.monospaceFontFamily : undefined,
+    "font-style": segment.italic ? "italic" : undefined,
+    "font-weight": segment.bold ? 700 : undefined,
+    "text-decoration": segment.href === undefined ? undefined : "underline",
   };
 }
 

@@ -17,6 +17,7 @@ export type { Diagnostic, DiagnosticInput, DiagnosticSeverity } from "./diagnost
 export { createDiagnostic, createIdCollisionDiagnostic, DiagnosticCode } from "./diagnostic";
 export type { CreateIdOptions } from "./id";
 export { createDeterministicId, IdRegistry } from "./id";
+export { isRichText, labelToPlainText, parseRichText, richText } from "./rich-text";
 export { serializeDocument, stableStringify, stableValue } from "./serialize";
 export { SymbolRegistry } from "./symbol-registry";
 export type { ResolvedStyleSheet, ResolveStyleSheetOptions } from "./theme";
@@ -51,6 +52,7 @@ export type {
   IconSpec,
   ImageIconSpec,
   ImageSource,
+  LabelContent,
   LabelOverflow,
   LabelRotation,
   LayoutSpec,
@@ -60,6 +62,7 @@ export type {
   NodeLayoutOptions,
   NodeShapeSpec,
   NodeStyleConfig,
+  RichText,
   SourceRef,
   SpacingConfig,
   SpacingScaleConfig,
@@ -67,6 +70,7 @@ export type {
   StyleSheet,
   StyleTokenValue,
   TextIconSpec,
+  TextSegment,
   Theme,
   TypographyConfig,
   TypographySizeConfig,

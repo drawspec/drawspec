@@ -6,9 +6,16 @@ import type {
   DiagramGroup,
   DiagramKind,
   DiagramNode,
+  RichText,
   SourceRef,
 } from "../index";
-import { createDiagnostic, DiagnosticCode } from "../index";
+import {
+  createDiagnostic,
+  DiagnosticCode,
+  isRichText,
+  labelToPlainText,
+  parseRichText,
+} from "../index";
 
 describe("IR type construction", () => {
   test("constructs all diagram kinds", () => {
@@ -93,6 +100,29 @@ describe("IR type construction", () => {
 
     expect(doc.kind).toBe("architecture");
     expect(doc.nodes[0]?.label).toBe("System");
+  });
+
+  test("constructs rich text labels with formatted segments", () => {
+    const label: RichText = [
+      { text: "API", bold: true },
+      { text: " calls " },
+      { text: "checkout", code: true },
+      { text: " asynchronously", italic: true },
+    ];
+    const node: DiagramNode = { id: "api", kind: "component", label };
+
+    expect(isRichText(node.label ?? "")).toBe(true);
+    expect(labelToPlainText(label)).toBe("API calls checkout asynchronously");
+  });
+
+  test("parses simple markdown into rich text segments", () => {
+    expect(parseRichText("**API** calls `checkout` *now*")).toEqual([
+      { text: "API", bold: true },
+      { text: " calls " },
+      { text: "checkout", code: true },
+      { text: " " },
+      { text: "now", italic: true },
+    ]);
   });
 
   test("constructs diagnostics with hint severity and source target", () => {

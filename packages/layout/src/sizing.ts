@@ -2,16 +2,23 @@ import type {
   DiagramNode,
   IconPlacement,
   IconSpec,
+  LabelContent,
   LabelOverflow,
   NodeCompartment,
   NodeCompartmentLine,
   NodeLayoutOptions,
   NodeShapeSpec,
 } from "@drawspec/core";
-import type { TextMeasurer } from "@drawspec/text-measure";
-import { truncateText, wrapText } from "@drawspec/text-measure";
+import type { RichTextSegment, TextMeasurer } from "@drawspec/text-measure";
+import { truncateTextContent, wrapTextContent } from "@drawspec/text-measure";
 import { normalizeNodeVisuals } from "./normalize";
-import type { NodeContentLayout, PositionedCompartmentLine, PositionedIcon, Size } from "./types";
+import type {
+  LabelLine,
+  NodeContentLayout,
+  PositionedCompartmentLine,
+  PositionedIcon,
+  Size,
+} from "./types";
 
 /** Fully resolved node sizing options used by graph layout. */
 export interface NormalizedNodeSizingOptions {
@@ -41,7 +48,7 @@ export interface NormalizedNodeSizingOptions {
 export interface SizedNode extends DiagramNode {
   computedWidth: number;
   computedHeight: number;
-  labelLines: string[];
+  labelLines: LabelLine[];
   contentLayout: NodeContentLayout;
 }
 
@@ -116,7 +123,7 @@ export function sizeNode(node: DiagramNode, global: NormalizedNodeSizingOptions)
   const maxContentWidth = maxWidth !== Infinity ? maxWidth - padding.x * 2 : undefined;
   let labelLines =
     labelWrap === "none"
-      ? label.split("\n")
+      ? splitLabelLines(label)
       : wrapLabelLines(label, labelWrap === "auto" ? maxContentWidth : labelWrap, global.fontSize);
 
   const labelWidth = Math.max(
@@ -490,7 +497,7 @@ function positionColumn(
 }
 
 function layoutContent(
-  labelLines: string[],
+  labelLines: LabelLine[],
   items: readonly IconLayoutItem[],
   nodeWidth: number,
   nodeHeight: number,
@@ -542,20 +549,43 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-function wrapLabelLines(label: string, wrapWidth: number | undefined, fontSize: number): string[] {
+function wrapLabelLines(
+  label: LabelContent,
+  wrapWidth: number | undefined,
+  fontSize: number
+): LabelLine[] {
   if (wrapWidth === undefined) {
-    return label.split("\n");
+    return splitLabelLines(label);
   }
-  return wrapText(label, wrapWidth, fontSize);
+  return wrapTextContent(label, wrapWidth, fontSize);
 }
 
 function truncateLabelLines(
-  label: string,
+  label: LabelContent,
   maxWidth: number | undefined,
   fontSize: number
-): string[] {
+): LabelLine[] {
   if (maxWidth === undefined) {
+    return splitLabelLines(label);
+  }
+  return splitLabelLines(label).map((line) => truncateTextContent(line, maxWidth, fontSize));
+}
+
+function splitLabelLines(label: LabelContent): LabelLine[] {
+  if (typeof label === "string") {
     return label.split("\n");
   }
-  return label.split("\n").map((line) => truncateText(line, maxWidth, fontSize));
+  const lines: RichTextSegment[][] = [[]];
+  for (const segment of label) {
+    const parts = segment.text.split("\n");
+    for (const [index, part] of parts.entries()) {
+      if (index > 0) {
+        lines.push([]);
+      }
+      if (part.length > 0) {
+        lines[lines.length - 1]?.push({ ...segment, text: part });
+      }
+    }
+  }
+  return lines;
 }
