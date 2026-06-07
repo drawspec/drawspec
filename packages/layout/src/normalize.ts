@@ -30,6 +30,8 @@ const KIND_SHAPE_DEFAULTS: Record<string, NodeShapeSpec> = {
   "gantt-task": { type: "rect" },
   "gantt-milestone": { type: "diamond" },
   "gantt-section": { type: "rect" },
+  "mindmap-root": { type: "rounded-rect", radius: 20 },
+  "mindmap-node": { type: "rounded-rect", radius: 12 },
 };
 
 const KIND_ICON_DEFAULTS: Record<string, BuiltinIconName> = {

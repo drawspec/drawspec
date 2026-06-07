@@ -15,7 +15,8 @@ export type DiagramKind =
   | "timing"
   | "er"
   | "gantt"
-  | "graph";
+  | "graph"
+  | "mindmap";
 
 /** Source location for an element produced from author code. */
 export interface SourceRef {

@@ -42,6 +42,7 @@ describe("typed theme infrastructure", () => {
       "er",
       "gantt",
       "graph",
+      "mindmap",
     ];
 
     expect(Object.keys(DIAGRAM_KIND_THEME_DEFAULTS).sort()).toEqual([...kinds].sort());

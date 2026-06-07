@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-mmdoc_16a71ad8-1lkeyln-desc-03qe8de" aria-labelledby="drawspec-mmdoc_16a71ad8-1lkeyln-title-14jxnq7" height="952" id="drawspec-mmdoc_16a71ad8-1lkeyln" role="img" viewBox="0 0 680 952" width="680" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
+  <title id="drawspec-mmdoc_16a71ad8-1lkeyln-title-14jxnq7">
+    Golden
+  </title>
+  <desc id="drawspec-mmdoc_16a71ad8-1lkeyln-desc-03qe8de">
+    mindmap diagram mmdoc_16a71ad8
+  </desc>
+  <rect fill="#ffffff" height="952" width="680" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-mmdoc_16a71ad8-1lkeyln-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-mmdoc_16a71ad8-1lkeyln-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-mmdoc_16a71ad8-1lkeyln-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-mmdoc_16a71ad8-1lkeyln-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-mmdoc_16a71ad8-1lkeyln-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-mmdoc_16a71ad8-1lkeyln-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_135430b6df-1gxz1u4">
+    <path d="M 340 136 L 580 68" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_39baf0ccf0-0r7xlu7">
+    <path d="M 340 408 L 580 340" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_48a4d39791-0hgcqfq">
+    <path d="M 340 748 L 580 748" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_4fa93b1d21-0qfig39">
+    <path d="M 100 442 L 340 408" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_5a29c48887-1lrlj9t">
+    <path d="M 340 748 L 580 612" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_5fdb149fc0-1rmtojo">
+    <path d="M 100 442 L 340 136" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_66e65dc378-0ow1pqr">
+    <path d="M 340 748 L 580 884" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_9917efe201-1ytptw1">
+    <path d="M 340 408 L 580 476" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_cf72b3b92e-148wlr7">
+    <path d="M 340 136 L 580 204" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-edge-mmb_dc714c1f8d-0boe9vv">
+    <path d="M 100 442 L 340 748" fill="none" stroke="#475569" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_023f707c16-03c1q5g">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="520" y="312" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_025a0c30f2-1bgkb27">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="520" y="584" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_14f95c3488-0ueq25y">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="280" y="108" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_1c47894598-15dip6p">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="520" y="40" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_4763b6a69e-0sccc92">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="520" y="176" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_55acdd0c03-1rjnvzr">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="520" y="448" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_729e523d51-0cad758">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="280" y="380" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_9f00103dd9-1bvfwp7">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="520" y="720" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_b5e1964035-1ey60n9">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="280" y="720" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mm_cfb453e069-1gm5boq">
+    <rect fill="#f8fafc" height="56" rx="12" ry="12" stroke="#475569" stroke-width="1.5" width="120" x="520" y="856" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-node-mmr_1e631e14e8-0ag5iuw">
+    <rect fill="#e0e7ff" height="56" rx="12" ry="12" stroke="#4338ca" stroke-width="1.5" width="120" x="40" y="414" />
+  </g>
+  <g id="drawspec-mmdoc_16a71ad8-1lkeyln-text-layer-0xlpn54">
+    <text data-width="80.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_023f707c16-line0-1774cma" text-anchor="middle" x="580" y="344.9">
+      Architecture
+    </text>
+    <text data-width="57.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_025a0c30f2-line0-0pw84wd" text-anchor="middle" x="580" y="616.9">
+      Backend
+    </text>
+    <text data-width="56.56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_14f95c3488-line0-0h0w16w" text-anchor="middle" x="340" y="140.9">
+      Planning
+    </text>
+    <text data-width="41.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_1c47894598-line0-0l42i2n" text-anchor="middle" x="580" y="72.9">
+      Scope
+    </text>
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_4763b6a69e-line0-1aa82l4" text-anchor="middle" x="580" y="208.9">
+      Timeline
+    </text>
+    <text data-width="15.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_55acdd0c03-line0-09sss9h" text-anchor="middle" x="580" y="480.9">
+      UI
+    </text>
+    <text data-width="45.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_729e523d51-line0-0pe01q6" text-anchor="middle" x="340" y="412.9">
+      Design
+    </text>
+    <text data-width="59.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_9f00103dd9-line0-1jviifx" text-anchor="middle" x="580" y="752.9">
+      Frontend
+    </text>
+    <text data-width="101.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_b5e1964035-line0-0jzrzkj" text-anchor="middle" x="340" y="752.9">
+      Implementation
+    </text>
+    <text data-width="48.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mm_cfb453e069-line0-1m2ewog" text-anchor="middle" x="580" y="888.9">
+      Testing
+    </text>
+    <text data-width="46.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-mmdoc_16a71ad8-1lkeyln-label-node-mmr_1e631e14e8-line0-0yrx5eg" text-anchor="middle" x="100" y="446.9">
+      Project
+    </text>
+  </g>
+</svg>
