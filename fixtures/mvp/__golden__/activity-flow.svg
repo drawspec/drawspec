@@ -113,9 +113,9 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="830.4" />
   </g>
   <g id="drawspec-actdoc_82f445ff-1mt87vt-text-layer-1jl0137">
-    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-line0-13utghn-bg-0ac3512" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="89.26" x="155.37" y="834.4" />
-      <text data-width="85.26" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-line0-13utghn" text-anchor="middle" x="200" y="848.6">
+    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-line0-13utghn-bg-0ac3512" transform="translate(0 3.514)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="89.26" x="155.37" y="884.886" />
+      <text data-width="85.26" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_08074612-line0-13utghn" text-anchor="middle" x="200" y="899.086">
         stock branch
       </text>
     </g>
@@ -131,9 +131,9 @@
         billing branch
       </text>
     </g>
-    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-line0-1yb5qw8-bg-0f1fgfk" transform="translate(0 65.2)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="23.04" x="200.48" y="647.2" />
-      <text data-width="19.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-line0-1yb5qw8" text-anchor="middle" x="212" y="661.4">
+    <g id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-line0-1yb5qw8-bg-0f1fgfk">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="23.04" x="200.48" y="730.674" />
+      <text data-width="19.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-actdoc_82f445ff-1mt87vt-label-edge-flow_bb6cf7e6-line0-1yb5qw8" text-anchor="middle" x="212" y="744.874">
         No
       </text>
     </g>
