@@ -853,8 +853,11 @@ describe("SvgRenderer", () => {
       return { doc, positionedDiagram };
     }
 
-    function extractLabelRects(svg: string, edgeId: string): Array<{ y: number; height: number }> {
-      const rects: Array<{ y: number; height: number }> = [];
+    function extractLabelRects(
+      svg: string,
+      edgeId: string
+    ): Array<{ y: number; height: number; strokeWidth: number }> {
+      const rects: Array<{ y: number; height: number; strokeWidth: number }> = [];
       const gRegex = new RegExp(
         `<g id="[^"]*label-edge-${edgeId}-line\\d+[^"]*"[^>]*>[\\s\\S]*?<rect[^>]*\\/>`,
         "g"
@@ -863,11 +866,25 @@ describe("SvgRenderer", () => {
       for (const gMatch of matches) {
         const rectStr = gMatch[0].match(/\by="([^"]*)"/);
         const heightStr = gMatch[0].match(/\bheight="([^"]*)"/);
+        const strokeWidthStr = gMatch[0].match(/\bstroke-width="([^"]*)"/);
         if (rectStr && heightStr) {
-          rects.push({ y: Number.parseFloat(rectStr[1]), height: Number.parseFloat(heightStr[1]) });
+          rects.push({
+            y: Number.parseFloat(rectStr[1]),
+            height: Number.parseFloat(heightStr[1]),
+            strokeWidth: strokeWidthStr === null ? 0 : Number.parseFloat(strokeWidthStr[1]),
+          });
         }
       }
       return rects;
+    }
+
+    function distanceFromEdge(
+      rect: { y: number; height: number; strokeWidth: number },
+      edgeY: number
+    ): number {
+      const visualTop = rect.y - rect.strokeWidth;
+      const visualBottom = rect.y + rect.height + rect.strokeWidth;
+      return visualBottom <= edgeY ? edgeY - visualBottom : visualTop - edgeY;
     }
 
     function extractTextYs(svg: string, edgeId: string): number[] {
@@ -1010,6 +1027,67 @@ describe("SvgRenderer", () => {
       const svg = renderSvgSync(doc, { positionedDiagram });
       expect(svg).toMatch(/stroke="#475569"/);
       expect(svg).toContain('stroke-width="1"');
+    });
+
+    test("stroke edge labels use full bounds for symmetric overlap gaps", () => {
+      const longLabel = "wrap this edge label onto two lines";
+      const fillDoc = document({
+        id: "fill-gap-test",
+        edgeLabelStyle: "fill",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: longLabel }],
+      });
+      const strokeDoc = { ...fillDoc, id: "stroke-gap-test", edgeLabelStyle: "stroke" };
+      const edgeY = 100;
+      const positionedDiagram = {
+        document: fillDoc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: longLabel,
+            waypoints: [
+              { x: 20, y: edgeY },
+              { x: 80, y: edgeY },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 120,
+        height: 200,
+      };
+
+      const fillSvg = renderSvgSync(fillDoc, { positionedDiagram });
+      const strokeSvg = renderSvgSync(strokeDoc, {
+        positionedDiagram: { ...positionedDiagram, document: strokeDoc },
+      });
+      const fillRects = extractLabelRects(fillSvg, "e1");
+      const strokeRects = extractLabelRects(strokeSvg, "e1");
+      const fillAboveRect = fillRects.find((rect) => rect.y + rect.height < edgeY);
+      const fillBelowRect = fillRects.find((rect) => rect.y > edgeY);
+      const strokeBelowRect = strokeRects.find((rect) => rect.y > edgeY);
+
+      expect(fillAboveRect).toBeDefined();
+      expect(fillBelowRect).toBeDefined();
+      expect(strokeBelowRect).toBeDefined();
+      if (
+        fillAboveRect === undefined ||
+        fillBelowRect === undefined ||
+        strokeBelowRect === undefined
+      ) {
+        throw new Error("expected wrapped label lines above and below the edge");
+      }
+      expect(strokeBelowRect.strokeWidth).toBe(1);
+      expect(distanceFromEdge(fillBelowRect, edgeY)).toBe(4);
+      expect(distanceFromEdge(strokeBelowRect, edgeY)).toBe(distanceFromEdge(fillBelowRect, edgeY));
+      expect(distanceFromEdge(fillAboveRect, edgeY)).toBeGreaterThan(0);
     });
   });
 });

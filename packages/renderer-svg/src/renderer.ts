@@ -1089,9 +1089,8 @@ function renderEdge(
   const labels: SvgLabelSpec[] = [];
   if (edge.label !== undefined) {
     const labelOverflow = edge.labelOverflow ?? document.labelOverflow ?? "wrap";
-    const hasLayoutPosition = edge.labelPosition !== undefined;
     const pos = edge.labelPosition ?? midpoint(edge.waypoints);
-    const yAdjust = hasLayoutPosition ? style.fontSize * 0.35 : -Math.max(8, style.fontSize * 0.5);
+    const yAdjust = -Math.max(8, style.fontSize * 0.5);
     const edgeMaxWidth = edgeLabelMaxWidth(
       edge.waypoints,
       markerStart !== undefined,
@@ -1107,15 +1106,21 @@ function renderEdge(
         : wrapText(edge.label, edgeMaxWidth, style.fontSize);
     const edgeLineHeight = style.fontSize * 1.3;
     const edgeLabelY = pos.y + yAdjust;
-    const textTopOffset = style.fontSize * 0.8 + EDGE_LABEL_BG_PADDING_Y;
-    const textBottomOffset = style.fontSize * 0.2 + EDGE_LABEL_BG_PADDING_Y;
+    const strokeWidth = labelContainer.backgroundStrokeWidth ?? 0;
+    const textTopOffset = style.fontSize * 0.8 + EDGE_LABEL_BG_PADDING_Y + strokeWidth;
+    const textBottomOffset = style.fontSize * 0.2 + EDGE_LABEL_BG_PADDING_Y + strokeWidth;
     labels.push(
       ...edgeLines.map((line, index) => {
         const baseY = edgeLabelY + index * edgeLineHeight;
         const bgTop = baseY - textTopOffset;
         const bgBottom = baseY + textBottomOffset;
         const overlapsEdge = bgTop <= pos.y && bgBottom >= pos.y;
-        const extraGap = overlapsEdge ? pos.y - bgTop + EDGE_LABEL_LINE_GAP : 0;
+        let extraGap = 0;
+        if (overlapsEdge) {
+          const shiftUp = bgBottom - pos.y + EDGE_LABEL_LINE_GAP;
+          const shiftDown = pos.y - bgTop + EDGE_LABEL_LINE_GAP;
+          extraGap = shiftUp <= shiftDown ? -shiftUp : shiftDown;
+        }
         return textElement({
           id: stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`),
           ownerId: edge.id,
