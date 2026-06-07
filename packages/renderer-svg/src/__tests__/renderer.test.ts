@@ -818,4 +818,198 @@ describe("SvgRenderer", () => {
     expect(svg).not.toContain("data-source-file");
     expect(svg).not.toContain("data-source-line");
   });
+
+  describe("edge label overlap prevention", () => {
+    function edgeLabelDoc(label: string, edgeY = 100, edgeLen = 120) {
+      const doc = document({
+        id: "overlap-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label }],
+      });
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label,
+            waypoints: [
+              { x: 20, y: edgeY },
+              { x: 20 + edgeLen, y: edgeY },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 20 + edgeLen + 20,
+        height: 200,
+      };
+      return { doc, positionedDiagram };
+    }
+
+    function extractLabelRects(svg: string, edgeId: string): Array<{ y: number; height: number }> {
+      const rects: Array<{ y: number; height: number }> = [];
+      const gRegex = new RegExp(
+        `<g id="[^"]*label-edge-${edgeId}-line\\d+[^"]*"[^>]*>[\\s\\S]*?<rect[^>]*\\/>`,
+        "g"
+      );
+      const matches = svg.matchAll(gRegex);
+      for (const gMatch of matches) {
+        const rectStr = gMatch[0].match(/\by="([^"]*)"/);
+        const heightStr = gMatch[0].match(/\bheight="([^"]*)"/);
+        if (rectStr && heightStr) {
+          rects.push({ y: Number.parseFloat(rectStr[1]), height: Number.parseFloat(heightStr[1]) });
+        }
+      }
+      return rects;
+    }
+
+    function extractTextYs(svg: string, edgeId: string): number[] {
+      const ys: number[] = [];
+      const regex = new RegExp(
+        `<text[^>]*id="[^"]*label-edge-${edgeId}-line(\\d+)[^"]*"[^>]*y="([^"]*)"`,
+        "g"
+      );
+      for (const match of svg.matchAll(regex)) {
+        ys.push(Number.parseFloat(match[2]));
+      }
+      return ys;
+    }
+
+    test("single-line edge label does not overlap edge path", () => {
+      const { doc, positionedDiagram } = edgeLabelDoc("calls");
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const edgeY = 100;
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBe(1);
+      const rect = rects[0];
+      const rectBottom = rect.y + rect.height;
+      expect(rectBottom).toBeLessThan(edgeY);
+    });
+
+    test("wrapped edge label second line clears the edge path", () => {
+      const longLabel = "connects the services together reliably";
+      const { doc, positionedDiagram } = edgeLabelDoc(longLabel, 100, 60);
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const edgeY = 100;
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBeGreaterThanOrEqual(2);
+      const firstBelowEdge = rects.find((r) => r.y >= edgeY);
+      if (firstBelowEdge !== undefined) {
+        expect(firstBelowEdge.y).toBeGreaterThan(edgeY);
+      }
+      for (const rect of rects) {
+        const rectTop = rect.y;
+        const rectBottom = rect.y + rect.height;
+        const overlaps = rectTop <= edgeY && rectBottom >= edgeY;
+        expect(overlaps).toBe(false);
+      }
+    });
+
+    test("wrapped edge label text positions are ordered top to bottom", () => {
+      const longLabel = "sends a very long message label here";
+      const { doc, positionedDiagram } = edgeLabelDoc(longLabel, 100, 60);
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const ys = extractTextYs(svg, "e1");
+      expect(ys.length).toBeGreaterThanOrEqual(2);
+      for (let i = 1; i < ys.length; i++) {
+        expect(ys[i]).toBeGreaterThan(ys[i - 1]);
+      }
+    });
+
+    test("layout-positioned wrapped edge labels also avoid edge overlap", () => {
+      const longLabel = "sends a long message text that wraps";
+      const doc = document({
+        id: "seq-overlap-test",
+        kind: "sequence",
+        nodes: [
+          { id: "a", kind: "participant", label: "A" },
+          { id: "b", kind: "participant", label: "B" },
+        ],
+        edges: [
+          {
+            id: "e1",
+            kind: "message",
+            sourceId: "a",
+            targetId: "b",
+            label: longLabel,
+          },
+        ],
+      });
+      const edgeY = 200;
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "message",
+            sourceId: "a",
+            targetId: "b",
+            label: longLabel,
+            waypoints: [
+              { x: 50, y: edgeY },
+              { x: 130, y: edgeY },
+            ],
+            labelPosition: { x: 90, y: edgeY },
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 180,
+        height: 300,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      const rects = extractLabelRects(svg, "e1");
+      expect(rects.length).toBeGreaterThanOrEqual(2);
+      for (const rect of rects) {
+        const overlaps = rect.y <= edgeY && rect.y + rect.height >= edgeY;
+        expect(overlaps).toBe(false);
+      }
+    });
+
+    test("edge label with stroke style has stroke attribute", () => {
+      const longLabel = "connects the services together reliably";
+      const doc = document({
+        id: "stroke-overlap-test",
+        edgeLabelStyle: "stroke",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: longLabel }],
+      });
+      const edgeY = 100;
+      const positionedDiagram = {
+        document: doc,
+        nodes: [],
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: longLabel,
+            waypoints: [
+              { x: 20, y: edgeY },
+              { x: 300, y: edgeY },
+            ],
+          },
+        ],
+        groups: [],
+        activations: [],
+        width: 320,
+        height: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram });
+      expect(svg).toMatch(/stroke="#475569"/);
+      expect(svg).toContain('stroke-width="1"');
+    });
+  });
 });
