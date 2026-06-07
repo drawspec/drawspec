@@ -237,6 +237,24 @@ Second paragraph.
     }
   });
 
+  test("parses consecutive @source and @diagram without blank line", async () => {
+    const nodes = await md`
+@source typescript ./overview.sequence.ts
+@diagram ./overview.sequence.ts "Overview"
+`;
+    expect(nodes).toHaveLength(2);
+    expect(nodes[0]?.type).toBe("codeBlock");
+    expect(nodes[1]?.type).toBe("diagram");
+    if (nodes[0]?.type === "codeBlock") {
+      expect(nodes[0].source).toBe("./overview.sequence.ts");
+      expect(nodes[0].lang).toBe("typescript");
+    }
+    if (nodes[1]?.type === "diagram") {
+      expect(nodes[1].ref).toBe("./overview.sequence.ts");
+      expect(nodes[1].caption).toBe("Overview");
+    }
+  });
+
   test("parses @badge directive", async () => {
     const nodes = await md`
 @badge stable success
