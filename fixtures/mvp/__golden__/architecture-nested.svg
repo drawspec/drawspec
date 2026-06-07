@@ -96,9 +96,9 @@
         Validates tokens
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-line0-1xuic2y-bg-1izlo52" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="117.82" x="341.09" y="44" />
-      <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-line0-1xuic2y" text-anchor="middle" x="400" y="58.2">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-line0-1xuic2y-bg-1izlo52" transform="translate(0 38.081)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="117.82" x="341.09" y="81.919" />
+      <text data-width="113.82" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_51a563570f1aab38-line0-1xuic2y" text-anchor="middle" x="400" y="96.119">
         Authenticates via
       </text>
     </g>
@@ -114,9 +114,9 @@
         Persists settings
       </text>
     </g>
-    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-line0-05umfp8-bg-0hynkpo" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="173.4" x="113.3" y="44" />
-      <text data-width="169.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-line0-05umfp8" text-anchor="middle" x="200" y="58.2">
+    <g id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-line0-05umfp8-bg-0hynkpo" transform="translate(0 40.536)">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="173.4" x="113.3" y="57.464" />
+      <text data-width="169.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-view_49b744c8cc155f25-15h7gpi-label-edge-rel_8d053a5378268edf-line0-05umfp8" text-anchor="middle" x="200" y="71.664">
         Configures payment rules
       </text>
     </g>
