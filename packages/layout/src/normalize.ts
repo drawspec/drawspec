@@ -27,9 +27,11 @@ const KIND_SHAPE_DEFAULTS: Record<string, NodeShapeSpec> = {
   "timing-state": { type: "rounded-rect", radius: 8 },
   "use-case": { type: "ellipse" },
   component: { type: "tabbed-rect" },
-  "gantt-task": { type: "rect" },
+"gantt-task": { type: "rect" },
   "gantt-milestone": { type: "diamond" },
   "gantt-section": { type: "rect" },
+  "mindmap-root": { type: "rounded-rect", radius: 20 },
+  "mindmap-node": { type: "rounded-rect", radius: 12 },
 };
 
 const KIND_ICON_DEFAULTS: Record<string, BuiltinIconName> = {

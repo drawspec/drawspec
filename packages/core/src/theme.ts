@@ -153,6 +153,10 @@ export const DIAGRAM_KIND_THEME_DEFAULTS: Record<DiagramKind, DiagramTheme> = {
     nodes: { borderRadius: 4 },
   }),
   graph: DEFAULT_DIAGRAM_THEME,
+  mindmap: mergeDiagramTheme(DEFAULT_DIAGRAM_THEME, {
+    colors: { primary: "#4338ca", accent: "#818cf8" },
+    nodes: { borderRadius: 12 },
+  }),
 };
 
 /**

@@ -125,9 +125,11 @@ const kindDefaults: Record<string, Partial<ResolvedStyle>> = {
   "timing-participant": { fill: "#f8fafc", stroke: "#334155" },
   "timing-state": { fill: "#ecfdf5", stroke: "#059669" },
   "use-case": { fill: "#f5f3ff", stroke: "#7c3aed" },
-  "gantt-task": { fill: "#dbeafe", stroke: "#2563eb" },
+"gantt-task": { fill: "#dbeafe", stroke: "#2563eb" },
   "gantt-milestone": { fill: "#fef3c7", stroke: "#d97706" },
   "gantt-section": { fill: "#f1f5f9", stroke: "#64748b" },
+  "mindmap-root": { fill: "#e0e7ff", stroke: "#4338ca" },
+  "mindmap-node": { fill: "#f8fafc", stroke: "#475569" },
 };
 
 const darkKindDefaults: Record<string, Partial<ResolvedStyle>> = {
@@ -151,9 +153,11 @@ const darkKindDefaults: Record<string, Partial<ResolvedStyle>> = {
   "timing-participant": { fill: "#1e293b", stroke: "#94a3b8" },
   "timing-state": { fill: "#064e3b", stroke: "#34d399" },
   "use-case": { fill: "#2e1065", stroke: "#c4b5fd" },
-  "gantt-task": { fill: "#1e3a5f", stroke: "#60a5fa" },
+"gantt-task": { fill: "#1e3a5f", stroke: "#60a5fa" },
   "gantt-milestone": { fill: "#713f12", stroke: "#fbbf24" },
   "gantt-section": { fill: "#1e293b", stroke: "#94a3b8" },
+  "mindmap-root": { fill: "#312e81", stroke: "#818cf8" },
+  "mindmap-node": { fill: "#1e293b", stroke: "#94a3b8" },
 };
 
 /** Per-edge-kind visual defaults for line style and arrowhead markers. */
@@ -190,6 +194,8 @@ const edgeKindStyleMap: Record<
   // Timing diagram
   "timing-transition": { lineStyle: "solid", arrowEnd: "filled-triangle" },
   "timing-message": { lineStyle: "dashed", arrowEnd: "filled-triangle" },
+  // Mindmap diagram
+  "mindmap-branch": { lineStyle: "solid", arrowEnd: "none" },
 };
 
 type StyledEntity = DiagramNode | DiagramEdge | DiagramGroup;

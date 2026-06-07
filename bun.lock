@@ -303,6 +303,19 @@
         "typescript": "latest",
       },
     },
+    "packages/mindmap": {
+      "name": "@drawspec/mindmap",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/layout-tree": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
     "packages/renderer-svg": {
       "name": "@drawspec/renderer-svg",
       "version": "0.0.1",
@@ -563,6 +576,8 @@
     "@drawspec/layout-wasm": ["@drawspec/layout-wasm@workspace:packages/layout-wasm"],
 
     "@drawspec/lsp": ["@drawspec/lsp@workspace:packages/lsp"],
+
+    "@drawspec/mindmap": ["@drawspec/mindmap@workspace:packages/mindmap"],
 
     "@drawspec/preview": ["@drawspec/preview@workspace:apps/preview"],
 
