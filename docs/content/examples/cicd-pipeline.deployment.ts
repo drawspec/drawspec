@@ -1,4 +1,4 @@
-import { deploymentDiagram } from "../../../packages/uml-deployment/src/index.js";
+import { deploymentDiagram } from "@drawspec/uml-deployment";
 
 export default deploymentDiagram("CI/CD Infrastructure", (d) => {
   d.deploymentNode("GitHub", (n) => {

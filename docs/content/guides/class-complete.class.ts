@@ -1,4 +1,4 @@
-import { classDiagram } from "../../../packages/uml-class/src/index.js";
+import { classDiagram } from "@drawspec/uml-class";
 
 export default classDiagram("Payment system", ({ class_, interface_, enum_ }) => [
   interface_("PaymentMethod", (i) => {

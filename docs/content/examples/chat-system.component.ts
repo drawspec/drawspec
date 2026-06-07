@@ -1,4 +1,4 @@
-import { componentDiagram } from "../../../packages/uml-component/src/index.js";
+import { componentDiagram } from "@drawspec/uml-component";
 
 export default componentDiagram("Chat Components", (d) => {
   d.component("WebSocket Gateway", (c) => {

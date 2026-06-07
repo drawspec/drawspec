@@ -1,4 +1,4 @@
-import { sequence } from "../../../packages/uml-sequence/src/index.js";
+import { sequence } from "@drawspec/uml-sequence";
 
 export default sequence("Real-Time Message Flow", (seq) => {
   const sender = seq.actor("Sender");

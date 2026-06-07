@@ -1,4 +1,4 @@
-import { classDiagram } from "../../../packages/uml-class/src/index.js";
+import { classDiagram } from "@drawspec/uml-class";
 
 export default classDiagram("Vehicle system", ({ class_, interface_, enum_, implements_, uses }) => [
   interface_("IDriveable", (i) => {

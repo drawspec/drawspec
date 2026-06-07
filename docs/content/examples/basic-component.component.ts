@@ -1,4 +1,4 @@
-import { componentDiagram } from "../../../packages/uml-component/src/index.js";
+import { componentDiagram } from "@drawspec/uml-component";
 
 export default componentDiagram("E-commerce microservices", (d) => {
   d.component("API Gateway", (c) => {

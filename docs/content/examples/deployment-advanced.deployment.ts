@@ -1,4 +1,4 @@
-import { deploymentDiagram } from "../../../packages/uml-deployment/src/index.js";
+import { deploymentDiagram } from "@drawspec/uml-deployment";
 
 export default deploymentDiagram("Multi-AZ deployment", (d) => {
   const webAz1 = d.deploymentNode("Web Server (AZ1)", (n) => {

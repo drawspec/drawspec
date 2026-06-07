@@ -1,4 +1,4 @@
-import { stateDiagram, initial, state, final } from "../../../packages/uml-state/src/index.js";
+import { stateDiagram, initial, state, final } from "@drawspec/uml-state";
 
 export default stateDiagram("Order Lifecycle", ({ initial, state, final }) => [
   initial().to(state("Pending")),

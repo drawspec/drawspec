@@ -1,4 +1,4 @@
-import { defineDoc, md } from "../../../packages/docs/src/index.js";
+import { defineDoc, md } from "@drawspec/docs";
 
 export default defineDoc({
   title: "Component Diagrams",

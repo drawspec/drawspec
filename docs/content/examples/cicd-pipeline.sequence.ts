@@ -1,4 +1,4 @@
-import { sequence } from "../../../packages/uml-sequence/src/index.js";
+import { sequence } from "@drawspec/uml-sequence";
 
 export default sequence("Rollback Flow", (seq) => {
   const healthCheck = seq.actor("Health Check");
