@@ -1,4 +1,4 @@
-import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
+import type { DiagramDocument, DiagramEdge } from "@drawspec/core";
 import type {
   LayoutEngine,
   LayoutOptions,
@@ -7,7 +7,18 @@ import type {
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { LayoutCache, normalizeLayoutOptions, sizeGraphNodes } from "@drawspec/layout";
+import {
+  centerOf,
+  computeBounds,
+  edgeWaypoints,
+  LayoutCache,
+  normalizeLayoutOptions,
+  round,
+  sizeGraphNodes,
+  sortedEdges,
+  sortedNodes,
+  validGraphEdges,
+} from "@drawspec/layout";
 
 /** Configuration for the deterministic force simulation. */
 export interface ForceSimulationOptions {
@@ -41,18 +52,6 @@ const DEFAULT_CENTER_STRENGTH = 0.02;
 const DAMPING = 0.82;
 const MIN_DISTANCE = 0.001;
 
-function sortedNodes(document: DiagramDocument): DiagramNode[] {
-  return [...document.nodes].sort((left, right) => left.id.localeCompare(right.id));
-}
-
-function sortedEdges(document: DiagramDocument): DiagramEdge[] {
-  return [...document.edges].sort((left, right) => left.id.localeCompare(right.id));
-}
-
-function round(value: number): number {
-  return Math.round(value * 1000) / 1000;
-}
-
 function initialAngle(index: number, total: number): number {
   return total <= 1 ? 0 : (Math.PI * 2 * index) / total - Math.PI / 2;
 }
@@ -81,10 +80,6 @@ function createInitialNodes(document: DiagramDocument, options: ForceLayoutOptio
   });
 }
 
-function centerOf(node: PositionedNode): Point {
-  return { x: node.x + node.width / 2, y: node.y + node.height / 2 };
-}
-
 function applyRepulsion(nodes: SimNode[], repulsion: number): void {
   for (let leftIndex = 0; leftIndex < nodes.length; leftIndex += 1) {
     for (let rightIndex = leftIndex + 1; rightIndex < nodes.length; rightIndex += 1) {
@@ -107,14 +102,6 @@ function applyRepulsion(nodes: SimNode[], repulsion: number): void {
       right.vy += fy;
     }
   }
-}
-
-function validGraphEdges(document: DiagramDocument): DiagramEdge[] {
-  const nodeIds = new Set(document.nodes.map((node) => node.id));
-  return sortedEdges(document).filter(
-    (edge) =>
-      edge.sourceId !== edge.targetId && nodeIds.has(edge.sourceId) && nodeIds.has(edge.targetId)
-  );
 }
 
 function applyAttraction(
@@ -168,47 +155,6 @@ function normalizePositions(nodes: SimNode[], padding: number): PositionedNode[]
     x: round(node.x - minX + padding),
     y: round(node.y - minY + padding),
   }));
-}
-
-function selfLoopWaypoints(source: PositionedNode): Point[] {
-  const center = centerOf(source);
-  const offset = 28;
-  return [
-    center,
-    { x: source.x + source.width + offset, y: center.y },
-    { x: source.x + source.width + offset, y: source.y - offset },
-    { x: center.x, y: source.y - offset },
-    center,
-  ];
-}
-
-function edgeWaypoints(edge: DiagramEdge, nodesById: Record<string, PositionedNode>): Point[] {
-  const source = nodesById[edge.sourceId];
-  const target = nodesById[edge.targetId];
-  if (source === undefined || target === undefined) return [];
-  if (edge.sourceId === edge.targetId) return selfLoopWaypoints(source);
-  return [centerOf(source), centerOf(target)].map((point) => ({
-    x: round(point.x),
-    y: round(point.y),
-  }));
-}
-
-function computeBounds(
-  nodes: PositionedNode[],
-  edges: PositionedEdge[],
-  padding: number
-): { width: number; height: number } {
-  const maxX = Math.max(
-    padding,
-    ...nodes.map((node) => node.x + node.width),
-    ...edges.flatMap((edge) => edge.waypoints.map((point) => point.x))
-  );
-  const maxY = Math.max(
-    padding,
-    ...nodes.map((node) => node.y + node.height),
-    ...edges.flatMap((edge) => edge.waypoints.map((point) => point.y))
-  );
-  return { width: round(maxX + padding), height: round(maxY + padding) };
 }
 
 function createForceLayout(

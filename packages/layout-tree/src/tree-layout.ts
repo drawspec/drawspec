@@ -1,14 +1,23 @@
-import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
+import type { DiagramDocument } from "@drawspec/core";
 import type {
   LayoutDirection,
   LayoutEngine,
   LayoutOptions,
-  Point,
   PositionedDiagram,
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { LayoutCache, normalizeLayoutOptions, sizeGraphNodes } from "@drawspec/layout";
+import {
+  computeBounds,
+  edgeWaypoints,
+  LayoutCache,
+  normalizeLayoutOptions,
+  round,
+  sizeGraphNodes,
+  sortedEdges,
+  sortedNodes,
+  validGraphEdges,
+} from "@drawspec/layout";
 
 /** Configuration for deterministic tree layout. */
 export interface TreeOptions {
@@ -36,33 +45,9 @@ interface TreeNode {
   children: TreeNode[];
 }
 
-function sortedNodes(document: DiagramDocument): DiagramNode[] {
-  return [...document.nodes].sort((left, right) => left.id.localeCompare(right.id));
-}
-
-function sortedEdges(document: DiagramDocument): DiagramEdge[] {
-  return [...document.edges].sort((left, right) => left.id.localeCompare(right.id));
-}
-
-function round(value: number): number {
-  return Math.round(value * 1000) / 1000;
-}
-
-function centerOf(node: PositionedNode): Point {
-  return { x: node.x + node.width / 2, y: node.y + node.height / 2 };
-}
-
-function validEdges(document: DiagramDocument): DiagramEdge[] {
-  const nodeIds = new Set(document.nodes.map((node) => node.id));
-  return sortedEdges(document).filter(
-    (edge) =>
-      edge.sourceId !== edge.targetId && nodeIds.has(edge.sourceId) && nodeIds.has(edge.targetId)
-  );
-}
-
 function adjacencyFor(document: DiagramDocument): Map<string, string[]> {
   const adjacency = new Map(sortedNodes(document).map((node) => [node.id, [] as string[]]));
-  for (const edge of validEdges(document)) {
+  for (const edge of validGraphEdges(document)) {
     const children = adjacency.get(edge.sourceId) ?? [];
     if (!children.includes(edge.targetId)) children.push(edge.targetId);
     adjacency.set(
@@ -74,7 +59,7 @@ function adjacencyFor(document: DiagramDocument): Map<string, string[]> {
 }
 
 function rootIdsFor(document: DiagramDocument): string[] {
-  const incoming = new Set(validEdges(document).map((edge) => edge.targetId));
+  const incoming = new Set(validGraphEdges(document).map((edge) => edge.targetId));
   const roots = sortedNodes(document)
     .map((node) => node.id)
     .filter((id) => !incoming.has(id));
@@ -194,47 +179,6 @@ function positionNodes(document: DiagramDocument, options: TreeLayoutOptions): P
       normalized.padding
     );
   });
-}
-
-function selfLoopWaypoints(source: PositionedNode): Point[] {
-  const center = centerOf(source);
-  const offset = 28;
-  return [
-    center,
-    { x: source.x + source.width + offset, y: center.y },
-    { x: source.x + source.width + offset, y: source.y - offset },
-    { x: center.x, y: source.y - offset },
-    center,
-  ];
-}
-
-function edgeWaypoints(edge: DiagramEdge, nodesById: Record<string, PositionedNode>): Point[] {
-  const source = nodesById[edge.sourceId];
-  const target = nodesById[edge.targetId];
-  if (source === undefined || target === undefined) return [];
-  if (edge.sourceId === edge.targetId) return selfLoopWaypoints(source);
-  return [centerOf(source), centerOf(target)].map((point) => ({
-    x: round(point.x),
-    y: round(point.y),
-  }));
-}
-
-function computeBounds(
-  nodes: PositionedNode[],
-  edges: PositionedEdge[],
-  padding: number
-): { width: number; height: number } {
-  const maxX = Math.max(
-    padding,
-    ...nodes.map((node) => node.x + node.width),
-    ...edges.flatMap((edge) => edge.waypoints.map((point) => point.x))
-  );
-  const maxY = Math.max(
-    padding,
-    ...nodes.map((node) => node.y + node.height),
-    ...edges.flatMap((edge) => edge.waypoints.map((point) => point.y))
-  );
-  return { width: round(maxX + padding), height: round(maxY + padding) };
 }
 
 function createTreeLayout(

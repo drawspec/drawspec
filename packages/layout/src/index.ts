@@ -1,5 +1,15 @@
 export { createCachedLayout, LayoutCache } from "./cache";
 export { SimpleGraphLayoutEngine, simpleGraphLayout } from "./graph";
+export {
+  centerOf,
+  computeBounds,
+  edgeWaypoints,
+  round,
+  selfLoopWaypoints,
+  sortedEdges,
+  sortedNodes,
+  validGraphEdges,
+} from "./graph-utils";
 export { stableContentHash } from "./hash";
 export { createTextMeasurer } from "./measure";
 export type { NormalizedNodeVisuals } from "./normalize";
