@@ -334,6 +334,18 @@
         "typescript": "latest",
       },
     },
+    "packages/uml-er": {
+      "name": "@drawspec/uml-er",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
     "packages/uml-sequence": {
       "name": "@drawspec/uml-sequence",
       "version": "0.0.1",
@@ -475,6 +487,8 @@
     "@drawspec/uml-component": ["@drawspec/uml-component@workspace:packages/uml-component"],
 
     "@drawspec/uml-deployment": ["@drawspec/uml-deployment@workspace:packages/uml-deployment"],
+
+    "@drawspec/uml-er": ["@drawspec/uml-er@workspace:packages/uml-er"],
 
     "@drawspec/uml-sequence": ["@drawspec/uml-sequence@workspace:packages/uml-sequence"],
 
