@@ -82,9 +82,9 @@
         pay [payment
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line1-1a8zcij-bg-1p89clk" transform="translate(0 3.8)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="77.92" x="61.04" y="328" />
-      <text data-width="73.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line1-1a8zcij" text-anchor="middle" x="100" y="342.2">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line1-1a8zcij-bg-1p89clk">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="77.92" x="61.04" y="336" />
+      <text data-width="73.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line1-1a8zcij" text-anchor="middle" x="100" y="350.2">
         authorized]
       </text>
     </g>
@@ -106,9 +106,9 @@
         deliver [signature
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line1-1198i2l-bg-0eq6les" transform="translate(0 3.8)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="67" x="66.5" y="680" />
-      <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line1-1198i2l" text-anchor="middle" x="100" y="694.2">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line1-1198i2l-bg-0eq6les">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="67" x="66.5" y="688" />
+      <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line1-1198i2l" text-anchor="middle" x="100" y="702.2">
         captured]
       </text>
     </g>

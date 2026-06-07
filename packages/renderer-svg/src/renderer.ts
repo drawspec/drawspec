@@ -42,6 +42,7 @@ const DEFAULT_AUTO_FIT_PADDING = 20;
 const EDGE_LABEL_FALLBACK_WIDTH = 240;
 const EDGE_LABEL_BG_PADDING_X = 2;
 const EDGE_LABEL_BG_PADDING_Y = 3;
+const EDGE_LABEL_LINE_GAP = 4;
 const MARKER_SIZE = 8;
 
 interface OcclusionRect {
@@ -1105,19 +1106,27 @@ function renderEdge(
         ? [truncateText(edge.label, edgeMaxWidth, style.fontSize)]
         : wrapText(edge.label, edgeMaxWidth, style.fontSize);
     const edgeLineHeight = style.fontSize * 1.3;
+    const edgeLabelY = pos.y + yAdjust;
+    const textTopOffset = style.fontSize * 0.8 + EDGE_LABEL_BG_PADDING_Y;
+    const textBottomOffset = style.fontSize * 0.2 + EDGE_LABEL_BG_PADDING_Y;
     labels.push(
-      ...edgeLines.map((line, index) =>
-        textElement({
+      ...edgeLines.map((line, index) => {
+        const baseY = edgeLabelY + index * edgeLineHeight;
+        const bgTop = baseY - textTopOffset;
+        const bgBottom = baseY + textBottomOffset;
+        const overlapsEdge = bgTop <= pos.y && bgBottom >= pos.y;
+        const extraGap = overlapsEdge ? pos.y - bgTop + EDGE_LABEL_LINE_GAP : 0;
+        return textElement({
           id: stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`),
           ownerId: edge.id,
           label: line,
           x: pos.x,
-          y: pos.y + yAdjust + index * edgeLineHeight,
+          y: baseY + extraGap,
           style,
           anchor: "middle",
           ...labelContainer,
-        })
-      )
+        });
+      })
     );
   }
   return {

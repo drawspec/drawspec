@@ -94,9 +94,9 @@
         Request another
       </text>
     </g>
-    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line1-00igv65-bg-0aivygh" transform="translate(0 3.8)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="114.46" x="122.77" y="446.2" />
-      <text data-width="110.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line1-00igv65" text-anchor="middle" x="180" y="460.4">
+    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line1-00igv65-bg-0aivygh">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="114.46" x="122.77" y="454.2" />
+      <text data-width="110.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line1-00igv65" text-anchor="middle" x="180" y="468.4">
         payment method
       </text>
     </g>
