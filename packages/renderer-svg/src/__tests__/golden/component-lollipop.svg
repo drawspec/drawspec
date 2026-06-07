@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-component-lollipop-00wrcda-desc-02m3x2g" aria-labelledby="drawspec-component-lollipop-00wrcda-title-194g735" height="100" id="drawspec-component-lollipop-00wrcda" role="img" viewBox="0 0 240 100" width="240" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
+  <title id="drawspec-component-lollipop-00wrcda-title-194g735">
+    component-lollipop
+  </title>
+  <desc id="drawspec-component-lollipop-00wrcda-desc-02m3x2g">
+    component diagram component-lollipop
+  </desc>
+  <rect fill="#ffffff" height="100" width="240" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-component-lollipop-00wrcda-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-component-lollipop-00wrcda-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-component-lollipop-00wrcda-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-component-lollipop-00wrcda-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-component-lollipop-00wrcda-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-component-lollipop-00wrcda-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-component-lollipop-00wrcda-node-comp-048p1kv">
+    <path d="M 10 23 A 3 3 0 0 1 13 20 L 26 20 L 26 10 L 42 10 L 42 20 L 127 20 A 3 3 0 0 1 130 23 L 130 67 A 3 3 0 0 1 127 70 L 13 70 A 3 3 0 0 1 10 67 Z" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-component-lollipop-00wrcda-node-iface-14nt2cq">
+    <circle cx="190" cy="37" fill="#f8fafc" r="8" stroke="#334155" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-component-lollipop-00wrcda-text-layer-1bbk1bu">
+    <text data-width="79.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-component-lollipop-00wrcda-label-node-comp-line0-0syf1hj" text-anchor="middle" x="70" y="49.9">
+      AuthService
+    </text>
+    <text data-width="35.56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-component-lollipop-00wrcda-label-node-iface-line0-1iwom04" text-anchor="middle" x="190" y="53.9">
+      IAuth
+    </text>
+  </g>
+</svg>

@@ -1,6 +1,7 @@
 import type {
   BuiltinIconSpec,
   DiagramDocument,
+  DiagramEdge,
   EdgeLabelStyle,
   IconAppearance,
   ImageIconSpec,
@@ -135,6 +136,9 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
   const labels: SvgLabelSpec[] = [];
   const occlusionRects = buildOcclusionRects(positionedDiagram);
   const groupBounds = buildGroupBounds(positionedDiagram);
+  const nodePositions = new Map<string, PositionedNode>(
+    positionedDiagram.nodes.map((n) => [n.id, n])
+  );
   const children: SvgElementSpec[] = [
     { name: "title", attrs: { id: stableSvgId(idPrefix, "title") }, children: [title] },
     { name: "desc", attrs: { id: stableSvgId(idPrefix, "desc") }, children: [description] },
@@ -162,7 +166,7 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
         (node) => !viewport || rectInViewport(node.x, node.y, node.width, node.height, viewport)
       )
       .map((node) => {
-        const result = renderNode(document, node, options, idPrefix, themeName);
+        const result = renderNode(document, node, options, idPrefix, themeName, nodePositions);
         labels.push(...result.labels);
         return result.element;
       }),
@@ -495,10 +499,11 @@ function renderNode(
   node: PositionedNodeWithContentLayout,
   options: SvgRenderOptions,
   idPrefix: string,
-  themeName: string
+  themeName: string,
+  nodePositions: ReadonlyMap<string, PositionedNode> = new Map()
 ): RenderedElement {
   const style = resolveStyle(document, node, options.theme, "node", themeName);
-  const children = shapeForNode(node, style);
+  const children = shapeForNode(node, style, document.edges, nodePositions);
   const contentLayout = node.contentLayout;
   if (contentLayout !== undefined) {
     children.push(
@@ -522,9 +527,14 @@ function renderNode(
   const label = node.label ?? node.id;
   const lines = labelLayout?.lines ?? node.labelLines ?? [label];
   const lineHeight = style.fontSize * 1.3;
+  const isInterface = node.kind === "interface";
+  const interfaceCircleRadius = isInterface ? lollipopRadius(node) : 0;
+  const interfaceCy = isInterface ? node.y + node.height / 2 - interfaceCircleRadius : 0;
   const startY =
     labelLayout === undefined
-      ? node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2
+      ? isInterface
+        ? interfaceCy + interfaceCircleRadius + 4 + style.fontSize * 0.35
+        : node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2
       : node.y + labelLayout.y;
   const anchorX = labelLayout === undefined ? node.x + node.width / 2 : node.x + labelLayout.x;
   const labels: SvgLabelSpec[] =
@@ -630,12 +640,68 @@ function positionIconFromNodeOrigin(node: PositionedNode, icon: PositionedIcon):
   return { ...icon, x: node.x + icon.x, y: node.y + icon.y };
 }
 
+/** Radius for lollipop/socket circles on interface nodes. */
+const LOLLIPOP_DEFAULT_RADIUS = 8;
+
+/** Computes the lollipop circle radius for an interface node based on its bounds. */
+function lollipopRadius(node: PositionedNode): number {
+  return Math.min(LOLLIPOP_DEFAULT_RADIUS, node.width / 3, node.height / 3);
+}
+
+/** Determines whether an interface node is required (socket) or provided (lollipop). */
+function isRequiredInterface(nodeId: string, documentEdges: readonly DiagramEdge[]): boolean {
+  for (const edge of documentEdges) {
+    if (edge.kind === "requires" && edge.targetId === nodeId) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function socketDirection(
+  interfaceNode: PositionedNode,
+  documentEdges: readonly DiagramEdge[],
+  nodePositions: ReadonlyMap<string, PositionedNode>
+): SocketDirection {
+  for (const edge of documentEdges) {
+    if (edge.kind === "requires" && edge.targetId === interfaceNode.id) {
+      const sourceNode = nodePositions.get(edge.sourceId);
+      if (sourceNode === undefined) {
+        return "right";
+      }
+      const sourceCx = sourceNode.x + sourceNode.width / 2;
+      const sourceCy = sourceNode.y + sourceNode.height / 2;
+      const ifaceCx = interfaceNode.x + interfaceNode.width / 2;
+      const ifaceCy = interfaceNode.y + interfaceNode.height / 2;
+      const dx = sourceCx - ifaceCx;
+      const dy = sourceCy - ifaceCy;
+      if (Math.abs(dx) >= Math.abs(dy)) {
+        return dx < 0 ? "left" : "right";
+      }
+      return dy < 0 ? "up" : "down";
+    }
+  }
+  return "right";
+}
+
 function shapeForNode(
   node: PositionedNodeWithContentLayout,
-  style: ResolvedStyle
+  style: ResolvedStyle,
+  documentEdges: readonly DiagramEdge[] = [],
+  nodePositions: ReadonlyMap<string, PositionedNode> = new Map()
 ): SvgElementSpec[] {
   if (node.contentLayout !== undefined) {
     return outerShapeForNode(node, style);
+  }
+  if (node.kind === "interface") {
+    const radius = lollipopRadius(node);
+    const cx = node.x + node.width / 2;
+    const cy = node.y + node.height / 2 - radius;
+    if (isRequiredInterface(node.id, documentEdges)) {
+      const dir = socketDirection(node, documentEdges, nodePositions);
+      return [renderSocketShape(cx, cy, radius, style, dir)];
+    }
+    return [renderLollipopShape(cx, cy, radius, style)];
   }
   if (node.kind === "database") {
     return [
@@ -648,6 +714,9 @@ function shapeForNode(
         Math.min(18, node.height / 4)
       ),
     ];
+  }
+  if (node.kind === "component") {
+    return [renderTabbedRectShape(node.x, node.y, node.width, node.height, style)];
   }
   const rounded = node.kind === "container" || node.kind === "person" ? 12 : 3;
   const rect: SvgElementSpec = {
@@ -703,6 +772,9 @@ function shapeFromNodeKind(kind: string): NodeShapeSpec {
   if (kind === "container" || kind === "person") {
     return { type: "rounded-rect", radius: 12 };
   }
+  if (kind === "component") {
+    return { type: "tabbed-rect" };
+  }
   return { type: "rounded-rect", radius: 3 };
 }
 
@@ -737,7 +809,7 @@ export function renderNodeShape(
     case "document":
       return [renderDocumentShape(x, y, width, height, style)];
     case "tabbed-rect":
-      return renderTabbedRectShape(x, y, width, height, style);
+      return [renderTabbedRectShape(x, y, width, height, style)];
     case "note":
       return renderNoteShape(x, y, width, height, style);
     case "hexagon":
@@ -911,30 +983,6 @@ function renderDocumentShape(
   };
 }
 
-function renderTabbedRectShape(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  style: ResolvedStyle
-): SvgElementSpec[] {
-  const tabWidth = Math.min(36, width * 0.32);
-  const tabHeight = Math.min(16, height * 0.28);
-  const paint = shapePaintAttrs(style);
-  return [
-    renderRectShape(x, y, width, height, style, 3),
-    {
-      name: "path",
-      attrs: {
-        ...paint,
-        d: `M ${formatNumber(x + width - tabWidth)} ${formatNumber(y)} v ${formatNumber(tabHeight)} h ${formatNumber(tabWidth)}`,
-        fill: "none",
-      },
-      selfClosing: true,
-    },
-  ];
-}
-
 function renderNoteShape(
   x: number,
   y: number,
@@ -1016,6 +1064,44 @@ function renderRectShape(
   };
 }
 
+function renderTabbedRectShape(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  const tabWidth = 16;
+  const tabHeight = 10;
+  const r = 3;
+  const w = formatNumber;
+  const d = [
+    `M ${w(x)} ${w(y + r)}`,
+    `A ${r} ${r} 0 0 1 ${w(x + r)} ${w(y)}`,
+    `L ${w(x + tabWidth)} ${w(y)}`,
+    `L ${w(x + tabWidth)} ${w(y - tabHeight)}`,
+    `L ${w(x + tabWidth + tabWidth)} ${w(y - tabHeight)}`,
+    `L ${w(x + tabWidth + tabWidth)} ${w(y)}`,
+    `L ${w(x + width - r)} ${w(y)}`,
+    `A ${r} ${r} 0 0 1 ${w(x + width)} ${w(y + r)}`,
+    `L ${w(x + width)} ${w(y + height - r)}`,
+    `A ${r} ${r} 0 0 1 ${w(x + width - r)} ${w(y + height)}`,
+    `L ${w(x + r)} ${w(y + height)}`,
+    `A ${r} ${r} 0 0 1 ${w(x)} ${w(y + height - r)}`,
+    "Z",
+  ].join(" ");
+  return {
+    name: "path",
+    attrs: {
+      d,
+      fill: style.fill,
+      stroke: style.stroke,
+      "stroke-width": style.strokeWidth,
+    },
+    selfClosing: true,
+  };
+}
+
 function renderCylinderShape(
   x: number,
   y: number,
@@ -1038,6 +1124,66 @@ function renderCylinderShape(
 
 function cylinderPath(x: number, y: number, width: number, height: number, curve: number): string {
   return `M ${formatNumber(x)} ${formatNumber(y + curve)} C ${formatNumber(x)} ${formatNumber(y - curve / 3)} ${formatNumber(x + width)} ${formatNumber(y - curve / 3)} ${formatNumber(x + width)} ${formatNumber(y + curve)} L ${formatNumber(x + width)} ${formatNumber(y + height - curve)} C ${formatNumber(x + width)} ${formatNumber(y + height + curve / 3)} ${formatNumber(x)} ${formatNumber(y + height + curve / 3)} ${formatNumber(x)} ${formatNumber(y + height - curve)} Z`;
+}
+
+/** Renders a lollipop (provided interface) as a filled circle with stroke. */
+function renderLollipopShape(
+  cx: number,
+  cy: number,
+  radius: number,
+  style: ResolvedStyle
+): SvgElementSpec {
+  return {
+    name: "circle",
+    attrs: {
+      cx: formatNumber(cx),
+      cy: formatNumber(cy),
+      fill: style.fill,
+      r: radius,
+      stroke: style.stroke,
+      "stroke-width": style.strokeWidth,
+    },
+    selfClosing: true,
+  };
+}
+
+/** Renders a socket (required interface) as a semicircle arc open to the right. */
+type SocketDirection = "right" | "down" | "left" | "up";
+
+function renderSocketShape(
+  cx: number,
+  cy: number,
+  radius: number,
+  style: ResolvedStyle,
+  direction: SocketDirection = "right"
+): SvgElementSpec {
+  const f = formatNumber;
+  const r = radius;
+  let d: string;
+  switch (direction) {
+    case "right":
+      d = `M ${f(cx)} ${f(cy - r)} A ${r} ${r} 0 0 1 ${f(cx)} ${f(cy + r)}`;
+      break;
+    case "left":
+      d = `M ${f(cx)} ${f(cy - r)} A ${r} ${r} 0 0 0 ${f(cx)} ${f(cy + r)}`;
+      break;
+    case "down":
+      d = `M ${f(cx - r)} ${f(cy)} A ${r} ${r} 0 0 1 ${f(cx + r)} ${f(cy)}`;
+      break;
+    case "up":
+      d = `M ${f(cx - r)} ${f(cy)} A ${r} ${r} 0 0 0 ${f(cx + r)} ${f(cy)}`;
+      break;
+  }
+  return {
+    name: "path",
+    attrs: {
+      d,
+      fill: "none",
+      stroke: style.stroke,
+      "stroke-width": style.strokeWidth,
+    },
+    selfClosing: true,
+  };
 }
 
 function renderIcon(icon: PositionedIcon, style: ResolvedStyle): SvgElementSpec[] {

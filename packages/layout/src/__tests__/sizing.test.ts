@@ -229,10 +229,10 @@ describe("sizeGraphNodes", () => {
       },
     ];
     const result = sizeGraphNodes(nodes, defaultOptions);
-    expect(result[0]?.computedWidth).toBe(120);
+    expect(result[0]?.computedWidth).toBe(132);
     expect(result[0]?.contentLayout.icons.map((icon) => [icon.id, icon.x, icon.y])).toEqual([
-      ["a:icon:0", 23, 13],
-      ["a:icon:1", 75, 16],
+      ["a:icon:0", 29, 17],
+      ["a:icon:1", 81, 20],
     ]);
   });
 });

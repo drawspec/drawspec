@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg aria-describedby="drawspec-rich-text-golden-0ya0e7r-desc-05imyoc" aria-labelledby="drawspec-rich-text-golden-0ya0e7r-title-0kl3hsd" height="136" id="drawspec-rich-text-golden-0ya0e7r" role="img" viewBox="0 0 440 136" width="440" xmlns="http://www.w3.org/2000/svg">
+<svg aria-describedby="drawspec-rich-text-golden-0ya0e7r-desc-05imyoc" aria-labelledby="drawspec-rich-text-golden-0ya0e7r-title-0kl3hsd" height="144" id="drawspec-rich-text-golden-0ya0e7r" role="img" viewBox="0 0 464 144" width="464" xmlns="http://www.w3.org/2000/svg">
   <style>
     :root {
     --ds-activation-fill: #e0f2fe;
@@ -21,7 +21,7 @@
   <desc id="drawspec-rich-text-golden-0ya0e7r-desc-05imyoc">
     graph diagram rich-text-golden
   </desc>
-  <rect fill="#ffffff" height="136" width="440" x="0" y="0" />
+  <rect fill="#ffffff" height="144" width="464" x="0" y="0" />
   <defs>
     <marker id="drawspec-rich-text-golden-0ya0e7r-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
       <circle cx="4" cy="4" fill="#475569" r="3" />
@@ -43,18 +43,18 @@
     </marker>
   </defs>
   <g id="drawspec-rich-text-golden-0ya0e7r-edge-api-worker-1ei2fpy">
-    <path d="M 100 68 L 340 68" fill="none" marker-end="url(#drawspec-rich-text-golden-0ya0e7r-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
+    <path d="M 106 72 L 358 72" fill="none" marker-end="url(#drawspec-rich-text-golden-0ya0e7r-marker-filled-triangle)" stroke="#475569" stroke-width="1.5" />
   </g>
   <g id="drawspec-rich-text-golden-0ya0e7r-node-api-0lanyjo">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="40" />
+    <path d="M 40 43 A 3 3 0 0 1 43 40 L 56 40 L 56 30 L 72 30 L 72 40 L 169 40 A 3 3 0 0 1 172 43 L 172 101 A 3 3 0 0 1 169 104 L 43 104 A 3 3 0 0 1 40 101 Z" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-rich-text-golden-0ya0e7r-node-worker-0lqeple">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="280" y="40" />
+    <path d="M 292 43 A 3 3 0 0 1 295 40 L 308 40 L 308 30 L 324 30 L 324 40 L 421 40 A 3 3 0 0 1 424 43 L 424 101 A 3 3 0 0 1 421 104 L 295 104 A 3 3 0 0 1 292 101 Z" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-rich-text-golden-0ya0e7r-text-layer-125tci6">
     <g id="drawspec-rich-text-golden-0ya0e7r-label-edge-api-worker-line0-0rrecju-bg-1e40v56">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="112.595" x="163.702" y="45.8" />
-      <text data-width="108.595" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-edge-api-worker-line0-0rrecju" text-anchor="middle" x="220" y="60">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="112.595" x="175.702" y="49.8" />
+      <text data-width="108.595" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-edge-api-worker-line0-0rrecju" text-anchor="middle" x="232" y="64">
         <tspan font-weight="700">
           publishes
         </tspan>
@@ -66,7 +66,7 @@
         </tspan>
       </text>
     </g>
-    <text data-width="59.724" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line0-1orhp8m" text-anchor="middle" x="100" y="63.8">
+    <text data-width="59.724" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line0-1orhp8m" text-anchor="middle" x="106" y="67.8">
       <tspan font-weight="700">
         API
       </tspan>
@@ -74,12 +74,12 @@
          calls
       </tspan>
     </text>
-    <text data-width="69.44" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line1-1p1haxl" text-anchor="middle" x="100" y="82">
+    <text data-width="69.44" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line1-1p1haxl" text-anchor="middle" x="106" y="86">
       <tspan font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
         checkout
       </tspan>
     </text>
-    <text data-width="45.982" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-worker-line0-1lectm6" text-anchor="middle" x="340" y="72.9">
+    <text data-width="45.982" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-worker-line0-1lectm6" text-anchor="middle" x="358" y="76.9">
       <tspan font-style="italic">
         worker
       </tspan>
