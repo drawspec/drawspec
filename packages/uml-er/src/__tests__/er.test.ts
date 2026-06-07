@@ -64,11 +64,14 @@ describe("@drawspec/uml-er", () => {
     expect(document.kind).toBe("er");
     expect(document.nodes).toHaveLength(3);
     expect(userNode?.kind).toBe("entity");
-    expect(userNode?.metadata?.attributes).toContainEqual(
-      expect.objectContaining({ name: "id", type: "UUID", constraint: "pk" })
+    const attrCompartment = userNode?.compartments?.find(
+      (c) => c.id === `${userNode.id}:attributes`
     );
-    expect(userNode?.metadata?.attributes).toContainEqual(
-      expect.objectContaining({ name: "email", type: "VARCHAR(255)", nullable: false })
+    expect(attrCompartment?.lines).toContainEqual(
+      expect.objectContaining({ text: expect.stringContaining("+ id: UUID [PK]") })
+    );
+    expect(attrCompartment?.lines).toContainEqual(
+      expect.objectContaining({ text: "+ email: VARCHAR(255)" })
     );
   });
 
@@ -205,7 +208,8 @@ describe("@drawspec/uml-er", () => {
     const node = document.nodes[0];
 
     expect(node?.label).toBe("EmptyEntity");
-    expect(node?.metadata?.attributes).toEqual([]);
+    const attrCompartment = node?.compartments?.find((c) => c.id === `${node.id}:attributes`);
+    expect(attrCompartment).toBeUndefined();
   });
 
   test("handles relationships without names", () => {

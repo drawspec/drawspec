@@ -5,6 +5,8 @@ import {
   type DiagramEdge,
   type DiagramNode,
   IdRegistry,
+  type NodeCompartment,
+  type NodeCompartmentLine,
 } from "@drawspec/core";
 import type { ErDocument, ErDomainModel, ErEntity, ErRelationship } from "./types";
 
@@ -91,14 +93,32 @@ function validateRelationshipRefs(
   }
 }
 
+function attributeLine(attr: {
+  name: string;
+  type: string;
+  constraint?: string;
+}): NodeCompartmentLine {
+  const constraintLabel = attr.constraint ? ` [${attr.constraint.toUpperCase()}]` : "";
+  return {
+    text: `+ ${attr.name}: ${attr.type}${constraintLabel}`,
+    role: "member",
+  };
+}
+
 function compileEntityNode(entity: ErEntity): DiagramNode {
+  const compartments: NodeCompartment[] = [];
+  if (entity.attributes.length > 0) {
+    compartments.push({
+      id: `${entity.id}:attributes`,
+      header: "Attributes",
+      lines: entity.attributes.map(attributeLine),
+    });
+  }
   return {
     id: entity.id,
     kind: "entity",
     label: entity.name,
-    metadata: {
-      attributes: entity.attributes,
-    },
+    compartments,
   };
 }
 

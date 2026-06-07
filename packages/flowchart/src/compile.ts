@@ -7,13 +7,13 @@ function shapeForKind(kind: FlowchartElement["kind"]): NodeShapeSpec | undefined
     case "process":
       return { type: "rounded-rect", radius: 8 };
     case "decision":
-      return { type: "rounded-rect", radius: 0 };
+      return { type: "diamond" };
     case "terminal":
       return { type: "rounded-rect", radius: 20 };
     case "io":
-      return { type: "rounded-rect", radius: 4 };
+      return { type: "parallelogram" };
     case "connector":
-      return { type: "rounded-rect", radius: 50 };
+      return { type: "circle" };
     case "subgraph":
       return { type: "rounded-rect", radius: 12 };
   }
