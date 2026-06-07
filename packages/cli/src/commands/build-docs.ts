@@ -41,17 +41,9 @@ async function renderDocsDiagram(
     const message =
       loaded?.diagnostics.map((item) => item.message).join("; ") ??
       `No diagram found at ${node.ref}`;
-    return `<pre>${escapeHtml(message)}</pre>`;
+    throw new Error(`Failed to render diagram "${node.ref}": ${message}`);
   }
   return await renderDocumentSvgLink(loaded.document, config);
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 function joinPath(...parts: string[]): string {
