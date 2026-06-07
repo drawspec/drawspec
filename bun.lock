@@ -204,6 +204,18 @@
         "typescript": "latest",
       },
     },
+    "packages/gantt": {
+      "name": "@drawspec/gantt",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+      },
+      "devDependencies": {
+        "@drawspec/layout": "workspace:*",
+        "@drawspec/renderer-svg": "workspace:*",
+        "typescript": "latest",
+      },
+    },
     "packages/layout": {
       "name": "@drawspec/layout",
       "version": "0.0.1",
@@ -499,6 +511,8 @@
     "@drawspec/exporter-plantuml": ["@drawspec/exporter-plantuml@workspace:packages/exporter-plantuml"],
 
     "@drawspec/flowchart": ["@drawspec/flowchart@workspace:packages/flowchart"],
+
+    "@drawspec/gantt": ["@drawspec/gantt@workspace:packages/gantt"],
 
     "@drawspec/layout": ["@drawspec/layout@workspace:packages/layout"],
 

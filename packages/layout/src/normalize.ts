@@ -23,6 +23,9 @@ const KIND_SHAPE_DEFAULTS: Record<string, NodeShapeSpec> = {
   person: { type: "rounded-rect", radius: 12 },
   "use-case": { type: "ellipse" },
   component: { type: "tabbed-rect" },
+  "gantt-task": { type: "rect" },
+  "gantt-milestone": { type: "diamond" },
+  "gantt-section": { type: "rect" },
 };
 
 const KIND_ICON_DEFAULTS: Record<string, BuiltinIconName> = {

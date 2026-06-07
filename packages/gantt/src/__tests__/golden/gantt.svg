@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg aria-describedby="drawspec-gdoc_0903efda-1i8afp5-desc-0ux5pjk" aria-labelledby="drawspec-gdoc_0903efda-1i8afp5-title-1dfcttl" height="376" id="drawspec-gdoc_0903efda-1i8afp5" role="img" viewBox="0 0 1284 376" width="1284" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    :root {
+    --ds-activation-fill: #e0f2fe;
+    --ds-activation-stroke: #0369a1;
+    --ds-background: #ffffff;
+    --ds-edge-stroke: #475569;
+    --ds-font-family: Arial, sans-serif;
+    --ds-font-size: 14;
+    --ds-group-fill: #f8fafc;
+    --ds-group-stroke: #94a3b8;
+    --ds-node-fill: #f8fafc;
+    --ds-node-stroke: #334155;
+    --ds-text: #0f172a;
+    }
+  </style>
+  <title id="drawspec-gdoc_0903efda-1i8afp5-title-1dfcttl">
+    Sprint 1
+  </title>
+  <desc id="drawspec-gdoc_0903efda-1i8afp5-desc-0ux5pjk">
+    gantt diagram gdoc_0903efda
+  </desc>
+  <rect fill="#ffffff" height="376" width="1284" x="0" y="0" />
+  <defs>
+    <marker id="drawspec-gdoc_0903efda-1i8afp5-marker-circle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" fill="#475569" r="3" />
+    </marker>
+    <marker id="drawspec-gdoc_0903efda-1i8afp5-marker-cross" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 8 M 0 8 L 8 0" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-gdoc_0903efda-1i8afp5-marker-diamond" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 4 L 4 0 L 8 4 L 4 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-gdoc_0903efda-1i8afp5-marker-filled-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="#475569" />
+    </marker>
+    <marker id="drawspec-gdoc_0903efda-1i8afp5-marker-open-arrow" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+    <marker id="drawspec-gdoc_0903efda-1i8afp5-marker-open-triangle" markerHeight="8" markerWidth="8" orient="auto" refX="8" refY="4" viewBox="0 0 8 8">
+      <path d="M 0 0 L 8 4 L 0 8" fill="none" stroke="#475569" />
+    </marker>
+  </defs>
+  <g id="drawspec-gdoc_0903efda-1i8afp5-node-gmile_e476d2b0-08otxah">
+    <polygon fill="#fef3c7" points="82,40 124,68 82,96 40,68" stroke="#d97706" stroke-width="1.5" />
+  </g>
+  <g id="drawspec-gdoc_0903efda-1i8afp5-node-gtask_2f2330f0-0ovo9zr">
+    <rect fill="#dbeafe" height="40" rx="0" ry="0" stroke="#2563eb" stroke-width="1.5" width="1204" x="40" y="176" />
+  </g>
+  <g id="drawspec-gdoc_0903efda-1i8afp5-node-gtask_3b98e1f9-1iclu3e">
+    <rect fill="#dbeafe" height="40" rx="0" ry="0" stroke="#2563eb" stroke-width="1.5" width="392" x="40" y="296" />
+  </g>
+  <g id="drawspec-gdoc_0903efda-1i8afp5-text-layer-1n2p602">
+    <text data-width="37.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-gdoc_0903efda-1i8afp5-label-node-gmile_e476d2b0-line0-050m4tt" text-anchor="middle" x="82" y="63.8">
+      Alpha
+    </text>
+    <text data-width="52.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-gdoc_0903efda-1i8afp5-label-node-gmile_e476d2b0-line1-04qmj4u" text-anchor="middle" x="82" y="82">
+      Release
+    </text>
+    <text data-width="86.52" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-gdoc_0903efda-1i8afp5-label-node-gtask_2f2330f0-line0-04zcot7" text-anchor="middle" x="642" y="200.9">
+      Development
+    </text>
+    <text data-width="56.56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-gdoc_0903efda-1i8afp5-label-node-gtask_3b98e1f9-line0-07ua2d2" text-anchor="middle" x="236" y="320.9">
+      Planning
+    </text>
+  </g>
+</svg>

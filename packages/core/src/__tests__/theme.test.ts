@@ -40,6 +40,7 @@ describe("typed theme infrastructure", () => {
       "object",
       "timing",
       "er",
+      "gantt",
       "graph",
     ];
 
