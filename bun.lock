@@ -229,6 +229,30 @@
         "typescript": "latest",
       },
     },
+    "packages/layout-force": {
+      "name": "@drawspec/layout-force",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+        "@drawspec/docs": "workspace:*",
+        "@drawspec/layout": "workspace:*",
+      },
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
+    "packages/layout-tree": {
+      "name": "@drawspec/layout-tree",
+      "version": "0.0.1",
+      "dependencies": {
+        "@drawspec/core": "workspace:*",
+        "@drawspec/docs": "workspace:*",
+        "@drawspec/layout": "workspace:*",
+      },
+      "devDependencies": {
+        "typescript": "latest",
+      },
+    },
     "packages/layout-wasm": {
       "name": "@drawspec/layout-wasm",
       "version": "0.0.1",
@@ -455,6 +479,10 @@
     "@drawspec/layout-dagre": ["@drawspec/layout-dagre@workspace:packages/layout-dagre"],
 
     "@drawspec/layout-elk": ["@drawspec/layout-elk@workspace:packages/layout-elk"],
+
+    "@drawspec/layout-force": ["@drawspec/layout-force@workspace:packages/layout-force"],
+
+    "@drawspec/layout-tree": ["@drawspec/layout-tree@workspace:packages/layout-tree"],
 
     "@drawspec/layout-wasm": ["@drawspec/layout-wasm@workspace:packages/layout-wasm"],
 
