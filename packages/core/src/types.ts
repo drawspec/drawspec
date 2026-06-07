@@ -71,6 +71,10 @@ export interface ColorPalette {
   divider: string;
   /** Disabled element color. */
   disabled: string;
+  /** Background color for inline code labels. */
+  codeBackground: string;
+  /** Link text color for formatted labels. */
+  link: string;
 }
 
 /** Font size tokens for diagram labels and captions. */
@@ -99,6 +103,8 @@ export interface TypographyWeightConfig {
 export interface TypographyConfig {
   /** CSS font-family value used for diagram text. */
   fontFamily: string;
+  /** CSS monospace font-family value used for inline code label segments. */
+  monospaceFontFamily: string;
   /** Semantic font sizes. */
   sizes: TypographySizeConfig;
   /** Semantic font weights. */
@@ -239,6 +245,26 @@ export type LabelOverflow = "wrap" | "truncate";
  * - "auto" — Rotate to follow edge angle, flip if upside-down
  */
 export type LabelRotation = "none" | "auto";
+
+/** A segment of formatted text within a label. */
+export interface TextSegment {
+  /** Segment text content. */
+  readonly text: string;
+  /** Render this segment with the theme bold font weight. */
+  readonly bold?: boolean;
+  /** Render this segment with italic font style. */
+  readonly italic?: boolean;
+  /** Render this segment with the theme monospace font family. */
+  readonly code?: boolean;
+  /** Link target for future interactive renderers. */
+  readonly href?: string;
+}
+
+/** Rich text label content represented as ordered formatted text segments. */
+export type RichText = readonly TextSegment[];
+
+/** Label content accepted by diagram elements. Strings remain fully backward compatible. */
+export type LabelContent = string | RichText;
 
 /** Visual style for edge label containers. */
 export type EdgeLabelStyle = "fill" | "stroke" | "both" | "none";
@@ -407,7 +433,7 @@ export interface NodeCompartment {
 export interface DiagramNode {
   id: string;
   kind: string;
-  label?: string;
+  label?: LabelContent;
   description?: string;
   parentId?: string;
   tags?: string[];
@@ -451,7 +477,7 @@ export interface DiagramEdge {
   kind: string;
   sourceId: string;
   targetId: string;
-  label?: string;
+  label?: LabelContent;
   direction?: "forward" | "backward" | "bidirectional" | "none";
   tags?: string[];
   metadata?: Record<string, unknown>;
@@ -468,7 +494,7 @@ export interface DiagramEdge {
 export interface DiagramGroup {
   id: string;
   kind: string;
-  label?: string;
+  label?: LabelContent;
   description?: string;
   parentId?: string;
   childIds?: string[];
@@ -483,7 +509,7 @@ export interface DiagramGroup {
 export interface DiagramAnnotation {
   id: string;
   kind: string;
-  label?: string;
+  label?: LabelContent;
   description?: string;
   targetId?: string;
   tags?: string[];

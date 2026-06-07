@@ -17,7 +17,9 @@ export interface SvgAccessibilityOptions {
 export interface SvgTheme {
   background: string;
   text: string;
+  link: string;
   fontFamily: string;
+  monospaceFontFamily: string;
   fontSize: number;
   nodeFill: string;
   nodeStroke: string;
@@ -83,7 +85,9 @@ export interface ResolvedStyle {
   stroke: string;
   strokeWidth: number;
   text: string;
+  link: string;
   fontFamily: string;
+  monospaceFontFamily: string;
   fontSize: number;
   /** Monospace font used for code-like node compartment member lines. */
   memberFontFamily: string;

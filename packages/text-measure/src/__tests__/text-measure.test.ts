@@ -1,7 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import { CHARACTER_WIDTH_FACTORS, createTextMeasurer, measureText } from "../measure";
-import { truncateText } from "../truncate";
-import { wrapText } from "../wrap";
+import {
+  CHARACTER_WIDTH_FACTORS,
+  createTextMeasurer,
+  measureRichText,
+  measureText,
+  measureTextContent,
+  type RichText,
+} from "../measure";
+import { truncateRichText, truncateText } from "../truncate";
+import { wrapRichText, wrapText } from "../wrap";
 
 describe("measureText", () => {
   test("returns 0 for empty string", () => {
@@ -44,6 +51,34 @@ describe("createTextMeasurer", () => {
     const measurer = createTextMeasurer();
     expect(measurer.measure("Hello", 14)).toBe(measureText("Hello", 14));
   });
+
+  test("measure supports rich text content", () => {
+    const measurer = createTextMeasurer();
+    const label: RichText = [
+      { text: "API", bold: true },
+      { text: " `code`", code: true },
+    ];
+    expect(measurer.measure(label, 14)).toBe(measureTextContent(label, 14));
+  });
+});
+
+describe("measureRichText", () => {
+  test("sums segment widths", () => {
+    const label: RichText = [{ text: "alpha" }, { text: " beta" }];
+    expect(measureRichText(label, 14)).toBeCloseTo(measureText("alpha beta", 14), 10);
+  });
+
+  test("bold text is wider than regular text", () => {
+    expect(measureRichText([{ text: "bold", bold: true }], 14)).toBeGreaterThan(
+      measureText("bold", 14)
+    );
+  });
+
+  test("code text uses deterministic monospace metrics", () => {
+    const regular = measureText("iiii", 14);
+    const code = measureRichText([{ text: "iiii", code: true }], 14);
+    expect(code).toBeGreaterThan(regular);
+  });
 });
 
 describe("truncateText", () => {
@@ -76,6 +111,15 @@ describe("truncateText", () => {
   });
 });
 
+describe("truncateRichText", () => {
+  test("preserves formatting while truncating", () => {
+    const result = truncateRichText([{ text: "ExtremelyLongLabel", bold: true }], 50, 14);
+    expect(result.at(0)?.bold).toBe(true);
+    expect(result.at(-1)?.text).toBe("…");
+    expect(measureRichText(result, 14)).toBeLessThanOrEqual(50);
+  });
+});
+
 describe("wrapText", () => {
   test("returns an empty array for empty input", () => {
     expect(wrapText("", 100, 14)).toEqual([]);
@@ -96,5 +140,32 @@ describe("wrapText", () => {
 
   test("keeps a single word wider than wrapWidth intact", () => {
     expect(wrapText("extraordinarilylongword", 10, 14)).toEqual(["extraordinarilylongword"]);
+  });
+});
+
+describe("wrapRichText", () => {
+  test("wraps mixed formatting at word boundaries", () => {
+    const label: RichText = [
+      { text: "alpha ", bold: true },
+      { text: "beta gamma", code: true },
+    ];
+    const lines = wrapRichText(
+      label,
+      measureRichText(
+        [
+          { text: "alpha ", bold: true },
+          { text: "beta", code: true },
+        ],
+        14
+      ),
+      14
+    );
+    expect(lines.length).toBeGreaterThan(1);
+    expect(lines[0]?.map((segment) => segment.text).join("")).toBe("alpha beta");
+  });
+
+  test("does not introduce spaces at segment boundaries inside a word", () => {
+    const lines = wrapRichText([{ text: "inter", bold: true }, { text: "face" }], 500, 14);
+    expect(lines[0]?.map((segment) => segment.text).join("")).toBe("interface");
   });
 });

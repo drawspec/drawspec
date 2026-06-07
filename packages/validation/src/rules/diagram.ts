@@ -1,7 +1,8 @@
+import { type LabelContent, labelToPlainText } from "@drawspec/core";
 import type { Rule } from "../types";
 
-function isBlank(value: string | undefined): boolean {
-  return value === undefined || value.trim().length === 0;
+function isBlank(value: LabelContent | undefined): boolean {
+  return value === undefined || labelToPlainText(value).trim().length === 0;
 }
 
 export const requireTitleRule: Rule = {

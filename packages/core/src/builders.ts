@@ -1,5 +1,5 @@
 import { createDeterministicId, IdRegistry } from "./id";
-import type { DiagramEdge, DiagramNode, SourceRef, StyleRef } from "./types";
+import type { DiagramEdge, DiagramNode, LabelContent, SourceRef, StyleRef } from "./types";
 
 export type Direction = NonNullable<DiagramEdge["direction"]>;
 
@@ -56,7 +56,7 @@ export class ElementBuilder<TNode extends DiagramNode = DiagramNode> {
     return this;
   }
 
-  label(text: string): this {
+  label(text: LabelContent): this {
     this.fields = { ...this.fields, label: text };
     this.builtId = undefined;
     return this;
@@ -166,7 +166,7 @@ export class RelationshipBuilder<TEdge extends DiagramEdge = DiagramEdge> {
     return this;
   }
 
-  label(text: string): this {
+  label(text: LabelContent): this {
     this.fields = { ...this.fields, label: text };
     this.builtId = undefined;
     return this;

@@ -88,6 +88,56 @@ describe("sizeGraphNodes", () => {
     expect(result[0]?.labelLines.length).toBe(2);
   });
 
+  test("rich text labels contribute formatted width", () => {
+    const plain = sizeGraphNodes(
+      [
+        {
+          id: "a",
+          kind: "component",
+          label: "service service service",
+          icons: [],
+          layout: { minWidth: 0 },
+        },
+      ],
+      defaultOptions
+    );
+    const rich = sizeGraphNodes(
+      [
+        {
+          id: "a",
+          kind: "component",
+          label: [{ text: "service service service", bold: true }],
+          icons: [],
+          layout: { minWidth: 0 },
+        },
+      ],
+      defaultOptions
+    );
+    expect(rich[0]?.computedWidth).toBeGreaterThan(plain[0]?.computedWidth ?? 0);
+  });
+
+  test("rich text maxWidth wraps and preserves segment formatting", () => {
+    const nodes: DiagramNode[] = [
+      {
+        id: "a",
+        kind: "component",
+        icons: [],
+        label: [
+          { text: "alpha ", bold: true },
+          { text: "beta gamma", code: true },
+        ],
+        layout: { maxWidth: 90 },
+      },
+    ];
+    const result = sizeGraphNodes(nodes, defaultOptions);
+    expect(result[0]?.labelLines.length).toBeGreaterThan(1);
+    const firstLine = result[0]?.labelLines[0];
+    expect(typeof firstLine).not.toBe("string");
+    if (typeof firstLine !== "string") {
+      expect(firstLine[0]?.bold).toBe(true);
+    }
+  });
+
   test("deterministic output", () => {
     const nodes: DiagramNode[] = [{ id: "a", kind: "actor", label: "Test label" }];
     const r1 = sizeGraphNodes(nodes, defaultOptions);

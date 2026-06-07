@@ -16,6 +16,9 @@ describe("typed theme infrastructure", () => {
     const alias: Theme = theme;
 
     expect(alias.colors.primary).toBe("#2563eb");
+    expect(alias.colors.codeBackground).toBe("#e2e8f0");
+    expect(alias.colors.link).toBe("#2563eb");
+    expect(theme.typography.monospaceFontFamily).toContain("ui-monospace");
     expect(theme.typography.sizes).toEqual({ heading: 18, body: 14, caption: 12, label: 13 });
     expect(theme.typography.weights).toEqual({ regular: 400, medium: 500, bold: 700 });
     expect(theme.edges.dashPatterns).toEqual({ solid: "", dashed: "6 4", dotted: "2 3" });
@@ -71,6 +74,11 @@ describe("typed theme infrastructure", () => {
     const tokens = createThemeTokens(DEFAULT_DIAGRAM_THEME);
 
     expect(tokens["colors.primary"]).toBe(DEFAULT_DIAGRAM_THEME.colors.primary);
+    expect(tokens["colors.codeBackground"]).toBe(DEFAULT_DIAGRAM_THEME.colors.codeBackground);
+    expect(tokens["colors.link"]).toBe(DEFAULT_DIAGRAM_THEME.colors.link);
+    expect(tokens["typography.monospaceFontFamily"]).toBe(
+      DEFAULT_DIAGRAM_THEME.typography.monospaceFontFamily
+    );
     expect(tokens["typography.sizes.body"]).toBe(DEFAULT_DIAGRAM_THEME.typography.sizes.body);
     expect(tokens["edges.arrowheadDefaults.shape"]).toBe("triangle");
     expect(tokens["spacing.padding.medium"]).toBe(DEFAULT_DIAGRAM_THEME.spacing.padding.medium);
