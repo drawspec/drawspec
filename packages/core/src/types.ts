@@ -234,6 +234,12 @@ export interface StyleSheet {
 
 export type LabelOverflow = "wrap" | "truncate";
 
+/** Controls how edge labels are rotated relative to the edge angle.
+ * - "none" — Always horizontal (default)
+ * - "auto" — Rotate to follow edge angle, flip if upside-down
+ */
+export type LabelRotation = "none" | "auto";
+
 /** Visual style for edge label containers. */
 export type EdgeLabelStyle = "fill" | "stroke" | "both" | "none";
 
@@ -252,6 +258,8 @@ export interface DiagramDocument {
   labelOverflow?: LabelOverflow;
   /** Default edge label container style. Default: "fill". */
   edgeLabelStyle?: EdgeLabelStyle;
+  /** Default label rotation mode for all edges. Default: "none". */
+  labelRotation?: LabelRotation;
   styles?: StyleSheet;
   metadata?: Record<string, unknown>;
   diagnostics?: Diagnostic[];
@@ -417,6 +425,8 @@ export interface DiagramEdge {
   labelOverflow?: LabelOverflow;
   /** Override edge label container style for this edge. */
   labelStyle?: EdgeLabelStyle;
+  /** Override label rotation for this edge. */
+  labelRotation?: LabelRotation;
 }
 
 /** Group element in a diagram document. */

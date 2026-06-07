@@ -44,6 +44,7 @@ const EDGE_LABEL_BG_PADDING_X = 2;
 const EDGE_LABEL_BG_PADDING_Y = 3;
 const EDGE_LABEL_LINE_GAP = 4;
 const MARKER_SIZE = 8;
+const VERTICAL_LABEL_ROTATION_THRESHOLD = 70;
 
 interface OcclusionRect {
   id: string;
@@ -1090,6 +1091,16 @@ function renderEdge(
   if (edge.label !== undefined) {
     const labelOverflow = edge.labelOverflow ?? document.labelOverflow ?? "wrap";
     const pos = edge.labelPosition ?? midpoint(edge.waypoints);
+    const rotation = edge.labelRotation ?? document.labelRotation ?? "none";
+    let rotationAngle = 0;
+    if (rotation === "auto") {
+      rotationAngle = edgeAngleAtPoint(edge.waypoints, pos);
+      if (rotationAngle > 90) rotationAngle -= 180;
+      if (rotationAngle < -90) rotationAngle += 180;
+      if (Math.abs(rotationAngle) > VERTICAL_LABEL_ROTATION_THRESHOLD) {
+        rotationAngle = 0;
+      }
+    }
     const yAdjust = -Math.max(8, style.fontSize * 0.5);
     const edgeMaxWidth = edgeLabelMaxWidth(
       edge.waypoints,
@@ -1121,16 +1132,21 @@ function renderEdge(
           const shiftDown = pos.y - bgTop + EDGE_LABEL_LINE_GAP;
           extraGap = shiftUp <= shiftDown ? -shiftUp : shiftDown;
         }
-        return textElement({
-          id: stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`),
-          ownerId: edge.id,
-          label: line,
-          x: pos.x,
-          y: baseY + extraGap,
-          style,
-          anchor: "middle",
-          ...labelContainer,
-        });
+        const id = stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`);
+        return rotatedLabel(
+          textElement({
+            id,
+            ownerId: edge.id,
+            label: line,
+            x: pos.x,
+            y: baseY + extraGap,
+            style,
+            anchor: "middle",
+            ...labelContainer,
+          }),
+          rotationAngle,
+          pos
+        );
       })
     );
   }
@@ -1185,6 +1201,108 @@ function edgeLabelMaxWidth(
   }
   const markerSpace = (hasStartMarker ? MARKER_SIZE : 0) + (hasEndMarker ? MARKER_SIZE : 0);
   return Math.max(80, Math.min(300, pathLength - markerSpace));
+}
+
+/** Compute the angle (in degrees) of the edge at the given position along its waypoints. */
+function edgeAngleAtPoint(waypoints: readonly Point[], pos: Point): number {
+  if (waypoints.length < 2) {
+    return 0;
+  }
+
+  if (waypoints.length === 2) {
+    const first = waypoints[0];
+    const second = waypoints[1];
+    if (first === undefined || second === undefined) {
+      return 0;
+    }
+    return segmentAngle(first, second);
+  }
+
+  let closestAngle = 0;
+  let closestDistance = Infinity;
+  for (let index = 0; index < waypoints.length - 1; index++) {
+    const start = waypoints[index];
+    const end = waypoints[index + 1];
+    if (start === undefined || end === undefined) {
+      continue;
+    }
+    const distance = squaredDistanceToSegment(pos, start, end);
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestAngle = segmentAngle(start, end);
+    }
+  }
+  return closestAngle;
+}
+
+function segmentAngle(start: Point, end: Point): number {
+  return Math.atan2(end.y - start.y, end.x - start.x) * (180 / Math.PI);
+}
+
+function squaredDistanceToSegment(pos: Point, start: Point, end: Point): number {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const lengthSquared = dx * dx + dy * dy;
+  if (lengthSquared === 0) {
+    return squaredDistance(pos, start);
+  }
+  const t = Math.max(
+    0,
+    Math.min(1, ((pos.x - start.x) * dx + (pos.y - start.y) * dy) / lengthSquared)
+  );
+  return squaredDistance(pos, { x: start.x + t * dx, y: start.y + t * dy });
+}
+
+function squaredDistance(left: Point, right: Point): number {
+  const dx = left.x - right.x;
+  const dy = left.y - right.y;
+  return dx * dx + dy * dy;
+}
+
+function rotatedBounds(bounds: LabelBounds, angle: number, origin: Point): LabelBounds {
+  if (angle === 0) return bounds;
+  const rad = angle * (Math.PI / 180);
+  const corners = [
+    { x: bounds.x, y: bounds.y },
+    { x: bounds.x + bounds.width, y: bounds.y },
+    { x: bounds.x, y: bounds.y + bounds.height },
+    { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
+  ];
+  const rotated = corners.map(({ x, y }) => {
+    const dx = x - origin.x;
+    const dy = y - origin.y;
+    return {
+      x: origin.x + dx * Math.cos(rad) - dy * Math.sin(rad),
+      y: origin.y + dx * Math.sin(rad) + dy * Math.cos(rad),
+    };
+  });
+  const xs = rotated.map((p) => p.x);
+  const ys = rotated.map((p) => p.y);
+  const minX = Math.min(...xs);
+  const minY = Math.min(...ys);
+  const maxX = Math.max(...xs);
+  const maxY = Math.max(...ys);
+  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+}
+
+function rotatedLabel(label: SvgLabelSpec, angle: number, origin: Point): SvgLabelSpec {
+  if (angle === 0) {
+    return label;
+  }
+  return {
+    ...label,
+    bounds: rotatedBounds(label.bounds, angle, origin),
+    element: {
+      name: "g",
+      attrs: { id: stableSvgId(label.id, "rotation") },
+      children: [
+        withTransform(
+          label.element,
+          `rotate(${formatNumber(angle)} ${formatNumber(origin.x)} ${formatNumber(origin.y)})`
+        ),
+      ],
+    },
+  };
 }
 
 function edgePath(points: Point[], routing?: LayoutRouting): string {
