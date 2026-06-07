@@ -88,6 +88,11 @@ export async function buildDocs(options: BuildDocsOptions): Promise<BuildDocsMan
       readFile: (path) => Bun.file(path).text(),
       validateReferences: true,
     });
+    const errors = compiled.diagnostics.filter((d) => d.severity === "error");
+    if (errors.length > 0) {
+      const messages = errors.map((d) => `  - ${d.message}`).join("\n");
+      throw new Error(`Compile errors in ${file}:\n${messages}`);
+    }
     resolveDiagramRefs(compiled.content, dirname(file), contentDir);
     const html = await renderDocHtml(compiled, {
       renderHeader: false,
