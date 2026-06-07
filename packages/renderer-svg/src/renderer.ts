@@ -576,20 +576,24 @@ function renderEdge(
   ];
   const labels: SvgLabelSpec[] = [];
   if (edge.label !== undefined) {
-    const mid = midpoint(edge.waypoints);
-    const maxWidth = availableEdgeLabelWidth(edge.waypoints, mid, style.fontSize);
+    const hasLayoutPosition = edge.labelPosition !== undefined;
+    const pos = edge.labelPosition ?? midpoint(edge.waypoints);
+    const maxWidth = hasLayoutPosition
+      ? undefined
+      : availableEdgeLabelWidth(edge.waypoints, pos, style.fontSize);
+    const yAdjust = hasLayoutPosition ? style.fontSize * 0.35 : -Math.max(8, style.fontSize * 0.5);
     const theme = resolveTheme(options.theme);
     labels.push(
       textElement({
         id: stableSvgId(idPrefix, "label", "edge", edge.id),
         ownerId: edge.id,
         label: edge.label,
-        x: mid.x,
-        y: mid.y - Math.max(8, style.fontSize * 0.5),
+        x: pos.x,
+        y: pos.y + yAdjust,
         style,
         anchor: "middle",
         backgroundFill: theme.background,
-        truncate: true,
+        truncate: !hasLayoutPosition,
         ...(maxWidth === undefined ? {} : { maxWidth }),
       })
     );
