@@ -1,5 +1,6 @@
 import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
 import type {
+  LabelLine,
   LayoutEngine,
   LayoutOptions,
   NormalizedLayoutOptions,
@@ -8,7 +9,7 @@ import type {
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { LayoutCache, normalizeLayoutOptions } from "@drawspec/layout";
+import { LayoutCache, normalizeLayoutOptions, sizeGraphNodes } from "@drawspec/layout";
 import dagre from "dagre";
 
 const DIRECTION_MAP: Record<string, string> = {
@@ -93,19 +94,22 @@ function positionNodes(
   normalized: NormalizedLayoutOptions,
   nodePositions: Record<string, { x: number; y: number; width: number; height: number }>
 ): PositionedNode[] {
+  const sizedNodes = sizeGraphNodes(sortedNodes(document), normalized.sizing);
+  const sizedMap = new Map(sizedNodes.map((n) => [n.id, n]));
   return sortedNodes(document).map((node) => {
+    const sizedNode = sizedMap.get(node.id);
     const pos = nodePositions[node.id];
     if (pos === undefined) {
       return {
-        ...node,
+        ...sizedNode!,
         x: normalized.padding,
         y: normalized.padding,
-        width: normalized.nodeSize.width,
-        height: normalized.nodeSize.height,
+        width: sizedNode?.computedWidth ?? normalized.nodeSize.width,
+        height: sizedNode?.computedHeight ?? normalized.nodeSize.height,
       };
     }
     return {
-      ...node,
+      ...sizedNode!,
       x: pos.x - pos.width / 2,
       y: pos.y - pos.height / 2,
       width: pos.width,
@@ -183,14 +187,17 @@ function createDagreLayout(
   const normalized = normalizeLayoutOptions(document, options);
 
   if (document.nodes.length === 0) {
+    const width = normalized.padding * 2;
+    const height = normalized.padding * 2;
     return {
       document,
       nodes: [],
       edges: [],
       groups: [],
       activations: [],
-      width: normalized.padding * 2,
-      height: normalized.padding * 2,
+      width,
+      height,
+      canvasBounds: { x: 0, y: 0, width, height },
     };
   }
 
@@ -202,14 +209,21 @@ function createDagreLayout(
     nodesById[node.id] = node;
   }
 
-  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => ({
-    ...edge,
-    waypoints: edgeWaypoints(edge, nodesById, edgePointsMap),
-  }));
+  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => {
+    const waypoints = edgeWaypoints(edge, nodesById, edgePointsMap);
+    const label = edge.label;
+    const labelLines: LabelLine[] =
+      label === undefined ? [] : typeof label === "string" ? label.split("\n") : [label];
+    const firstWaypoint = waypoints[0];
+    const labelPosition =
+      firstWaypoint !== undefined ? { x: firstWaypoint.x, y: firstWaypoint.y } : { x: 0, y: 0 };
+    return { ...edge, waypoints, labelPosition, labelLines };
+  });
 
   const { width, height } = computeBounds(nodes, edges, normalized.padding);
+  const canvasBounds = { x: 0, y: 0, width, height };
 
-  return { document, nodes, edges, groups: [], activations: [], width, height };
+  return { document, nodes, edges, groups: [], activations: [], width, height, canvasBounds };
 }
 
 export class DagreLayoutEngine implements LayoutEngine {

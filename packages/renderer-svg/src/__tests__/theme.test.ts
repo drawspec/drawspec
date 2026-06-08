@@ -30,6 +30,7 @@ function positionedDiagram(overrides: Partial<PositionedDiagram> = {}): Position
   const doc = document({ id: "theme-test" });
   return {
     activations: [],
+    canvasBounds: { x: 0, y: 0, width: 300, height: 200 },
     document: doc,
     edges: [],
     groups: [],
@@ -50,7 +51,19 @@ const sampleDoc = document({
 
 const sampleDiagram = positionedDiagram({
   document: sampleDoc,
-  nodes: [{ id: "svc", kind: "component", label: "Service", x: 10, y: 10, width: 80, height: 40 }],
+  nodes: [
+    {
+      id: "svc",
+      kind: "component",
+      label: "Service",
+      x: 10,
+      y: 10,
+      width: 80,
+      height: 40,
+      contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Service"] } },
+      labelLines: ["Service"],
+    },
+  ],
 });
 
 describe("theme exports", () => {
@@ -262,6 +275,7 @@ describe("rendering with themes", () => {
     });
     const diagram: PositionedDiagram = {
       activations: [],
+      canvasBounds: { x: 0, y: 0, width: 150, height: 40 },
       document: docWithEdge,
       edges: [
         {
@@ -273,12 +287,32 @@ describe("rendering with themes", () => {
             { x: 0, y: 20 },
             { x: 100, y: 20 },
           ],
+          labelPosition: { x: 50, y: 20 },
+          labelLines: [],
         },
       ],
       groups: [],
       nodes: [
-        { id: "a", kind: "component", x: 0, y: 0, width: 50, height: 40 },
-        { id: "b", kind: "component", x: 100, y: 0, width: 50, height: 40 },
+        {
+          id: "a",
+          kind: "component",
+          x: 0,
+          y: 0,
+          width: 50,
+          height: 40,
+          contentLayout: { icons: [] },
+          labelLines: [],
+        },
+        {
+          id: "b",
+          kind: "component",
+          x: 100,
+          y: 0,
+          width: 50,
+          height: 40,
+          contentLayout: { icons: [] },
+          labelLines: [],
+        },
       ],
       width: 150,
       height: 40,

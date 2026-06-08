@@ -1,8 +1,11 @@
 export { createCachedLayout, LayoutCache } from "./cache";
 export { SimpleGraphLayoutEngine, simpleGraphLayout } from "./graph";
 export {
+  type CanvasBounds,
   centerOf,
   computeBounds,
+  computeCanvasBounds,
+  computeSelfLoopWaypoints,
   edgeWaypoints,
   round,
   selfLoopWaypoints,
@@ -20,6 +23,7 @@ export type { NormalizedNodeSizingOptions, SizedNode } from "./sizing";
 export { sizeGraphNodes, sizeNode } from "./sizing";
 export type {
   ActivationBar,
+  LabelLine,
   LayoutDirection,
   LayoutEngine,
   LayoutOptions,

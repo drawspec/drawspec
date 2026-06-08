@@ -1,5 +1,6 @@
 import type { DiagramDocument, DiagramEdge } from "@drawspec/core";
 import type {
+  LabelLine,
   LayoutEngine,
   LayoutOptions,
   Point,
@@ -163,14 +164,17 @@ function createForceLayout(
 ): PositionedDiagram {
   const normalized = normalizeLayoutOptions(document, options);
   if (document.nodes.length === 0) {
+    const width = normalized.padding * 2;
+    const height = normalized.padding * 2;
     return {
       document,
       nodes: [],
       edges: [],
       groups: [],
       activations: [],
-      width: normalized.padding * 2,
-      height: normalized.padding * 2,
+      width,
+      height,
+      canvasBounds: { x: 0, y: 0, width, height },
     };
   }
 
@@ -202,13 +206,29 @@ function createForceLayout(
   const positionedNodes = normalizePositions(nodes, normalized.padding);
   const positionedById: Record<string, PositionedNode> = {};
   for (const node of positionedNodes) positionedById[node.id] = node;
-  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => ({
-    ...edge,
-    waypoints: edgeWaypoints(edge, positionedById),
-  }));
+  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => {
+    const waypoints = edgeWaypoints(edge, positionedById);
+    const label = edge.label;
+    const labelLines: LabelLine[] =
+      label === undefined ? [] : typeof label === "string" ? label.split("\n") : [label];
+    const firstWaypoint = waypoints[0];
+    const labelPosition =
+      firstWaypoint !== undefined ? { x: firstWaypoint.x, y: firstWaypoint.y } : { x: 0, y: 0 };
+    return { ...edge, waypoints, labelPosition, labelLines };
+  });
   const { width, height } = computeBounds(positionedNodes, edges, normalized.padding);
+  const canvasBounds = { x: 0, y: 0, width, height };
 
-  return { document, nodes: positionedNodes, edges, groups: [], activations: [], width, height };
+  return {
+    document,
+    nodes: positionedNodes,
+    edges,
+    groups: [],
+    activations: [],
+    width,
+    height,
+    canvasBounds,
+  };
 }
 
 /** Deterministic force-directed graph layout engine. */

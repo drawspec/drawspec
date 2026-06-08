@@ -1,5 +1,6 @@
 import type { DiagramDocument } from "@drawspec/core";
 import type {
+  LabelLine,
   LayoutDirection,
   LayoutEngine,
   LayoutOptions,
@@ -187,26 +188,36 @@ function createTreeLayout(
 ): PositionedDiagram {
   const normalized = normalizeLayoutOptions(document, options);
   if (document.nodes.length === 0) {
+    const width = normalized.padding * 2;
+    const height = normalized.padding * 2;
     return {
       document,
       nodes: [],
       edges: [],
       groups: [],
       activations: [],
-      width: normalized.padding * 2,
-      height: normalized.padding * 2,
+      width,
+      height,
+      canvasBounds: { x: 0, y: 0, width, height },
     };
   }
 
   const nodes = positionNodes(document, options);
   const nodesById: Record<string, PositionedNode> = {};
   for (const node of nodes) nodesById[node.id] = node;
-  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => ({
-    ...edge,
-    waypoints: edgeWaypoints(edge, nodesById),
-  }));
+  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => {
+    const waypoints = edgeWaypoints(edge, nodesById);
+    const label = edge.label;
+    const labelLines: LabelLine[] =
+      label === undefined ? [] : typeof label === "string" ? label.split("\n") : [label];
+    const firstWaypoint = waypoints[0];
+    const labelPosition =
+      firstWaypoint !== undefined ? { x: firstWaypoint.x, y: firstWaypoint.y } : { x: 0, y: 0 };
+    return { ...edge, waypoints, labelPosition, labelLines };
+  });
   const { width, height } = computeBounds(nodes, edges, normalized.padding);
-  return { document, nodes, edges, groups: [], activations: [], width, height };
+  const canvasBounds = { x: 0, y: 0, width, height };
+  return { document, nodes, edges, groups: [], activations: [], width, height, canvasBounds };
 }
 
 /** Deterministic rooted-forest tree layout engine. */

@@ -35,6 +35,7 @@ function positionedDiagramForArrow(doc: DiagramDocument) {
   if (!edge) throw new Error("missing edge");
   return {
     activations: [],
+    canvasBounds: { x: 0, y: 0, width: 200, height: 80 },
     document: doc,
     edges: [
       {
@@ -43,13 +44,35 @@ function positionedDiagramForArrow(doc: DiagramDocument) {
           { x: 30, y: 30 },
           { x: 170, y: 30 },
         ],
+        labelPosition: { x: 100, y: 30 },
+        labelLines: [],
       },
     ],
     groups: [],
     height: 80,
     nodes: [
-      { id: "a", kind: "component", label: "A", x: 0, y: 10, width: 60, height: 40 },
-      { id: "b", kind: "component", label: "B", x: 140, y: 10, width: 60, height: 40 },
+      {
+        id: "a",
+        kind: "component",
+        label: "A",
+        x: 0,
+        y: 10,
+        width: 60,
+        height: 40,
+        contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["A"] } },
+        labelLines: ["A"],
+      },
+      {
+        id: "b",
+        kind: "component",
+        label: "B",
+        x: 140,
+        y: 10,
+        width: 60,
+        height: 40,
+        contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["B"] } },
+        labelLines: ["B"],
+      },
     ],
     width: 200,
   };

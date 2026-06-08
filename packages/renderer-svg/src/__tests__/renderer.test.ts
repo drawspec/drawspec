@@ -192,23 +192,47 @@ function positionedLineStyleDiagram(doc: DiagramDocument): PositionedDiagram {
   if (edge === undefined) {
     throw new Error("line style test document must contain an edge");
   }
+  const waypoints = [
+    { x: 30, y: 30 },
+    { x: 170, y: 30 },
+  ];
   return {
     activations: [],
     document: doc,
+    canvasBounds: { x: 0, y: 0, width: 200, height: 80 },
     edges: [
       {
         ...edge,
-        waypoints: [
-          { x: 30, y: 30 },
-          { x: 170, y: 30 },
-        ],
+        waypoints,
+        labelPosition: { x: 100, y: 30 },
+        labelLines: edge.label ? (typeof edge.label === "string" ? [edge.label] : []) : [],
       },
     ],
     groups: [],
     height: 80,
     nodes: [
-      { id: "a", kind: "component", label: "A", x: 0, y: 10, width: 60, height: 40 },
-      { id: "b", kind: "component", label: "B", x: 140, y: 10, width: 60, height: 40 },
+      {
+        id: "a",
+        kind: "component",
+        label: "A",
+        x: 0,
+        y: 10,
+        width: 60,
+        height: 40,
+        labelLines: ["A"],
+        contentLayout: { icons: [], label: { x: 30, y: 30, lines: ["A"] } },
+      },
+      {
+        id: "b",
+        kind: "component",
+        label: "B",
+        x: 140,
+        y: 10,
+        width: 60,
+        height: 40,
+        labelLines: ["B"],
+        contentLayout: { icons: [], label: { x: 170, y: 30, lines: ["B"] } },
+      },
     ],
     width: 200,
   };
@@ -224,6 +248,7 @@ function positionedDiagram(overrides: Partial<PositionedDiagram> = {}): Position
   return {
     activations: [],
     document: doc,
+    canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
     edges: [],
     groups: [],
     height: 300,
@@ -260,10 +285,17 @@ function edgeLabelRotationSvg(options: {
   if (edge === undefined) {
     throw new Error("edge label rotation test document must contain an edge");
   }
+  const wps = options.waypoints;
+  // For 2-waypoint edges, compute the actual midpoint; otherwise use middle index
+  const midIdx = wps.length === 2 ? 0 : Math.floor(wps.length / 2);
+  const labelPosition =
+    wps.length === 2
+      ? { x: (wps[0].x + wps[1].x) / 2, y: (wps[0].y + wps[1].y) / 2 }
+      : { x: wps[midIdx].x, y: wps[midIdx].y };
   return renderSvgSync(doc, {
     positionedDiagram: positionedDiagram({
       document: doc,
-      edges: [{ ...edge, waypoints: options.waypoints }],
+      edges: [{ ...edge, waypoints: options.waypoints, labelPosition, labelLines: ["calls"] }],
       height: 240,
       width: 240,
     }),
@@ -318,6 +350,7 @@ describe("SvgRenderer", () => {
     const positionedDiagram: PositionedDiagram = {
       activations: [],
       document: shapeLibraryDoc,
+      canvasBounds: { x: 0, y: 0, width: 760, height: 300 },
       edges: [],
       groups: [],
       height: 300,
@@ -327,6 +360,15 @@ describe("SvgRenderer", () => {
         y: 20 + Math.floor(index / 5) * 130,
         width: node.shape?.type === "sync-bar" ? 120 : 100,
         height: node.shape?.type === "sync-bar" ? 18 : 72,
+        labelLines: [node.label as string],
+        contentLayout: {
+          icons: [],
+          label: {
+            x: 20 + (index % 5) * 150 + 50,
+            y: 20 + Math.floor(index / 5) * 130 + 36,
+            lines: [node.label as string],
+          },
+        },
       })),
       width: 760,
     };
@@ -339,8 +381,26 @@ describe("SvgRenderer", () => {
     const diagram = positionedDiagram({
       document: doc,
       nodes: [
-        { id: "left", kind: "component", x: 50, y: 80, width: 100, height: 40 },
-        { id: "right", kind: "component", x: 250, y: 120, width: 80, height: 60 },
+        {
+          id: "left",
+          kind: "component",
+          x: 50,
+          y: 80,
+          width: 100,
+          height: 40,
+          labelLines: [],
+          contentLayout: { icons: [], label: { x: 100, y: 100, lines: [] } },
+        },
+        {
+          id: "right",
+          kind: "component",
+          x: 250,
+          y: 120,
+          width: 80,
+          height: 60,
+          labelLines: [],
+          contentLayout: { icons: [], label: { x: 290, y: 150, lines: [] } },
+        },
       ],
       edges: [
         {
@@ -368,7 +428,18 @@ describe("SvgRenderer", () => {
     const doc = document({ id: "auto-fit-padding" });
     const diagram = positionedDiagram({
       document: doc,
-      nodes: [{ id: "box", kind: "component", x: 10, y: 20, width: 30, height: 40 }],
+      nodes: [
+        {
+          id: "box",
+          kind: "component",
+          x: 10,
+          y: 20,
+          width: 30,
+          height: 40,
+          labelLines: [],
+          contentLayout: { icons: [], label: { x: 25, y: 40, lines: [] } },
+        },
+      ],
     });
 
     const svg = renderSvgSync(doc, { positionedDiagram: diagram, autoFit: true, padding: 5 });
@@ -382,7 +453,18 @@ describe("SvgRenderer", () => {
     const doc = document({ id: "single-node" });
     const diagram = positionedDiagram({
       document: doc,
-      nodes: [{ id: "box", kind: "component", x: 100, y: 200, width: 120, height: 80 }],
+      nodes: [
+        {
+          id: "box",
+          kind: "component",
+          x: 100,
+          y: 200,
+          width: 120,
+          height: 80,
+          labelLines: [],
+          contentLayout: { icons: [], label: { x: 160, y: 240, lines: [] } },
+        },
+      ],
     });
 
     const svg = renderSvgSync(doc, { positionedDiagram: diagram, autoFit: true, padding: 0 });
@@ -396,7 +478,18 @@ describe("SvgRenderer", () => {
     const doc = document({ id: "preserve-aspect-ratio" });
     const diagram = positionedDiagram({
       document: doc,
-      nodes: [{ id: "box", kind: "component", x: 0, y: 0, width: 100, height: 50 }],
+      nodes: [
+        {
+          id: "box",
+          kind: "component",
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 50,
+          labelLines: [],
+          contentLayout: { icons: [], label: { x: 50, y: 25, lines: [] } },
+        },
+      ],
     });
 
     const svg = renderSvgSync(doc, {
@@ -412,7 +505,18 @@ describe("SvgRenderer", () => {
     const doc = document({ id: "backward-compatible" });
     const diagram = positionedDiagram({
       document: doc,
-      nodes: [{ id: "box", kind: "component", x: 100, y: 200, width: 120, height: 80 }],
+      nodes: [
+        {
+          id: "box",
+          kind: "component",
+          x: 100,
+          y: 200,
+          width: 120,
+          height: 80,
+          labelLines: [],
+          contentLayout: { icons: [], label: { x: 160, y: 240, lines: [] } },
+        },
+      ],
     });
 
     const implicit = renderSvgSync(doc, { positionedDiagram: diagram });
@@ -461,6 +565,11 @@ describe("SvgRenderer", () => {
             y: 0,
             width: 120,
             height: 56,
+            labelLines: [[{ text: "API", bold: true }]],
+            contentLayout: {
+              icons: [],
+              label: { x: 60, y: 28, lines: [[{ text: "API", bold: true }]] },
+            },
           },
         ],
       }),
@@ -486,6 +595,11 @@ describe("SvgRenderer", () => {
             y: 0,
             width: 120,
             height: 56,
+            labelLines: [[{ text: "async", italic: true }]],
+            contentLayout: {
+              icons: [],
+              label: { x: 60, y: 28, lines: [[{ text: "async", italic: true }]] },
+            },
           },
         ],
       }),
@@ -510,6 +624,11 @@ describe("SvgRenderer", () => {
             y: 0,
             width: 120,
             height: 56,
+            labelLines: [[{ text: "checkout", code: true }]],
+            contentLayout: {
+              icons: [],
+              label: { x: 60, y: 28, lines: [[{ text: "checkout", code: true }]] },
+            },
           },
         ],
       }),
@@ -574,6 +693,10 @@ describe("SvgRenderer", () => {
             y: 0,
             width: 160,
             height: 80,
+            contentLayout: {
+              icons: [],
+              label: { x: 80, y: 40, lines: [[label[0]], [{ text: "Second", code: true }]] },
+            },
           },
         ],
       }),
@@ -705,6 +828,11 @@ describe("SvgRenderer", () => {
           y: 10,
           width: 80,
           height: 40,
+          labelLines: ["Extremely long service label that cannot fit"],
+          contentLayout: {
+            icons: [],
+            label: { x: 50, y: 30, lines: ["Extremely long service label that cannot fit"] },
+          },
         },
       ],
       edges: [],
@@ -734,6 +862,8 @@ describe("SvgRenderer", () => {
           y: 0,
           width: 84,
           height: 40,
+          labelLines: ["WWWWWWWWWWWWWWWW"],
+          contentLayout: { icons: [], label: { x: 42, y: 20, lines: ["WWWWWWWWWWWWWWWW"] } },
         },
       ],
       edges: [],
@@ -757,7 +887,17 @@ describe("SvgRenderer", () => {
     const positionedDiagram = {
       document: doc,
       nodes: [
-        { id: "tiny", kind: "component", label: "Too long", x: 4, y: 4, width: 8, height: 24 },
+        {
+          id: "tiny",
+          kind: "component",
+          label: "Too long",
+          x: 4,
+          y: 4,
+          width: 8,
+          height: 24,
+          labelLines: ["Too long"],
+          contentLayout: { icons: [], label: { x: 8, y: 16, lines: ["Too long"] } },
+        },
       ],
       edges: [],
       groups: [],
@@ -782,8 +922,28 @@ describe("SvgRenderer", () => {
     const positionedDiagram = {
       document: doc,
       nodes: [
-        { id: "a", kind: "component", label: "Same", x: 10, y: 10, width: 90, height: 40 },
-        { id: "b", kind: "component", label: "Same", x: 10, y: 10, width: 90, height: 40 },
+        {
+          id: "a",
+          kind: "component",
+          label: "Same",
+          x: 10,
+          y: 10,
+          width: 90,
+          height: 40,
+          labelLines: ["Same"],
+          contentLayout: { icons: [], label: { x: 55, y: 30, lines: ["Same"] } },
+        },
+        {
+          id: "b",
+          kind: "component",
+          label: "Same",
+          x: 10,
+          y: 10,
+          width: 90,
+          height: 40,
+          labelLines: ["Same"],
+          contentLayout: { icons: [], label: { x: 55, y: 30, lines: ["Same"] } },
+        },
       ],
       edges: [],
       groups: [],
@@ -792,7 +952,7 @@ describe("SvgRenderer", () => {
       height: 80,
     };
     const svg = renderSvgSync(doc, { positionedDiagram });
-    expect(svg).toContain('transform="translate(0 28.3)"');
+    expect(svg).toContain('transform="translate(0 23.2)"');
   });
 
   test("keeps edge labels inside sequence fragment bounds", () => {
@@ -828,6 +988,8 @@ describe("SvgRenderer", () => {
             { x: 220, y: 216 },
             { x: 620, y: 216 },
           ],
+          labelPosition: { x: 420, y: 216 },
+          labelLines: ["inside"],
         },
       ],
       groups: [
@@ -840,6 +1002,7 @@ describe("SvgRenderer", () => {
           y: 180,
           width: 488,
           height: 224,
+          labelLines: ["retry"],
         },
       ],
       activations: [],
@@ -869,6 +1032,8 @@ describe("SvgRenderer", () => {
           y: 40,
           width: 100,
           height: 80,
+          labelLines: ["Blocker"],
+          contentLayout: { icons: [], label: { x: 130, y: 80, lines: ["Blocker"] } },
         },
       ],
       edges: [
@@ -882,6 +1047,8 @@ describe("SvgRenderer", () => {
             { x: 40, y: 70 },
             { x: 220, y: 70 },
           ],
+          labelPosition: { x: 130, y: 70 },
+          labelLines: ["outside"],
         },
       ],
       groups: [],
@@ -923,6 +1090,8 @@ describe("SvgRenderer", () => {
             { x: 20, y: 70 },
             { x: 180, y: 70 },
           ],
+          labelPosition: { x: 100, y: 70 },
+          labelLines: ["calls"],
         },
       ],
       groups: [],
@@ -1161,6 +1330,8 @@ describe("SvgRenderer", () => {
                 { x: 40, y: 35 },
                 { x: 160, y: 155 },
               ],
+              labelPosition: { x: 100, y: 95 },
+              labelLines: ["alpha"],
             },
             {
               ...e2,
@@ -1168,6 +1339,8 @@ describe("SvgRenderer", () => {
                 { x: 40, y: 45 },
                 { x: 160, y: 165 },
               ],
+              labelPosition: { x: 100, y: 105 },
+              labelLines: ["beta"],
             },
           ],
           height: 240,
@@ -1210,6 +1383,8 @@ describe("SvgRenderer", () => {
               { x: 20, y: edgeY },
               { x: 20 + edgeLen, y: edgeY },
             ],
+            labelPosition: { x: 20 + edgeLen / 2, y: edgeY },
+            labelLines: [label],
           },
         ],
         groups: [],
@@ -1384,6 +1559,8 @@ describe("SvgRenderer", () => {
               { x: 20, y: edgeY },
               { x: 300, y: edgeY },
             ],
+            labelPosition: { x: 160, y: edgeY },
+            labelLines: [longLabel],
           },
         ],
         groups: [],
@@ -1423,6 +1600,8 @@ describe("SvgRenderer", () => {
               { x: 20, y: edgeY },
               { x: 80, y: edgeY },
             ],
+            labelPosition: { x: 50, y: edgeY },
+            labelLines: ["wrap this edge", "label onto two lines"],
           },
         ],
         groups: [],
@@ -1498,6 +1677,8 @@ describe("SvgRenderer", () => {
               { x: 20, y: 100 },
               { x: 180, y: 140 },
             ],
+            labelPosition: { x: 100, y: 120 },
+            labelLines: ["calls"],
           },
         ],
         groups: [],
@@ -1547,6 +1728,8 @@ describe("SvgRenderer", () => {
               { x: 60, y: 60 },
               { x: 140, y: 140 },
             ],
+            labelPosition: { x: 100, y: 100 },
+            labelLines: ["calls"],
           },
         ],
         groups: [],
@@ -1596,6 +1779,8 @@ describe("SvgRenderer", () => {
               { x: 100, y: 20 },
               { x: 100, y: 180 },
             ],
+            labelPosition: { x: 100, y: 100 },
+            labelLines: ["calls"],
           },
         ],
         groups: [],
@@ -1638,6 +1823,8 @@ describe("SvgRenderer", () => {
               { x: 0, y: 0 },
               { x: 100, y: 200 },
             ],
+            labelPosition: { x: 50, y: 100 },
+            labelLines: ["XY"],
           },
         ],
         groups: [],
@@ -1691,6 +1878,8 @@ describe("SvgRenderer", () => {
               { x: 0, y: 100 },
               { x: 100, y: 100 },
             ],
+            labelPosition: { x: 50, y: 100 },
+            labelLines: ["calls"],
           },
         ],
         groups: [],
@@ -1741,6 +1930,8 @@ describe("SvgRenderer", () => {
               { x: 10, y: 30 },
               { x: 110, y: 30 },
             ],
+            labelPosition: { x: 55, y: 30 },
+            labelLines: ["calls"],
           },
         ],
         groups: [],
@@ -1786,7 +1977,17 @@ describe("SvgRenderer", () => {
         groups: [],
         height: 120,
         nodes: [
-          { id: "comp", kind: "component", label: "Service", x: 10, y: 20, width: 100, height: 50 },
+          {
+            id: "comp",
+            kind: "component",
+            label: "Service",
+            x: 10,
+            y: 20,
+            width: 100,
+            height: 50,
+            labelLines: ["Service"],
+            contentLayout: { icons: [], label: { x: 60, y: 45, lines: ["Service"] } },
+          },
           {
             id: "iface",
             kind: "interface",
@@ -1858,6 +2059,8 @@ describe("SvgRenderer", () => {
             y: 20,
             width: 100,
             height: 50,
+            labelLines: ["Service"],
+            contentLayout: { icons: [], label: { x: 190, y: 45, lines: ["Service"] } },
           },
         ],
         width: 260,
@@ -1930,6 +2133,8 @@ describe("SvgRenderer", () => {
             y: 20,
             width: 120,
             height: 50,
+            labelLines: ["AuthService"],
+            contentLayout: { icons: [], label: { x: 70, y: 45, lines: ["AuthService"] } },
           },
           {
             id: "iface",
@@ -1939,12 +2144,175 @@ describe("SvgRenderer", () => {
             y: 25,
             width: 60,
             height: 40,
+            labelLines: ["IAuth"],
+            contentLayout: { icons: [], label: { x: 190, y: 45, lines: ["IAuth"] } },
           },
         ],
         width: 240,
       };
       const svg = renderSvgSync(doc, { positionedDiagram: diagram });
       await expectGolden("component-lollipop", svg);
+    });
+  });
+
+  describe("LayoutError on missing geometry", () => {
+    function nodeWithoutContentLayout(id: string): PositionedDiagram["nodes"][number] {
+      return {
+        id,
+        kind: "component",
+        label: "Test Node",
+        x: 10,
+        y: 10,
+        width: 80,
+        height: 40,
+        labelLines: [],
+      } as PositionedDiagram["nodes"][number];
+    }
+
+    function edgeWithoutLabelPosition(id: string): PositionedDiagram["edges"][number] {
+      return {
+        id,
+        kind: "calls",
+        sourceId: "a",
+        targetId: "b",
+        label: "Test Label",
+        waypoints: [
+          { x: 20, y: 50 },
+          { x: 180, y: 50 },
+        ],
+        labelLines: ["Test Label"],
+      } as PositionedDiagram["edges"][number];
+    }
+
+    test("renderNode throws LayoutError when contentLayout is missing", () => {
+      const doc = document({
+        id: "missing-content-layout-test",
+        nodes: [{ id: "node1", kind: "component", label: "Node" }],
+        edges: [],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [],
+        groups: [],
+        height: 100,
+        nodes: [nodeWithoutContentLayout("node1")],
+        width: 200,
+      };
+
+      expect(() => renderSvgSync(doc, { positionedDiagram: diagram })).toThrow();
+      try {
+        renderSvgSync(doc, { positionedDiagram: diagram });
+      } catch (e: unknown) {
+        expect((e as Error).message).toContain("contentLayout");
+        expect((e as Error).message).toContain("node1");
+      }
+    });
+
+    test("renderEdge throws LayoutError when labelPosition is missing on edge with label", () => {
+      const doc = document({
+        id: "missing-label-position-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "edge1", kind: "calls", sourceId: "a", targetId: "b", label: "label" }],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [edgeWithoutLabelPosition("edge1")],
+        groups: [],
+        height: 100,
+        nodes: [
+          {
+            id: "a",
+            kind: "component",
+            label: "A",
+            x: 0,
+            y: 20,
+            width: 60,
+            height: 40,
+            labelLines: [],
+          },
+          {
+            id: "b",
+            kind: "component",
+            label: "B",
+            x: 140,
+            y: 20,
+            width: 60,
+            height: 40,
+            labelLines: [],
+          },
+        ],
+        width: 200,
+      };
+
+      expect(() => renderSvgSync(doc, { positionedDiagram: diagram })).toThrow();
+      try {
+        renderSvgSync(doc, { positionedDiagram: diagram });
+      } catch (e: unknown) {
+        expect((e as Error).message).toContain("labelPosition");
+        expect((e as Error).message).toContain("edge1");
+      }
+    });
+
+    test("renderEdge does NOT throw when edge has no label even if labelPosition is missing", () => {
+      const doc = document({
+        id: "no-label-edge-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "edge1", kind: "calls", sourceId: "a", targetId: "b" }],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [
+          {
+            id: "edge1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            waypoints: [
+              { x: 20, y: 50 },
+              { x: 180, y: 50 },
+            ],
+            labelLines: [],
+          } as PositionedDiagram["edges"][number],
+        ],
+        groups: [],
+        height: 100,
+        nodes: [
+          {
+            id: "a",
+            kind: "component",
+            label: "A",
+            x: 0,
+            y: 20,
+            width: 60,
+            height: 40,
+            labelLines: [],
+            contentLayout: { label: { x: 30, y: 20, lines: ["A"] }, icons: [] },
+          },
+          {
+            id: "b",
+            kind: "component",
+            label: "B",
+            x: 140,
+            y: 20,
+            width: 60,
+            height: 40,
+            labelLines: [],
+            contentLayout: { label: { x: 30, y: 20, lines: ["B"] }, icons: [] },
+          },
+        ],
+        width: 200,
+      };
+
+      expect(() => renderSvgSync(doc, { positionedDiagram: diagram })).not.toThrow();
     });
   });
 });

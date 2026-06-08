@@ -22,11 +22,24 @@ function positionedDiagram(
 ): PositionedDiagram {
   return {
     activations: [],
+    canvasBounds: { x: 0, y: 0, width: 200, height: 200 },
     document: doc,
     edges: [],
     groups: [],
     height: 200,
-    nodes: [{ id: "n", kind: "component", label: "Node", x: 10, y: 10, width: 80, height: 40 }],
+    nodes: [
+      {
+        id: "n",
+        kind: "component",
+        label: "Node",
+        x: 10,
+        y: 10,
+        width: 80,
+        height: 40,
+        contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Node"] } },
+        labelLines: ["Node"],
+      },
+    ],
     width: 200,
     ...overrides,
   };
@@ -94,8 +107,28 @@ describe("Theme rendering", () => {
     });
     const diagram = positionedDiagram(doc, {
       nodes: [
-        { id: "a", kind: "component", label: "A", x: 0, y: 0, width: 60, height: 40 },
-        { id: "b", kind: "component", label: "B", x: 100, y: 0, width: 60, height: 40 },
+        {
+          id: "a",
+          kind: "component",
+          label: "A",
+          x: 0,
+          y: 0,
+          width: 60,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["A"] } },
+          labelLines: ["A"],
+        },
+        {
+          id: "b",
+          kind: "component",
+          label: "B",
+          x: 100,
+          y: 0,
+          width: 60,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["B"] } },
+          labelLines: ["B"],
+        },
       ],
       edges: [
         {
@@ -107,6 +140,8 @@ describe("Theme rendering", () => {
             { x: 60, y: 20 },
             { x: 100, y: 20 },
           ],
+          labelPosition: { x: 80, y: 20 },
+          labelLines: [],
         },
       ],
     });
@@ -136,6 +171,7 @@ describe("Theme rendering", () => {
           y: 0,
           width: 200,
           height: 100,
+          labelLines: ["Group"],
         },
       ],
     });
@@ -188,7 +224,19 @@ describe("Theme rendering", () => {
       edges: [{ id: "e", kind: "message", sourceId: "n", targetId: "n" }],
     });
     const diagram = positionedDiagram(doc, {
-      nodes: [{ id: "n", kind: "participant", label: "P", x: 0, y: 0, width: 40, height: 200 }],
+      nodes: [
+        {
+          id: "n",
+          kind: "participant",
+          label: "P",
+          x: 0,
+          y: 0,
+          width: 40,
+          height: 200,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["P"] } },
+          labelLines: ["P"],
+        },
+      ],
       edges: [
         {
           id: "e",
@@ -199,6 +247,8 @@ describe("Theme rendering", () => {
             { x: 20, y: 50 },
             { x: 20, y: 100 },
           ],
+          labelPosition: { x: 20, y: 75 },
+          labelLines: [],
         },
       ],
       activations: [{ id: "bar", nodeId: "n", edgeId: "e", x: 10, y: 50, width: 20, height: 50 }],

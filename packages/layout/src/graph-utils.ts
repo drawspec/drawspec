@@ -1,5 +1,5 @@
 import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
-import type { Point, PositionedEdge, PositionedNode } from "./types";
+import type { Point, PositionedEdge, PositionedGroup, PositionedNode } from "./types";
 
 /** Returns the center point of a positioned node. */
 export function centerOf(node: PositionedNode): Point {
@@ -7,17 +7,23 @@ export function centerOf(node: PositionedNode): Point {
 }
 
 /** Generates waypoints for a self-loop edge originating from `source`. */
-export function selfLoopWaypoints(source: PositionedNode): Point[] {
+export function computeSelfLoopWaypoints(source: PositionedNode, offset = 0): Point[] {
   const center = centerOf(source);
-  const offset = 28;
+  const radius = 28 + Math.abs(offset);
+  const sideX = source.x + source.width + radius;
+  const topY = source.y - radius;
   return [
-    center,
-    { x: source.x + source.width + offset, y: center.y },
-    { x: source.x + source.width + offset, y: source.y - offset },
-    { x: center.x, y: source.y - offset },
-    center,
+    { x: source.x + source.width, y: center.y },
+    { x: sideX, y: center.y - radius / 2 },
+    { x: sideX, y: topY },
+    { x: center.x, y: topY },
+    { x: source.x, y: center.y - radius / 2 },
+    { x: source.x, y: center.y },
   ];
 }
+
+/** @deprecated Use computeSelfLoopWaypoints instead. */
+export const selfLoopWaypoints = computeSelfLoopWaypoints;
 
 /** Computes straight-line waypoints between the centers of the edge endpoints. */
 export function edgeWaypoints(
@@ -51,6 +57,55 @@ export function computeBounds(
     ...edges.flatMap((edge) => edge.waypoints.map((point) => point.y))
   );
   return { width: round(maxX + padding), height: round(maxY + padding) };
+}
+
+export interface CanvasBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** Computes the full bounding box including all geometry: nodes, edges, labels, arrowheads. */
+export function computeCanvasBounds(
+  diagram: { nodes: PositionedNode[]; edges: PositionedEdge[]; groups: PositionedGroup[] },
+  padding: number
+): CanvasBounds {
+  const allX: number[] = [];
+  const allY: number[] = [];
+
+  for (const node of diagram.nodes) {
+    allX.push(node.x, node.x + node.width);
+    allY.push(node.y, node.y + node.height);
+  }
+
+  for (const edge of diagram.edges) {
+    for (const point of edge.waypoints) {
+      allX.push(point.x);
+      allY.push(point.y);
+    }
+    if (edge.labelPosition) {
+      allX.push(edge.labelPosition.x);
+      allY.push(edge.labelPosition.y);
+    }
+  }
+
+  for (const group of diagram.groups) {
+    allX.push(group.x, group.x + group.width);
+    allY.push(group.y, group.y + group.height);
+  }
+
+  const minX = allX.length > 0 ? Math.min(...allX) : 0;
+  const minY = allY.length > 0 ? Math.min(...allY) : 0;
+  const maxX = allX.length > 0 ? Math.max(...allX) : 0;
+  const maxY = allY.length > 0 ? Math.max(...allY) : 0;
+
+  return {
+    x: round(minX - padding),
+    y: round(minY - padding),
+    width: round(maxX - minX + 2 * padding),
+    height: round(maxY - minY + 2 * padding),
+  };
 }
 
 /** Rounds a number to 3 decimal places for deterministic output. */
