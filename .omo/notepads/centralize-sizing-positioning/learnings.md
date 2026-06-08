@@ -1050,3 +1050,49 @@ Golden SVG files were already up to date from previous tasks (Tasks 10, 11, 12).
 - [x] Diffs reviewed (working tree clean, no changes)
 - [x] `bun test packages/renderer-svg/` → PASS
 - [x] `bun run check` → PASS
+
+## 2026-06-08 Task 16: Update Serena Memories and Documentation
+
+### Changes Made
+
+**Serena memory `project-overview` — added Layout Architecture section:**
+- Centralized geometry pipeline description (5-step order)
+- Shared functions table with all 5 new functions
+- Renderer trust model (no fallback, throws LayoutError)
+- Geometry contract (required fields for PositionedNode, PositionedEdge, PositionedDiagram)
+
+**Serena memory `conventions` — added Geometry Contract section:**
+- Required fields for PositionedNode, PositionedEdge, PositionedDiagram
+- Pipeline order: `sizeGraphNodes() → layout → sizeEdgeLabels() → avoidLabelOverlaps() → computeCanvasBounds()`
+- Layout engine requirements (5-step call order)
+- Shared geometry functions table
+- Renderer error handling (LayoutError on missing geometry)
+
+**packages/layout/src/index.ts — barrel exports verified:**
+- `computeSelfLoopWaypoints` ✓ (line 10)
+- `computeCanvasBounds` ✓ (line 9)
+- `sizeEdgeLabels` ✓ (line 2)
+- `avoidLabelOverlaps` ✓ (line 5)
+- `sizeGraphNodes` ✓ (line 25)
+- `CanvasBounds` type ✓ (line 6)
+- `EdgeLabelOptions` type ✓ (line 2)
+
+**AGENTS.md — no changes needed:**
+- Existing text already covers layout engine responsibilities via Serena memories
+- Memory `project-overview` now contains the centralized pipeline info
+- Memory `conventions` now contains the geometry contract
+- No duplication needed between AGENTS.md and Serena
+
+### Build Verification
+- `bun run build` → PASS (all 30 packages)
+- No source code changes (only memories and docs)
+
+### Key Findings
+
+1. **AGENTS.md skipped**: The centralized pipeline is a code architecture detail, not a workflow change. Serena memories (`project-overview`, `conventions`) are the right place for this information — AGENTS.md already references "Read Serena memories before starting work".
+
+2. **Barrel exports complete**: All 5 shared functions plus types are exported from `packages/layout/src/index.ts`. Layout engines and renderer can import from a single barrel.
+
+3. **Serena memories now reflect full pipeline**: Future agents reading `project-overview` and `conventions` will understand the centralized geometry model without needing to trace through code.
+
+4. **All 16 tasks complete**: Task 16 was the final task — all work from the centralize-sizing-positioning plan has been implemented and documented.
