@@ -151,8 +151,8 @@ describe("wasm layout engine", () => {
       nodeSize: { width: 200, height: 100 },
     });
     for (const node of positioned.nodes) {
-      expect(node.width).toBe(200);
-      expect(node.height).toBe(100);
+      expect(node.width).toBeGreaterThanOrEqual(200);
+      expect(node.height).toBeGreaterThanOrEqual(100);
     }
   });
 
@@ -305,5 +305,134 @@ describe("TypeScriptFallbackBridge", () => {
     });
     expect(result.nodes).toEqual([]);
     expect(result.edges).toEqual([]);
+  });
+});
+
+describe("sizing integration", () => {
+  test("WASM adapter produces nodes with measured dimensions from sizeGraphNodes", async () => {
+    const longLabel = doc({
+      nodes: [
+        { id: "short", kind: "component", label: "Hi" },
+        {
+          id: "long",
+          kind: "component",
+          label: "A very long label that should make this node wider",
+        },
+      ],
+      edges: [],
+    });
+    const positioned = await wasmLayout().layout(longLabel, {
+      sizing: { mode: "auto" },
+    });
+    const shortNode = positioned.nodes.find((n) => n.id === "short");
+    const longNode = positioned.nodes.find((n) => n.id === "long");
+    expect(shortNode).toBeDefined();
+    expect(longNode).toBeDefined();
+    expect(longNode?.width).toBeGreaterThan(shortNode?.width);
+  });
+
+  test("nodes have labelLines from sizing", async () => {
+    const multiLine = doc({
+      nodes: [{ id: "ml", kind: "component", label: "Line One\nLine Two" }],
+      edges: [],
+    });
+    const positioned = await wasmLayout().layout(multiLine);
+    const node = positioned.nodes[0];
+    expect(node).toBeDefined();
+    expect(node?.labelLines).toBeDefined();
+    expect(node?.labelLines.length).toBe(2);
+  });
+
+  test("nodes have contentLayout from sizing", async () => {
+    const single = doc({
+      nodes: [{ id: "n", kind: "component", label: "Node" }],
+      edges: [],
+    });
+    const positioned = await wasmLayout().layout(single);
+    const node = positioned.nodes[0];
+    expect(node).toBeDefined();
+    expect(node?.contentLayout).toBeDefined();
+    expect(node?.contentLayout.label).toBeDefined();
+  });
+
+  test("positioned diagram has canvasBounds", async () => {
+    const positioned = await wasmLayout().layout(graphDoc);
+    expect(positioned.canvasBounds).toBeDefined();
+    expect(positioned.canvasBounds.x).toBeDefined();
+    expect(positioned.canvasBounds.y).toBeDefined();
+    expect(positioned.canvasBounds.width).toBeGreaterThan(0);
+    expect(positioned.canvasBounds.height).toBeGreaterThan(0);
+  });
+
+  test("bridge input carries measured node dimensions", async () => {
+    let capturedInput: WasmGraphInput | undefined;
+    const spyBridge: WasmBridge = {
+      name: "spy",
+      compute: async (input: WasmGraphInput): Promise<WasmLayoutResult> => {
+        capturedInput = input;
+        const nodes = input.nodes.map((n, i) => ({
+          id: n.id,
+          x: i * 100,
+          y: 0,
+          width: n.width,
+          height: n.height,
+        }));
+        return {
+          nodes,
+          edges: input.edges.map((e) => ({ id: e.id, waypoints: [] })),
+          width: nodes.length * 100,
+          height: 100,
+        };
+      },
+    };
+
+    await wasmLayout(spyBridge).layout(
+      doc({
+        nodes: [
+          { id: "a", kind: "component", label: "Short" },
+          { id: "b", kind: "component", label: "A Much Longer Label" },
+        ],
+        edges: [],
+      }),
+      { sizing: { mode: "auto" } }
+    );
+
+    expect(capturedInput).toBeDefined();
+    expect(capturedInput!.nodes.length).toBe(2);
+    for (const node of capturedInput!.nodes) {
+      expect(typeof node.width).toBe("number");
+      expect(typeof node.height).toBe("number");
+      expect(node.width).toBeGreaterThan(0);
+      expect(node.height).toBeGreaterThan(0);
+    }
+    const aNode = capturedInput!.nodes.find((n) => n.id === "a");
+    const bNode = capturedInput!.nodes.find((n) => n.id === "b");
+    expect(bNode!.width).toBeGreaterThan(aNode!.width);
+  });
+});
+
+describe("fallback uses shared helpers", () => {
+  test("self-loop waypoints match computeSelfLoopWaypoints from graph-utils", async () => {
+    const selfLoop = doc({
+      nodes: [{ id: "n", kind: "component", label: "Self" }],
+      edges: [{ id: "loop", kind: "self", sourceId: "n", targetId: "n" }],
+    });
+
+    const positioned = await wasmLayout().layout(selfLoop);
+    const edge = positioned.edges[0];
+    expect(edge).toBeDefined();
+    expect(edge?.waypoints.length).toBe(6);
+    const node = positioned.nodes[0]!;
+    const { computeSelfLoopWaypoints } = await import("@drawspec/layout");
+    const expected = computeSelfLoopWaypoints(node);
+    expect(edge?.waypoints).toEqual(expected);
+  });
+
+  test("canvasBounds match computeCanvasBounds from graph-utils", async () => {
+    const positioned = await wasmLayout().layout(graphDoc);
+    const { computeCanvasBounds } = await import("@drawspec/layout");
+    const expected = computeCanvasBounds(positioned, 0);
+    expect(positioned.canvasBounds.width).toBeGreaterThanOrEqual(expected.width);
+    expect(positioned.canvasBounds.height).toBeGreaterThanOrEqual(expected.height);
   });
 });

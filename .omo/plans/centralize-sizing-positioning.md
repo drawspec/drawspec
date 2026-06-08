@@ -467,7 +467,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `refactor(renderer-svg): add deterministic error on missing geometry`
   - Files: `packages/renderer-svg/src/renderer.ts`, `packages/renderer-svg/src/__tests__/renderer.test.ts`
 
-- [ ] 5. Integrate Shared Sizing into Dagre Adapter
+- [x] 5. Integrate Shared Sizing into Dagre Adapter
 
   **What to do**:
   - RED: Write failing test asserting dagre adapter uses `sizeGraphNodes()` instead of default 120×56 for all nodes
@@ -528,7 +528,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `refactor(layout-dagre): integrate shared node sizing`
   - Files: `packages/layout-dagre/src/dagre.ts`, `packages/layout-dagre/src/__tests__/dagre.test.ts`
 
-- [ ] 6. Integrate Shared Sizing into WASM Adapter
+- [x] 6. Integrate Shared Sizing into WASM Adapter
 
   **What to do**:
   - RED: Write failing test asserting WASM adapter uses `sizeGraphNodes()` and returns full geometry
@@ -588,7 +588,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `refactor(layout-wasm): integrate shared node sizing and expand bridge`
   - Files: `packages/layout-wasm/src/wasm-layout.ts`, `packages/layout-wasm/src/wasm-bridge.ts`, `packages/layout-wasm/src/fallback.ts`
 
-- [ ] 7. Create Shared Edge Label Positioning
+- [x] 7. Create Shared Edge Label Positioning
 
   **What to do**:
   - RED: Write failing test asserting `sizeEdgeLabels()` computes label positions for all edges from waypoints, producing identical output regardless of engine
@@ -717,7 +717,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `refactor(renderer-svg): remove node label fallbacks`
   - Files: `packages/renderer-svg/src/renderer.ts`, `packages/renderer-svg/src/__tests__/renderer.test.ts`
 
-- [ ] 9. Centralize Group Label Positioning in Layout
+- [x] 9. Centralize Group Label Positioning in Layout
 
   **What to do**:
   - RED: Write failing test asserting `PositionedGroup` carries complete label geometry (labelLines, labelPosition) for graph diagrams

@@ -23,8 +23,14 @@ export interface WasmEdgeRoute {
   waypoints: Array<{ x: number; y: number }>;
 }
 
+export interface WasmInputNode {
+  id: string;
+  width: number;
+  height: number;
+}
+
 export interface WasmGraphInput {
-  nodes: Array<{ id: string }>;
+  nodes: WasmInputNode[];
   edges: Array<{ id: string; sourceId: string; targetId: string }>;
   direction: "TB" | "BT" | "LR" | "RL";
   nodeSize: { width: number; height: number };
