@@ -28,15 +28,25 @@ function renderWithNodes(
   const doc = makeDoc({
     nodes: nodes.map((n) => ({ id: n.id, kind: "component", label: n.id })),
   });
+  const w = opts.width ?? 400;
+  const h = opts.height ?? 300;
   return renderSvgSync(doc, {
     positionedDiagram: {
       activations: [],
+      canvasBounds: { x: 0, y: 0, width: w, height: h },
       document: doc,
       edges: [],
       groups: [],
-      height: opts.height ?? 300,
-      nodes: nodes.map((n) => ({ id: n.id, kind: "component", label: n.id, ...n })),
-      width: opts.width ?? 400,
+      height: h,
+      nodes: nodes.map((n) => ({
+        id: n.id,
+        kind: "component",
+        label: n.id,
+        ...n,
+        contentLayout: { icons: [], label: { x: 8, y: 10, lines: [n.id] } },
+        labelLines: [n.id],
+      })),
+      width: w,
     },
     autoFit: opts.autoFit,
     padding: opts.padding,
@@ -130,11 +140,24 @@ describe("viewport and sizing", () => {
       const svg = renderSvgSync(doc, {
         positionedDiagram: {
           activations: [],
+          canvasBounds: { x: 0, y: 0, width: 300, height: 200 },
           document: doc,
           edges: [],
           groups: [],
           height: 200,
-          nodes: [{ id: "n", kind: "component", label: "N", x: 0, y: 0, width: 50, height: 30 }],
+          nodes: [
+            {
+              id: "n",
+              kind: "component",
+              label: "N",
+              x: 0,
+              y: 0,
+              width: 50,
+              height: 30,
+              contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["N"] } },
+              labelLines: ["N"],
+            },
+          ],
           width: 300,
         },
         width: 800,
@@ -157,12 +180,23 @@ describe("viewport and sizing", () => {
       const svg = renderSvgSync(doc, {
         positionedDiagram: {
           activations: [],
+          canvasBounds: { x: 0, y: 0, width: 300, height: 200 },
           document: doc,
           edges: [],
           groups: [],
           height: 200,
           nodes: [
-            { id: "visible", kind: "component", label: "Vis", x: 10, y: 10, width: 50, height: 30 },
+            {
+              id: "visible",
+              kind: "component",
+              label: "Vis",
+              x: 10,
+              y: 10,
+              width: 50,
+              height: 30,
+              contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Vis"] } },
+              labelLines: ["Vis"],
+            },
             {
               id: "hidden",
               kind: "component",
@@ -171,6 +205,8 @@ describe("viewport and sizing", () => {
               y: 500,
               width: 50,
               height: 30,
+              contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Hide"] } },
+              labelLines: ["Hide"],
             },
           ],
           width: 300,
@@ -196,6 +232,7 @@ describe("viewport and sizing", () => {
       const svg = renderSvgSync(doc, {
         positionedDiagram: {
           activations: [],
+          canvasBounds: { x: 0, y: 0, width: 300, height: 200 },
           document: doc,
           edges: [
             {
@@ -207,6 +244,8 @@ describe("viewport and sizing", () => {
                 { x: 10, y: 10 },
                 { x: 50, y: 10 },
               ],
+              labelPosition: { x: 30, y: 10 },
+              labelLines: [],
             },
             {
               id: "hidden-edge",
@@ -217,13 +256,35 @@ describe("viewport and sizing", () => {
                 { x: 500, y: 500 },
                 { x: 600, y: 600 },
               ],
+              labelPosition: { x: 550, y: 550 },
+              labelLines: [],
             },
           ],
           groups: [],
           height: 200,
           nodes: [
-            { id: "a", kind: "component", label: "A", x: 0, y: 0, width: 30, height: 20 },
-            { id: "b", kind: "component", label: "B", x: 50, y: 0, width: 30, height: 20 },
+            {
+              id: "a",
+              kind: "component",
+              label: "A",
+              x: 0,
+              y: 0,
+              width: 30,
+              height: 20,
+              contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["A"] } },
+              labelLines: ["A"],
+            },
+            {
+              id: "b",
+              kind: "component",
+              label: "B",
+              x: 50,
+              y: 0,
+              width: 30,
+              height: 20,
+              contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["B"] } },
+              labelLines: ["B"],
+            },
           ],
           width: 300,
         },
@@ -244,6 +305,7 @@ describe("viewport and sizing", () => {
       const svg = renderSvgSync(doc, {
         positionedDiagram: {
           activations: [],
+          canvasBounds: { x: 0, y: 0, width: 300, height: 200 },
           document: doc,
           edges: [],
           groups: [
@@ -256,6 +318,7 @@ describe("viewport and sizing", () => {
               y: 0,
               width: 80,
               height: 40,
+              labelLines: ["Visible"],
             },
             {
               id: "hid-group",
@@ -266,6 +329,7 @@ describe("viewport and sizing", () => {
               y: 500,
               width: 80,
               height: 40,
+              labelLines: ["Hidden"],
             },
           ],
           height: 200,
@@ -284,6 +348,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "empty-bounds" });
       const bounds = computeContentBounds({
         activations: [],
+        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
         document: doc,
         edges: [],
         groups: [],
@@ -298,11 +363,24 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "single-bounds" });
       const bounds = computeContentBounds({
         activations: [],
+        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
         document: doc,
         edges: [],
         groups: [],
         height: 300,
-        nodes: [{ id: "n", kind: "component", label: "N", x: 10, y: 20, width: 30, height: 40 }],
+        nodes: [
+          {
+            id: "n",
+            kind: "component",
+            label: "N",
+            x: 10,
+            y: 20,
+            width: 30,
+            height: 40,
+            contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["N"] } },
+            labelLines: ["N"],
+          },
+        ],
         width: 400,
       });
       expect(bounds).toEqual({ x: 10, y: 20, width: 30, height: 40 });
@@ -312,13 +390,34 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "multi-bounds" });
       const bounds = computeContentBounds({
         activations: [],
+        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
         document: doc,
         edges: [],
         groups: [],
         height: 300,
         nodes: [
-          { id: "a", kind: "component", label: "A", x: 10, y: 10, width: 20, height: 20 },
-          { id: "b", kind: "component", label: "B", x: 100, y: 80, width: 30, height: 30 },
+          {
+            id: "a",
+            kind: "component",
+            label: "A",
+            x: 10,
+            y: 10,
+            width: 20,
+            height: 20,
+            contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["A"] } },
+            labelLines: ["A"],
+          },
+          {
+            id: "b",
+            kind: "component",
+            label: "B",
+            x: 100,
+            y: 80,
+            width: 30,
+            height: 30,
+            contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["B"] } },
+            labelLines: ["B"],
+          },
         ],
         width: 400,
       });
@@ -329,6 +428,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "edge-bounds" });
       const bounds = computeContentBounds({
         activations: [],
+        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
         document: doc,
         edges: [
           {
@@ -340,6 +440,8 @@ describe("viewport and sizing", () => {
               { x: -20, y: 50 },
               { x: 300, y: -10 },
             ],
+            labelPosition: { x: 140, y: 20 },
+            labelLines: [],
           },
         ],
         groups: [],
@@ -354,6 +456,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "activation-bounds" });
       const bounds = computeContentBounds({
         activations: [{ id: "bar", nodeId: "a", edgeId: "e", x: 50, y: 60, width: 10, height: 20 }],
+        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
         document: doc,
         edges: [],
         groups: [],
@@ -368,6 +471,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "group-bounds" });
       const bounds = computeContentBounds({
         activations: [],
+        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
         document: doc,
         edges: [],
         groups: [
@@ -380,6 +484,7 @@ describe("viewport and sizing", () => {
             y: 15,
             width: 80,
             height: 50,
+            labelLines: ["G"],
           },
         ],
         height: 300,

@@ -66,6 +66,13 @@ type PositionedNodeWithContentLayout = PositionedNode & {
   contentLayout?: NodeContentLayout;
 };
 
+class LayoutError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "LayoutError";
+  }
+}
+
 /** Check if a rectangle overlaps with the viewport. Returns true if there is overlap. */
 function rectInViewport(
   x: number,
@@ -504,26 +511,60 @@ function renderNode(
 ): RenderedElement {
   const style = resolveStyle(document, node, options.theme, "node", themeName);
   const children = shapeForNode(node, style, document.edges, nodePositions);
-  const contentLayout = node.contentLayout;
-  if (contentLayout !== undefined) {
-    children.push(
-      ...sortById(contentLayout.icons).flatMap((icon) =>
-        renderIcon(positionIconFromNodeOrigin(node, icon), style)
-      )
-    );
-    if (contentLayout.compartments !== undefined) {
-      children.push(...renderCompartmentDividers(node, contentLayout.compartments, style));
-      return {
-        element: {
-          name: "g",
-          attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
-          children,
-        },
-        labels: renderCompartmentLabels(node, contentLayout.compartments, style, idPrefix),
-      };
+  if (node.contentLayout === undefined) {
+    if (node.kind !== "interface") {
+      throw new LayoutError(
+        `Missing contentLayout for node '${node.id}'. Layout engine must provide content layout.`
+      );
     }
+    const interfaceCircleRadius = lollipopRadius(node);
+    const interfaceCy = node.y + node.height / 2 - interfaceCircleRadius;
+    const label = node.label ?? node.id;
+    const lines = node.labelLines ?? [label];
+    const lineHeight = style.fontSize * 1.3;
+    const startY = interfaceCy + interfaceCircleRadius + 4 + style.fontSize * 0.35;
+    const anchorX = node.x + node.width / 2;
+    const labels: SvgLabelSpec[] = lines.map((line, index) =>
+      textElement({
+        id: stableSvgId(idPrefix, "label", "node", `${node.id}-line${index}`),
+        ownerId: node.id,
+        label: line,
+        x: anchorX,
+        y: startY + index * lineHeight,
+        style,
+        anchor: "middle",
+        maxWidth: Math.max(0, node.width - style.fontSize),
+        truncate: false,
+        clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
+      })
+    );
+    return {
+      element: {
+        name: "g",
+        attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
+        children,
+      },
+      labels,
+    };
   }
-  const labelLayout = contentLayout?.label;
+  const contentLayout = node.contentLayout;
+  children.push(
+    ...sortById(contentLayout.icons).flatMap((icon) =>
+      renderIcon(positionIconFromNodeOrigin(node, icon), style)
+    )
+  );
+  if (contentLayout.compartments !== undefined) {
+    children.push(...renderCompartmentDividers(node, contentLayout.compartments, style));
+    return {
+      element: {
+        name: "g",
+        attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
+        children,
+      },
+      labels: renderCompartmentLabels(node, contentLayout.compartments, style, idPrefix),
+    };
+  }
+  const labelLayout = contentLayout.label;
   const label = node.label ?? node.id;
   const lines = labelLayout?.lines ?? node.labelLines ?? [label];
   const lineHeight = style.fontSize * 1.3;
@@ -538,7 +579,7 @@ function renderNode(
       : node.y + labelLayout.y;
   const anchorX = labelLayout === undefined ? node.x + node.width / 2 : node.x + labelLayout.x;
   const labels: SvgLabelSpec[] =
-    contentLayout !== undefined && labelLayout === undefined
+    labelLayout === undefined
       ? []
       : lines.map((line, index) =>
           textElement({
@@ -1590,8 +1631,13 @@ function renderEdge(
   ];
   const labels: SvgLabelSpec[] = [];
   if (edge.label !== undefined) {
+    if (edge.labelPosition === undefined) {
+      throw new LayoutError(
+        `Missing labelPosition for edge '${edge.id}' with label. Layout engine must provide label position.`
+      );
+    }
     const labelOverflow = edge.labelOverflow ?? document.labelOverflow ?? "wrap";
-    const pos = edge.labelPosition ?? midpoint(edge.waypoints);
+    const pos = edge.labelPosition;
     const rotation = edge.labelRotation ?? document.labelRotation ?? "none";
     let rotationAngle = 0;
     if (rotation === "auto") {
@@ -1888,7 +1934,8 @@ function approachPoint(corner: Point, from: Point, radius: number): Point {
   return { x: corner.x - (dx / len) * r, y: corner.y - (dy / len) * r };
 }
 
-function midpoint(points: Point[]): Point {
+// Retained for edge label rendering — will be used by Task 10
+export function midpoint(points: Point[]): Point {
   if (points.length === 0) return { x: 0, y: 0 };
   if (points.length === 1) return points[0] ?? { x: 0, y: 0 };
 

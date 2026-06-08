@@ -135,10 +135,16 @@ function positionMessages(
   headerHeight: number,
   options: LayoutOptions
 ): PositionedEdge[] {
-  return document.edges.map((edge, index) => ({
-    ...edge,
-    waypoints: sequenceWaypoints(edge, index, headerHeight, document, nodesById, options),
-  }));
+  return document.edges.map((edge, index) => {
+    const waypoints = sequenceWaypoints(edge, index, headerHeight, document, nodesById, options);
+    const label = edge.label;
+    const labelLines: LabelLine[] =
+      label === undefined ? [] : typeof label === "string" ? label.split("\n") : [label];
+    const firstWaypoint = waypoints[0];
+    const labelPosition =
+      firstWaypoint !== undefined ? { x: firstWaypoint.x, y: firstWaypoint.y } : { x: 0, y: 0 };
+    return { ...edge, waypoints, labelPosition, labelLines };
+  });
 }
 
 function childIdsFrom(value: unknown): string[] {
@@ -260,12 +266,12 @@ function positionGroups(
       )
     );
 
-    const groupLabelLines =
+    const groupLabelLines: LabelLine[] =
       group.label !== undefined
         ? groupOverflow === "truncate"
           ? [truncateTextContent(group.label, xBounds.width - 24, 14)]
           : wrapTextContent(group.label, xBounds.width - 24, 14)
-        : undefined;
+        : [];
 
     return {
       ...group,
@@ -274,7 +280,7 @@ function positionGroups(
       width: xBounds.width,
       height: bottom - top,
       lanes,
-      ...(groupLabelLines !== undefined && { labelLines: groupLabelLines }),
+      labelLines: groupLabelLines,
     };
   });
 }
@@ -333,8 +339,9 @@ function createSequenceLayout(
     normalized.padding;
   const height =
     Math.max(maxMessageY, maxGroupBottom, normalized.padding + headerHeight) + normalized.padding;
+  const canvasBounds = { x: 0, y: 0, width, height };
 
-  return { document, nodes, edges, groups, activations, width, height };
+  return { document, nodes, edges, groups, activations, width, height, canvasBounds };
 }
 
 export class SequenceLayoutEngine implements LayoutEngine {

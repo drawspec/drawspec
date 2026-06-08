@@ -71,20 +71,20 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-start-activation-1qkvb8f" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="174.2" />
   <g id="drawspec-checkout-sequence-1nkmrpb-text-layer-1qywb69">
     <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-line0-0phsakq-bg-0mgtsah">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="49.08" x="315.46" y="204" />
-      <text data-width="45.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-line0-0phsakq" text-anchor="middle" x="340" y="218.2">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="49.08" x="235.46" y="204" />
+      <text data-width="45.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-line0-0phsakq" text-anchor="middle" x="260" y="218.2">
         charge
       </text>
     </g>
     <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-line0-13sz2a4-bg-09ip5w3">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="19.68" x="330.16" y="260" />
-      <text data-width="15.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-line0-13sz2a4" text-anchor="middle" x="340" y="274.2">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="19.68" x="410.16" y="260" />
+      <text data-width="15.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-ok-line0-13sz2a4" text-anchor="middle" x="420" y="274.2">
         ok
       </text>
     </g>
     <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-line0-0ou4z1o-bg-1aepsv1">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="63.64" x="148.18" y="148" />
-      <text data-width="59.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-line0-0ou4z1o" text-anchor="middle" x="180" y="162.2">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="63.64" x="68.18" y="148" />
+      <text data-width="59.64" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-start-line0-0ou4z1o" text-anchor="middle" x="100" y="162.2">
         checkout
       </text>
     </g>

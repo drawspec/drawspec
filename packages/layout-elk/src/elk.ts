@@ -1,6 +1,7 @@
 import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
 import { labelToPlainText } from "@drawspec/core";
 import type {
+  LabelLine,
   LayoutEngine,
   LayoutOptions,
   NormalizedLayoutOptions,
@@ -124,23 +125,23 @@ function positionNodes(
   }
 
   return sortedNodes(document).map((node) => {
-    const sizedNode = sizedNodesById.get(node.id);
+    const sizedNode = sizedNodesById.get(node.id)!;
     const elkNode = elkNodesById[node.id];
     if (elkNode === undefined || elkNode.x === undefined || elkNode.y === undefined) {
       return {
-        ...(sizedNode ?? node),
+        ...sizedNode,
         x: normalized.padding,
         y: normalized.padding,
-        width: sizedNode?.computedWidth ?? normalized.nodeSize.width,
-        height: sizedNode?.computedHeight ?? normalized.nodeSize.height,
+        width: sizedNode.computedWidth,
+        height: sizedNode.computedHeight,
       };
     }
     return {
-      ...(sizedNode ?? node),
+      ...sizedNode,
       x: elkNode.x,
       y: elkNode.y,
-      width: elkNode.width ?? sizedNode?.computedWidth ?? normalized.nodeSize.width,
-      height: elkNode.height ?? sizedNode?.computedHeight ?? normalized.nodeSize.height,
+      width: elkNode.width ?? sizedNode.computedWidth,
+      height: elkNode.height ?? sizedNode.computedHeight,
     };
   });
 }
@@ -243,14 +244,17 @@ async function createElkLayout(
   const normalized = normalizeLayoutOptions(document, options);
 
   if (document.nodes.length === 0) {
+    const width = normalized.padding * 2;
+    const height = normalized.padding * 2;
     return {
       document,
       nodes: [],
       edges: [],
       groups: [],
       activations: [],
-      width: normalized.padding * 2,
-      height: normalized.padding * 2,
+      width,
+      height,
+      canvasBounds: { x: 0, y: 0, width, height },
     };
   }
 
@@ -271,17 +275,27 @@ async function createElkLayout(
 
   const edges: PositionedEdge[] = sortedEdges(document).map((edge) => {
     const elkEdge = elkEdgesById[edge.id];
-    const labelPosition = edgeLabelPosition(edge, elkEdge);
+    const waypoints = edgeWaypoints(edge, nodesById, elkEdgesById);
+    const elkLabelPosition = edgeLabelPosition(edge, elkEdge);
+    const label = edge.label;
+    const labelLines: LabelLine[] =
+      label === undefined ? [] : typeof label === "string" ? label.split("\n") : [label];
+    const firstWaypoint = waypoints[0];
+    const labelPosition =
+      elkLabelPosition ??
+      (firstWaypoint !== undefined ? { x: firstWaypoint.x, y: firstWaypoint.y } : { x: 0, y: 0 });
     return {
       ...edge,
-      waypoints: edgeWaypoints(edge, nodesById, elkEdgesById),
-      ...(labelPosition === undefined ? {} : { labelPosition }),
+      waypoints,
+      labelPosition,
+      labelLines,
     };
   });
 
   const { width, height } = computeBounds(nodes, edges, normalized.padding);
+  const canvasBounds = { x: 0, y: 0, width, height };
 
-  return { document, nodes, edges, groups: [], activations: [], width, height };
+  return { document, nodes, edges, groups: [], activations: [], width, height, canvasBounds };
 }
 
 export class ElkLayoutEngine implements LayoutEngine {

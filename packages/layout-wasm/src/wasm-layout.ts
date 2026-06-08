@@ -17,6 +17,7 @@
 
 import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
 import type {
+  LabelLine,
   LayoutEngine,
   LayoutOptions,
   NormalizedLayoutOptions,
@@ -25,7 +26,7 @@ import type {
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { LayoutCache, normalizeLayoutOptions } from "@drawspec/layout";
+import { LayoutCache, normalizeLayoutOptions, sizeGraphNodes } from "@drawspec/layout";
 import { TypeScriptFallbackBridge } from "./fallback";
 import type { WasmBridge, WasmGraphInput } from "./wasm-bridge";
 
@@ -139,14 +140,17 @@ async function createWasmLayout(
   const normalized = normalizeLayoutOptions(document, options);
 
   if (document.nodes.length === 0) {
+    const width = normalized.padding * 2;
+    const height = normalized.padding * 2;
     return {
       document,
       nodes: [],
       edges: [],
       groups: [],
       activations: [],
-      width: normalized.padding * 2,
-      height: normalized.padding * 2,
+      width,
+      height,
+      canvasBounds: { x: 0, y: 0, width, height },
     };
   }
 
@@ -158,19 +162,22 @@ async function createWasmLayout(
     wasmPositionsById[pos.id] = pos;
   }
 
+  const sizedNodes = sizeGraphNodes(sortedNodes(document), normalized.sizing);
+  const sizedMap = new Map(sizedNodes.map((n) => [n.id, n]));
   const nodes: PositionedNode[] = sortedNodes(document).map((node) => {
+    const sizedNode = sizedMap.get(node.id);
     const pos = wasmPositionsById[node.id];
     if (pos === undefined) {
       return {
-        ...node,
+        ...sizedNode!,
         x: normalized.padding,
         y: normalized.padding,
-        width: normalized.nodeSize.width,
-        height: normalized.nodeSize.height,
+        width: sizedNode?.computedWidth ?? normalized.nodeSize.width,
+        height: sizedNode?.computedHeight ?? normalized.nodeSize.height,
       };
     }
     return {
-      ...node,
+      ...sizedNode!,
       x: pos.x,
       y: pos.y,
       width: pos.width,
@@ -188,14 +195,21 @@ async function createWasmLayout(
     wasmEdgeRoutes[route.id] = route.waypoints;
   }
 
-  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => ({
-    ...edge,
-    waypoints: positionEdge(edge, nodesById, wasmEdgeRoutes),
-  }));
+  const edges: PositionedEdge[] = sortedEdges(document).map((edge) => {
+    const waypoints = positionEdge(edge, nodesById, wasmEdgeRoutes);
+    const label = edge.label;
+    const labelLines: LabelLine[] =
+      label === undefined ? [] : typeof label === "string" ? label.split("\n") : [label];
+    const firstWaypoint = waypoints[0];
+    const labelPosition =
+      firstWaypoint !== undefined ? { x: firstWaypoint.x, y: firstWaypoint.y } : { x: 0, y: 0 };
+    return { ...edge, waypoints, labelPosition, labelLines };
+  });
 
   const { width, height } = computeBounds(nodes, edges, normalized.padding);
+  const canvasBounds = { x: 0, y: 0, width, height };
 
-  return { document, nodes, edges, groups: [], activations: [], width, height };
+  return { document, nodes, edges, groups: [], activations: [], width, height, canvasBounds };
 }
 
 export class WasmLayoutEngine implements LayoutEngine {

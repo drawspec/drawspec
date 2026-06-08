@@ -118,21 +118,21 @@ export interface LayoutOptions {
 }
 
 export interface PositionedNode extends DiagramNode, Size, Point {
-  /** Pre-computed label lines from auto-sizing. Present when sizing mode is "auto". */
-  labelLines?: LabelLine[];
+  /** Pre-computed label lines from auto-sizing. */
+  labelLines: LabelLine[];
   /** Pre-computed label and icon positions inside this node. */
-  contentLayout?: NodeContentLayout;
+  contentLayout: NodeContentLayout;
 }
 
 export interface PositionedEdge extends DiagramEdge {
   waypoints: Point[];
-  /** Label position computed by layout engine. When present, renderer uses this instead of midpoint heuristic. */
-  labelPosition?: Point;
+  labelPosition: Point;
+  labelLines: LabelLine[];
 }
 
 export interface PositionedGroup extends DiagramGroup, Size, Point {
   lanes?: PositionedGroupLane[];
-  labelLines?: LabelLine[];
+  labelLines: LabelLine[];
 }
 
 export interface PositionedGroupLane extends Size, Point {
@@ -156,6 +156,7 @@ export interface PositionedDiagram {
   activations: ActivationBar[];
   width: number;
   height: number;
+  canvasBounds: { x: number; y: number; width: number; height: number };
 }
 
 export interface LayoutEngine {

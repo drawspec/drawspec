@@ -43,69 +43,71 @@
     </marker>
   </defs>
   <g id="drawspec-shape-library-1cxw7da-node-bullseye-0b9uwun">
-    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="320" y="20" />
+    <circle cx="370" cy="56" fill="#f8fafc" r="36" stroke="#334155" stroke-width="1.5" />
+    <circle cx="370" cy="56" fill="none" r="19.8" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-circle-1lyqiyk">
-    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="170" y="20" />
+    <circle cx="220" cy="56" fill="#f8fafc" r="36" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-diamond-0dih6hg">
-    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="20" y="20" />
+    <polygon fill="#f8fafc" points="70,20 120,56 70,92 20,56" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-document-0njcqi9">
-    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="170" y="150" />
+    <path d="M 170 150 H 270 V 210 C 245 198 245 222 220 210 C 195 198 195 222 170 210 Z" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-ellipse-1tyy212">
-    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="620" y="20" />
+    <ellipse cx="670" cy="56" fill="#f8fafc" rx="50" ry="36" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-hexagon-0v7sz64">
-    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="620" y="150" />
+    <polygon fill="#f8fafc" points="642,150 698,150 720,186 698,222 642,222 620,186" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-note-1p5erck">
-    <rect fill="#fef9c3" height="72" rx="3" ry="3" stroke="#ca8a04" stroke-width="1.5" width="100" x="470" y="150" />
+    <path d="M 470 150 H 552 L 570 168 V 222 H 470 Z" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" />
+    <path d="M 552 150 V 168 H 570" fill="none" stroke="#ca8a04" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-parallelogram-07bo9gr">
-    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="20" y="150" />
+    <polygon fill="#f8fafc" points="38,150 120,150 102,222 20,222" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-sync-bar-0lb6raz">
-    <rect fill="#f8fafc" height="18" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="470" y="20" />
+    <rect fill="#334155" height="16" rx="1" ry="1" stroke="#334155" stroke-width="1.5" width="120" x="470" y="21" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-node-tabbed-rect-0umdvzf">
-    <rect fill="#f8fafc" height="72" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="100" x="320" y="150" />
+    <path d="M 320 153 A 3 3 0 0 1 323 150 L 336 150 L 336 140 L 352 140 L 352 150 L 417 150 A 3 3 0 0 1 420 153 L 420 219 A 3 3 0 0 1 417 222 L 323 222 A 3 3 0 0 1 320 219 Z" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-text-layer-0tw78tm">
-    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-bullseye-line0-0uj8awj" text-anchor="middle" x="370" y="60.9">
+    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-bullseye-line0-0uj8awj" text-anchor="middle" transform="translate(0 29.2)" x="690" y="76">
       bullseye
     </text>
-    <text data-width="35" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-circle-line0-1xsrfso" text-anchor="middle" x="220" y="60.9">
+    <text data-width="35" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-circle-line0-1xsrfso" text-anchor="middle" transform="translate(0 29.2)" x="390" y="76">
       circle
     </text>
-    <text data-width="56.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-diamond-line0-1464e4a" text-anchor="middle" x="70" y="60.9">
+    <text data-width="56.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-diamond-line0-1464e4a" text-anchor="middle" x="90" y="76">
       diamond
     </text>
-    <text data-width="64.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-document-line0-1i6l0mh" text-anchor="middle" x="220" y="190.9">
+    <text data-width="64.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-document-line0-1i6l0mh" text-anchor="middle" x="390" y="336">
       document
     </text>
-    <text data-width="41.44" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-ellipse-line0-0urgdws" text-anchor="middle" x="670" y="60.9">
+    <text data-width="41.44" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-ellipse-line0-0urgdws" text-anchor="middle" x="1290" y="76">
       ellipse
     </text>
-    <text data-width="56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-hexagon-line0-0h2ptoi" text-anchor="middle" x="670" y="190.9">
+    <text data-width="56" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-hexagon-line0-0h2ptoi" text-anchor="middle" x="1290" y="336">
       hexagon
     </text>
-    <text data-width="28.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-note-line0-02es780" text-anchor="middle" x="520" y="190.9">
+    <text data-width="28.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-note-line0-02es780" text-anchor="middle" x="990" y="336">
       note
     </text>
     <g id="drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9-clipped-0i4j208">
       <clipPath id="drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9-clip-0ezs3i3">
         <rect height="72" width="100" x="20" y="150" />
       </clipPath>
-      <text clip-path="url(#drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9-clip-0ezs3i3)" data-width="89.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9" text-anchor="middle" x="70" y="190.9">
+      <text clip-path="url(#drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9-clip-0ezs3i3)" data-width="89.04" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-parallelogram-line0-0fgfvr9" text-anchor="middle" x="90" y="336">
         parallelogram
       </text>
     </g>
-    <text data-width="57.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-sync-bar-line0-0ramcq3" text-anchor="middle" x="530" y="33.9">
+    <text data-width="57.12" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-sync-bar-line0-0ramcq3" text-anchor="middle" x="990" y="76">
       sync-bar
     </text>
-    <text data-width="76.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-tabbed-rect-line0-1bhnt1p" text-anchor="middle" x="370" y="190.9">
+    <text data-width="76.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-tabbed-rect-line0-1bhnt1p" text-anchor="middle" x="690" y="336">
       tabbed-rect
     </text>
   </g>

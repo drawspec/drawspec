@@ -22,6 +22,7 @@ function positionedDiagram(
 ): PositionedDiagram {
   return {
     activations: [],
+    canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
     document: doc,
     edges: [],
     groups: [],
@@ -48,6 +49,11 @@ describe("Text quality", () => {
           y: 0,
           width: 60,
           height: 40,
+          contentLayout: {
+            icons: [],
+            label: { x: 8, y: 10, lines: ["ExtremelyLongLabelThatCannotFitInSmallBox"] },
+          },
+          labelLines: ["ExtremelyLongLabelThatCannotFitInSmallBox"],
         },
       ],
     });
@@ -62,7 +68,19 @@ describe("Text quality", () => {
       nodes: [{ id: "n", kind: "component", label: "AB" }],
     });
     const diagram = positionedDiagram(doc, {
-      nodes: [{ id: "n", kind: "component", label: "AB", x: 10, y: 10, width: 100, height: 40 }],
+      nodes: [
+        {
+          id: "n",
+          kind: "component",
+          label: "AB",
+          x: 10,
+          y: 10,
+          width: 100,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["AB"] } },
+          labelLines: ["AB"],
+        },
+      ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
     expect(svg).toContain("AB");
@@ -75,7 +93,19 @@ describe("Text quality", () => {
       nodes: [{ id: "n", kind: "component", label: "X" }],
     });
     const diagram = positionedDiagram(doc, {
-      nodes: [{ id: "n", kind: "component", label: "X", x: 10, y: 10, width: 80, height: 40 }],
+      nodes: [
+        {
+          id: "n",
+          kind: "component",
+          label: "X",
+          x: 10,
+          y: 10,
+          width: 80,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["X"] } },
+          labelLines: ["X"],
+        },
+      ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
     expect(svg).toContain(">\n      X\n    <");
@@ -87,7 +117,18 @@ describe("Text quality", () => {
       nodes: [{ id: "svc", kind: "component" }],
     });
     const diagram = positionedDiagram(doc, {
-      nodes: [{ id: "svc", kind: "component", x: 0, y: 0, width: 80, height: 40 }],
+      nodes: [
+        {
+          id: "svc",
+          kind: "component",
+          x: 0,
+          y: 0,
+          width: 80,
+          height: 40,
+          contentLayout: { icons: [] },
+          labelLines: [],
+        },
+      ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
     expect(svg).toContain("svc");
@@ -115,6 +156,8 @@ describe("Text quality", () => {
             { x: 0, y: 50 },
             { x: 200, y: 50 },
           ],
+          labelPosition: { x: 100, y: 50 },
+          labelLines: ["uses"],
         },
       ],
     });
@@ -141,6 +184,7 @@ describe("Text quality", () => {
           y: 0,
           width: 200,
           height: 100,
+          labelLines: ["System Boundary"],
         },
       ],
     });
@@ -155,7 +199,17 @@ describe("Text quality", () => {
     });
     const diagram = positionedDiagram(doc, {
       nodes: [
-        { id: "n", kind: "component", label: "VeryLongText", x: 5, y: 5, width: 10, height: 30 },
+        {
+          id: "n",
+          kind: "component",
+          label: "VeryLongText",
+          x: 5,
+          y: 5,
+          width: 10,
+          height: 30,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["VeryLongText"] } },
+          labelLines: ["VeryLongText"],
+        },
       ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
@@ -172,8 +226,28 @@ describe("Text quality", () => {
     });
     const diagram = positionedDiagram(doc, {
       nodes: [
-        { id: "a", kind: "component", label: "Hello", x: 10, y: 10, width: 90, height: 40 },
-        { id: "b", kind: "component", label: "Hello", x: 10, y: 10, width: 90, height: 40 },
+        {
+          id: "a",
+          kind: "component",
+          label: "Hello",
+          x: 10,
+          y: 10,
+          width: 90,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Hello"] } },
+          labelLines: ["Hello"],
+        },
+        {
+          id: "b",
+          kind: "component",
+          label: "Hello",
+          x: 10,
+          y: 10,
+          width: 90,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Hello"] } },
+          labelLines: ["Hello"],
+        },
       ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
@@ -190,8 +264,28 @@ describe("Text quality", () => {
     });
     const diagram = positionedDiagram(doc, {
       nodes: [
-        { id: "a", kind: "component", label: "Alpha", x: 0, y: 0, width: 80, height: 40 },
-        { id: "b", kind: "component", label: "Beta", x: 100, y: 0, width: 80, height: 40 },
+        {
+          id: "a",
+          kind: "component",
+          label: "Alpha",
+          x: 0,
+          y: 0,
+          width: 80,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Alpha"] } },
+          labelLines: ["Alpha"],
+        },
+        {
+          id: "b",
+          kind: "component",
+          label: "Beta",
+          x: 100,
+          y: 0,
+          width: 80,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Beta"] } },
+          labelLines: ["Beta"],
+        },
       ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
@@ -206,7 +300,19 @@ describe("Text quality", () => {
       nodes: [{ id: "n", kind: "component", label: "Test" }],
     });
     const diagram = positionedDiagram(doc, {
-      nodes: [{ id: "n", kind: "component", label: "Test", x: 0, y: 0, width: 80, height: 40 }],
+      nodes: [
+        {
+          id: "n",
+          kind: "component",
+          label: "Test",
+          x: 0,
+          y: 0,
+          width: 80,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Test"] } },
+          labelLines: ["Test"],
+        },
+      ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
     expect(svg).toContain('font-family="Arial, sans-serif"');
@@ -218,7 +324,19 @@ describe("Text quality", () => {
       nodes: [{ id: "n", kind: "component", label: "Big" }],
     });
     const diagram = positionedDiagram(doc, {
-      nodes: [{ id: "n", kind: "component", label: "Big", x: 0, y: 0, width: 80, height: 40 }],
+      nodes: [
+        {
+          id: "n",
+          kind: "component",
+          label: "Big",
+          x: 0,
+          y: 0,
+          width: 80,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Big"] } },
+          labelLines: ["Big"],
+        },
+      ],
     });
     const svg = renderSvgSync(doc, {
       positionedDiagram: diagram,
@@ -234,7 +352,17 @@ describe("Text quality", () => {
     });
     const diagram = positionedDiagram(doc, {
       nodes: [
-        { id: "n", kind: "component", label: "Center", x: 50, y: 50, width: 100, height: 40 },
+        {
+          id: "n",
+          kind: "component",
+          label: "Center",
+          x: 50,
+          y: 50,
+          width: 100,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Center"] } },
+          labelLines: ["Center"],
+        },
       ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
@@ -248,7 +376,17 @@ describe("Text quality", () => {
     });
     const diagram = positionedDiagram(doc, {
       nodes: [
-        { id: "n", kind: "component", label: "Hello World", x: 0, y: 0, width: 200, height: 40 },
+        {
+          id: "n",
+          kind: "component",
+          label: "Hello World",
+          x: 0,
+          y: 0,
+          width: 200,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Hello World"] } },
+          labelLines: ["Hello World"],
+        },
       ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });
@@ -262,7 +400,17 @@ describe("Text quality", () => {
     });
     const diagram = positionedDiagram(doc, {
       nodes: [
-        { id: "n", kind: "component", label: "café résumé", x: 0, y: 0, width: 200, height: 40 },
+        {
+          id: "n",
+          kind: "component",
+          label: "café résumé",
+          x: 0,
+          y: 0,
+          width: 200,
+          height: 40,
+          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["café résumé"] } },
+          labelLines: ["café résumé"],
+        },
       ],
     });
     const svg = renderSvgSync(doc, { positionedDiagram: diagram });

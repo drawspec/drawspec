@@ -1,10 +1,12 @@
 import { LayoutCache } from "./cache";
+import { computeSelfLoopWaypoints } from "./graph-utils";
 import { normalizeLayoutOptions } from "./options";
 import { sizeGraphNodes } from "./sizing";
 import type {
   DiagramDocument,
   DiagramEdge,
   DiagramNode,
+  LabelLine,
   LayoutEngine,
   LayoutOptions,
   Point,
@@ -309,7 +311,7 @@ function positionGraphNodes(
     const rankOffset = rankOffsets.get(rank) ?? normalized.padding;
 
     return {
-      ...node,
+      ...sizedNode!,
       x: isHorizontal ? rankOffset : withinOffset,
       y: isHorizontal ? withinOffset : rankOffset,
       width: nodeWidth,
@@ -368,21 +370,6 @@ function parallelEdgeIndexes(
   }
 
   return indexes;
-}
-
-function selfLoopWaypoints(source: PositionedNode, offset: number): Point[] {
-  const center = centerOf(source);
-  const radius = 28 + Math.abs(offset);
-  const sideX = source.x + source.width + radius;
-  const topY = source.y - radius;
-  return [
-    { x: source.x + source.width, y: center.y },
-    { x: sideX, y: center.y - radius / 2 },
-    { x: sideX, y: topY },
-    { x: center.x, y: topY },
-    { x: source.x, y: center.y - radius / 2 },
-    { x: source.x, y: center.y },
-  ];
 }
 
 function straightWaypoints(
@@ -454,7 +441,7 @@ function edgeWaypoints(
   const isHorizontal = normalized.direction === "LR" || normalized.direction === "RL";
   const sourceCenter = centerOf(source);
   if (edge.sourceId === edge.targetId) {
-    return selfLoopWaypoints(source, offset);
+    return computeSelfLoopWaypoints(source, offset);
   }
 
   const targetCenter = centerOf(target);
@@ -463,6 +450,33 @@ function edgeWaypoints(
     : normalized.routing === "curved"
       ? curvedWaypoints(sourceCenter, targetCenter, offset, isHorizontal)
       : straightWaypoints(sourceCenter, targetCenter, offset, isHorizontal);
+}
+
+function edgeLabelLines(edge: DiagramEdge): LabelLine[] {
+  const label = edge.label;
+  if (label === undefined) {
+    return [];
+  }
+  if (typeof label === "string") {
+    return label.split("\n");
+  }
+  return [label as LabelLine];
+}
+
+function edgeLabelPosition(waypoints: Point[]): Point {
+  if (waypoints.length === 0) {
+    return { x: 0, y: 0 };
+  }
+  if (waypoints.length === 1) {
+    const p = waypoints[0]!;
+    return { x: p.x, y: p.y };
+  }
+  const first = waypoints[0]!;
+  const last = waypoints[waypoints.length - 1]!;
+  return {
+    x: (first.x + last.x) / 2,
+    y: (first.y + last.y) / 2,
+  };
 }
 
 function createGraphLayout(
@@ -478,15 +492,21 @@ function createGraphLayout(
 
   const orderedEdges = sortedEdges(document);
   const parallelIndexes = parallelEdgeIndexes(orderedEdges);
-  const edges: PositionedEdge[] = orderedEdges.map((edge) => ({
-    ...edge,
-    waypoints: edgeWaypoints(edge, nodesById, normalized, parallelIndexes),
-  }));
+  const edges: PositionedEdge[] = orderedEdges.map((edge) => {
+    const waypoints = edgeWaypoints(edge, nodesById, normalized, parallelIndexes);
+    return {
+      ...edge,
+      waypoints,
+      labelPosition: edgeLabelPosition(waypoints),
+      labelLines: edgeLabelLines(edge),
+    };
+  });
 
   const width = Math.max(0, ...nodes.map((node) => node.x + node.width)) + normalized.padding;
   const height = Math.max(0, ...nodes.map((node) => node.y + node.height)) + normalized.padding;
+  const canvasBounds = { x: 0, y: 0, width, height };
 
-  return { document, nodes, edges, groups: [], activations: [], width, height };
+  return { document, nodes, edges, groups: [], activations: [], width, height, canvasBounds };
 }
 
 export class SimpleGraphLayoutEngine implements LayoutEngine {
