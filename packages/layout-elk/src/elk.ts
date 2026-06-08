@@ -1,7 +1,6 @@
 import type { DiagramDocument, DiagramEdge, DiagramNode } from "@drawspec/core";
 import { labelToPlainText } from "@drawspec/core";
 import type {
-  LabelLine,
   LayoutEngine,
   LayoutOptions,
   NormalizedLayoutOptions,
@@ -10,7 +9,12 @@ import type {
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { LayoutCache, normalizeLayoutOptions, sizeGraphNodes } from "@drawspec/layout";
+import {
+  LayoutCache,
+  normalizeLayoutOptions,
+  sizeEdgeLabels,
+  sizeGraphNodes,
+} from "@drawspec/layout";
 import { measureTextContent } from "@drawspec/text-measure";
 import type { ElkExtendedEdge, ElkNode } from "elkjs/lib/elk-api";
 import ELKConstructor from "elkjs/lib/elk-api.js";
@@ -188,25 +192,6 @@ function edgeWaypoints(
   ];
 }
 
-function edgeLabelPosition(
-  edge: DiagramEdge,
-  elkEdge: ElkExtendedEdge | undefined
-): Point | undefined {
-  if (edge.label === undefined) {
-    return undefined;
-  }
-
-  const elkLabel = elkEdge?.labels?.[0];
-  if (elkLabel?.x === undefined || elkLabel.y === undefined) {
-    return undefined;
-  }
-
-  return {
-    x: Math.round((elkLabel.x + (elkLabel.width ?? 0) / 2) * 1000) / 1000,
-    y: Math.round((elkLabel.y + (elkLabel.height ?? 0) / 2) * 1000) / 1000,
-  };
-}
-
 function computeBounds(
   nodes: PositionedNode[],
   edges: PositionedEdge[],
@@ -274,23 +259,17 @@ async function createElkLayout(
   }
 
   const edges: PositionedEdge[] = sortedEdges(document).map((edge) => {
-    const elkEdge = elkEdgesById[edge.id];
     const waypoints = edgeWaypoints(edge, nodesById, elkEdgesById);
-    const elkLabelPosition = edgeLabelPosition(edge, elkEdge);
-    const label = edge.label;
-    const labelLines: LabelLine[] =
-      label === undefined ? [] : typeof label === "string" ? label.split("\n") : [label];
-    const firstWaypoint = waypoints[0];
-    const labelPosition =
-      elkLabelPosition ??
-      (firstWaypoint !== undefined ? { x: firstWaypoint.x, y: firstWaypoint.y } : { x: 0, y: 0 });
     return {
       ...edge,
       waypoints,
-      labelPosition,
-      labelLines,
+      labelPosition: { x: 0, y: 0 },
+      labelLines: [],
     };
   });
+
+  // Use shared edge label positioning (normalizes ELK output to match dagre/wasm)
+  sizeEdgeLabels(edges, { fontSize: EDGE_LABEL_FONT_SIZE });
 
   const { width, height } = computeBounds(nodes, edges, normalized.padding);
   const canvasBounds = { x: 0, y: 0, width, height };

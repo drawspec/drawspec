@@ -515,34 +515,14 @@ function renderNode(
         `Missing contentLayout for node '${node.id}'. Layout engine must provide content layout.`
       );
     }
-    const interfaceCircleRadius = lollipopRadius(node);
-    const interfaceCy = node.y + node.height / 2 - interfaceCircleRadius;
-    const label = node.label ?? node.id;
-    const lines = node.labelLines ?? [label];
-    const lineHeight = style.fontSize * 1.3;
-    const startY = interfaceCy + interfaceCircleRadius + 4 + style.fontSize * 0.35;
-    const anchorX = node.x + node.width / 2;
-    const labels: SvgLabelSpec[] = lines.map((line, index) =>
-      textElement({
-        id: stableSvgId(idPrefix, "label", "node", `${node.id}-line${index}`),
-        ownerId: node.id,
-        label: line,
-        x: anchorX,
-        y: startY + index * lineHeight,
-        style,
-        anchor: "middle",
-        maxWidth: Math.max(0, node.width - style.fontSize),
-        truncate: false,
-        clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
-      })
-    );
+    // Interface nodes (lollipop/socket) render without contentLayout
     return {
       element: {
         name: "g",
         attrs: { id: stableSvgId(idPrefix, "node", node.id), ...sourceDataAttrs(node.source) },
         children,
       },
-      labels,
+      labels: [],
     };
   }
   const contentLayout = node.contentLayout;
@@ -563,33 +543,20 @@ function renderNode(
     };
   }
   const labelLayout = contentLayout.label;
-  const label = node.label ?? node.id;
-  const lines = labelLayout?.lines ?? node.labelLines ?? [label];
   const lineHeight = style.fontSize * 1.3;
-  const isInterface = node.kind === "interface";
-  const interfaceCircleRadius = isInterface ? lollipopRadius(node) : 0;
-  const interfaceCy = isInterface ? node.y + node.height / 2 - interfaceCircleRadius : 0;
-  const startY =
-    labelLayout === undefined
-      ? isInterface
-        ? interfaceCy + interfaceCircleRadius + 4 + style.fontSize * 0.35
-        : node.y + node.height / 2 + style.fontSize * 0.35 - ((lines.length - 1) * lineHeight) / 2
-      : node.y + labelLayout.y;
-  const anchorX = labelLayout === undefined ? node.x + node.width / 2 : node.x + labelLayout.x;
   const labels: SvgLabelSpec[] =
     labelLayout === undefined
       ? []
-      : lines.map((line, index) =>
+      : labelLayout.lines.map((line, index) =>
           textElement({
             id: stableSvgId(idPrefix, "label", "node", `${node.id}-line${index}`),
             ownerId: node.id,
             label: line,
-            x: anchorX,
-            y: startY + index * lineHeight,
+            x: node.x + labelLayout.x,
+            y: node.y + labelLayout.y + index * lineHeight,
             style,
             anchor: "middle",
             maxWidth: Math.max(0, node.width - style.fontSize),
-            truncate: false,
             clipBounds: { x: node.x, y: node.y, width: node.width, height: node.height },
           })
         );
@@ -729,9 +696,6 @@ function shapeForNode(
   documentEdges: readonly DiagramEdge[] = [],
   nodePositions: ReadonlyMap<string, PositionedNode> = new Map()
 ): SvgElementSpec[] {
-  if (node.contentLayout !== undefined) {
-    return outerShapeForNode(node, style);
-  }
   if (node.kind === "interface") {
     const radius = lollipopRadius(node);
     const cx = node.x + node.width / 2;
@@ -741,6 +705,9 @@ function shapeForNode(
       return [renderSocketShape(cx, cy, radius, style, dir)];
     }
     return [renderLollipopShape(cx, cy, radius, style)];
+  }
+  if (node.contentLayout !== undefined) {
+    return outerShapeForNode(node, style);
   }
   if (node.kind === "database") {
     return [

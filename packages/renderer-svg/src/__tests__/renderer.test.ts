@@ -1998,6 +1998,11 @@ describe("SvgRenderer", () => {
             y: 20,
             width: 80,
             height: 40,
+            labelLines: ["IUserRepo"],
+            contentLayout: {
+              icons: [],
+              label: { x: 40, y: 28, lines: ["IUserRepo"] },
+            },
           },
         ],
         width: 240,
@@ -2052,6 +2057,11 @@ describe("SvgRenderer", () => {
             y: 20,
             width: 80,
             height: 40,
+            labelLines: ["IUserRepo"],
+            contentLayout: {
+              icons: [],
+              label: { x: 40, y: 28, lines: ["IUserRepo"] },
+            },
           },
           {
             id: "comp",
@@ -2315,6 +2325,117 @@ describe("SvgRenderer", () => {
       };
 
       expect(() => renderSvgSync(doc, { positionedDiagram: diagram })).not.toThrow();
+    });
+  });
+
+  describe("node label positioning from contentLayout", () => {
+    test("uses contentLayout.label position exactly without centering fallback", () => {
+      const doc = document({
+        id: "content-layout-label-test",
+        nodes: [{ id: "n", kind: "component", label: "MyLabel" }],
+        edges: [],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [],
+        groups: [],
+        height: 100,
+        nodes: [
+          {
+            id: "n",
+            kind: "component",
+            label: "MyLabel",
+            x: 50,
+            y: 30,
+            width: 100,
+            height: 40,
+            labelLines: ["MyLabel"],
+            contentLayout: {
+              icons: [],
+              label: { x: 15, y: 22, lines: ["MyLabel"] },
+            },
+          },
+        ],
+        width: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      const textMatch = svg.match(
+        /<text[^>]*id="[^"]*label-node-n-line0[^"]*"[^>]*x="([^"]*)"[^>]*y="([^"]*)"/
+      );
+      expect(textMatch).not.toBeNull();
+      expect(textMatch?.[1]).toBe(String(50 + 15));
+      expect(textMatch?.[2]).toBe(String(30 + 22));
+    });
+
+    test("uses contentLayout.label.lines for multi-line labels", () => {
+      const doc = document({
+        id: "multiline-content-layout-test",
+        nodes: [{ id: "n", kind: "component", label: "Line1\nLine2" }],
+        edges: [],
+      });
+      const lineHeight = 14 * 1.3;
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [],
+        groups: [],
+        height: 100,
+        nodes: [
+          {
+            id: "n",
+            kind: "component",
+            label: "Line1\nLine2",
+            x: 10,
+            y: 10,
+            width: 100,
+            height: 60,
+            labelLines: ["Line1", "Line2"],
+            contentLayout: {
+              icons: [],
+              label: { x: 50, y: 20, lines: ["Line1", "Line2"] },
+            },
+          },
+        ],
+        width: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      const line1Match = svg.match(/<text[^>]*id="[^"]*label-node-n-line0[^"]*"[^>]*y="([^"]*)"/);
+      const line2Match = svg.match(/<text[^>]*id="[^"]*label-node-n-line1[^"]*"[^>]*y="([^"]*)"/);
+      expect(line1Match).not.toBeNull();
+      expect(line2Match).not.toBeNull();
+      expect(Number(line2Match?.[1])).toBeCloseTo(Number(line1Match?.[1]) + lineHeight, 1);
+    });
+
+    test("returns no labels when contentLayout.label is undefined", () => {
+      const doc = document({
+        id: "no-label-content-layout-test",
+        nodes: [{ id: "n", kind: "database", label: "DB" }],
+        edges: [],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [],
+        groups: [],
+        height: 100,
+        nodes: [
+          {
+            id: "n",
+            kind: "database",
+            label: "DB",
+            x: 10,
+            y: 10,
+            width: 80,
+            height: 60,
+            labelLines: [],
+            contentLayout: { icons: [] },
+          },
+        ],
+        width: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      expect(svg).not.toMatch(/label-node-n/);
     });
   });
 });

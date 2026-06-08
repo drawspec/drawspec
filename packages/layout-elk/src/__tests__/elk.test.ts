@@ -145,4 +145,28 @@ describe("elk layout", () => {
     expect(lr.width).toBeGreaterThan(tb.width);
     expect(lr.height).toBeLessThan(tb.height);
   });
+
+  test("edge labels use sizeEdgeLabels (midpoint positioning)", async () => {
+    const labeledDoc = doc({
+      nodes: [
+        { id: "a", kind: "component", label: "Node A" },
+        { id: "b", kind: "component", label: "Node B" },
+      ],
+      edges: [{ id: "e1", kind: "depends-on", sourceId: "a", targetId: "b", label: "Edge Label" }],
+    });
+
+    const result = await elkLayout().layout(labeledDoc);
+    const edge = result.edges.find((e) => e.id === "e1")!;
+
+    // Verify labelPosition is midpoint of waypoints
+    const waypoints = edge.waypoints;
+    const expectedMidX = (waypoints[0].x + waypoints[waypoints.length - 1].x) / 2;
+    const expectedMidY = (waypoints[0].y + waypoints[waypoints.length - 1].y) / 2;
+    expect(edge.labelPosition?.x).toBeCloseTo(expectedMidX, 1);
+    expect(edge.labelPosition?.y).toBeCloseTo(expectedMidY, 1);
+
+    // Verify labelLines are computed (not empty for labeled edge)
+    expect(edge.labelLines).toBeDefined();
+    expect(edge.labelLines.length).toBeGreaterThan(0);
+  });
 });

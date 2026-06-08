@@ -606,3 +606,96 @@ When `sizeGraphNodes` runs on nodes with `mode: "fixed"` and `nodeSize: { width:
 - `bun test packages/layout/` → 72 pass, 0 fail
 - `bun run build` → all packages clean
 - Biome check: 0 errors, 11 warnings (all pre-existing `noNonNullAssertion`)
+
+## 2026-06-08 Task 13: Integrate Shared Edge Label Positioning into ELK Adapter
+
+### Changes Made
+
+**packages/layout-elk/src/elk.ts:**
+- Added `sizeEdgeLabels` to imports from `@drawspec/layout`
+- Removed `edgeLabelPosition` function (was lines 191-208 - extracted label positions from ELK output)
+- Simplified edge building: now just builds edges with placeholder `labelPosition: { x: 0, y: 0 }` and `labelLines: []`
+- Added `sizeEdgeLabels(edges, { fontSize: EDGE_LABEL_FONT_SIZE })` as post-step after edge construction
+- Removed unused `LabelLine` import
+
+**packages/layout-elk/src/__tests__/elk.test.ts:**
+- Added test "edge labels use sizeEdgeLabels (midpoint positioning)" verifying:
+  - `labelPosition` is midpoint of waypoints
+  - `labelLines` are computed (not empty for labeled edges)
+
+### Key Finding: Cross-Engine Label Position Comparison Not Valid
+
+The task requirement "ELK edge label positions match dagre/wasm for same input" is not directly testable because:
+1. ELK and dagre produce different node positions (different layout algorithms)
+2. Label position is computed as midpoint of waypoints, so different waypoints → different positions
+3. Dagre does NOT yet use `sizeEdgeLabels` (that's Task 14)
+
+The correct verification is that ELK uses the shared `sizeEdgeLabels` function, which computes label position as the geometric midpoint along the edge's waypoints. The test now verifies this directly by checking that `labelPosition` matches the computed midpoint.
+
+### Test Results
+- `bun test packages/layout-elk/` → 13 pass, 0 fail (1 new + 12 existing)
+- `bun run build` → all packages clean
+
+### Notes
+- ELK-specific edge label extraction code removed (was using ELK's native label positions from `elkEdge.labels[0].x/y`)
+- The shared function normalizes all engines to use the same midpoint algorithm
+- `sizeEdgeLabels` mutates edges in-place, setting `labelPosition` and `labelLines` correctly
+- `computeBounds` still uses `edge.labelPosition` - but since `sizeEdgeLabels` is called before `computeBounds`, the label position is already set correctly
+
+## 2026-06-08 Task 8: Remove Node Label Fallbacks from Renderer
+
+### Changes Made
+
+**packages/renderer-svg/src/renderer.ts:**
+
+1. **Removed interface label fallback in `renderNode()`** (lines 512-547):
+   - Early return for interface nodes without contentLayout now returns `labels: []` instead of computing label position
+   - Removed: `interfaceCircleRadius`, `interfaceCy`, `startY`, `anchorX` computation
+   - Removed: `node.labelLines ?? [label]` fallback for interface label lines
+   - Removed: `truncate: false` and `maxWidth` from interface textElement call
+
+2. **Simplified main label rendering in `renderNode()`** (lines 545-561):
+   - Removed `const label = node.label ?? node.id` — layout provides lines via `labelLayout.lines`
+   - Removed `labelLayout?.lines ?? node.labelLines ?? [label]` fallback — just uses `labelLayout.lines`
+   - Removed `isInterface`, `interfaceCircleRadius`, `interfaceCy` variables — interface-specific offset code
+   - Removed `startY` conditional with centered fallback — just uses `node.y + labelLayout.y`
+   - Removed `anchorX` conditional with centered fallback — just uses `node.x + labelLayout.x`
+   - Removed `truncate: false` — not needed (default is false, truncation removed for node labels)
+   - Kept `maxWidth` for clipping (layout wraps lines but node might still be too small)
+   - Kept `clipBounds` for visual overflow prevention
+
+3. **Fixed `shapeForNode()` interface handling** (line 698):
+   - Moved interface kind check BEFORE contentLayout check
+   - Previously, interface nodes with contentLayout rendered as rounded-rect instead of lollipop/socket
+   - Now interface nodes always get lollipop/socket shape regardless of contentLayout presence
+
+**packages/renderer-svg/src/__tests__/renderer.test.ts:**
+- Updated `interfaceDiagram()` helper: added `labelLines` and `contentLayout` to interface node
+- Updated "socket faces right" test: added `labelLines` and `contentLayout` to interface node
+- Updated golden fixture `component-lollipop.svg` to reflect lollipop shape for interface nodes
+- Added 3 new tests in "node label positioning from contentLayout" describe:
+  1. Uses contentLayout.label position exactly without centering fallback
+  2. Uses contentLayout.label.lines for multi-line labels
+  3. Returns no labels when contentLayout.label is undefined
+
+### Key Findings
+
+1. **Interface shape must be checked before contentLayout**: Interface nodes (lollipop/socket) have unique shape rendering that must take priority over the generic `outerShapeForNode` path. When `contentLayout` check came first, interface nodes lost their lollipop/socket shape.
+
+2. **maxWidth must be kept for clipping**: Even though layout provides properly wrapped lines, the `maxWidth` parameter controls SVG clipPath generation for visual overflow. Without it, labels wider than their node are rendered without clipping. This is a visual concern separate from text wrapping.
+
+3. **truncateText removed from node path but kept for edges**: `truncateTextContent` import remains because edge labels still use truncation (Task 10 will handle edge label removal). The `textElement` function's internal truncation logic also remains for edge labels.
+
+### Verification
+
+```
+grep -n "truncateText" → only edge label paths (lines 1628, 2084)
+grep -n "isInterface\|interfaceCircleRadius\|interfaceCy" → no matches in renderNode
+bun test packages/renderer-svg/ → 296 pass, 0 fail
+bun run build → 0 errors
+```
+
+### Results
+- `bun test packages/renderer-svg/` → 296 pass, 0 fail (3 new tests)
+- `bun run build` → all packages clean
+- LSP diagnostics: 0 errors on renderer.ts
