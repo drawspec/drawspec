@@ -46,7 +46,7 @@
     <path d="M 10 23 A 3 3 0 0 1 13 20 L 26 20 L 26 10 L 42 10 L 42 20 L 127 20 A 3 3 0 0 1 130 23 L 130 67 A 3 3 0 0 1 127 70 L 13 70 A 3 3 0 0 1 10 67 Z" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-component-lollipop-00wrcda-node-iface-14nt2cq">
-    <rect fill="#f8fafc" height="40" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="60" x="160" y="25" />
+    <circle cx="190" cy="37" fill="#f8fafc" r="8" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-component-lollipop-00wrcda-text-layer-1bbk1bu">
     <text data-width="79.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-component-lollipop-00wrcda-label-node-comp-line0-0syf1hj" text-anchor="middle" x="80" y="65">

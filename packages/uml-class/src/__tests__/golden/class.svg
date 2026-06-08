@@ -64,7 +64,7 @@
     <line stroke="#334155" stroke-width="1" x1="340.26" x2="471.66" y1="216.9" y2="216.9" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-node-iface_bc02efc2-09toevq">
-    <rect fill="#f8fafc" height="113.8" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="127.48" x="340.26" y="390.2" />
+    <circle cx="404" cy="439.1" fill="#f8fafc" r="8" stroke="#334155" stroke-width="1.5" />
     <line stroke="#334155" stroke-width="1" x1="340.26" x2="467.74" y1="447.1" y2="447.1" />
   </g>
   <g id="drawspec-classdoc_f5ee8bb6-0paqxzb-text-layer-1vwxgww">

@@ -82,13 +82,13 @@
     <path d="M 252 411 A 3 3 0 0 1 255 408 L 268 408 L 268 398 L 284 398 L 284 408 L 381 408 A 3 3 0 0 1 384 411 L 384 469 A 3 3 0 0 1 381 472 L 255 472 A 3 3 0 0 1 252 469 Z" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_487bdfd7-1382yxh">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="240" y="592" />
+    <path d="M 292 612 A 8 8 0 0 0 308 612" fill="none" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_66670299-1si6i0w">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="592" />
+    <path d="M 92 612 A 8 8 0 0 0 108 612" fill="none" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-node-ifc_6725ba7f-14avwv1">
-    <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="464" y="408" />
+    <path d="M 524 420 A 8 8 0 0 0 524 436" fill="none" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-text-layer-1yke4f0">
     <g id="drawspec-cmpdoc_d1ebcbaa-1ajois9-label-edge-dep_466a8b5c-line0-1hgnqza-bg-0x1ok8r" transform="translate(0 58)">
