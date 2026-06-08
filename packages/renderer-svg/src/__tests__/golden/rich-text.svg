@@ -53,16 +53,13 @@
   </g>
   <g id="drawspec-rich-text-golden-0ya0e7r-text-layer-125tci6">
     <g id="drawspec-rich-text-golden-0ya0e7r-label-edge-api-worker-line0-0rrecju-bg-1e40v56">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="112.595" x="175.702" y="49.8" />
-      <text data-width="108.595" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-edge-api-worker-line0-0rrecju" text-anchor="middle" x="232" y="64">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="112.688" x="175.656" y="49.8" />
+      <text data-width="108.688" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-edge-api-worker-line0-0rrecju" text-anchor="middle" x="232" y="64">
         <tspan font-weight="700">
           publishes
         </tspan>
-        <tspan>
-           
-        </tspan>
         <tspan font-style="italic">
-          event
+           event
         </tspan>
       </text>
     </g>

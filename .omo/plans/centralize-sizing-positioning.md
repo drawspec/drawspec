@@ -657,7 +657,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `feat(layout): add shared edge label positioning`
   - Files: `packages/layout/src/edge-labels.ts`, `packages/layout/src/__tests__/edge-labels.test.ts`, `packages/layout/src/index.ts`
 
-- [ ] 8. Remove Node Label Fallbacks from Renderer
+- [x] 8. Remove Node Label Fallbacks from Renderer
 
   **What to do**:
   - RED: Write failing test asserting renderer does NOT compute label positions for nodes — it only uses contentLayout from layout output
@@ -777,7 +777,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `refactor(layout): centralize group label positioning for graph diagrams`
   - Files: `packages/layout/src/graph.ts`, `packages/renderer-svg/src/renderer.ts`
 
-- [ ] 10. Remove Edge Label Fallbacks from Renderer
+- [x] 10. Remove Edge Label Fallbacks from Renderer
 
   **What to do**:
   - RED: Write failing test asserting renderer does NOT compute edge label midpoint — it only uses labelPosition from layout
@@ -955,7 +955,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `fix(renderer-svg): include labels in autoFit bounds`
   - Files: `packages/renderer-svg/src/renderer.ts`
 
-- [ ] 13. Update ELK Adapter to Use Shared Edge Label Positioning
+- [x] 13. Update ELK Adapter to Use Shared Edge Label Positioning
 
   **What to do**:
   - RED: Write failing test asserting ELK adapter uses shared `sizeEdgeLabels()` instead of ELK-native label positions
@@ -1004,7 +1004,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `refactor(layout-elk): use shared edge label positioning`
   - Files: `packages/layout-elk/src/elk.ts`, `packages/layout-elk/src/__tests__/elk.test.ts`
 
-- [ ] 14. Cross-Engine Geometry Parity Tests
+- [x] 14. Cross-Engine Geometry Parity Tests
 
   **What to do**:
   - RED: Write failing parity test suite asserting all engines produce identical sizing and positioning for same input

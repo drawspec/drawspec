@@ -47,11 +47,9 @@ import type {
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
 const DEFAULT_AUTO_FIT_PADDING = 20;
-const EDGE_LABEL_FALLBACK_WIDTH = 240;
 const EDGE_LABEL_BG_PADDING_X = 2;
 const EDGE_LABEL_BG_PADDING_Y = 3;
 const EDGE_LABEL_LINE_GAP = 4;
-const MARKER_SIZE = 8;
 const VERTICAL_LABEL_ROTATION_THRESHOLD = 70;
 
 interface OcclusionRect {
@@ -1601,7 +1599,6 @@ function renderEdge(
         `Missing labelPosition for edge '${edge.id}' with label. Layout engine must provide label position.`
       );
     }
-    const labelOverflow = edge.labelOverflow ?? document.labelOverflow ?? "wrap";
     const pos = edge.labelPosition;
     const rotation = edge.labelRotation ?? document.labelRotation ?? "none";
     let rotationAngle = 0;
@@ -1614,26 +1611,18 @@ function renderEdge(
       }
     }
     const yAdjust = -Math.max(8, style.fontSize * 0.5);
-    const edgeMaxWidth = edgeLabelMaxWidth(
-      edge.waypoints,
-      markerStart !== undefined,
-      markerEnd !== undefined
-    );
     const labelContainer = edgeLabelContainerAttrs(
       edge.labelStyle ?? document.edgeLabelStyle ?? "fill",
       style
     );
-    const edgeLines =
-      labelOverflow === "truncate"
-        ? [truncateTextContent(edge.label, edgeMaxWidth, style.fontSize)]
-        : wrapTextContent(edge.label, edgeMaxWidth, style.fontSize);
+    const edgeLabelLines = edge.labelLines ?? [];
     const edgeLineHeight = style.fontSize * 1.3;
     const edgeLabelY = pos.y + yAdjust;
     const strokeWidth = labelContainer.backgroundStrokeWidth ?? 0;
     const textTopOffset = style.fontSize * 0.8 + EDGE_LABEL_BG_PADDING_Y + strokeWidth;
     const textBottomOffset = style.fontSize * 0.2 + EDGE_LABEL_BG_PADDING_Y + strokeWidth;
     labels.push(
-      ...edgeLines.map((line, index) => {
+      ...edgeLabelLines.map((line, index) => {
         const baseY = edgeLabelY + index * edgeLineHeight;
         const bgTop = baseY - textTopOffset;
         const bgBottom = baseY + textBottomOffset;
@@ -1648,12 +1637,6 @@ function renderEdge(
         });
         let extraGap = 0;
         if (overlapsEdge) {
-          // shiftUp = how far bg extends below edge + gap (positive = shift up = move label up)
-          // shiftDown = how far bg extends above edge + gap (positive = shift down = move label down)
-          // With yAdjust always negative (label starts above edge), wrapped labels have bgTop above
-          // edge and bgBottom below edge. Since textTopOffset > textBottomOffset, bgTop is always
-          // closer to edge than bgBottom, making shiftDown < shiftUp. The shiftUp < shiftDown branch
-          // is unreachable with current defaults (yAdjust = -max(8, fontSize * 0.5)).
           const edgeYRange = edgeYInXRange(edge.waypoints, labelLeft, labelRight);
           const shiftUp = bgBottom - edgeYRange.minY + EDGE_LABEL_LINE_GAP;
           const shiftDown = edgeYRange.maxY - bgTop + EDGE_LABEL_LINE_GAP;
@@ -1705,29 +1688,6 @@ function edgeLabelContainerAttrs(
     case "none":
       return {};
   }
-}
-
-function edgeLabelMaxWidth(
-  waypoints: readonly Point[],
-  hasStartMarker: boolean,
-  hasEndMarker: boolean
-): number {
-  if (waypoints.length < 2) {
-    return EDGE_LABEL_FALLBACK_WIDTH;
-  }
-  let pathLength = 0;
-  for (let i = 0; i < waypoints.length - 1; i++) {
-    const current = waypoints[i];
-    const next = waypoints[i + 1];
-    if (current === undefined || next === undefined) {
-      continue;
-    }
-    const dx = next.x - current.x;
-    const dy = next.y - current.y;
-    pathLength += Math.sqrt(dx * dx + dy * dy);
-  }
-  const markerSpace = (hasStartMarker ? MARKER_SIZE : 0) + (hasEndMarker ? MARKER_SIZE : 0);
-  return Math.max(80, Math.min(300, pathLength - markerSpace));
 }
 
 /** Compute the angle (in degrees) of the edge at the given position along its waypoints. */
@@ -1897,45 +1857,6 @@ function approachPoint(corner: Point, from: Point, radius: number): Point {
   const len = Math.sqrt(dx * dx + dy * dy);
   const r = Math.min(radius, len / 2);
   return { x: corner.x - (dx / len) * r, y: corner.y - (dy / len) * r };
-}
-
-// Retained for edge label rendering — will be used by Task 10
-export function midpoint(points: Point[]): Point {
-  if (points.length === 0) return { x: 0, y: 0 };
-  if (points.length === 1) return points[0] ?? { x: 0, y: 0 };
-
-  let totalLength = 0;
-  const cumulativeLengths: number[] = [0];
-  for (let i = 0; i < points.length - 1; i++) {
-    const current = points[i];
-    const next = points[i + 1];
-    if (current === undefined || next === undefined) continue;
-    const dx = next.x - current.x;
-    const dy = next.y - current.y;
-    totalLength += Math.sqrt(dx * dx + dy * dy);
-    cumulativeLengths.push(totalLength);
-  }
-
-  if (totalLength === 0) {
-    return points[0] ?? { x: 0, y: 0 };
-  }
-
-  const halfLength = totalLength / 2;
-  for (let i = 0; i < cumulativeLengths.length - 1; i++) {
-    const segStart = cumulativeLengths[i] ?? 0;
-    const segEnd = cumulativeLengths[i + 1] ?? segStart;
-    if (segStart === undefined || segEnd === undefined) continue;
-    if (halfLength >= segStart && halfLength <= segEnd) {
-      const segLength = segEnd - segStart;
-      const t = segLength > 0 ? (halfLength - segStart) / segLength : 0;
-      const p0 = points[i];
-      const p1 = points[i + 1];
-      if (p0 === undefined || p1 === undefined) continue;
-      return { x: p0.x + t * (p1.x - p0.x), y: p0.y + t * (p1.y - p0.y) };
-    }
-  }
-
-  return points[points.length - 1] ?? { x: 0, y: 0 };
 }
 
 function edgeOverlapsRect(
