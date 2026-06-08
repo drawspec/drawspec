@@ -1213,12 +1213,14 @@ describe("SvgRenderer", () => {
           y: 0,
           width: 200,
           height: 100,
+          labelLines: ["System"],
           source: { file: "sys.ts", line: 7, column: 1 },
         },
       ],
       activations: [],
       width: 200,
       height: 100,
+      canvasBounds: { x: 0, y: 0, width: 200, height: 100 },
     };
     const svg = renderSvgSync(doc, { positionedDiagram });
     expect(svg).toContain('data-source-file="sys.ts"');

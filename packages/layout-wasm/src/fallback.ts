@@ -145,6 +145,14 @@ export class TypeScriptFallbackBridge implements WasmBridge {
     const { nodes, edges, direction, nodeSize, spacing, padding } = input;
     const isHorizontal = direction === "LR" || direction === "RL";
 
+    const nodeDims = new Map<string, { width: number; height: number }>();
+    for (const n of nodes) {
+      nodeDims.set(n.id, {
+        width: n.width > 0 ? n.width : nodeSize.width,
+        height: n.height > 0 ? n.height : nodeSize.height,
+      });
+    }
+
     if (nodes.length === 0) {
       return { nodes: [], edges: [], width: padding * 2, height: padding * 2 };
     }
@@ -182,46 +190,72 @@ export class TypeScriptFallbackBridge implements WasmBridge {
     }
 
     const positions = new Map<string, { x: number; y: number; width: number; height: number }>();
-    for (const id of nodeIds) {
-      const r = rank[id] ?? 0;
-      const col = colIndex[id] ?? 0;
+
+    for (let r = 0; r <= maxRank; r++) {
+      const idsAtRank = byRank.get(r) ?? [];
+      let maxCrossSize = 0;
+      for (const id of idsAtRank) {
+        const d = nodeDims.get(id) ?? nodeSize;
+        const cross = isHorizontal ? d.height : d.width;
+        if (cross > maxCrossSize) maxCrossSize = cross;
+      }
 
       const rankOffset =
         padding +
-        r * (isHorizontal ? nodeSize.width + spacing.rank : nodeSize.height + spacing.rank);
-      const colOffset =
-        padding +
-        col * (isHorizontal ? nodeSize.height + spacing.node : nodeSize.width + spacing.node);
+        [...Array(r)].reduce((sum, _prevR) => {
+          const prevIds = byRank.get(_prevR) ?? [];
+          let maxMain = 0;
+          for (const pid of prevIds) {
+            const pd = nodeDims.get(pid) ?? nodeSize;
+            const main = isHorizontal ? pd.width : pd.height;
+            if (main > maxMain) maxMain = main;
+          }
+          return sum + maxMain + spacing.rank;
+        }, 0);
 
-      positions.set(id, {
-        x: isHorizontal ? rankOffset : colOffset,
-        y: isHorizontal ? colOffset : rankOffset,
-        width: nodeSize.width,
-        height: nodeSize.height,
-      });
+      let colCursor = padding;
+      for (let c = 0; c < idsAtRank.length; c++) {
+        const id = idsAtRank[c]!;
+        const d = nodeDims.get(id) ?? nodeSize;
+
+        if (c > 0) {
+          const prevId = idsAtRank[c - 1]!;
+          const prevCrossSize = isHorizontal
+            ? (nodeDims.get(prevId) ?? nodeSize).width
+            : (nodeDims.get(prevId) ?? nodeSize).height;
+          colCursor += prevCrossSize + spacing.node;
+        }
+
+        positions.set(id, {
+          x: isHorizontal ? rankOffset : colCursor,
+          y: isHorizontal ? colCursor : rankOffset,
+          width: d.width,
+          height: d.height,
+        });
+      }
     }
 
     if (direction === "BT") {
       let maxY = 0;
       for (const p of positions.values()) {
-        if (p.y > maxY) maxY = p.y;
+        if (p.y + p.height > maxY) maxY = p.y + p.height;
       }
       for (const id of nodeIds) {
         const p = positions.get(id);
         if (p !== undefined) {
-          positions.set(id, { ...p, y: maxY - p.y + padding });
+          positions.set(id, { ...p, y: maxY - p.y - p.height + padding });
         }
       }
     }
     if (direction === "RL") {
       let maxX = 0;
       for (const p of positions.values()) {
-        if (p.x > maxX) maxX = p.x;
+        if (p.x + p.width > maxX) maxX = p.x + p.width;
       }
       for (const id of nodeIds) {
         const p = positions.get(id);
         if (p !== undefined) {
-          positions.set(id, { ...p, x: maxX - p.x + padding });
+          positions.set(id, { ...p, x: maxX - p.x - p.width + padding });
         }
       }
     }

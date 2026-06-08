@@ -433,9 +433,7 @@ function renderGroup(
     },
   ];
   if (group.label !== undefined) {
-    const groupLabelLines =
-      group.labelLines ??
-      wrapTextContent(group.label, Math.max(0, group.width - 24), style.fontSize);
+    const groupLabelLines = group.labelLines;
     const groupLineHeight = style.fontSize * 1.3;
     const groupStartY = group.y + 16;
     labels.push(

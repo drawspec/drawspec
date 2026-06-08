@@ -26,7 +26,13 @@ import type {
   PositionedEdge,
   PositionedNode,
 } from "@drawspec/layout";
-import { LayoutCache, normalizeLayoutOptions, sizeGraphNodes } from "@drawspec/layout";
+import {
+  computeCanvasBounds,
+  computeSelfLoopWaypoints,
+  LayoutCache,
+  normalizeLayoutOptions,
+  sizeGraphNodes,
+} from "@drawspec/layout";
 import { TypeScriptFallbackBridge } from "./fallback";
 import type { WasmBridge, WasmGraphInput } from "./wasm-bridge";
 
@@ -39,10 +45,18 @@ function sortedEdges(document: DiagramDocument): DiagramEdge[] {
 }
 
 function buildWasmInput(
+  sizedMap: Map<string, { computedWidth: number; computedHeight: number }>,
   document: DiagramDocument,
   normalized: NormalizedLayoutOptions
 ): WasmGraphInput {
-  const nodes = sortedNodes(document).map((n) => ({ id: n.id }));
+  const nodes = sortedNodes(document).map((n) => {
+    const sized = sizedMap.get(n.id);
+    return {
+      id: n.id,
+      width: sized?.computedWidth ?? normalized.nodeSize.width,
+      height: sized?.computedHeight ?? normalized.nodeSize.height,
+    };
+  });
   const edges = sortedEdges(document)
     .filter(
       (e) =>
@@ -62,19 +76,6 @@ function buildWasmInput(
   };
 }
 
-function selfLoopWaypoints(source: PositionedNode): Point[] {
-  const cx = source.x + source.width / 2;
-  const cy = source.y + source.height / 2;
-  const offset = 28;
-  return [
-    { x: cx, y: cy },
-    { x: source.x + source.width + offset, y: cy },
-    { x: source.x + source.width + offset, y: source.y - offset },
-    { x: cx, y: source.y - offset },
-    { x: cx, y: cy },
-  ];
-}
-
 function fallbackWaypoints(source: PositionedNode, target: PositionedNode): Point[] {
   return [
     { x: source.x + source.width / 2, y: source.y + source.height / 2 },
@@ -89,7 +90,7 @@ function positionEdge(
 ): Point[] {
   if (edge.sourceId === edge.targetId) {
     const source = nodesById[edge.sourceId];
-    return source ? selfLoopWaypoints(source) : [];
+    return source ? computeSelfLoopWaypoints(source) : [];
   }
 
   const route = wasmEdgeRoutes[edge.id];
@@ -106,32 +107,6 @@ function positionEdge(
   return fallbackWaypoints(source, target);
 }
 
-function computeBounds(
-  nodes: PositionedNode[],
-  edges: PositionedEdge[],
-  padding: number
-): { width: number; height: number } {
-  const allX: number[] = [];
-  const allY: number[] = [];
-
-  for (const node of nodes) {
-    allX.push(node.x + node.width);
-    allY.push(node.y + node.height);
-  }
-
-  for (const edge of edges) {
-    for (const wp of edge.waypoints) {
-      allX.push(wp.x);
-      allY.push(wp.y);
-    }
-  }
-
-  return {
-    width: Math.max(padding * 2, ...allX) + padding,
-    height: Math.max(padding * 2, ...allY) + padding,
-  };
-}
-
 async function createWasmLayout(
   document: DiagramDocument,
   bridge: WasmBridge,
@@ -140,21 +115,26 @@ async function createWasmLayout(
   const normalized = normalizeLayoutOptions(document, options);
 
   if (document.nodes.length === 0) {
-    const width = normalized.padding * 2;
-    const height = normalized.padding * 2;
+    const canvasBounds = computeCanvasBounds(
+      { nodes: [], edges: [], groups: [] },
+      normalized.padding
+    );
     return {
       document,
       nodes: [],
       edges: [],
       groups: [],
       activations: [],
-      width,
-      height,
-      canvasBounds: { x: 0, y: 0, width, height },
+      width: canvasBounds.width,
+      height: canvasBounds.height,
+      canvasBounds,
     };
   }
 
-  const input = buildWasmInput(document, normalized);
+  const sizedNodes = sizeGraphNodes(sortedNodes(document), normalized.sizing);
+  const sizedMap = new Map(sizedNodes.map((n) => [n.id, n]));
+
+  const input = buildWasmInput(sizedMap, document, normalized);
   const result = await bridge.compute(input);
 
   const wasmPositionsById: Record<string, (typeof result.nodes)[number]> = {};
@@ -162,8 +142,6 @@ async function createWasmLayout(
     wasmPositionsById[pos.id] = pos;
   }
 
-  const sizedNodes = sizeGraphNodes(sortedNodes(document), normalized.sizing);
-  const sizedMap = new Map(sizedNodes.map((n) => [n.id, n]));
   const nodes: PositionedNode[] = sortedNodes(document).map((node) => {
     const sizedNode = sizedMap.get(node.id);
     const pos = wasmPositionsById[node.id];
@@ -206,10 +184,18 @@ async function createWasmLayout(
     return { ...edge, waypoints, labelPosition, labelLines };
   });
 
-  const { width, height } = computeBounds(nodes, edges, normalized.padding);
-  const canvasBounds = { x: 0, y: 0, width, height };
+  const canvasBounds = computeCanvasBounds({ nodes, edges, groups: [] }, normalized.padding);
 
-  return { document, nodes, edges, groups: [], activations: [], width, height, canvasBounds };
+  return {
+    document,
+    nodes,
+    edges,
+    groups: [],
+    activations: [],
+    width: canvasBounds.width,
+    height: canvasBounds.height,
+    canvasBounds,
+  };
 }
 
 export class WasmLayoutEngine implements LayoutEngine {
