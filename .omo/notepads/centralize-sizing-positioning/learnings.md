@@ -1014,3 +1014,39 @@ Since `computeContentBounds` now returns `canvasBounds` directly, tests that cal
 - `bun test packages/renderer-svg/` → 282 pass, 0 fail
 - `bun test packages/layout/` → 96 pass, 0 fail
 - `bun run build` → all packages clean
+
+## 2026-06-08 Task 15: Regenerate Golden SVGs
+
+### Summary
+
+Golden SVG files were already up to date from previous tasks (Tasks 10, 11, 12). Running `UPDATE_GOLDEN=1 bun test packages/renderer-svg/` produced no changes - all282 tests passed with existing goldens.
+
+### Verification Results
+
+1. **Golden regeneration run**: `UPDATE_GOLDEN=1 bun test packages/renderer-svg/` → 282 pass, 0 fail
+2. **Stability check**: `bun test packages/renderer-svg/` → 282 pass, 0 fail (no changes)
+3. **Full suite regeneration**: `UPDATE_GOLDEN=1 bun test` → 1288 pass, 0 fail
+4. **Full validation**: `bun run check` → PASS (159 Biome warnings all pre-existing `noNonNullAssertion`)
+
+### Key Findings
+
+1. **Golden files already current**: Previous tasks (10, 11, 12) updated golden fixtures during their work. No additional changes needed.
+
+2. **Working tree clean**: No pending changes to golden files. All SVGs match expected output.
+
+3. **Pre-existing Biome warnings**: 159 `noNonNullAssertion` warnings in `edge-labels.ts` and test files - not introduced by this task, not blocking.
+
+4. **No visual regressions**: Tests pass without UPDATE_GOLDEN, confirming deterministic output.
+
+### Files Verified
+
+- `packages/renderer-svg/src/__tests__/golden/` — 5 golden SVGs (architecture, component-lollipop, rich-text, sequence, shape-library)
+- Full test suite across82 files passes
+
+### Status
+
+- [x] All golden SVGs regenerated (already current)
+- [x] All tests pass with new goldens (second run without UPDATE_GOLDEN)
+- [x] Diffs reviewed (working tree clean, no changes)
+- [x] `bun test packages/renderer-svg/` → PASS
+- [x] `bun run check` → PASS
