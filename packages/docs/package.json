@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@drawspec/core": "workspace:*",
-    "@types/node": "25.9.1",
+    "@types/node": "25.9.2",
     "typescript": "latest"
   }
 }
