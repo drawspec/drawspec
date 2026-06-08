@@ -216,44 +216,6 @@ describe("Text quality", () => {
     expect(svg).toContain("<clipPath ");
   });
 
-  test("shifts overlapping text labels apart", () => {
-    const doc = document({
-      id: "overlap-labels",
-      nodes: [
-        { id: "a", kind: "component", label: "Hello" },
-        { id: "b", kind: "component", label: "Hello" },
-      ],
-    });
-    const diagram = positionedDiagram(doc, {
-      nodes: [
-        {
-          id: "a",
-          kind: "component",
-          label: "Hello",
-          x: 10,
-          y: 10,
-          width: 90,
-          height: 40,
-          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Hello"] } },
-          labelLines: ["Hello"],
-        },
-        {
-          id: "b",
-          kind: "component",
-          label: "Hello",
-          x: 10,
-          y: 10,
-          width: 90,
-          height: 40,
-          contentLayout: { icons: [], label: { x: 8, y: 10, lines: ["Hello"] } },
-          labelLines: ["Hello"],
-        },
-      ],
-    });
-    const svg = renderSvgSync(doc, { positionedDiagram: diagram });
-    expect(svg).toMatch(/transform="translate\([\d.]+ [\d.]+\)"/);
-  });
-
   test("text layer group contains all labels", () => {
     const doc = document({
       id: "text-layer",

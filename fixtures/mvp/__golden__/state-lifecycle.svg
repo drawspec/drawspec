@@ -76,52 +76,52 @@
     <rect fill="#f8fafc" height="56" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="120" x="40" y="392" />
   </g>
   <g id="drawspec-statedoc_fd39935e9e-18zqhd5-text-layer-016i7s5">
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk-bg-0gphoig" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="172.28" x="13.86" y="220" />
-      <text data-width="168.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk" text-anchor="middle" x="100" y="234.2">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk-bg-0gphoig">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="172.28" x="13.86" y="309.8" />
+      <text data-width="168.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk" text-anchor="middle" x="100" y="324">
         pay [payment authorized]
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp-bg-0xxd95g" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="77.78" x="61.11" y="748" />
-      <text data-width="73.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp" text-anchor="middle" x="100" y="762.2">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp-bg-0xxd95g">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="77.78" x="61.11" y="837.8" />
+      <text data-width="73.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp" text-anchor="middle" x="100" y="852">
         close order
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-line0-0glk77z-bg-12b3nbi" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="169.76" x="15.12" y="396" />
-      <text data-width="165.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-line0-0glk77z" text-anchor="middle" x="100" y="410.2">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-line0-0glk77z-bg-12b3nbi">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="169.76" x="15.12" y="485.8" />
+      <text data-width="165.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_4770e7bf61-line0-0glk77z" text-anchor="middle" x="100" y="500">
         ship [inventory allocated]
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm-bg-1dkbntc" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="185.72" x="7.14" y="572" />
-      <text data-width="181.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm" text-anchor="middle" x="100" y="586.2">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm-bg-1dkbntc">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="185.72" x="7.14" y="661.8" />
+      <text data-width="181.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm" text-anchor="middle" x="100" y="676">
         deliver [signature captured]
       </text>
     </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix-bg-03cknd3" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="84.78" x="57.61" y="44" />
-      <text data-width="80.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix" text-anchor="middle" x="100" y="58.2">
+    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix-bg-03cknd3">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="84.78" x="57.61" y="133.8" />
+      <text data-width="80.78" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix" text-anchor="middle" x="100" y="148">
         create order
       </text>
     </g>
-    <text data-width="24.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_02d7e8ebbb-line0-0oq8mjm" text-anchor="middle" x="100" y="952.9">
+    <text data-width="24.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_02d7e8ebbb-line0-0oq8mjm" text-anchor="middle" x="100" y="961.2">
       end
     </text>
-    <text data-width="52.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_1e9d063f9f-line0-05ity4k" text-anchor="middle" x="100" y="248.9">
+    <text data-width="52.36" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_1e9d063f9f-line0-05ity4k" text-anchor="middle" x="100" y="257.2">
       Created
     </text>
     <text data-width="29.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_64f5330b4a-line0-1re0943" text-anchor="middle" x="100" y="72.9">
       start
     </text>
-    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_7f315c4e59-line0-19349zj" text-anchor="middle" x="100" y="600.9">
+    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_7f315c4e59-line0-19349zj" text-anchor="middle" x="100" y="609.2">
       Shipped
     </text>
-    <text data-width="62.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_d41f43ca4e-line0-09rhuce" text-anchor="middle" x="100" y="776.9">
+    <text data-width="62.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_d41f43ca4e-line0-09rhuce" text-anchor="middle" x="100" y="785.2">
       Delivered
     </text>
-    <text data-width="28.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_ec47ea95a0-line0-1seey2f" text-anchor="middle" x="100" y="424.9">
+    <text data-width="28.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-node-state_ec47ea95a0-line0-1seey2f" text-anchor="middle" x="100" y="433.2">
       Paid
     </text>
   </g>

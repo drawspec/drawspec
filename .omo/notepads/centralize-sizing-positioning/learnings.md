@@ -833,3 +833,101 @@ bun run build → 0 errors
 - `bun test packages/layout/` → 92 pass, 0 fail
 - `bun test packages/layout-dagre/ packages/layout-elk/ packages/layout-wasm/` → 62 pass, 0 fail
 - `bun run build` → all packages clean
+
+## 2026-06-08 Task 11: Remove Overlap Avoidance from Renderer
+
+### Changes Made
+
+**packages/layout/src/graph-utils.ts:**
+- Added `avoidLabelOverlaps(diagram: PositionedDiagram)` function that:
+  - Collects label bounding boxes from nodes (`contentLayout.label`), edges (`labelPosition`), and groups
+  - Collects occlusion rects from nodes and edges (axis-aligned bounding boxes)
+  - Runs overlap avoidance algorithm: sort by id, check overlaps, shift down/right by 2px gap
+  - Skips labels whose ORIGINAL center was inside an occlusion rect (prevents shifting labels inside their own nodes)
+  - Skips group labels (structural labels don't get shifted)
+  - Clamps labels to containing group bounds
+  - Writes adjusted positions back to `contentLayout.label.x/y` and `edge.labelPosition.x/y`
+- Added helper types: `LayoutLabelRect`, `LayoutOcclusionRect`
+- Added helper functions: `labelLineWidth`, `labelBlockHeight`, `maxLineWidth`, `collectLabelRects`, `collectOcclusionRects`, `rectsOverlap`, `findContainingGroup`
+- Uses `measureTextContent` from `@drawspec/text-measure` for text width (same function used in sizing.ts and renderer)
+- Constants: `OVERLAP_FONT_SIZE = 14`, `OVERLAP_LINE_HEIGHT_FACTOR = 1.3`, `OVERLAP_GAP = 2`
+
+**packages/layout/src/index.ts:**
+- Exported `avoidLabelOverlaps` from graph-utils
+
+**packages/layout/src/graph.ts (built-in engine):**
+- Added `avoidLabelOverlaps(result)` call before returning from `createGraphLayout()`
+
+**packages/layout-dagre/src/dagre.ts:**
+- Added `avoidLabelOverlaps` import from `@drawspec/layout`
+- Added `avoidLabelOverlaps(result)` call before returning from `createDagreLayout()`
+
+**packages/layout-elk/src/elk.ts:**
+- Added `avoidLabelOverlaps` import from `@drawspec/layout`
+- Added `avoidLabelOverlaps(result)` call before returning from `createElkLayout()`
+
+**packages/layout-wasm/src/wasm-layout.ts:**
+- Added `avoidLabelOverlaps` import from `@drawspec/layout`
+- Renamed `result` → `bridgeResult` to avoid naming conflict with the PositionedDiagram result
+- Added `avoidLabelOverlaps(result)` call before returning from `createWasmLayout()`
+
+**packages/renderer-svg/src/renderer.ts — removed:**
+- `OcclusionRect` interface
+- `buildOcclusionRects()` function
+- `buildGroupBounds()` function
+- `avoidLabelOverlaps()` function
+- `findContainingGroup()` function
+- `boundsCenterInside()` function
+- `shouldSkipStructuralLabelOverlap()` function
+- `isStructuralLabel()` function
+- `startedInsideGroup()` function
+- `clampBoundsToRect()` function
+- `clamp()` function
+- `boundsOverlap()` function
+- `edgeYInXRange()` function
+- `edgeOverlapsRect()` function
+- `segmentOverlapsRect()` function
+- `EDGE_LABEL_LINE_GAP` constant
+- Edge label overlap shifting code in `renderEdge()` (the `overlapsEdge`, `extraGap`, `edgeYRange` computation)
+- `textTopOffset` and `textBottomOffset` variables (only used for overlap)
+
+**packages/renderer-svg/src/renderer.ts — simplified:**
+- `renderSvgSync()` no longer calls `buildOcclusionRects()`, `buildGroupBounds()`, or `avoidLabelOverlaps()`
+- Labels are rendered directly: `labels.map((l) => l.element)`
+- Edge label rendering no longer shifts labels away from edge paths
+
+**packages/renderer-svg/src/renderer.ts — kept:**
+- `computePaddedBounds()` — needed for autoFit (Task 12)
+- `edgeAngleAtPoint()` — needed for SVG text rotation
+- `withTransform()` — still used by `rotatedLabel()`
+- `intersectBounds()` — still used by `textElement()`
+- `expandBoundsXY()` — still used by `textElement()`
+- `computeContentBounds()` — still used by `computePaddedBounds()`
+
+**Test changes:**
+- Removed renderer tests: "shifts overlapping labels apart deterministically", "still shifts edge labels outside fragments away from occlusion rects", "rotated labels use expanded bounds for overlap avoidance", entire "edge label overlap prevention" describe block (7 tests)
+- Removed text-quality test: "shifts overlapping text labels apart"
+- Added layout tests: "overlapping node labels get shifted apart", "non-overlapping node labels stay in place", "overlapping edge labels get shifted", "diagram with no labels is a no-op"
+- Updated engine parity test: dagre/wasm edge label position check uses `toBeGreaterThanOrEqual` instead of `toBe` (overlap avoidance may shift labels)
+- Updated golden fixtures (shape-library, architecture, sequence, rich-text, and 10 fixture golden files)
+
+### Key Finding: "Started Inside" Check Critical
+
+The overlap avoidance MUST check whether a label's ORIGINAL center was inside an occlusion rect before trying to shift it away. Without this check:
+- Node labels that are naturally inside their parent node would get shifted by overlapping nodes at the same position
+- Both labels would end up shifted, not just the second one
+
+The fix: compute `origCenterX/Y` before any shifting, then check `centerWasInside` in the occlusion rect loop. This mirrors the renderer's `startedInsideGroup()` logic.
+
+### Key Finding: Edge Label Overlap vs Label-Label Overlap
+
+The renderer had TWO separate overlap avoidance mechanisms:
+1. **Label-label overlap** — `avoidLabelOverlaps()` shifted ALL label types (node, edge, group) to avoid overlapping each other and node/edge occlusion rects
+2. **Edge-edge overlap** — in `renderEdge()`, edge labels were shifted away from their own edge path using `edgeOverlapsRect()` and `edgeYInXRange()`
+
+The layout-level function only implements label-label overlap avoidance. Edge-edge overlap (shifting labels off the edge path) is a visual concern that could optionally be added to the layout function in a future task.
+
+### Results
+- `bun test packages/layout/ packages/renderer-svg/` → 378 pass, 0 fail
+- `bun test packages/layout-dagre/ packages/layout-elk/ packages/layout-wasm/` → 62 pass, 0 fail
+- `bun run build` → all packages clean

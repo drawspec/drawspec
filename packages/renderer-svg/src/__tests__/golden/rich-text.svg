@@ -63,7 +63,7 @@
         </tspan>
       </text>
     </g>
-    <text data-width="59.724" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line0-1orhp8m" text-anchor="middle" x="106" y="67.8">
+    <text data-width="59.724" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line0-1orhp8m" text-anchor="middle" x="106" y="85.2">
       <tspan font-weight="700">
         API
       </tspan>
@@ -71,12 +71,12 @@
          calls
       </tspan>
     </text>
-    <text data-width="69.44" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line1-1p1haxl" text-anchor="middle" x="106" y="86">
+    <text data-width="69.44" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-api-line1-1p1haxl" text-anchor="middle" x="106" y="103.4">
       <tspan font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
         checkout
       </tspan>
     </text>
-    <text data-width="45.982" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-worker-line0-1lectm6" text-anchor="middle" x="358" y="76.9">
+    <text data-width="45.982" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-rich-text-golden-0ya0e7r-label-node-worker-line0-1lectm6" text-anchor="middle" x="358" y="85.2">
       <tspan font-style="italic">
         worker
       </tspan>

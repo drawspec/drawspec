@@ -82,6 +82,15 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_a6ff72df-activation-1uck5db" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="286.2" />
   <rect fill="#e0f2fe" height="48" id="drawspec-seqdoc_50f5132c-13xu4za-activation-msg_d73b174f-activation-0oib66h" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="398.2" />
   <g id="drawspec-seqdoc_50f5132c-13xu4za-text-layer-1k1cz49">
+    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-line0-1d1wcps" text-anchor="start" x="28" y="270.2">
+      alt
+    </text>
+    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-line0-1c1fwuu" text-anchor="start" x="24" y="288.2">
+      approved
+    </text>
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-1-line0-0veftst" text-anchor="start" x="24" y="384.2">
+      declined
+    </text>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-line0-1kbb4jg-bg-1lgcy46">
       <rect fill="#ffffff" height="20" rx="3" ry="3" width="53.84" x="233.08" y="316" />
       <text data-width="49.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_148fcc18-line0-1kbb4jg" text-anchor="middle" x="260" y="330.2">
@@ -118,15 +127,6 @@
         Decline reason
       </text>
     </g>
-    <text data-width="15.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-group-frag_a7e3f9f2-line0-1d1wcps" text-anchor="start" x="28" y="270.2">
-      alt
-    </text>
-    <text data-width="61.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-0-line0-1c1fwuu" text-anchor="start" x="24" y="288.2">
-      approved
-    </text>
-    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-lane-frag_a7e3f9f2-operand-1-line0-0veftst" text-anchor="start" x="24" y="384.2">
-      declined
-    </text>
     <text data-width="33.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-node-seq_6d48fc82-line0-1oyq7q2" text-anchor="middle" x="260" y="72.9">
       Shop
     </text>

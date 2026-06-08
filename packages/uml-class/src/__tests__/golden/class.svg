@@ -71,6 +71,9 @@
     <text data-width="99.96" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_412c2b79-name-line-0-0gjbzip" text-anchor="middle" x="406.24" y="62.8">
       AggregateRoot
     </text>
+    <text data-width="57.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_9fb30820-name-line-0-1m3tzan" text-anchor="middle" x="130.13" y="61.9">
+      Payment
+    </text>
     <text data-width="67.48" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_9fb30820-fields-line-0-1h03mw9" text-anchor="start" x="56" y="101.1">
       - id: string
     </text>
@@ -79,9 +82,6 @@
     </text>
     <text data-width="145.6" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_9fb30820-methods-line-0-12ru5ps" text-anchor="start" x="56" y="158.5">
       + authorize(): boolean
-    </text>
-    <text data-width="57.4" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-class_9fb30820-name-line-0-1m3tzan" text-anchor="middle" x="130.13" y="61.9">
-      Payment
     </text>
     <text data-width="74.2" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-style="italic" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-enum_a36c23b8-name-line-0-0gq1wbu" text-anchor="middle" x="405.96" y="181.9">
       &lt;&lt;enum&gt;&gt;
@@ -101,17 +101,17 @@
     <text data-width="39.48" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-enum_a36c23b8-values-line-3-11adgdw" text-anchor="start" x="356.26" y="293.9">
       Failed
     </text>
-    <text data-width="48.02" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-methods-line-0-1st0mlh" text-anchor="start" x="356.26" y="469.5">
-      + pay()
-    </text>
-    <text data-width="66.78" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-methods-line-1-1sj10wi" text-anchor="start" x="356.26" y="487.7">
-      + refund()
-    </text>
     <text data-width="95.48" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-style="italic" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-name-line-0-0g73gbs" text-anchor="middle" x="404" y="412.1">
       &lt;&lt;interface&gt;&gt;
     </text>
     <text data-width="52.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-name-line-1-0gh320r" text-anchor="middle" x="404" y="430.3">
       Payable
+    </text>
+    <text data-width="48.02" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-methods-line-0-1st0mlh" text-anchor="start" x="356.26" y="469.5">
+      + pay()
+    </text>
+    <text data-width="66.78" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_f5ee8bb6-0paqxzb-label-compartment-iface_bc02efc2-methods-line-1-1sj10wi" text-anchor="start" x="356.26" y="487.7">
+      + refund()
     </text>
   </g>
 </svg>

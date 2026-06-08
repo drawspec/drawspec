@@ -80,6 +80,9 @@
     <line stroke="#334155" stroke-width="1" x1="376.7" x2="585.52" y1="530.9" y2="530.9" />
   </g>
   <g id="drawspec-classdoc_5f8ebd7c-0zw98uq-text-layer-1f3znfx">
+    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_218a0a80-name-line-0-1knlvu1" text-anchor="middle" x="168.35" y="495.9">
+      User
+    </text>
     <text data-width="139.86" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_218a0a80-fields-line-0-1gpjjyf" text-anchor="start" x="56" y="535.1">
       - {readonly} id: string
     </text>
@@ -89,8 +92,8 @@
     <text data-width="224.7" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_218a0a80-methods-line-0-161sop6" text-anchor="start" x="56" y="592.5">
       + changeEmail(email: string): void
     </text>
-    <text data-width="31.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_218a0a80-name-line-0-1knlvu1" text-anchor="middle" x="168.35" y="495.9">
-      User
+    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_39413e10-name-line-0-0lsecf2" text-anchor="middle" x="159.25" y="61.9">
+      Admin
     </text>
     <text data-width="134.12" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_39413e10-fields-line-0-0zxefp4" text-anchor="start" x="56" y="101.1">
       - permissions: string
@@ -98,22 +101,16 @@
     <text data-width="206.5" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_39413e10-methods-line-0-02kqrrv" text-anchor="start" x="56" y="140.3">
       + disableUser(user: User): void
     </text>
-    <text data-width="42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_39413e10-name-line-0-0lsecf2" text-anchor="middle" x="159.25" y="61.9">
-      Admin
+    <text data-width="79.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_8dfe10a2-name-line-0-0eo6s6n" text-anchor="middle" x="488.25" y="61.9">
+      AuthService
     </text>
     <text data-width="227.5" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_8dfe10a2-methods-line-0-06od0vk" text-anchor="start" x="374.5" y="101.1">
       + authenticate(token: string): User
     </text>
-    <text data-width="79.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_8dfe10a2-name-line-0-0eo6s6n" text-anchor="middle" x="488.25" y="61.9">
-      AuthService
-    </text>
-    <text data-width="176.82" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_b43d4440-methods-line-0-11ofey6" text-anchor="start" x="56" y="337.7">
-      + findById(id: string): User
-    </text>
     <text data-width="101.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_b43d4440-name-line-0-0lzygxx" text-anchor="middle" x="144.41" y="298.5">
       UserRepository
     </text>
-    <text data-width="176.82" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-iface_79d2fd14-methods-line-0-1ksq1ks" text-anchor="start" x="392.7" y="553.3">
+    <text data-width="176.82" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-class_b43d4440-methods-line-0-11ofey6" text-anchor="start" x="56" y="337.7">
       + findById(id: string): User
     </text>
     <text data-width="95.48" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-style="italic" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-iface_79d2fd14-name-line-0-07xluhf" text-anchor="middle" x="481.11" y="495.9">
@@ -121,6 +118,9 @@
     </text>
     <text data-width="70.84" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-iface_79d2fd14-name-line-1-07nm8sg" text-anchor="middle" x="481.11" y="514.1">
       Repository
+    </text>
+    <text data-width="176.82" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-classdoc_5f8ebd7c-0zw98uq-label-compartment-iface_79d2fd14-methods-line-0-1ksq1ks" text-anchor="start" x="392.7" y="553.3">
+      + findById(id: string): User
     </text>
   </g>
 </svg>

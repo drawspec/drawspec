@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { computeCanvasBounds } from "../graph-utils";
+import { avoidLabelOverlaps, computeCanvasBounds } from "../graph-utils";
 import type { PositionedDiagram, PositionedEdge, PositionedGroup, PositionedNode } from "../types";
 
 function makeNode(id: string, x: number, y: number, width: number, height: number): PositionedNode {
@@ -179,5 +179,141 @@ describe("computeCanvasBounds", () => {
     expect(bounds.y).toBeCloseTo(-5, 3);
     expect(bounds.width).toBeCloseTo(60, 3);
     expect(bounds.height).toBeCloseTo(60, 3);
+  });
+});
+
+describe("avoidLabelOverlaps", () => {
+  function makeDiagram(overrides?: Partial<PositionedDiagram>): PositionedDiagram {
+    return {
+      document: { id: "test", kind: "graph", nodes: [], edges: [] },
+      nodes: [],
+      edges: [],
+      groups: [],
+      activations: [],
+      width: 400,
+      height: 300,
+      canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
+      ...overrides,
+    };
+  }
+
+  test("overlapping node labels get shifted apart", () => {
+    const diagram = makeDiagram({
+      nodes: [
+        {
+          id: "a",
+          kind: "node",
+          label: "Hello",
+          x: 10,
+          y: 10,
+          width: 90,
+          height: 40,
+          labelLines: ["Hello"],
+          contentLayout: { icons: [], label: { x: 55, y: 30, lines: ["Hello"] } },
+        },
+        {
+          id: "b",
+          kind: "node",
+          label: "Hello",
+          x: 10,
+          y: 10,
+          width: 90,
+          height: 40,
+          labelLines: ["Hello"],
+          contentLayout: { icons: [], label: { x: 55, y: 30, lines: ["Hello"] } },
+        },
+      ],
+    });
+
+    const labelAY = diagram.nodes[0]!.contentLayout.label!.y;
+    avoidLabelOverlaps(diagram);
+    const newLabelAY = diagram.nodes[0]!.contentLayout.label!.y;
+    const newLabelBY = diagram.nodes[1]!.contentLayout.label!.y;
+
+    expect(newLabelBY).toBeGreaterThan(newLabelAY);
+  });
+
+  test("non-overlapping node labels stay in place", () => {
+    const diagram = makeDiagram({
+      nodes: [
+        {
+          id: "a",
+          kind: "node",
+          label: "Alpha",
+          x: 10,
+          y: 10,
+          width: 90,
+          height: 40,
+          labelLines: ["Alpha"],
+          contentLayout: { icons: [], label: { x: 55, y: 30, lines: ["Alpha"] } },
+        },
+        {
+          id: "b",
+          kind: "node",
+          label: "Beta",
+          x: 150,
+          y: 10,
+          width: 90,
+          height: 40,
+          labelLines: ["Beta"],
+          contentLayout: { icons: [], label: { x: 55, y: 30, lines: ["Beta"] } },
+        },
+      ],
+    });
+
+    const origAX = diagram.nodes[0]!.contentLayout.label!.x;
+    const origAY = diagram.nodes[0]!.contentLayout.label!.y;
+    const origBX = diagram.nodes[1]!.contentLayout.label!.x;
+    const origBY = diagram.nodes[1]!.contentLayout.label!.y;
+
+    avoidLabelOverlaps(diagram);
+
+    expect(diagram.nodes[0]!.contentLayout.label!.x).toBe(origAX);
+    expect(diagram.nodes[0]!.contentLayout.label!.y).toBe(origAY);
+    expect(diagram.nodes[1]!.contentLayout.label!.x).toBe(origBX);
+    expect(diagram.nodes[1]!.contentLayout.label!.y).toBe(origBY);
+  });
+
+  test("overlapping edge labels get shifted", () => {
+    const diagram = makeDiagram({
+      edges: [
+        {
+          id: "e1",
+          kind: "calls",
+          sourceId: "a",
+          targetId: "b",
+          label: "hello",
+          waypoints: [
+            { x: 10, y: 100 },
+            { x: 100, y: 100 },
+          ],
+          labelPosition: { x: 55, y: 100 },
+          labelLines: ["hello"],
+        },
+        {
+          id: "e2",
+          kind: "calls",
+          sourceId: "c",
+          targetId: "d",
+          label: "world",
+          waypoints: [
+            { x: 10, y: 100 },
+            { x: 100, y: 100 },
+          ],
+          labelPosition: { x: 55, y: 100 },
+          labelLines: ["world"],
+        },
+      ],
+    });
+
+    avoidLabelOverlaps(diagram);
+
+    expect(diagram.edges[1]!.labelPosition.y).toBeGreaterThan(diagram.edges[0]!.labelPosition.y);
+  });
+
+  test("diagram with no labels is a no-op", () => {
+    const diagram = makeDiagram();
+
+    expect(() => avoidLabelOverlaps(diagram)).not.toThrow();
   });
 });

@@ -837,7 +837,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `refactor(renderer-svg): remove edge label fallbacks`
   - Files: `packages/renderer-svg/src/renderer.ts`, `packages/renderer-svg/src/__tests__/renderer.test.ts`
 
-- [ ] 11. Remove Overlap Avoidance from Renderer
+- [x] 11. Remove Overlap Avoidance from Renderer
 
   **What to do**:
   - RED: Write failing test asserting label overlap avoidance has moved to layout (renderer no longer shifts labels)

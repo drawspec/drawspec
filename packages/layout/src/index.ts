@@ -2,6 +2,7 @@ export { createCachedLayout, LayoutCache } from "./cache";
 export { type EdgeLabelOptions, sizeEdgeLabels } from "./edge-labels";
 export { SimpleGraphLayoutEngine, simpleGraphLayout } from "./graph";
 export {
+  avoidLabelOverlaps,
   type CanvasBounds,
   centerOf,
   computeBounds,

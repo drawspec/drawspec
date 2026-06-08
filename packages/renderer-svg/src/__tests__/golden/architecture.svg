@@ -75,10 +75,10 @@
     <text data-width="23.8" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-api-line0-1pqkv86" text-anchor="middle" x="340" y="90.9">
       API
     </text>
-    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-db-line0-02oxbx6" text-anchor="middle" x="580" y="72.9">
+    <text data-width="70.42" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-db-line0-02oxbx6" text-anchor="middle" x="580" y="81.2">
       Orders DB
     </text>
-    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-web-line0-1x85hh0" text-anchor="middle" x="100" y="72.9">
+    <text data-width="61.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-architecture-demo-1o08l38-label-node-web-line0-1x85hh0" text-anchor="middle" x="100" y="81.2">
       Web App
     </text>
   </g>
