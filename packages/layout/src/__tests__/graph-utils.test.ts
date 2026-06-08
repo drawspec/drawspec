@@ -225,7 +225,6 @@ describe("avoidLabelOverlaps", () => {
       ],
     });
 
-    const labelAY = diagram.nodes[0]!.contentLayout.label!.y;
     avoidLabelOverlaps(diagram);
     const newLabelAY = diagram.nodes[0]!.contentLayout.label!.y;
     const newLabelBY = diagram.nodes[1]!.contentLayout.label!.y;
