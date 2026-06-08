@@ -151,7 +151,7 @@ jobs:
       - name: Compare PR vs base
         run: bun scripts/bench-compare.ts /tmp/bench-base.json /tmp/bench-pr.json --threshold 0.25
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: benchmark-results
