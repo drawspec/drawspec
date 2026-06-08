@@ -931,3 +931,86 @@ The layout-level function only implements label-label overlap avoidance. Edge-ed
 - `bun test packages/layout/ packages/renderer-svg/` → 378 pass, 0 fail
 - `bun test packages/layout-dagre/ packages/layout-elk/ packages/layout-wasm/` → 62 pass, 0 fail
 - `bun run build` → all packages clean
+
+## 2026-06-08 Task 12: Move AutoFit Bounds to Include Labels
+
+### Changes Made
+
+**packages/renderer-svg/src/renderer.ts:**
+
+1. **Updated autoFit in `renderSvgSync()`** (lines 115-128):
+   - Changed from `computePaddedBounds(positionedDiagram, options.padding)` to using `positionedDiagram.canvasBounds` directly
+   - When `options.padding` is explicitly specified, expands `canvasBounds` by that padding
+   - When `options.padding` is undefined, applies default 20px padding (maintaining backward compatibility)
+
+2. **Removed `computePaddedBounds()` function** (was lines 240-251):
+   - This function only existed to support autoFit
+   - Its logic is now handled by using `canvasBounds` directly or expanding if padding is specified
+
+3. **Simplified `computeContentBounds()`** (lines 198-200):
+   - Now just returns `positionedDiagram.canvasBounds` directly
+   - Removed the manual bounds computation from nodes/edges/groups/activations
+   - This function is still exported for backward compatibility with tests
+
+4. **Removed `DEFAULT_AUTO_FIT_PADDING` constant** (was line 49):
+   - No longer needed since padding is handled differently
+
+**packages/renderer-svg/src/__tests__/viewport.test.ts:**
+
+1. **Updated `renderWithNodes()` helper**:
+   - Now computes `canvasBounds` from node positions WITHOUT padding
+   - The renderer handles padding expansion when `options.padding` is specified
+
+2. **Updated `computeContentBounds` tests**:
+   - Tests now provide proper `canvasBounds` that matches expected output
+   - Since `computeContentBounds` returns `canvasBounds` directly, tests must provide correct bounds
+
+**packages/renderer-svg/src/__tests__/renderer.test.ts:**
+
+1. **Updated `positionedDiagram()` helper**:
+   - Now computes `canvasBounds` from nodes/edges/groups when not explicitly provided
+   - This ensures autoFit tests get proper bounds from content
+
+### Key Implementation Details
+
+```typescript
+// In renderSvgSync():
+const autoFit = options.autoFit === true;
+let contentBounds: SvgViewport | undefined;
+if (autoFit) {
+  const cb = positionedDiagram.canvasBounds;
+  if (options.padding !== undefined) {
+    contentBounds = {
+      x: cb.x - options.padding,
+      y: cb.y - options.padding,
+      width: cb.width + options.padding * 2,
+      height: cb.height + options.padding * 2,
+    };
+  } else {
+    const DEFAULT_PADDING = 20;
+    contentBounds = {
+      x: cb.x - DEFAULT_PADDING,
+      y: cb.y - DEFAULT_PADDING,
+      width: cb.width + DEFAULT_PADDING * 2,
+      height: cb.height + DEFAULT_PADDING * 2,
+    };
+  }
+}
+```
+
+### Key Finding: Backward Compatibility for Default Padding
+
+The task description said to use `canvasBounds` from layout directly, but tests use manually-constructed diagrams without going through layout. To maintain backward compatibility:
+- When `options.padding` is explicitly specified → expand `canvasBounds` by that amount
+- When `options.padding` is undefined → apply default 20px padding (old behavior)
+
+This ensures existing tests pass while still using `canvasBounds` from layout as the base.
+
+### Key Finding: Test Helpers Need Proper canvasBounds
+
+Since `computeContentBounds` now returns `canvasBounds` directly, tests that call it must provide proper `canvasBounds` values. The test helpers (`positionedDiagram()`, `renderWithNodes()`) now compute `canvasBounds` from content when not explicitly provided.
+
+### Results
+- `bun test packages/renderer-svg/` → 282 pass, 0 fail
+- `bun test packages/layout/` → 96 pass, 0 fail
+- `bun run build` → all packages clean

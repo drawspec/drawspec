@@ -246,7 +246,7 @@ function renderLineStyleRule(rule: Record<string, string | number>): string {
 
 function positionedDiagram(overrides: Partial<PositionedDiagram> = {}): PositionedDiagram {
   const doc = document({ id: "positioned" });
-  return {
+  const base: PositionedDiagram = {
     activations: [],
     document: doc,
     canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
@@ -257,6 +257,39 @@ function positionedDiagram(overrides: Partial<PositionedDiagram> = {}): Position
     width: 400,
     ...overrides,
   };
+  if (overrides.canvasBounds === undefined) {
+    const nodes = base.nodes;
+    const edges = base.edges;
+    const groups = base.groups;
+    const allX: number[] = [];
+    const allY: number[] = [];
+    for (const node of nodes) {
+      allX.push(node.x, node.x + node.width);
+      allY.push(node.y, node.y + node.height);
+    }
+    for (const edge of edges) {
+      for (const pt of edge.waypoints) {
+        allX.push(pt.x);
+        allY.push(pt.y);
+      }
+      if (edge.labelPosition) {
+        allX.push(edge.labelPosition.x);
+        allY.push(edge.labelPosition.y);
+      }
+    }
+    for (const group of groups) {
+      allX.push(group.x, group.x + group.width);
+      allY.push(group.y, group.y + group.height);
+    }
+    if (allX.length > 0) {
+      const minX = Math.min(...allX);
+      const minY = Math.min(...allY);
+      const maxX = Math.max(...allX);
+      const maxY = Math.max(...allY);
+      base.canvasBounds = { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+    }
+  }
+  return base;
 }
 
 function edgeLabelRotationSvg(options: {

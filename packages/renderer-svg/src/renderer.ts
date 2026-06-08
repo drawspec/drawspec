@@ -46,7 +46,6 @@ import type {
 } from "./types";
 
 const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
-const DEFAULT_AUTO_FIT_PADDING = 20;
 const EDGE_LABEL_BG_PADDING_X = 2;
 const EDGE_LABEL_BG_PADDING_Y = 3;
 const VERTICAL_LABEL_ROTATION_THRESHOLD = 70;
@@ -114,9 +113,26 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
   const theme = resolveTheme(options.theme);
   const themeName = resolveThemeName(options);
   const autoFit = options.autoFit === true;
-  const contentBounds = autoFit
-    ? computePaddedBounds(positionedDiagram, options.padding)
-    : undefined;
+  let contentBounds: SvgViewport | undefined;
+  if (autoFit) {
+    const cb = positionedDiagram.canvasBounds;
+    if (options.padding !== undefined) {
+      contentBounds = {
+        x: cb.x - options.padding,
+        y: cb.y - options.padding,
+        width: cb.width + options.padding * 2,
+        height: cb.height + options.padding * 2,
+      };
+    } else {
+      const DEFAULT_PADDING = 20;
+      contentBounds = {
+        x: cb.x - DEFAULT_PADDING,
+        y: cb.y - DEFAULT_PADDING,
+        width: cb.width + DEFAULT_PADDING * 2,
+        height: cb.height + DEFAULT_PADDING * 2,
+      };
+    }
+  }
   const width = contentBounds?.width ?? options.width ?? positionedDiagram.width;
   const height = contentBounds?.height ?? options.height ?? positionedDiagram.height;
   const viewBox = contentBounds ?? { x: 0, y: 0, width, height };
@@ -195,59 +211,8 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
   return `${XML_DECLARATION}\n${svgWithStyles}\n`;
 }
 
-/** Computes the axis-aligned bounds of all positioned diagram content. */
 export function computeContentBounds(positionedDiagram: PositionedDiagram): SvgViewport {
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-
-  const includeRect = (x: number, y: number, width: number, height: number): void => {
-    minX = Math.min(minX, x);
-    minY = Math.min(minY, y);
-    maxX = Math.max(maxX, x + width);
-    maxY = Math.max(maxY, y + height);
-  };
-  const includePoint = (point: Point): void => {
-    minX = Math.min(minX, point.x);
-    minY = Math.min(minY, point.y);
-    maxX = Math.max(maxX, point.x);
-    maxY = Math.max(maxY, point.y);
-  };
-
-  for (const group of positionedDiagram.groups) {
-    includeRect(group.x, group.y, group.width, group.height);
-  }
-  for (const edge of positionedDiagram.edges) {
-    for (const point of edge.waypoints) {
-      includePoint(point);
-    }
-  }
-  for (const node of positionedDiagram.nodes) {
-    includeRect(node.x, node.y, node.width, node.height);
-  }
-  for (const bar of positionedDiagram.activations) {
-    includeRect(bar.x, bar.y, bar.width, bar.height);
-  }
-
-  if (!Number.isFinite(minX) || !Number.isFinite(minY)) {
-    return { x: 0, y: 0, width: positionedDiagram.width, height: positionedDiagram.height };
-  }
-
-  return { x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
-}
-
-function computePaddedBounds(
-  positionedDiagram: PositionedDiagram,
-  padding = DEFAULT_AUTO_FIT_PADDING
-): SvgViewport {
-  const bounds = computeContentBounds(positionedDiagram);
-  return {
-    x: bounds.x - padding,
-    y: bounds.y - padding,
-    width: Math.max(1, bounds.width + padding * 2),
-    height: Math.max(1, bounds.height + padding * 2),
-  };
+  return positionedDiagram.canvasBounds;
 }
 
 function resolveThemeName(options: SvgRenderOptions): string {

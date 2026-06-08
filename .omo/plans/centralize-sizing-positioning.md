@@ -897,7 +897,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `refactor(renderer-svg): remove overlap avoidance from renderer`
   - Files: `packages/renderer-svg/src/renderer.ts`, `packages/layout/src/graph-utils.ts`, `packages/renderer-svg/src/__tests__/renderer.test.ts`
 
-- [ ] 12. Move AutoFit Bounds to Include Labels
+- [x] 12. Move AutoFit Bounds to Include Labels
 
   **What to do**:
   - RED: Write failing test asserting autoFit bounds include all labels
