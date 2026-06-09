@@ -80,6 +80,41 @@ When creating, removing, or renaming packages — or changing public APIs:
 - [ ] Serena memories (`project-overview`, `package-dependencies`, `conventions`) — if packages or deps changed
 - [ ] `packages/*/src/index.ts` barrel exports — if public API changed
 
+## Geometry Contract (Layout Pipeline)
+
+All layout engines must provide complete geometry. The renderer trusts layout output — no fallback computation.
+
+### Required Fields
+- `PositionedNode`: requires `contentLayout: NodeContentLayout` and `labelLines: LabelLine[]`
+- `PositionedEdge`: requires `labelPosition: Point` and `labelLines: LabelLine[]`
+- `PositionedDiagram`: requires `canvasBounds: CanvasBounds`
+
+### Pipeline Order
+```
+sizeGraphNodes() → layout → sizeEdgeLabels() → avoidLabelOverlaps() → computeCanvasBounds()
+```
+
+### Layout Engine Requirements
+1. Call `sizeGraphNodes()` BEFORE layout computation
+2. Layout engine positions nodes and edges
+3. Call `sizeEdgeLabels()` after layout to position edge labels
+4. Call `avoidLabelOverlaps()` to resolve label overlaps
+5. Call `computeCanvasBounds()` to finalize bounding box
+
+### Shared Geometry Functions (`@drawspec/layout`)
+| Function | Purpose |
+|----------|---------|
+| `sizeGraphNodes(doc, sizing)` | Measure nodes, compute contentLayout + labelLines |
+| `sizeEdgeLabels(edges, options)` | Position edge labels at midpoint, wrap text |
+| `avoidLabelOverlaps(diagram)` | Shift overlapping labels, clamp to groups |
+| `computeCanvasBounds(diagram, padding)` | Full bounding box including labels |
+| `computeSelfLoopWaypoints(node, offset?)` | Self-loop routing with configurable offset |
+
+### Renderer Error Handling
+Renderer throws `LayoutError` when geometry is missing:
+- `node.contentLayout === undefined` → LayoutError
+- `edge.label !== undefined && edge.labelPosition === undefined` → LayoutError
+
 ## Svelte (viewer, preview)
 - Svelte 5 with Runes (`$state`, `$derived`, `$effect`)
 - Custom elements via `customElement` for viewer

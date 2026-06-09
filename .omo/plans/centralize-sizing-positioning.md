@@ -1132,7 +1132,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `chore: regenerate golden SVGs for centralized positioning`
   - Files: `packages/renderer-svg/src/__tests__/golden/*.svg`
 
-- [ ] 16. Update Serena Memories and Documentation
+- [x] 16. Update Serena Memories and Documentation
 
   **What to do**:
   - Update Serena memory `project-overview` to reflect the centralized pipeline

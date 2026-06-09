@@ -45,6 +45,34 @@ TypeScript-native diagram-as-code platform. Diagrams written as TypeScript using
 |-----|---------|
 | `@drawspec/preview` | SvelteKit preview app with viewer integration, WebSocket live reload |
 
+## Layout Architecture (Centralized Geometry Pipeline)
+
+`@drawspec/layout` is the single source of truth for all geometry in DrawSpec.
+
+### Geometry Pipeline (all layout engines follow this order):
+1. `sizeGraphNodes(document, sizingOptions)` — measures node dimensions, computes `contentLayout` with label positions
+2. Layout engine (dagre/elk/wasm/graph) positions nodes and edges
+3. `sizeEdgeLabels(edges, options)` — computes edge label positions (midpoint) and wraps text
+4. `avoidLabelOverlaps(positionedDiagram)` — shifts overlapping labels, clamps to groups
+5. `computeCanvasBounds(diagram, padding)` — computes full bounding box including labels
+
+### Shared Functions (all in `@drawspec/layout`):
+- `computeSelfLoopWaypoints(node, offset?)` — self-loop routing
+- `computeCanvasBounds(diagram, padding)` — full bounding box with labels
+- `sizeEdgeLabels(edges, options)` — edge label positioning and wrapping
+- `avoidLabelOverlaps(diagram)` — label overlap avoidance
+- `sizeGraphNodes(document, sizingOptions)` — node measurement
+
+### Renderer Trust Model
+The SVG renderer (`@drawspec/renderer-svg`) **trusts layout output completely** — no fallback positioning code. If geometry is missing, `LayoutError` is thrown:
+- Missing `contentLayout` on node → `LayoutError`
+- Missing `labelPosition` on edge with label → `LayoutError`
+
+### Geometry Contract (required fields)
+- `PositionedNode`: requires `contentLayout` and `labelLines`
+- `PositionedEdge`: requires `labelPosition` and `labelLines`
+- `PositionedDiagram`: requires `canvasBounds`
+
 ## Key Constraints
 - **Deterministic rendering**: Same input → byte-for-byte identical SVG across runs
 - **No React** anywhere in the codebase
