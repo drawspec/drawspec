@@ -1072,7 +1072,7 @@ Max Concurrent: 4 (Wave 1) + 4 (Wave 1b)
   - Message: `test(layout): add cross-engine geometry parity tests`
   - Files: `packages/layout/src/__tests__/engine-parity.test.ts`
 
-- [ ] 15. Regenerate Golden SVGs
+- [x] 15. Regenerate Golden SVGs
 
   **What to do**:
   - Run `UPDATE_GOLDEN=1 bun test packages/renderer-svg/` to regenerate all golden SVGs
