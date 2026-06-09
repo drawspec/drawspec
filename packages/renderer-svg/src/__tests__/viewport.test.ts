@@ -30,10 +30,20 @@ function renderWithNodes(
   });
   const w = opts.width ?? 400;
   const h = opts.height ?? 300;
+  const minX = nodes.length > 0 ? Math.min(...nodes.map((n) => n.x)) : 0;
+  const minY = nodes.length > 0 ? Math.min(...nodes.map((n) => n.y)) : 0;
+  const maxX = nodes.length > 0 ? Math.max(...nodes.map((n) => n.x + n.width)) : 0;
+  const maxY = nodes.length > 0 ? Math.max(...nodes.map((n) => n.y + n.height)) : 0;
+  const canvasBounds = {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
   return renderSvgSync(doc, {
     positionedDiagram: {
       activations: [],
-      canvasBounds: { x: 0, y: 0, width: w, height: h },
+      canvasBounds,
       document: doc,
       edges: [],
       groups: [],
@@ -363,7 +373,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "single-bounds" });
       const bounds = computeContentBounds({
         activations: [],
-        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
+        canvasBounds: { x: 10, y: 20, width: 30, height: 40 },
         document: doc,
         edges: [],
         groups: [],
@@ -390,7 +400,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "multi-bounds" });
       const bounds = computeContentBounds({
         activations: [],
-        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
+        canvasBounds: { x: 10, y: 10, width: 120, height: 100 },
         document: doc,
         edges: [],
         groups: [],
@@ -428,7 +438,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "edge-bounds" });
       const bounds = computeContentBounds({
         activations: [],
-        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
+        canvasBounds: { x: -20, y: -10, width: 320, height: 60 },
         document: doc,
         edges: [
           {
@@ -456,7 +466,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "activation-bounds" });
       const bounds = computeContentBounds({
         activations: [{ id: "bar", nodeId: "a", edgeId: "e", x: 50, y: 60, width: 10, height: 20 }],
-        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
+        canvasBounds: { x: 50, y: 60, width: 10, height: 20 },
         document: doc,
         edges: [],
         groups: [],
@@ -471,7 +481,7 @@ describe("viewport and sizing", () => {
       const doc = makeDoc({ id: "group-bounds" });
       const bounds = computeContentBounds({
         activations: [],
-        canvasBounds: { x: 0, y: 0, width: 400, height: 300 },
+        canvasBounds: { x: 5, y: 15, width: 80, height: 50 },
         document: doc,
         edges: [],
         groups: [
