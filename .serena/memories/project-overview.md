@@ -24,9 +24,12 @@ TypeScript-native diagram-as-code platform. Diagrams written as TypeScript using
 | `@drawspec/uml-deployment` | Deployment diagrams: nodes, artifacts, communication |
 | `@drawspec/uml-activity` | Activity diagrams: actions, decisions, partitions |
 | `@drawspec/validation` | Rule engine with context and rule packs |
+| `@drawspec/text-measure` | Deterministic text measurement, wrapping, and truncation helpers shared by layout and SVG rendering |
 | `@drawspec/layout` | Layout interfaces, sequence layout, graph layout |
 | `@drawspec/layout-dagre` | Dagre-based graph layout |
 | `@drawspec/layout-elk` | ELK-based graph layout (Eclipse Layout Kernel) |
+| `@drawspec/layout-force` | Deterministic force-directed graph layout engine |
+| `@drawspec/layout-tree` | Deterministic rooted-forest tree layout engine |
 | `@drawspec/layout-wasm` | WASM layout adapter with TypeScript fallback |
 | `@drawspec/renderer-svg` | Deterministic SVG rendering |
 | `@drawspec/cache` | Persistent cache (filesystem + SQLite backends) |
@@ -84,4 +87,6 @@ The SVG renderer (`@drawspec/renderer-svg`) **trusts layout output completely** 
 - Stage 1 MVP complete
 - Stage 2 UML Expansion complete (all 7 diagram types)
 - Stage 3 tooling: exporters, LSP, vite-plugin, cache, docs engine, preview app
+- Shared text measurement extracted to `@drawspec/text-measure`
+- Additional graph layout adapters include dagre, ELK, WASM fallback, force-directed, and tree engines
 - All packages and apps building, test suite green
