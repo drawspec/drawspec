@@ -49,16 +49,7 @@ const XML_DECLARATION = '<?xml version="1.0" encoding="UTF-8"?>';
 const DEFAULT_AUTO_FIT_PADDING = 20;
 const EDGE_LABEL_BG_PADDING_X = 2;
 const EDGE_LABEL_BG_PADDING_Y = 3;
-const EDGE_LABEL_LINE_GAP = 4;
 const VERTICAL_LABEL_ROTATION_THRESHOLD = 70;
-
-interface OcclusionRect {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
 
 type PositionedNodeWithContentLayout = PositionedNode & {
   contentLayout?: NodeContentLayout;
@@ -139,8 +130,6 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       ? metadataDescription
       : `${document.kind} diagram ${document.id}`);
   const labels: SvgLabelSpec[] = [];
-  const occlusionRects = buildOcclusionRects(positionedDiagram);
-  const groupBounds = buildGroupBounds(positionedDiagram);
   const nodePositions = new Map<string, PositionedNode>(
     positionedDiagram.nodes.map((n) => [n.id, n])
   );
@@ -180,13 +169,10 @@ export function renderSvgSync(document: DiagramDocument, options: SvgRenderOptio
       .map((bar) => renderActivation(document, bar, options, idPrefix, themeName)),
   ];
   if (labels.length > 0) {
-    const adjustedLabels = avoidLabelOverlaps(labels, occlusionRects, groupBounds).map(
-      (label) => label.element
-    );
     children.push({
       name: "g",
       attrs: { id: stableSvgId(idPrefix, "text-layer") },
-      children: adjustedLabels,
+      children: labels.map((label) => label.element),
     });
   }
   const styleBlock = renderThemeStyleBlock(theme);
@@ -272,35 +258,6 @@ function resolveThemeName(options: SvgRenderOptions): string {
     return options.theme;
   }
   return options.theme === darkTheme ? "dark" : "light";
-}
-
-function buildOcclusionRects(positionedDiagram: PositionedDiagram): OcclusionRect[] {
-  return [
-    ...sortById(positionedDiagram.groups).map((group) => ({
-      id: group.id,
-      x: group.x,
-      y: group.y,
-      width: group.width,
-      height: group.height,
-    })),
-    ...sortById(positionedDiagram.nodes).map((node) => ({
-      id: node.id,
-      x: node.x,
-      y: node.y,
-      width: node.width,
-      height: node.height,
-    })),
-  ];
-}
-
-function buildGroupBounds(positionedDiagram: PositionedDiagram): OcclusionRect[] {
-  return sortById(positionedDiagram.groups).map((group) => ({
-    id: group.id,
-    x: group.x,
-    y: group.y,
-    width: group.width,
-    height: group.height,
-  }));
 }
 
 function sourceDataAttrs(source: SourceRef | undefined): Record<string, string | number> {
@@ -1618,30 +1575,9 @@ function renderEdge(
     const edgeLabelLines = edge.labelLines ?? [];
     const edgeLineHeight = style.fontSize * 1.3;
     const edgeLabelY = pos.y + yAdjust;
-    const strokeWidth = labelContainer.backgroundStrokeWidth ?? 0;
-    const textTopOffset = style.fontSize * 0.8 + EDGE_LABEL_BG_PADDING_Y + strokeWidth;
-    const textBottomOffset = style.fontSize * 0.2 + EDGE_LABEL_BG_PADDING_Y + strokeWidth;
     labels.push(
       ...edgeLabelLines.map((line, index) => {
         const baseY = edgeLabelY + index * edgeLineHeight;
-        const bgTop = baseY - textTopOffset;
-        const bgBottom = baseY + textBottomOffset;
-        const lineWidth = measureTextContent(line, style.fontSize);
-        const labelLeft = pos.x - lineWidth / 2;
-        const labelRight = pos.x + lineWidth / 2;
-        const overlapsEdge = edgeOverlapsRect(edge.waypoints, {
-          left: labelLeft,
-          top: bgTop,
-          right: labelRight,
-          bottom: bgBottom,
-        });
-        let extraGap = 0;
-        if (overlapsEdge) {
-          const edgeYRange = edgeYInXRange(edge.waypoints, labelLeft, labelRight);
-          const shiftUp = bgBottom - edgeYRange.minY + EDGE_LABEL_LINE_GAP;
-          const shiftDown = edgeYRange.maxY - bgTop + EDGE_LABEL_LINE_GAP;
-          extraGap = shiftUp <= shiftDown ? -shiftUp : shiftDown;
-        }
         const id = stableSvgId(idPrefix, "label", "edge", `${edge.id}-line${index}`);
         return rotatedLabel(
           textElement({
@@ -1649,7 +1585,7 @@ function renderEdge(
             ownerId: edge.id,
             label: line,
             x: pos.x,
-            y: baseY + extraGap,
+            y: baseY,
             style,
             anchor: "middle",
             ...labelContainer,
@@ -1857,80 +1793,6 @@ function approachPoint(corner: Point, from: Point, radius: number): Point {
   const len = Math.sqrt(dx * dx + dy * dy);
   const r = Math.min(radius, len / 2);
   return { x: corner.x - (dx / len) * r, y: corner.y - (dy / len) * r };
-}
-
-function edgeOverlapsRect(
-  waypoints: readonly Point[],
-  rect: { left: number; top: number; right: number; bottom: number }
-): boolean {
-  for (let i = 0; i < waypoints.length - 1; i++) {
-    const p0 = waypoints[i];
-    const p1 = waypoints[i + 1];
-    if (p0 === undefined || p1 === undefined) continue;
-    if (segmentOverlapsRect(p0, p1, rect)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function segmentOverlapsRect(
-  p0: Point,
-  p1: Point,
-  rect: { left: number; top: number; right: number; bottom: number }
-): boolean {
-  const dx = p1.x - p0.x;
-
-  const segMinX = Math.min(p0.x, p1.x);
-  const segMaxX = Math.max(p0.x, p1.x);
-  if (segMaxX < rect.left || segMinX > rect.right) return false;
-
-  const tLeft = dx !== 0 ? Math.max(0, Math.min(1, (rect.left - p0.x) / dx)) : 0;
-  const tRight = dx !== 0 ? Math.max(0, Math.min(1, (rect.right - p0.x) / dx)) : 1;
-  const tMin = Math.min(tLeft, tRight);
-  const tMax = Math.max(tLeft, tRight);
-
-  const dy = p1.y - p0.y;
-  const y0 = p0.y + tMin * dy;
-  const y1 = p0.y + tMax * dy;
-  const segMinY = Math.min(y0, y1);
-  const segMaxY = Math.max(y0, y1);
-
-  return segMaxY >= rect.top && segMinY <= rect.bottom;
-}
-
-function edgeYInXRange(
-  waypoints: readonly Point[],
-  xLeft: number,
-  xRight: number
-): { minY: number; maxY: number } {
-  let minY = Infinity;
-  let maxY = -Infinity;
-
-  for (let i = 0; i < waypoints.length - 1; i++) {
-    const p0 = waypoints[i];
-    const p1 = waypoints[i + 1];
-    if (p0 === undefined || p1 === undefined) continue;
-
-    const dx = p1.x - p0.x;
-    const segMinX = Math.min(p0.x, p1.x);
-    const segMaxX = Math.max(p0.x, p1.x);
-    if (segMaxX < xLeft || segMinX > xRight) continue;
-
-    const tLeft = dx !== 0 ? Math.max(0, Math.min(1, (xLeft - p0.x) / dx)) : 0;
-    const tRight = dx !== 0 ? Math.max(0, Math.min(1, (xRight - p0.x) / dx)) : 1;
-    const tMin = Math.min(tLeft, tRight);
-    const tMax = Math.max(tLeft, tRight);
-
-    const dy = p1.y - p0.y;
-    const y0 = p0.y + tMin * dy;
-    const y1 = p0.y + tMax * dy;
-
-    minY = Math.min(minY, y0, y1);
-    maxY = Math.max(maxY, y0, y1);
-  }
-
-  return { minY, maxY };
 }
 
 function renderActivation(
@@ -2150,142 +2012,6 @@ function intersectBounds(left: LabelBounds, right: LabelBounds): LabelBounds {
   const maxX = Math.min(left.x + left.width, right.x + right.width);
   const maxY = Math.min(left.y + left.height, right.y + right.height);
   return { x, y, width: Math.max(0, maxX - x), height: Math.max(0, maxY - y) };
-}
-
-function avoidLabelOverlaps(
-  labels: readonly SvgLabelSpec[],
-  occlusionRects: readonly OcclusionRect[] = [],
-  groupBounds: readonly OcclusionRect[] = []
-): SvgLabelSpec[] {
-  const placed: SvgLabelSpec[] = [];
-  const adjusted: SvgLabelSpec[] = [];
-  for (const label of [...labels].sort((left, right) => compareStable(left.id, right.id))) {
-    let bounds = { ...label.bounds };
-    let offsetX = 0;
-    let offsetY = 0;
-    const containingGroup = findContainingGroup(label.bounds, groupBounds);
-    if (isStructuralLabel(label)) {
-      placed.push(label);
-      adjusted.push(label);
-      continue;
-    }
-    for (const previous of placed) {
-      if (shouldSkipStructuralLabelOverlap(label, previous, containingGroup)) {
-        continue;
-      }
-      if (!boundsOverlap(bounds, previous.bounds, 2)) {
-        continue;
-      }
-      const shiftY = previous.bounds.y + previous.bounds.height - bounds.y + 2;
-      offsetY += shiftY;
-      bounds = { ...bounds, y: bounds.y + shiftY };
-      if (boundsOverlap(bounds, previous.bounds, 2)) {
-        offsetX += previous.bounds.x + previous.bounds.width - bounds.x + 2;
-        bounds = { ...bounds, x: bounds.x + offsetX };
-      }
-    }
-    for (const rect of occlusionRects) {
-      if (
-        rect.id === label.ownerId ||
-        rect.id === containingGroup?.id ||
-        startedInsideGroup(label.bounds, rect, groupBounds) ||
-        !boundsOverlap(bounds, rect, 2)
-      ) {
-        continue;
-      }
-      const shiftY = rect.y + rect.height - bounds.y + 2;
-      offsetY += shiftY;
-      bounds = { ...bounds, y: bounds.y + shiftY };
-      if (boundsOverlap(bounds, rect, 2)) {
-        offsetX += rect.x + rect.width - bounds.x + 2;
-        bounds = { ...bounds, x: bounds.x + offsetX };
-      }
-    }
-    if (containingGroup !== undefined) {
-      const clamped = clampBoundsToRect(bounds, containingGroup);
-      offsetX += clamped.x - bounds.x;
-      offsetY += clamped.y - bounds.y;
-      bounds = clamped;
-    }
-    const element =
-      offsetX === 0 && offsetY === 0
-        ? label.element
-        : withTransform(
-            label.element,
-            `translate(${formatNumber(offsetX)} ${formatNumber(offsetY)})`
-          );
-    const shifted = { ...label, element, bounds };
-    placed.push(shifted);
-    adjusted.push(shifted);
-  }
-  return adjusted;
-}
-
-function findContainingGroup(
-  bounds: LabelBounds,
-  groupBounds: readonly OcclusionRect[]
-): OcclusionRect | undefined {
-  const containingGroups = groupBounds.filter((group) => boundsCenterInside(bounds, group));
-  return containingGroups.sort(
-    (left, right) =>
-      left.width * left.height - right.width * right.height || compareStable(left.id, right.id)
-  )[0];
-}
-
-function boundsCenterInside(bounds: LabelBounds, rect: OcclusionRect): boolean {
-  const centerX = bounds.x + bounds.width / 2;
-  const centerY = bounds.y + bounds.height / 2;
-  return (
-    centerX >= rect.x &&
-    centerX <= rect.x + rect.width &&
-    centerY >= rect.y &&
-    centerY <= rect.y + rect.height
-  );
-}
-
-function shouldSkipStructuralLabelOverlap(
-  label: SvgLabelSpec,
-  previous: SvgLabelSpec,
-  containingGroup: OcclusionRect | undefined
-): boolean {
-  return (
-    containingGroup !== undefined &&
-    label.id.includes("-label-edge-") &&
-    isStructuralLabel(previous)
-  );
-}
-
-function isStructuralLabel(label: SvgLabelSpec): boolean {
-  return label.id.includes("-label-group-") || label.id.includes("-label-lane-");
-}
-
-function startedInsideGroup(
-  bounds: LabelBounds,
-  rect: OcclusionRect,
-  groupBounds: readonly OcclusionRect[]
-): boolean {
-  return groupBounds.some((group) => group.id === rect.id && boundsCenterInside(bounds, group));
-}
-
-function clampBoundsToRect(bounds: LabelBounds, rect: OcclusionRect): LabelBounds {
-  return {
-    ...bounds,
-    x: clamp(bounds.x, rect.x, rect.x + Math.max(0, rect.width - bounds.width)),
-    y: clamp(bounds.y, rect.y, rect.y + Math.max(0, rect.height - bounds.height)),
-  };
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), Math.max(min, max));
-}
-
-function boundsOverlap(left: LabelBounds, right: LabelBounds, padding: number): boolean {
-  return (
-    left.x < right.x + right.width + padding &&
-    left.x + left.width + padding > right.x &&
-    left.y < right.y + right.height + padding &&
-    left.y + left.height + padding > right.y
-  );
 }
 
 function withTransform(element: SvgElementSpec, transform: string): SvgElementSpec {

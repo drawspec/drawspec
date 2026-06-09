@@ -10,6 +10,7 @@ import type {
   PositionedNode,
 } from "@drawspec/layout";
 import {
+  avoidLabelOverlaps,
   LayoutCache,
   normalizeLayoutOptions,
   sizeEdgeLabels,
@@ -274,7 +275,18 @@ async function createElkLayout(
   const { width, height } = computeBounds(nodes, edges, normalized.padding);
   const canvasBounds = { x: 0, y: 0, width, height };
 
-  return { document, nodes, edges, groups: [], activations: [], width, height, canvasBounds };
+  const result: PositionedDiagram = {
+    document,
+    nodes,
+    edges,
+    groups: [],
+    activations: [],
+    width,
+    height,
+    canvasBounds,
+  };
+  avoidLabelOverlaps(result);
+  return result;
 }
 
 export class ElkLayoutEngine implements LayoutEngine {

@@ -260,7 +260,10 @@ describe("Cross-engine edge label position parity", () => {
       const edge = result.edges[0]!;
       const firstWp = edge.waypoints[0]!;
       expect(edge.labelPosition.x, `${name} labelPosition.x`).toBe(firstWp.x);
-      expect(edge.labelPosition.y, `${name} labelPosition.y`).toBe(firstWp.y);
+      expect(
+        edge.labelPosition.y,
+        `${name} labelPosition.y >= firstWp.y (may be shifted by overlap avoidance)`
+      ).toBeGreaterThanOrEqual(firstWp.y);
     }
   });
 

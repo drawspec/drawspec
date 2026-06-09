@@ -54,14 +54,23 @@
     <line stroke="#334155" stroke-width="1" x1="40" x2="173.5" y1="294.3" y2="294.3" />
   </g>
   <g id="drawspec-objdoc_728a50bb-0209ezg-text-layer-1jqkbje">
+    <g id="drawspec-objdoc_728a50bb-0209ezg-label-edge-link_c808f6ab-line0-0qzy24a-bg-15auat0">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="46.28" x="77.45" y="173.4" />
+      <text data-width="42.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-objdoc_728a50bb-0209ezg-label-edge-link_c808f6ab-line0-0qzy24a" text-anchor="middle" x="100.59" y="187.6">
+        places
+      </text>
+    </g>
+    <text data-width="75.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-objdoc_728a50bb-0209ezg-label-compartment-obj_1f12afe8-name-line-0-0tb0yqa" text-anchor="middle" x="94.43" y="61.9">
+      user1: User
+    </text>
     <text data-width="76.86" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-objdoc_728a50bb-0209ezg-label-compartment-obj_1f12afe8-attributes-line-0-1afu28g" text-anchor="start" x="56" y="101.1">
       name: Alice
     </text>
     <text data-width="50.26" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-objdoc_728a50bb-0209ezg-label-compartment-obj_1f12afe8-attributes-line-1-1aptnxf" text-anchor="start" x="56" y="119.3">
       age: 30
     </text>
-    <text data-width="75.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-objdoc_728a50bb-0209ezg-label-compartment-obj_1f12afe8-name-line-0-0tb0yqa" text-anchor="middle" x="94.43" y="61.9">
-      user1: User
+    <text data-width="88.9" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-objdoc_728a50bb-0209ezg-label-compartment-obj_e4fb6835-name-line-0-00l82c7" text-anchor="middle" x="106.75" y="277.5">
+      order1: Order
     </text>
     <text data-width="84.98" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-objdoc_728a50bb-0209ezg-label-compartment-obj_e4fb6835-attributes-line-0-04eh82t" text-anchor="start" x="56" y="316.7">
       total: $99.99
@@ -69,14 +78,5 @@
     <text data-width="101.5" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-objdoc_728a50bb-0209ezg-label-compartment-obj_e4fb6835-attributes-line-1-044hmdu" text-anchor="start" x="56" y="334.9">
       status: pending
     </text>
-    <text data-width="88.9" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" font-weight="700" id="drawspec-objdoc_728a50bb-0209ezg-label-compartment-obj_e4fb6835-name-line-0-00l82c7" text-anchor="middle" x="106.75" y="277.5">
-      order1: Order
-    </text>
-    <g id="drawspec-objdoc_728a50bb-0209ezg-label-edge-link_c808f6ab-line0-0qzy24a-bg-15auat0" transform="translate(0 73.8)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="46.28" x="77.45" y="63.8" />
-      <text data-width="42.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-objdoc_728a50bb-0209ezg-label-edge-link_c808f6ab-line0-0qzy24a" text-anchor="middle" x="100.59" y="78">
-        places
-      </text>
-    </g>
   </g>
 </svg>

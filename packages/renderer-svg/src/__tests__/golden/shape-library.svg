@@ -75,10 +75,10 @@
     <path d="M 320 153 A 3 3 0 0 1 323 150 L 336 150 L 336 140 L 352 140 L 352 150 L 417 150 A 3 3 0 0 1 420 153 L 420 219 A 3 3 0 0 1 417 222 L 323 222 A 3 3 0 0 1 320 219 Z" fill="#f8fafc" stroke="#334155" stroke-width="1.5" />
   </g>
   <g id="drawspec-shape-library-1cxw7da-text-layer-0tw78tm">
-    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-bullseye-line0-0uj8awj" text-anchor="middle" transform="translate(0 29.2)" x="690" y="76">
+    <text data-width="53.76" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-bullseye-line0-0uj8awj" text-anchor="middle" x="690" y="76">
       bullseye
     </text>
-    <text data-width="35" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-circle-line0-1xsrfso" text-anchor="middle" transform="translate(0 29.2)" x="390" y="76">
+    <text data-width="35" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-circle-line0-1xsrfso" text-anchor="middle" x="390" y="76">
       circle
     </text>
     <text data-width="56.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-shape-library-1cxw7da-label-node-diamond-line0-1464e4a" text-anchor="middle" x="90" y="76">

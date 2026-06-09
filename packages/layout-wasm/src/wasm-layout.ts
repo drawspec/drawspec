@@ -27,6 +27,7 @@ import type {
   PositionedNode,
 } from "@drawspec/layout";
 import {
+  avoidLabelOverlaps,
   computeCanvasBounds,
   computeSelfLoopWaypoints,
   LayoutCache,
@@ -135,10 +136,10 @@ async function createWasmLayout(
   const sizedMap = new Map(sizedNodes.map((n) => [n.id, n]));
 
   const input = buildWasmInput(sizedMap, document, normalized);
-  const result = await bridge.compute(input);
+  const bridgeResult = await bridge.compute(input);
 
-  const wasmPositionsById: Record<string, (typeof result.nodes)[number]> = {};
-  for (const pos of result.nodes) {
+  const wasmPositionsById: Record<string, (typeof bridgeResult.nodes)[number]> = {};
+  for (const pos of bridgeResult.nodes) {
     wasmPositionsById[pos.id] = pos;
   }
 
@@ -169,7 +170,7 @@ async function createWasmLayout(
   }
 
   const wasmEdgeRoutes: Record<string, Array<{ x: number; y: number }>> = {};
-  for (const route of result.edges) {
+  for (const route of bridgeResult.edges) {
     wasmEdgeRoutes[route.id] = route.waypoints;
   }
 
@@ -186,7 +187,7 @@ async function createWasmLayout(
 
   const canvasBounds = computeCanvasBounds({ nodes, edges, groups: [] }, normalized.padding);
 
-  return {
+  const result: PositionedDiagram = {
     document,
     nodes,
     edges,
@@ -196,6 +197,8 @@ async function createWasmLayout(
     height: canvasBounds.height,
     canvasBounds,
   };
+  avoidLabelOverlaps(result);
+  return result;
 }
 
 export class WasmLayoutEngine implements LayoutEngine {

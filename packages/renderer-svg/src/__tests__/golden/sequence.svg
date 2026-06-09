@@ -70,6 +70,15 @@
   <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-ok-activation-1j1jwdr" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="286.2" />
   <rect fill="#e0f2fe" height="48" id="drawspec-checkout-sequence-1nkmrpb-activation-start-activation-1qkvb8f" rx="2" ry="2" stroke="#0369a1" stroke-width="1.5" width="10" x="255" y="174.2" />
   <g id="drawspec-checkout-sequence-1nkmrpb-text-layer-1qywb69">
+    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-line0-1oy9npc" text-anchor="start" x="188" y="214.2">
+      Payment result
+    </text>
+    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-line0-1qxbx6i" text-anchor="start" x="184" y="232.2">
+      authorized
+    </text>
+    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-line0-07wur4h" text-anchor="start" x="184" y="272.2">
+      declined
+    </text>
     <g id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-line0-0phsakq-bg-0mgtsah">
       <rect fill="#ffffff" height="20" rx="3" ry="3" width="49.08" x="235.46" y="204" />
       <text data-width="45.08" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-edge-charge-line0-0phsakq" text-anchor="middle" x="260" y="218.2">
@@ -88,15 +97,6 @@
         checkout
       </text>
     </g>
-    <text data-width="98.7" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-group-payment-alt-line0-1oy9npc" text-anchor="start" x="188" y="214.2">
-      Payment result
-    </text>
-    <text data-width="69.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-0-line0-1qxbx6i" text-anchor="start" x="184" y="232.2">
-      authorized
-    </text>
-    <text data-width="54.88" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-lane-payment-alt-operand-1-line0-07wur4h" text-anchor="start" x="184" y="272.2">
-      declined
-    </text>
     <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-checkout-sequence-1nkmrpb-label-node-payments-line0-1cbqhmm" text-anchor="middle" x="420" y="72.9">
       Payments
     </text>

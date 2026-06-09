@@ -11,6 +11,7 @@ import type {
   SizedNode,
 } from "@drawspec/layout";
 import {
+  avoidLabelOverlaps,
   computeCanvasBounds,
   computeSelfLoopWaypoints,
   LayoutCache,
@@ -178,7 +179,7 @@ function createDagreLayout(
 
   const canvasBounds = computeCanvasBounds({ nodes, edges, groups: [] }, normalized.padding);
 
-  return {
+  const result: PositionedDiagram = {
     document,
     nodes,
     edges,
@@ -188,6 +189,8 @@ function createDagreLayout(
     height: canvasBounds.height,
     canvasBounds,
   };
+  avoidLabelOverlaps(result);
+  return result;
 }
 
 export class DagreLayoutEngine implements LayoutEngine {

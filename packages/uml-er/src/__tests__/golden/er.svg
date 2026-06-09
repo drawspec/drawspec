@@ -58,6 +58,18 @@
     <rect fill="#f8fafc" height="111" rx="3" ry="3" stroke="#334155" stroke-width="1.5" width="193.84" x="356.92" y="40" />
   </g>
   <g id="drawspec-erdoc_e439061d-0px2e1l-text-layer-0ywmrsg">
+    <g id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w-bg-02jnl19">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="59.16" x="579.675" y="73.3" />
+      <text data-width="55.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w" text-anchor="middle" x="609.255" y="87.5">
+        contains
+      </text>
+    </g>
+    <g id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a-bg-1knwe70">
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="46.28" x="273.01" y="68.75" />
+      <text data-width="42.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a" text-anchor="middle" x="296.15" y="82.95">
+        places
+      </text>
+    </g>
     <text data-width="64.68" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_22ede22f-attributes-header-05nx88j" text-anchor="middle" x="138.46" y="61.9">
       Attributes
     </text>
@@ -100,17 +112,5 @@
     <text data-width="161.84" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-compartment-entity_dc6ba18d-attributes-line-3-09hemou" text-anchor="start" x="372.92" y="134.7">
       + status: VARCHAR(20)
     </text>
-    <g id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w-bg-02jnl19">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="59.16" x="579.675" y="73.3" />
-      <text data-width="55.16" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_03c52851-line0-0oiol4w" text-anchor="middle" x="609.255" y="87.5">
-        contains
-      </text>
-    </g>
-    <g id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a-bg-1knwe70">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="46.28" x="273.01" y="68.75" />
-      <text data-width="42.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-erdoc_e439061d-0px2e1l-label-edge-rel_75f4710c-line0-1q60w1a" text-anchor="middle" x="296.15" y="82.95">
-        places
-      </text>
-    </g>
   </g>
 </svg>

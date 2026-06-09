@@ -1,5 +1,5 @@
 import { LayoutCache } from "./cache";
-import { computeSelfLoopWaypoints } from "./graph-utils";
+import { avoidLabelOverlaps, computeSelfLoopWaypoints } from "./graph-utils";
 import { normalizeLayoutOptions } from "./options";
 import { sizeGraphNodes } from "./sizing";
 import type {
@@ -506,7 +506,18 @@ function createGraphLayout(
   const height = Math.max(0, ...nodes.map((node) => node.y + node.height)) + normalized.padding;
   const canvasBounds = { x: 0, y: 0, width, height };
 
-  return { document, nodes, edges, groups: [], activations: [], width, height, canvasBounds };
+  const result: PositionedDiagram = {
+    document,
+    nodes,
+    edges,
+    groups: [],
+    activations: [],
+    width,
+    height,
+    canvasBounds,
+  };
+  avoidLabelOverlaps(result);
+  return result;
 }
 
 export class SimpleGraphLayoutEngine implements LayoutEngine {
