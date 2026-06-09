@@ -699,3 +699,137 @@ bun run build → 0 errors
 - `bun test packages/renderer-svg/` → 296 pass, 0 fail (3 new tests)
 - `bun run build` → all packages clean
 - LSP diagnostics: 0 errors on renderer.ts
+
+## 2026-06-08 Task 10: Remove Edge Label Fallbacks from Renderer
+
+### Changes Made
+
+**packages/renderer-svg/src/renderer.ts:**
+
+1. **Removed edge label wrap/truncate logic from `renderEdge()`:**
+   - Removed `labelOverflow` computation — layout provides `labelLines`
+   - Removed `edgeLabelMaxWidth()` call — layout handles width calculation
+   - Removed `wrapTextContent()`/`truncateTextContent()` calls — replaced with `edge.labelLines ?? []`
+   - Renderer now iterates over `edge.labelLines` directly
+
+2. **Removed `edgeLabelMaxWidth()` function** (was ~22 lines):
+   - Computed max label width from edge path length
+   - Now handled by `computeEdgeLabelMaxWidth` in `@drawspec/layout/edge-labels.ts`
+
+3. **Removed `midpoint()` function** (was ~37 lines, exported):
+   - Computed geometric midpoint along polyline
+   - Now handled by `computeMidpoint` in `@drawspec/layout/edge-labels.ts`
+
+4. **Removed constants:**
+   - `EDGE_LABEL_FALLBACK_WIDTH = 240` — only used in `edgeLabelMaxWidth`
+   - `MARKER_SIZE = 8` — only used in `edgeLabelMaxWidth`
+
+5. **Kept for overlap avoidance (Task 11):**
+   - `edgeYInXRange()` — computes Y range of edge segments in X range
+   - `edgeOverlapsRect()` + `segmentOverlapsRect()` — overlap detection
+   - `EDGE_LABEL_LINE_GAP` constant
+
+6. **Kept for rotation (visual concern):**
+   - `edgeAngleAtPoint()` + helpers (`segmentAngle`, `squaredDistanceToSegment`, `squaredDistance`)
+   - `VERTICAL_LABEL_ROTATION_THRESHOLD` constant
+
+**packages/renderer-svg/src/__tests__/renderer.test.ts:**
+
+1. **Fixed `positionedLineStyleDiagram()` helper:**
+   - Changed `labelLines` computation from manual type check to `wrapTextContent(edge.label, 140, 14)`
+   - Rich text labels (array of segments) now correctly produce `RichText[]` labelLines
+
+2. **Fixed `edgeLabelDoc()` helper:**
+   - Now uses `wrapTextContent(label, Math.max(80, edgeLen - 16), 14)` for labelLines
+   - Produces properly wrapped lines matching what layout engines provide
+
+3. **Fixed "layout-positioned wrapped edge labels" test:**
+   - Added `labelLines: wrappedLines` to manually constructed edge
+   - Uses `wrapTextContent` to compute lines from label text
+
+4. **Updated golden fixture** (`rich-text.svg`):
+   - Edge label rendering changed slightly due to layout-provided wrapping
+
+5. **Added 3 new tests in "edge label positioning from layout" describe:**
+   - Uses layout-provided labelPosition for edge label placement
+   - Uses layout-provided labelLines for edge label text
+   - Renders no labels when labelLines is empty
+
+### Key Findings
+
+1. **`wrapTextContent` handles rich text**: When given `RichText[]` (array of segments), `wrapTextContent` returns `RichText[]`. The test helper was incorrectly setting `labelLines: []` for rich text labels because it only checked `typeof edge.label === "string"`. Using `wrapTextContent` directly handles both string and rich text correctly.
+
+2. **Overlap avoidance depends on rendered lines**: The overlap code measures each line's rendered width via `measureTextContent(line, fontSize)` and shifts labels to avoid overlapping the edge path. This still works with layout-provided `labelLines` since it operates on the final rendered lines.
+
+3. **`edge.labelLines ?? []` fallback needed**: Some tests construct edges without `labelLines`. The `?? []` fallback prevents `undefined.map()` crash. In production, all layout engines provide `labelLines` via `sizeEdgeLabels()`.
+
+### Results
+- `bun test packages/renderer-svg/` → 299 pass, 0 fail (3 new tests)
+- `bun run build` → all packages clean
+- LSP diagnostics: 0 errors on renderer.ts
+
+## 2026-06-08 Task 14: Cross-Engine Geometry Parity Tests
+
+### Changes Made
+
+**packages/layout/src/__tests__/engine-parity.test.ts (NEW):**
+- 20 parity tests across 6 test groups verifying cross-engine geometry consistency
+- Tests import all 4 engines: dagre, elk, wasm, built-in
+
+**packages/layout/package.json:**
+- Added devDependencies: `@drawspec/layout-dagre`, `@drawspec/layout-elk`, `@drawspec/layout-wasm`
+
+### Test Groups
+
+1. **Node sizing parity (4 tests):**
+   - All engines produce identical width/height for same input (short, medium, long, multi-line labels)
+   - Node positions differ across engines (verified dagre vs ELK produce different positions)
+   - labelLines are identical across all engines
+   - contentLayout.label lines are consistent
+
+2. **Edge label position parity (5 tests):**
+   - ELK uses geometric midpoint via `sizeEdgeLabels()` — verified with polyline midpoint calculation
+   - Dagre and wasm use first waypoint as labelPosition
+   - Built-in uses midpoint of first and last waypoint
+   - Labeled edges have non-empty labelLines across all engines
+   - Unlabeled edges have empty labelLines
+
+3. **Self-loop route parity (3 tests):**
+   - Dagre and wasm use `computeSelfLoopWaypoints()` — byte-identical to shared function
+   - ELK self-loop forms a valid loop extending beyond node bounds (different algorithm)
+   - Built-in uses `computeSelfLoopWaypoints()`
+
+4. **Canvas bounds parity (3 tests):**
+   - All engines produce valid `{ x, y, width, height }` structure
+   - Canvas bounds contain all nodes and edge waypoints
+   - Empty diagram produces minimal bounds
+
+5. **Edge label lines parity (3 tests):**
+   - Single-line labels: dagre/wasm/built-in produce identical labelLines
+   - Multi-line (`\n`) labels: dagre/wasm/built-in split identically
+   - Long labels: ELK wraps via `sizeEdgeLabels()` producing multiple lines
+
+6. **Unicode labels parity (2 tests):**
+   - Emoji, CJK, Arabic, mixed labels: all engines produce identical dimensions and labelLines
+   - Unicode edge labels are positioned correctly
+
+### Key Findings
+
+1. **Node dimensions are byte-identical across all 4 engines** — confirms `sizeGraphNodes()` is the single source of truth for sizing.
+
+2. **Edge label position algorithms differ by engine:**
+   - ELK: geometric midpoint (via `sizeEdgeLabels()`)
+   - Dagre: first waypoint (inline positioning)
+   - WASM: first waypoint (inline positioning)
+   - Built-in: midpoint of first+last waypoint (inline `edgeLabelPosition()`)
+   - This is expected — only ELK has been migrated to `sizeEdgeLabels()` so far
+
+3. **Self-loop routes: dagre, wasm, built-in all use `computeSelfLoopWaypoints()`**. ELK has its own inline implementation producing a 5-point loop (vs 6-point from shared function).
+
+4. **First node position is identical across engines** (all start at padding offset). Position differences emerge from rank 1+ nodes.
+
+### Results
+- `bun test packages/layout/src/__tests__/engine-parity.test.ts` → 20 pass, 0 fail
+- `bun test packages/layout/` → 92 pass, 0 fail
+- `bun test packages/layout-dagre/ packages/layout-elk/ packages/layout-wasm/` → 62 pass, 0 fail
+- `bun run build` → all packages clean

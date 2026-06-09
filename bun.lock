@@ -224,6 +224,9 @@
         "@drawspec/text-measure": "workspace:*",
       },
       "devDependencies": {
+        "@drawspec/layout-dagre": "workspace:*",
+        "@drawspec/layout-elk": "workspace:*",
+        "@drawspec/layout-wasm": "workspace:*",
         "typescript": "latest",
       },
     },

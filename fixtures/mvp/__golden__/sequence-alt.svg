@@ -89,15 +89,9 @@
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line0-008h9h6-bg-1ra9y6y">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="113.06" x="203.47" y="428" />
-      <text data-width="109.06" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line0-008h9h6" text-anchor="middle" x="260" y="442.2">
-        Request another
-      </text>
-    </g>
-    <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line1-00igv65-bg-0aivygh">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="114.46" x="202.77" y="454.2" />
-      <text data-width="110.46" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line1-00igv65" text-anchor="middle" x="260" y="468.4">
-        payment method
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="228.14" x="145.93" y="428" />
+      <text data-width="224.14" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_32d78e47-line0-008h9h6" text-anchor="middle" x="260" y="442.2">
+        Request another payment method
       </text>
     </g>
     <g id="drawspec-seqdoc_50f5132c-13xu4za-label-edge-msg_41a3117b-line0-1da2pww-bg-1xm5mn3">

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { DiagramDocument, LabelRotation, NodeShapeSpec } from "@drawspec/core";
 import { type PositionedDiagram, sequenceLayout, simpleGraphLayout } from "@drawspec/layout";
+import { wrapTextContent } from "@drawspec/text-measure";
 import {
   computeContentBounds,
   type LineStyle,
@@ -205,7 +206,7 @@ function positionedLineStyleDiagram(doc: DiagramDocument): PositionedDiagram {
         ...edge,
         waypoints,
         labelPosition: { x: 100, y: 30 },
-        labelLines: edge.label ? (typeof edge.label === "string" ? [edge.label] : []) : [],
+        labelLines: edge.label ? wrapTextContent(edge.label, 140, 14) : [],
       },
     ],
     groups: [],
@@ -1371,6 +1372,8 @@ describe("SvgRenderer", () => {
         ],
         edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label }],
       });
+      const edgeFontSize = 14;
+      const labelLines = wrapTextContent(label, Math.max(80, edgeLen - 16), edgeFontSize);
       const positionedDiagram = {
         document: doc,
         nodes: [],
@@ -1386,7 +1389,7 @@ describe("SvgRenderer", () => {
               { x: 20 + edgeLen, y: edgeY },
             ],
             labelPosition: { x: 20 + edgeLen / 2, y: edgeY },
-            labelLines: [label],
+            labelLines,
           },
         ],
         groups: [],
@@ -1504,6 +1507,8 @@ describe("SvgRenderer", () => {
         ],
       });
       const edgeY = 200;
+      const edgeFontSize = 14;
+      const wrappedLines = wrapTextContent(longLabel, Math.max(80, 80 - 16), edgeFontSize);
       const positionedDiagram = {
         document: doc,
         nodes: [],
@@ -1519,6 +1524,7 @@ describe("SvgRenderer", () => {
               { x: 130, y: edgeY },
             ],
             labelPosition: { x: 90, y: edgeY },
+            labelLines: wrappedLines,
           },
         ],
         groups: [],
@@ -2436,6 +2442,118 @@ describe("SvgRenderer", () => {
       };
       const svg = renderSvgSync(doc, { positionedDiagram: diagram });
       expect(svg).not.toMatch(/label-node-n/);
+    });
+  });
+
+  describe("edge label positioning from layout", () => {
+    test("uses layout-provided labelPosition for edge label placement", () => {
+      const doc = document({
+        id: "edge-layout-pos-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "calls" }],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "calls",
+            waypoints: [
+              { x: 0, y: 50 },
+              { x: 200, y: 50 },
+            ],
+            labelPosition: { x: 77, y: 42 },
+            labelLines: ["calls"],
+          },
+        ],
+        groups: [],
+        height: 100,
+        nodes: [],
+        width: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      const textMatch = svg.match(/<text[^>]*id="[^"]*label-edge-e1-line0[^"]*"[^>]*x="([^"]*)"/);
+      expect(textMatch).not.toBeNull();
+      expect(textMatch?.[1]).toBe("77");
+    });
+
+    test("uses layout-provided labelLines for edge label text", () => {
+      const doc = document({
+        id: "edge-layout-lines-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b", label: "hello world" }],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            label: "hello world",
+            waypoints: [
+              { x: 0, y: 50 },
+              { x: 200, y: 50 },
+            ],
+            labelPosition: { x: 100, y: 50 },
+            labelLines: ["hello", "world"],
+          },
+        ],
+        groups: [],
+        height: 100,
+        nodes: [],
+        width: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      expect(svg).toMatch(/id="[^"]*label-edge-e1-line0[^"]*"/);
+      expect(svg).toMatch(/id="[^"]*label-edge-e1-line1[^"]*"/);
+    });
+
+    test("renders no labels when labelLines is empty", () => {
+      const doc = document({
+        id: "edge-empty-lines-test",
+        nodes: [
+          { id: "a", kind: "component", label: "A" },
+          { id: "b", kind: "component", label: "B" },
+        ],
+        edges: [{ id: "e1", kind: "calls", sourceId: "a", targetId: "b" }],
+      });
+      const diagram: PositionedDiagram = {
+        activations: [],
+        document: doc,
+        edges: [
+          {
+            id: "e1",
+            kind: "calls",
+            sourceId: "a",
+            targetId: "b",
+            waypoints: [
+              { x: 0, y: 50 },
+              { x: 200, y: 50 },
+            ],
+            labelPosition: { x: 100, y: 50 },
+            labelLines: [],
+          },
+        ],
+        groups: [],
+        height: 100,
+        nodes: [],
+        width: 200,
+      };
+      const svg = renderSvgSync(doc, { positionedDiagram: diagram });
+      expect(svg).not.toMatch(/label-edge-e1/);
     });
   });
 });

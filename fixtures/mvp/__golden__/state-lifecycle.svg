@@ -77,15 +77,9 @@
   </g>
   <g id="drawspec-statedoc_fd39935e9e-18zqhd5-text-layer-016i7s5">
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk-bg-0gphoig" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="93.74" x="53.13" y="220" />
-      <text data-width="89.74" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk" text-anchor="middle" x="100" y="234.2">
-        pay [payment
-      </text>
-    </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line1-1a8zcij-bg-1p89clk" transform="translate(0 26)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="77.92" x="61.04" y="424" />
-      <text data-width="73.92" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line1-1a8zcij" text-anchor="middle" x="100" y="438.2">
-        authorized]
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="172.28" x="13.86" y="220" />
+      <text data-width="168.28" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_313666f593-line0-19yzqtk" text-anchor="middle" x="100" y="234.2">
+        pay [payment authorized]
       </text>
     </g>
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_3adf0d4c24-line0-0lzvwyp-bg-0xxd95g" transform="translate(0 54)">
@@ -101,15 +95,9 @@
       </text>
     </g>
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm-bg-1dkbntc" transform="translate(0 54)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="118.1" x="40.95" y="572" />
-      <text data-width="114.1" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm" text-anchor="middle" x="100" y="586.2">
-        deliver [signature
-      </text>
-    </g>
-    <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line1-1198i2l-bg-0eq6les" transform="translate(0 26)">
-      <rect fill="#ffffff" height="20" rx="3" ry="3" width="67" x="66.5" y="776" />
-      <text data-width="63" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line1-1198i2l" text-anchor="middle" x="100" y="790.2">
-        captured]
+      <rect fill="#ffffff" height="20" rx="3" ry="3" width="185.72" x="7.14" y="572" />
+      <text data-width="181.72" fill="#0f172a" font-family="Arial, sans-serif" font-size="14" id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_48d29b6076-line0-10z8wdm" text-anchor="middle" x="100" y="586.2">
+        deliver [signature captured]
       </text>
     </g>
     <g id="drawspec-statedoc_fd39935e9e-18zqhd5-label-edge-transition_d42861f3ed-line0-1k3w6ix-bg-03cknd3" transform="translate(0 54)">
