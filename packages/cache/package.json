@@ -15,7 +15,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "devDependencies": {
-    "@types/node": "25.9.4",
+    "@types/node": "25.9.5",
     "typescript": "latest"
   }
 }
